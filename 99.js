@@ -1,6 +1,6 @@
 {
     "wallpaper": "https://imgs.catvod.com",
-    "spider": "http://pglblb.test.upcdn.net/12/LoveTV.jar",
+    "spider": "http://pglblb.test.upcdn.net/12/1.jar",
     "header": {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "user-agent": "Mozilla/5.0 (Linux; Android 12; HarmonyOS; ELS-AN10; HMSCore 6.11.0.302) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 HuaweiBrowser/13.0.3.320 Mobile Safari/537.36"
