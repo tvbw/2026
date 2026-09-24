@@ -3,51 +3,17 @@
   "wallpaper": "https://深色壁纸.xxooo.cf/",
   "header": {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
-    "Cache-Control": "max-age=3600",
-    "Connection": "keep-alive"
+    "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
   },
-  "defaultThreadInfo": {
-    "chunksize": 512,
-    "threads": 32
+  "playerConfig": {
+    "cacheEnabled": true,
+    "maxCacheSize":512,
+    "multiThread": true,
+    "threadCount":18,
+    "timeout": 30,
+    "downloadBufferSize": 2048,
+    "readBufferSize": 256
   },
-  "cache": {
-    "enable": true,
-    "strategy": "smart",
-    "imageCache": {
-      "maxSize": 2048,
-      "expireTime": 604800
-    },
-    "dataCache": {
-      "catalog": 604800,
-      "detail": 604800,
-      "search": 604800,
-      "homepage": 900
-    },
-    "preload": {
-      "enable": true,
-      "lazyLoad": 50
-    },
-    "refresh": {
-      "enable": true,
-      "forceRefreshOnStart": true,
-      "backgroundUpdate": true,
-      "updateInterval": 900,
-      "incrementalUpdate": true
-    },
-    "dynamicExpire": {
-      "enable": false
-    }
-  },
-  "network": {
-    "timeout": 15,
-    "retryCount": 2,
-    "dnsCache": true,
-    "keepAlive": true
-  },
-
     "sites": [
         {
             "key": "py_4K_fullhd-deep1",
