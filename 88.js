@@ -7,9 +7,9 @@
   },
   "playerConfig": {
     "cacheEnabled": true,
-    "maxCacheSize":512,
+    "maxCacheSize":1024,
     "multiThread": true,
-    "threadCount":18,
+    "threadCount":36,
     "timeout": 30,
     "downloadBufferSize": 2048,
     "readBufferSize": 256
@@ -31,16 +31,31 @@
             "changeable": 1
         },
         {
-            "key": "py_4K_fullhd3",
-            "name": "❤️FHD老僧【🔞2】",
+            "key": "py_4K_93合1",
+            "name": "❤️93合1【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/fullhd3.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/fullhd3.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "py_4K_bestjavporn",
+            "name": "❤️bestjavporn【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/bestjavporn.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/bestjavporn.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
