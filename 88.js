@@ -1,19 +1,14 @@
 {
-  "spider": "http://pglblb.test.upcdn.net/12/1.jar",
-  "wallpaper": "https://深色壁纸.xxooo.cf/",
-  "header": {
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-    "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
-  },
-  "playerConfig": {
-    "cacheEnabled": true,
-    "maxCacheSize":1024,
-    "multiThread": true,
-    "threadCount":36,
-    "timeout": 30,
-    "downloadBufferSize": 2048,
-    "readBufferSize": 256
-  },
+    "wallpaper": "https://imgs.catvod.com",
+    "spider": "http://pglblb.test.upcdn.net/12/18.jar",
+    "header": {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "user-agent": "Mozilla/5.0 (Linux; Android 12; HarmonyOS; ELS-AN10; HMSCore 6.11.0.302) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 HuaweiBrowser/13.0.3.320 Mobile Safari/537.36"
+    },
+    "threadinfo": {
+        "chunksize": 1024,
+        "threads": 64
+    },
     "sites": [
         {
             "key": "py_4K_fullhd-deep1",
@@ -139,6 +134,7 @@
             "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/TVboxTest/main/py/91成人短劇優選.py"
         },
         {
+
             "key": "mrdld",
             "name": "4❤️每日大乱斗｜🔞",
             "type": 3,
