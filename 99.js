@@ -26,6 +26,36 @@
             "changeable": 1
         },
         {
+            "key": "py_4K_ FullHD",
+            "name": "❤️FullHD【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/FullHD.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/FullHD.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "py_4K_ AV星球",
+            "name": "❤️ AV星球【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/AV星球.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/AV星球.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
             "key": "py_4K_93合1",
             "name": "❤️93合1【🔞】",
             "type": 3,
