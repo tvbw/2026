@@ -41,6 +41,48 @@
             "changeable": 1
         },
         {
+      "key": "hsck",
+      "name": "🐬[成人]黄色仓库.py｜🔞",
+      "type": 3,
+      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/黄色仓库.py"
+    },
+    {
+      "key": "黄色仓库动态版",
+      "name": "🐬[成人]黄色仓库动态版.py｜🔞",
+      "type": 3,
+      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/黄色仓库动态版.py"
+    },
+    {
+      "key": "wyt",
+      "name": "🐬[成人]五月天.py｜🔞",
+      "type": 3,
+      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/五月天.py"
+    },
+    {
+      "key": "jptt",
+      "name": "🐬[成人]禁片天堂.py｜🔞",
+      "type": 3,
+      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/禁片天堂.py"
+    },
+    {
+      "key": "hgsq",
+      "name": "🐬[成人]韩国色情电影.py｜🔞",
+      "type": 3,
+      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/韩国色情电影.py"
+    },
+    {
+      "key": "smvm",
+      "name": "🐬[成人]神秘电影.py｜🔞",
+      "type": 3,
+      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/神秘电影.py"
+    },
+    {
+      "key": "xj",
+      "name": "🐬[成人]香蕉视频.py(关梯)｜🔞",
+      "type": 3,
+      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/香蕉视频.py"
+    },
+    {
             "key": "py_4K_ AV星球",
             "name": "❤️ AV星球【🔞】",
             "type": 3,
@@ -49,8 +91,8 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/AV星球.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/AV星球.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/AV%E6%98%9F%E7%90%83.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/AV%E6%98%9F%E7%90%83.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
