@@ -19,7 +19,6 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "homePage": "https://www.fullhd.to/zh/",
             "ext": "http://pglblb.test.upcdn.net/2026py/fullhd202610.py",
             "api": "http://pglblb.test.upcdn.net/2026py/fullhd202610.py",
             "searchable": 1,
