@@ -27,12 +27,41 @@
         },
         {
             "key": "一个区1",
-            "name": "❤️香蕉1区【🔞】",
+            "name": "5❤️香蕉1区【🔞】",
             "type": 3,
             "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py",
             "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py",
             "searchable": 1,
             "quickSearch": 1,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "changeable": 1
+        },
+        {
+            "key": "5❤️香蕉七区1",
+            "name": "🔞️香蕉7区【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%897%E5%8C%BA.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%897%E5%8C%BA.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1
+        },
+        {
+            "key": "九个区1",
+            "name": "5❤️香蕉9区【🔞】",
+            "type": 3,
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%899%E5%8C%BA.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%899%E5%8C%BA.py",
+            "searchable": 0,
+            "quickSearch": 0,
             "style": {
                 "type": "rect",
                 "ratio": 1.66
@@ -241,36 +270,6 @@
             },
             "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/pytesx/missav666.py",
             "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/pytesx/missav666.py"
-        },
-        {
-
-            "key": "香蕉七区1",
-            "name": "🔞️香蕉7区",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "api": "http://pglblb.test.upcdn.net/2025py/2025ss/香蕉七区.py",
-            "ext": "http://pglblb.test.upcdn.net/2025py/2025ss/香蕉七区.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 1
-        },
-        {
-            "key": "九个区1",
-            "name": "香蕉9区",
-            "type": 3,
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/九个区.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/九个区.py",
-            "searchable": 0,
-            "quickSearch": 0,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "changeable": 1
         },
         {
             "key": "🔞 Beeg.py",
