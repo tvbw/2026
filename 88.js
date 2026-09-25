@@ -26,6 +26,18 @@
             "changeable": 1
         },
         {
+            "key": "黄色仓库仓库加速",
+            "name": "5❤️黄色仓库【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py"
+        },
+        {
             "key": "香蕉九合一",
             "name": "5❤️蝴蝶影视【🔞】",
             "type": 3,
@@ -804,30 +816,7 @@
             "changeable": 1
         },
         {
-            "key": "黄色仓库仓库加速",
-            "name": "【5星】仓库加速",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93%E5%8A%A8%E6%94%B9%E8%BF%9B%E7%89%88.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93%E5%8A%A8%E6%94%B9%E8%BF%9B%E7%89%88.py"
-        },
-        {
-            "key": "黄色仓库动态版",
-            "name": "【4星】黄色仓库",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93%E5%8A%A8%E6%80%81%E7%89%88.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93%E5%8A%A8%E6%80%81%E7%89%88.py"
-        },
-        {
+
             "key": "黄果短剧",
             "name": "【5星】黄果短剧",
             "type": 3,

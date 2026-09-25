@@ -1,13 +1,13 @@
 {
     "wallpaper": "https://imgs.catvod.com",
-    "spider": "http://pglblb.test.upcdn.net/12/pg20250415.jar",
+    "spider": "http://pglblb.test.upcdn.net/12/1.jar",
     "header": {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "user-agent": "Mozilla/5.0 (Linux; Android 12; HarmonyOS; ELS-AN10; HMSCore 6.11.0.302) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 HuaweiBrowser/13.0.3.320 Mobile Safari/537.36"
     },
     "threadinfo": {
-        "chunksize": 1024,
-        "threads": 64
+        "chunksize": 512,
+        "threads": 36
     },
     "sites": [
         {
@@ -26,7 +26,18 @@
             "changeable": 1
         },
         {
-
+            "key": "黄色仓库仓库加速",
+            "name": "5❤️黄色仓库【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py"
+        },
+        {
             "key": "香蕉九合一",
             "name": "5❤️蝴蝶影视【🔞】",
             "type": 3,
@@ -86,8 +97,8 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/woshishiq1/hipy-drpy2/ead994f316efa7c1fbedd469ed086c7d257046e1/jaychouqq/yingshi/py9/93%E5%90%881.py#L4",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/woshishiq1/hipy-drpy2/ead994f316efa7c1fbedd469ed086c7d257046e1/jaychouqq/yingshi/py9/93%E5%90%881.py#L4",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
@@ -188,7 +199,7 @@
             "searchable": 0,
             "quickSearch": 0,
             "filterable": 0,
-            "ext": "https://gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/StripChat直播xbpq.json",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/StripChat直播xbpq.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
@@ -309,7 +320,7 @@
             "searchable": 0,
             "quickSearch": 0,
             "filterable": 0,
-            "ext": "https://gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/stripchat直播带票.json",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/stripchat直播带票.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
@@ -367,8 +378,8 @@
             "key": "小黄书.py",
             "name": "4❤️小黄书【🔞】",
             "type": 3,
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/小黄书.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/小黄书.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E5%B0%8F%E9%BB%84%E4%B9%A6.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E5%B0%8F%E9%BB%84%E4%B9%A6.py",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
@@ -805,30 +816,7 @@
             "changeable": 1
         },
         {
-            "key": "黄色仓库仓库加速",
-            "name": "【5星】仓库加速",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93%E5%8A%A8%E6%94%B9%E8%BF%9B%E7%89%88.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93%E5%8A%A8%E6%94%B9%E8%BF%9B%E7%89%88.py"
-        },
-        {
-            "key": "黄色仓库动态版",
-            "name": "【4星】黄色仓库",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93%E5%8A%A8%E6%80%81%E7%89%88.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93%E5%8A%A8%E6%80%81%E7%89%88.py"
-        },
-        {
+
             "key": "黄果短剧",
             "name": "【5星】黄果短剧",
             "type": 3,
