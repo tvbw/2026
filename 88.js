@@ -204,7 +204,15 @@
             "key": "番号",
             "name": "🔞番号资源",
             "type": 1,
-            "api": "http://fhapi9.com/api.php/provide/vod/",
+            "api": "http://fhapiby.com/api.php/provide/vod/",
+            "searchable": 1,
+            "quickSearch": 1
+        },
+        {
+            "key": "番号2",
+            "name": "🔞番号资源XML",
+            "type": 0,
+            "api": "http://fhapiby.com/api.php/provide/vod/at/xml/",
             "searchable": 1,
             "quickSearch": 1
         },
