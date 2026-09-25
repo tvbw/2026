@@ -34,8 +34,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py"
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py"
         },
         {
             "key": "香蕉九合一",
