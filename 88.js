@@ -26,266 +26,7 @@
             "changeable": 1
         },
         {
-      "key": "AV星球",
-      "name": "🦋 AV星球.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/AVxingqiu.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "AVTOP10",
-      "name": "🦋 AVTOP10.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/AVTOP10.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "淫母原味",
-      "name": "🦋 淫母原味.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/yinmuyuanwei.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "优质粉嫩鲍",
-      "name": "🦋 优质粉嫩鲍.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/youzhifennenbao.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "大鸡吧",
-      "name": "🦋 大鸡吧.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/dajiba.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "丝袜乐土",
-      "name": "🦋 丝袜乐土.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/siwaletu.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "善良的小姨子",
-      "name": "🦋 善良的小姨子.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/shanliangdexiaoyizi.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "幸福加油站",
-      "name": "🦋 幸福加油站.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/xingfujiayouzhan.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "陌陌一夜情",
-      "name": "🦋 陌陌一夜情.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/momoyiyeqing.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "fulleroticmovies",
-      "name": "🦋 fulleroticmovies怀旧经典.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/fulleroticmovies.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "UAA",
-      "name": "🦋 UAA.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/UAA.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "小心御欲",
-      "name": "🦋 小心御欲.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/xiaoxinyuyu.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "一起草",
-      "name": "🦋 一起草.py(关梯)｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/yiqicao.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "GG51",
-      "name": "🦋 GG51.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/GG51.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "花都影视",
-      "name": "🦋 花都影视.py(关梯)｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/huadouyingshi.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "四色",
-      "name": "🦋 四色.py(关梯)｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/sise.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "奶糖视频",
-      "name": "🦋 奶糖视频.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/naitangshipin.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "撸王宝典",
-      "name": "🦋 撸王宝典.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/luwangbaodian.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "性运机场",
-      "name": "🦋 性运机场.py(关梯)｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/xingyunjichang.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "手鸡助手",
-      "name": "🦋 手鸡助手.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/shoujizhushou.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "大屌视频",
-      "name": "🦋 大屌视频.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/dadiaoshipin.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "高端视频",
-      "name": "🦋 高端视频.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/gaoduanshipin.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-      "key": "猫咪AV",
-      "name": "🦋 猫咪AV.py｜🔞",
-      "type": 3,
-      "api": "https://lytvs.top/py/maomiAV.py",
-      "ext": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "category": "福利"
-    },
-    {
-            "key": "py_4K_93合1",
-            "name": "❤️93合1【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-            "key": "py_4K_bestjavporn",
-            "name": "❤️bestjavporn【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/bestjavporn.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/bestjavporn.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
+
             "key": "香蕉九合一",
             "name": "5❤️蝴蝶影视【🔞】",
             "type": 3,
@@ -337,70 +78,19 @@
             "changeable": 0
         },
         {
-            "key": "🔞 Beeg.py",
-            "name": "4❤️Beeg【🔞】",
-            "type": 3,
-            "ext": "http://pglblb.test.upcdn.net/2026py/0920/Beeg.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0920/Beeg.py",
-            "searchable": 0,
-            "quickSearch": 0,
-            "filterable": 0,
-            "changeable": 0,
-            "style": {
-                "type": "rect",
-                "ratio": 1.6
-            }
-        },
-        {
-            "key": "py_4K_91成人短劇優選",
-            "name": "4❤️91成人短劇｜🔞",
+            "key": "py_4K_93合1",
+            "name": "❤️93合1【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/TVboxTest/main/py/91成人短劇優選.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/TVboxTest/main/py/91成人短劇優選.py"
-        },
-        {
-
-            "key": "mrdld",
-            "name": "4❤️每日大乱斗｜🔞",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E6%AF%8F%E6%97%A5%E5%A4%A7%E4%B9%B1%E6%96%97.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0920/%E6%AF%8F%E6%97%A5%E5%A4%A7%E4%B9%B1%E6%96%97.py"
-        },
-        {
-            "key": "51暗网",
-            "name": "5❤️51暗网｜🔞",
-            "type": 3,
-            "ext": "http://pglblb.test.upcdn.net/2026py/0920/51%E6%9A%97%E7%BD%91.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0920/51%E6%9A%97%E7%BD%91.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
             "searchable": 1,
             "quickSearch": 1,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
             "changeable": 1
-        },
-        {
-            "key": "51bl",
-            "name": "5❤️51爆料｜🔞",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 2
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0920/51%E7%88%86%E6%96%99.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0920/51%E7%88%86%E6%96%99.py"
         },
         {
             "key": "18av",
@@ -505,6 +195,73 @@
             }
         },
         {
+            "key": "🔞 Beeg.py",
+            "name": "4❤️Beeg【🔞】",
+            "type": 3,
+            "ext": "http://pglblb.test.upcdn.net/2026py/0920/Beeg.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0920/Beeg.py",
+            "searchable": 0,
+            "quickSearch": 0,
+            "filterable": 0,
+            "changeable": 0,
+            "style": {
+                "type": "rect",
+                "ratio": 1.6
+            }
+        },
+        {
+            "key": "py_4K_91成人短劇優選",
+            "name": "4❤️91成人短劇｜🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/TVboxTest/main/py/91成人短劇優選.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/TVboxTest/main/py/91成人短劇優選.py"
+        },
+        {
+
+            "key": "mrdld",
+            "name": "4❤️每日大乱斗｜🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E6%AF%8F%E6%97%A5%E5%A4%A7%E4%B9%B1%E6%96%97.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0920/%E6%AF%8F%E6%97%A5%E5%A4%A7%E4%B9%B1%E6%96%97.py"
+        },
+        {
+            "key": "51暗网",
+            "name": "5❤️51暗网｜🔞",
+            "type": 3,
+            "ext": "http://pglblb.test.upcdn.net/2026py/0920/51%E6%9A%97%E7%BD%91.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0920/51%E6%9A%97%E7%BD%91.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "changeable": 1
+        },
+        {
+            "key": "51bl",
+            "name": "5❤️51爆料｜🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 2
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0920/51%E7%88%86%E6%96%99.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0920/51%E7%88%86%E6%96%99.py"
+        },
+        {
+
             "key": "cam4",
             "name": "5❤️cam4【🔞直播】",
             "type": 3,
@@ -544,38 +301,8 @@
             "api": "http://pglblb.test.upcdn.net/2026py/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.py"
         },
         {
-            "key": "drpy_js_ss直播",
-            "name": "3❤️国货【🔞直播】-2备份",
-            "type": 3,
-            "playerType": 2,
-            "api": "http://pglblb.test.upcdn.net/drpy2.min.js",
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/js/ss直播.js",
-            "searchable": 0,
-            "quickSearch": 0,
-            "style": {
-                "type": "rect",
-                "ratio": 1.8
-            }
-        },
-        {
-            "key": "csp_xbpq_s直播-【本地云】",
-            "name": "20-StripChat【本地云】",
-            "type": 3,
-            "playerType": 2,
-            "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",
-            "api": "csp_XBPQ",
-            "searchable": 0,
-            "quickSearch": 0,
-            "filterable": 0,
-            "ext": "http://pglblb.test.upcdn.net/2026py/0920/stripchat%E7%9B%B4%E6%92%AD%E5%B8%A6%E7%A5%A8.json",
-            "style": {
-                "type": "rect",
-                "ratio": 1.65
-            }
-        },
-        {
-            "key": "csp_xbpq_s直播-20【🔞】",
-            "name": "20-StripChat[验证-gh-proxy]-20",
+             "key": "csp_xbpq_s直播-20【🔞】",
+            "name": "20-StripChat[验证gh-proxy]",
             "type": 3,
             "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",
             "api": "csp_XBPQ",
@@ -590,7 +317,7 @@
         },
         {
             "key": "csp_xbpq_s直播-21【🔞】",
-            "name": "21-StripChat[验证-cdn]-21",
+            "name": "21-StripChat[验证cdn]",
             "type": 3,
             "playerType": 2,
             "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",

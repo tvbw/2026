@@ -1,6 +1,6 @@
 {
     "wallpaper": "https://imgs.catvod.com",
-    "spider": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/pg20250415.jar",
+    "spider": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/pg202408.jar",
     "header": {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "user-agent": "Mozilla/5.0 (Linux; Android 12; HarmonyOS; ELS-AN10; HMSCore 6.11.0.302) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 HuaweiBrowser/13.0.3.320 Mobile Safari/537.36"
@@ -26,108 +26,7 @@
             "changeable": 1
         },
         {
-            "key": "py_4K_ FullHD",
-            "name": "❤️FullHD【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/FullHD.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/FullHD.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-      "key": "hsck",
-      "name": "🐬[成人]黄色仓库.py｜🔞",
-      "type": 3,
-      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/黄色仓库.py"
-    },
-    {
-      "key": "黄色仓库动态版",
-      "name": "🐬[成人]黄色仓库动态版.py｜🔞",
-      "type": 3,
-      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/黄色仓库动态版.py"
-    },
-    {
-      "key": "wyt",
-      "name": "🐬[成人]五月天.py｜🔞",
-      "type": 3,
-      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/五月天.py"
-    },
-    {
-      "key": "jptt",
-      "name": "🐬[成人]禁片天堂.py｜🔞",
-      "type": 3,
-      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/禁片天堂.py"
-    },
-    {
-      "key": "hgsq",
-      "name": "🐬[成人]韩国色情电影.py｜🔞",
-      "type": 3,
-      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/韩国色情电影.py"
-    },
-    {
-      "key": "smvm",
-      "name": "🐬[成人]神秘电影.py｜🔞",
-      "type": 3,
-      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/神秘电影.py"
-    },
-    {
-      "key": "xj",
-      "name": "🐬[成人]香蕉视频.py(关梯)｜🔞",
-      "type": 3,
-      "api": "https://github.com/franksun1211/TXT/raw/main/TVbox/dolphin18/ext/香蕉视频.py"
-    },
-    {
-            "key": "py_4K_ AV星球",
-            "name": "❤️ AV星球【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/AV%E6%98%9F%E7%90%83.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/AV%E6%98%9F%E7%90%83.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-            "key": "py_4K_93合1",
-            "name": "❤️93合1【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-            "key": "py_4K_bestjavporn",
-            "name": "❤️bestjavporn【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/bestjavporn.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/bestjavporn.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
+
             "key": "香蕉九合一",
             "name": "5❤️蝴蝶影视【🔞】",
             "type": 3,
@@ -179,70 +78,19 @@
             "changeable": 0
         },
         {
-            "key": "🔞 Beeg.py",
-            "name": "4❤️Beeg【🔞】",
-            "type": 3,
-            "ext": "http://pglblb.test.upcdn.net/2026py/0920/Beeg.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0920/Beeg.py",
-            "searchable": 0,
-            "quickSearch": 0,
-            "filterable": 0,
-            "changeable": 0,
-            "style": {
-                "type": "rect",
-                "ratio": 1.6
-            }
-        },
-        {
-            "key": "py_4K_91成人短劇優選",
-            "name": "4❤️91成人短劇｜🔞",
+            "key": "py_4K_93合1",
+            "name": "❤️93合1【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/TVboxTest/main/py/91成人短劇優選.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/TVboxTest/main/py/91成人短劇優選.py"
-        },
-        {
-
-            "key": "mrdld",
-            "name": "4❤️每日大乱斗｜🔞",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E6%AF%8F%E6%97%A5%E5%A4%A7%E4%B9%B1%E6%96%97.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0920/%E6%AF%8F%E6%97%A5%E5%A4%A7%E4%B9%B1%E6%96%97.py"
-        },
-        {
-            "key": "51暗网",
-            "name": "5❤️51暗网｜🔞",
-            "type": 3,
-            "ext": "http://pglblb.test.upcdn.net/2026py/0920/51%E6%9A%97%E7%BD%91.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0920/51%E6%9A%97%E7%BD%91.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
             "searchable": 1,
             "quickSearch": 1,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
             "changeable": 1
-        },
-        {
-            "key": "51bl",
-            "name": "5❤️51爆料｜🔞",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 2
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0920/51%E7%88%86%E6%96%99.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0920/51%E7%88%86%E6%96%99.py"
         },
         {
             "key": "18av",
@@ -347,6 +195,73 @@
             }
         },
         {
+            "key": "🔞 Beeg.py",
+            "name": "4❤️Beeg【🔞】",
+            "type": 3,
+            "ext": "http://pglblb.test.upcdn.net/2026py/0920/Beeg.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0920/Beeg.py",
+            "searchable": 0,
+            "quickSearch": 0,
+            "filterable": 0,
+            "changeable": 0,
+            "style": {
+                "type": "rect",
+                "ratio": 1.6
+            }
+        },
+        {
+            "key": "py_4K_91成人短劇優選",
+            "name": "4❤️91成人短劇｜🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/TVboxTest/main/py/91成人短劇優選.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/TVboxTest/main/py/91成人短劇優選.py"
+        },
+        {
+
+            "key": "mrdld",
+            "name": "4❤️每日大乱斗｜🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E6%AF%8F%E6%97%A5%E5%A4%A7%E4%B9%B1%E6%96%97.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0920/%E6%AF%8F%E6%97%A5%E5%A4%A7%E4%B9%B1%E6%96%97.py"
+        },
+        {
+            "key": "51暗网",
+            "name": "5❤️51暗网｜🔞",
+            "type": 3,
+            "ext": "http://pglblb.test.upcdn.net/2026py/0920/51%E6%9A%97%E7%BD%91.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0920/51%E6%9A%97%E7%BD%91.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "changeable": 1
+        },
+        {
+            "key": "51bl",
+            "name": "5❤️51爆料｜🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 2
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0920/51%E7%88%86%E6%96%99.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0920/51%E7%88%86%E6%96%99.py"
+        },
+        {
+
             "key": "cam4",
             "name": "5❤️cam4【🔞直播】",
             "type": 3,
@@ -386,38 +301,8 @@
             "api": "http://pglblb.test.upcdn.net/2026py/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.py"
         },
         {
-            "key": "drpy_js_ss直播",
-            "name": "3❤️国货【🔞直播】-2备份",
-            "type": 3,
-            "playerType": 2,
-            "api": "http://pglblb.test.upcdn.net/drpy2.min.js",
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/js/ss直播.js",
-            "searchable": 0,
-            "quickSearch": 0,
-            "style": {
-                "type": "rect",
-                "ratio": 1.8
-            }
-        },
-        {
-            "key": "csp_xbpq_s直播-【本地云】",
-            "name": "20-StripChat【本地云】",
-            "type": 3,
-            "playerType": 2,
-            "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",
-            "api": "csp_XBPQ",
-            "searchable": 0,
-            "quickSearch": 0,
-            "filterable": 0,
-            "ext": "http://pglblb.test.upcdn.net/2026py/0920/stripchat%E7%9B%B4%E6%92%AD%E5%B8%A6%E7%A5%A8.json",
-            "style": {
-                "type": "rect",
-                "ratio": 1.65
-            }
-        },
-        {
-            "key": "csp_xbpq_s直播-20【🔞】",
-            "name": "20-StripChat[验证-gh-proxy]-20",
+             "key": "csp_xbpq_s直播-20【🔞】",
+            "name": "20-StripChat[验证gh-proxy]",
             "type": 3,
             "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",
             "api": "csp_XBPQ",
@@ -432,7 +317,7 @@
         },
         {
             "key": "csp_xbpq_s直播-21【🔞】",
-            "name": "21-StripChat[验证-cdn]-21",
+            "name": "21-StripChat[验证cdn]",
             "type": 3,
             "playerType": 2,
             "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",
