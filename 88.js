@@ -85,8 +85,8 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/93%E5%90%881.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/woshishiq1/hipy-drpy2/ead994f316efa7c1fbedd469ed086c7d257046e1/jaychouqq/yingshi/py9/93%E5%90%881.py#L4",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/woshishiq1/hipy-drpy2/ead994f316efa7c1fbedd469ed086c7d257046e1/jaychouqq/yingshi/py9/93%E5%90%881.py#L4",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
