@@ -6,8 +6,8 @@
         "user-agent": "Mozilla/5.0 (Linux; Android 12; HarmonyOS; ELS-AN10; HMSCore 6.11.0.302) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 HuaweiBrowser/13.0.3.320 Mobile Safari/537.36"
     },
     "threadinfo": {
-        "chunksize": 1024,
-        "threads": 64
+        "chunksize": 512,
+        "threads": 36
     },
     "sites": [
         {
@@ -366,8 +366,8 @@
             "key": "小黄书.py",
             "name": "4❤️小黄书【🔞】",
             "type": 3,
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/小黄书.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/小黄书.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E5%B0%8F%E9%BB%84%E4%B9%A6.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E5%B0%8F%E9%BB%84%E4%B9%A6.py",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
