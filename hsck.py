@@ -26,7 +26,7 @@ class Spider(Spider):
         """动态获取主机地址"""
         try:
             # 解码base64获取初始主机
-            initial_host = base64.b64decode('aHR0cHM6Ly9oc2NrLm5ldA==').decode('utf-8')
+            initial_host = base64.b64decode('aHR0cDovL2hzY2submV0').decode('utf-8')
             
             # 获取初始页面
             response = requests.get(initial_host, headers=self.header)
@@ -54,7 +54,7 @@ class Spider(Spider):
                     
         except Exception as e:
             print(f"获取动态主机失败: {e}")
-            return "http://6590ck.cc/"
+            return "https://333.aggck.cc/"
 
     def preprocessClasses(self):
         """预处理分类数据"""
@@ -287,7 +287,7 @@ class Spider(Spider):
                 "vod_name": title,
                 "vod_pic": self.getFullUrl(pic) if pic else "",
                 "vod_content": title,  # 用标题当简介
-                "vod_play_from": "老僧酿酒",
+                "vod_play_from": "黄色仓库",
                 "vod_play_url": "#".join(play_urls)  # 使用#分隔多个播放源
             }
             
