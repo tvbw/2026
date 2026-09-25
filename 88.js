@@ -209,14 +209,6 @@
             "quickSearch": 1
         },
         {
-            "key": "番号2",
-            "name": "🔞番号资源XML",
-            "type": 0,
-            "api": "http://fhapiby.com/api.php/provide/vod/at/xml/",
-            "searchable": 1,
-            "quickSearch": 1
-        },
-        {
             "key": "lbzy",
             "name": "🔞乐播资源",
             "type": 1,
