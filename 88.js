@@ -26,6 +26,22 @@
             "changeable": 1
         },
         {
+            "key": "csp_xbpq_黄色仓库",
+            "name": "5❤️黄色仓库json【🔞】",
+            "type": 3,
+            "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",
+            "playerType": 2,
+            "api": "csp_XBPQ",
+            "searchable": 0,
+            "quickSearch": 0,
+            "filterable": 0,
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/wliqi495-create/jaychouqq/bc77fbc60063421b82ef6cdf4b7dfc73d5b82be5/yingshi/json/hsck123.json#L6",
+            "style": {
+                "type": "rect",
+                "ratio": 1.65
+            }
+        },
+        {
             "key": "黄色仓库仓库加速",
             "name": "5❤️黄色仓库【🔞】",
             "type": 3,
@@ -36,6 +52,18 @@
             },
             "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck.py",
             "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck.py"
+        },
+        {
+            "key": "本地影仓",
+            "name": "5❤️本地影仓【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E6%9C%AC%E5%9C%B0%E5%BD%B1%E4%BB%93.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E6%9C%AC%E5%9C%B0%E5%BD%B1%E4%BB%93.py"
         },
         {
             "key": "香蕉九合一",
