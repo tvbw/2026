@@ -12,7 +12,7 @@
     "sites": [
         {
             "key": "py_4K_fullhd-deep1",
-            "name": "❤️FHD老僧【🔞1】",
+            "name": "❤️FHD老僧【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
@@ -23,6 +23,20 @@
             "api": "http://pglblb.test.upcdn.net/2026py/fullhd202610.py",
             "searchable": 1,
             "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "一个区1",
+            "name": "❤️香蕉1区【🔞】",
+            "type": 3,
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
             "changeable": 1
         },
         {
@@ -229,20 +243,6 @@
             "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/pytesx/missav666.py"
         },
         {
-            "key": "一个区1",
-            "name": "🔍香蕉1区",
-            "type": 3,
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/一个区.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/一个区.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "changeable": 1
-        },
-        {
             "key": "香蕉七区1",
             "name": "🔞️香蕉7区",
             "type": 3,
@@ -259,7 +259,7 @@
         },
         {
             "key": "九个区1",
-            "name": "香蕉9区",
+            "name": "🔞️香蕉9区",
             "type": 3,
             "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/九个区.py",
             "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/九个区.py",
