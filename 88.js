@@ -29,271 +29,271 @@
             "key": "玩蛋吧",
             "name": "🐬[成人]玩蛋吧.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/玩蛋吧🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/玩蛋吧🔞TG @hshsjk9.py"
         },
         {
             "key": "javhd",
             "name": "🐬[成人]javhd.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/javhd🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/javhd🔞TG @hshsjk9.py"
         },
         {
             "key": "ASMRHoney",
             "name": "🐬[成人]ASMRHoney.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/ASMRHoney🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/ASMRHoney🔞TG @hshsjk9.py"
         },
         {
             "key": "橘子资源",
             "name": "🐬[成人]橘子资源.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/橘子资源🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/橘子资源🔞TG @hshsjk9.py"
         },
         {
             "key": "采花大盗",
             "name": "🐬[成人]采花大盗.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/采花大盗🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/采花大盗🔞TG @hshsjk9.py"
         },
         {
             "key": "lmlgdjr",
             "name": "🐬[成人]lmlgdjr.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/lmlgdjr🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/lmlgdjr🔞TG @hshsjk9.py"
         },
         {
             "key": "JK领域",
             "name": "🐬[成人]JK领域.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/JK领域🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/JK领域🔞TG @hshsjk9.py"
         },
         {
             "key": "徐娘阁",
             "name": "🐬[成人]徐娘阁.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/徐娘阁🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/徐娘阁🔞TG @hshsjk9.py"
         },
         {
             "key": "小学妹",
             "name": "🐬[成人]小学妹.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/小学妹🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/小学妹🔞TG @hshsjk9.py"
         },
         {
             "key": "西瓜视频",
             "name": "🐬[成人]西瓜视频.py(关梯)｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/西瓜视频🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/西瓜视频🔞TG @hshsjk9.py"
         },
         {
             "key": "iSese影库",
             "name": "🐬[成人]iSese影库.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/iSese影库🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/iSese影库🔞TG @hshsjk9.py"
         },
         {
             "key": "青蛙视频",
             "name": "🐬[成人]青蛙视频.py(关梯)｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/青蛙视频🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/青蛙视频🔞TG @hshsjk9.py"
         },
         {
             "key": "专草校花",
             "name": "🐬[成人]专草校花.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/专草校花🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/专草校花🔞TG @hshsjk9.py"
         },
         {
             "key": "直播录屏",
             "name": "🐬[成人]直播录屏.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/直播录屏🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/直播录屏🔞TG @hshsjk9.py"
         },
         {
             "key": "怡红院",
             "name": "🐬[成人]怡红院.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/怡红院🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/怡红院🔞TG @hshsjk9.py"
         },
         {
             "key": "一牛影视",
             "name": "🐬[成人]一牛影视.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/一牛影视🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/一牛影视🔞TG @hshsjk9.py"
         },
         {
             "key": "夜社",
             "name": "🐬[成人]夜社.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/夜社🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/夜社🔞TG @hshsjk9.py"
         },
         {
             "key": "小男娘",
             "name": "🐬[成人]小男娘.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/小男娘🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/小男娘🔞TG @hshsjk9.py"
         },
         {
             "key": "玩物社区",
             "name": "🐬[成人]玩物社区.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/玩物社区🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/玩物社区🔞TG @hshsjk9.py"
         },
         {
             "key": "熟妇天堂",
             "name": "🐬[成人]熟妇天堂.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/熟妇天堂🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/熟妇天堂🔞TG @hshsjk9.py"
         },
         {
             "key": "骚女档案馆",
             "name": "🐬[成人]骚女档案馆.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/骚女档案馆🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/骚女档案馆🔞TG @hshsjk9.py"
         },
         {
             "key": "七色谷",
             "name": "🐬[成人]七色谷.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/七色谷🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/七色谷🔞TG @hshsjk9.py"
         },
         {
             "key": "netfapx",
             "name": "🐬[成人]netfapx.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/netfapx🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/netfapx🔞TG @hshsjk9.py"
         },
         {
             "key": "javfree",
             "name": "🐬[成人]javfree.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/javfree🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/javfree🔞TG @hshsjk9.py"
         },
         {
             "key": "正妹AV",
             "name": "🐬[成人]正妹AV.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/正妹AV🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/正妹AV🔞TG @hshsjk9.py"
         },
         {
             "key": "蜜桃源",
             "name": "🐬[成人]蜜桃源.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/蜜桃源🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/蜜桃源🔞TG @hshsjk9.py"
         },
         {
             "key": "萝莉聚集",
             "name": "🐬[成人]萝莉聚合AV.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/萝莉聚集🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/萝莉聚集🔞TG @hshsjk9.py"
         },
         {
             "key": "hqg",
             "name": "🐬[成人]hqg.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/hqg🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/hqg🔞TG @hshsjk9.py"
         },
         {
             "key": "小涩界",
             "name": "🐬[成人]小涩界.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/小涩界🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/小涩界🔞TG @hshsjk9.py"
         },
         {
             "key": "小涩界",
             "name": "🐬[成人]小涩界.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/小涩界🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/小涩界🔞TG @hshsjk9.py"
         },
         {
             "key": "撸状元",
             "name": "🐬[成人]撸状元.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/撸壮元🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/撸壮元🔞TG @hshsjk9.py"
         },
         {
             "key": "笔盒",
             "name": "🐬[成人]笔盒.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/笔盒🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/笔盒🔞TG @hshsjk9.py"
         },
         {
             "key": "MSAVX",
             "name": "🐬[成人]MSAVX.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/MSAVX🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/MSAVX🔞TG @hshsjk9.py"
         },
         {
             "key": "missav",
             "name": "🐬[成人]missav.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/missav1🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/missav1🔞TG @hshsjk9.py"
         },
         {
             "key": "杏吧视频",
             "name": "🐬[成人]杏吧视频.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/杏吧视频🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/杏吧视频🔞TG @hshsjk9.py"
         },
         {
             "key": "推特涩涩",
             "name": "🐬[成人]推特涩涩.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/推特涩涩🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/推特涩涩🔞TG @hshsjk9.py"
         },
         {
             "key": "色吧资源",
             "name": "🐬[成人]色吧资源.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/色吧资源🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/色吧资源🔞TG @hshsjk9.py"
         },
         {
             "key": "三流视频",
             "name": "🐬[成人]三流视频.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/三流视频🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/三流视频🔞TG @hshsjk9.py"
         },
         {
             "key": "口爆大全AV",
             "name": "🐬[成人]口爆大全AV.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/口爆大全AV🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/口爆大全AV🔞TG @hshsjk9.py"
         },
         {
             "key": "精英突击",
             "name": "🐬[成人]精英突击.py(关梯)｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/精英突击🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/精英突击🔞TG @hshsjk9.py"
         },
         {
             "key": "one点播",
             "name": "🐬[成人]one点播.py(关梯)｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/one🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/one🔞TG @hshsjk9.py"
         },
         {
             "key": "hubff",
             "name": "🐬[成人]hubff.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/hubff🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/hubff🔞TG @hshsjk9.py"
         },
         {
             "key": "智者玩水",
             "name": "🐬[成人]智者玩水.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/智者玩水🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/智者玩水🔞TG @hshsjk9.py"
         },
         {
             "key": "五月星空",
             "name": "🐬[成人]五月星空.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/五月星空🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/五月星空🔞TG @hshsjk9.py"
         },
         {
             "key": "人妻偷情",
             "name": "🐬[成人]人妻偷情.py｜🔞",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/人妻偷情🔞TG @hshsjk9.py"
+            "api": "https://gh-proxy.org/https://raw.githubusercontent.com/lang999/fgh998/refs/heads/main/py/人妻偷情🔞TG @hshsjk9.py"
         },
         {
 
