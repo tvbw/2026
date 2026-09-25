@@ -204,7 +204,7 @@
             "key": "番号",
             "name": "🔞番号资源",
             "type": 1,
-            "api": "http://fhapi9.com/api.php/provide/vod/",
+            "api": "http://fhapiby.com/api.php/provide/vod/",
             "searchable": 1,
             "quickSearch": 1
         },
