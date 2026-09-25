@@ -1,6 +1,6 @@
 {
     "wallpaper": "https://imgs.catvod.com",
-    "spider": "http://pglblb.test.upcdn.net/12/CatVodSpider.jar",
+    "spider": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/pg202408.jar",
     "header": {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "user-agent": "Mozilla/5.0 (Linux; Android 12; HarmonyOS; ELS-AN10; HMSCore 6.11.0.302) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 HuaweiBrowser/13.0.3.320 Mobile Safari/537.36"
@@ -26,6 +26,236 @@
             "changeable": 1
         },
         {
+      "key": "AV星球",
+      "name": "🦋 AV星球.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/AVxingqiu.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "AVTOP10",
+      "name": "🦋 AVTOP10.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/AVTOP10.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "淫母原味",
+      "name": "🦋 淫母原味.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/yinmuyuanwei.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "优质粉嫩鲍",
+      "name": "🦋 优质粉嫩鲍.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/youzhifennenbao.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "大鸡吧",
+      "name": "🦋 大鸡吧.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/dajiba.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "丝袜乐土",
+      "name": "🦋 丝袜乐土.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/siwaletu.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "善良的小姨子",
+      "name": "🦋 善良的小姨子.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/shanliangdexiaoyizi.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "幸福加油站",
+      "name": "🦋 幸福加油站.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/xingfujiayouzhan.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "陌陌一夜情",
+      "name": "🦋 陌陌一夜情.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/momoyiyeqing.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "fulleroticmovies",
+      "name": "🦋 fulleroticmovies怀旧经典.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/fulleroticmovies.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "UAA",
+      "name": "🦋 UAA.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/UAA.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "小心御欲",
+      "name": "🦋 小心御欲.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/xiaoxinyuyu.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "一起草",
+      "name": "🦋 一起草.py(关梯)｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/yiqicao.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "GG51",
+      "name": "🦋 GG51.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/GG51.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "花都影视",
+      "name": "🦋 花都影视.py(关梯)｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/huadouyingshi.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "四色",
+      "name": "🦋 四色.py(关梯)｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/sise.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "奶糖视频",
+      "name": "🦋 奶糖视频.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/naitangshipin.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "撸王宝典",
+      "name": "🦋 撸王宝典.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/luwangbaodian.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "性运机场",
+      "name": "🦋 性运机场.py(关梯)｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/xingyunjichang.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "手鸡助手",
+      "name": "🦋 手鸡助手.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/shoujizhushou.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "大屌视频",
+      "name": "🦋 大屌视频.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/dadiaoshipin.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "高端视频",
+      "name": "🦋 高端视频.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/gaoduanshipin.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
+      "key": "猫咪AV",
+      "name": "🦋 猫咪AV.py｜🔞",
+      "type": 3,
+      "api": "https://lytvs.top/py/maomiAV.py",
+      "ext": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "category": "福利"
+    },
+    {
             "key": "py_4K_93合1",
             "name": "❤️93合1【🔞】",
             "type": 3,
