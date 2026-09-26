@@ -34,8 +34,8 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/57%E5%90%83%E7%93%9C.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/57%E5%90%83%E7%93%9C.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/57chigua.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/57chigua.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
@@ -1090,7 +1090,7 @@
         {
             "name": "ss大全",
             "type": 0,
-            "url": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/%E5%81%9A%E7%88%B1%E5%A4%A7%E5%85%A8.txt",
+            "url": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/FanchangWang/tvbox_config/7e2ca925182458c85d4585b42bb144c2dc3f1c0f/fl/live.txt#L134",
             "ua": "okHttp/Mod-1.4.0.0"
         }
     ]
