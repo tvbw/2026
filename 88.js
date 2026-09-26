@@ -19,8 +19,8 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/fullhd2.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/fullhd2.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
