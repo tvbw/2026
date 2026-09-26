@@ -19,8 +19,8 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/fullhd.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/fullhd.py",
+            "ext": "http://pglblb.test.upcdn.net/pglblb.json$$$http://pglblb.test.upcdn.net/2026py/0925/202610fullhd.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/202610fullhd.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
