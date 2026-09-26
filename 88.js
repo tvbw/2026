@@ -19,8 +19,8 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/fullhd.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/fullhd.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
