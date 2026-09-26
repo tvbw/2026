@@ -19,8 +19,8 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/wanganni/yinshiyuan/1481fd8d962dbd0a3b780f3f844f2fc185974c2d/tv/py/%E4%B8%83%E5%93%A5%E5%A4%A7%E6%B4%8B%E9%A9%AC.py#L4",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/wanganni/yinshiyuan/1481fd8d962dbd0a3b780f3f844f2fc185974c2d/tv/py/%E4%B8%83%E5%93%A5%E5%A4%A7%E6%B4%8B%E9%A9%AC.py#L4",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
