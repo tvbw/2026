@@ -1,6 +1,15 @@
 {
     "wallpaper": "https://imgs.catvod.com",
     "spider": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/aowu.png",
+    "header": {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "user-agent": "Mozilla/5.0 (Linux; Android 12; HarmonyOS; ELS-AN10; HMSCore 6.11.0.302) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 HuaweiBrowser/13.0.3.320 Mobile Safari/537.36"
+    },
+    "threadinfo": {
+        "chunksize": 512,
+        "threads": 36
+    },
+
     "sites": [
         {
             "key": "py_4K_fullhd-deep1",
