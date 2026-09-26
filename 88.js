@@ -6,8 +6,8 @@
         "user-agent": "Mozilla/5.0 (Linux; Android 12; HarmonyOS; ELS-AN10; HMSCore 6.11.0.302) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 HuaweiBrowser/13.0.3.320 Mobile Safari/537.36"
     },
     "threadinfo": {
-        "chunksize": 512,
-        "threads": 36
+        "chunksize": 1024,
+        "threads": 64
     },
 
     "sites": [
