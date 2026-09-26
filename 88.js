@@ -19,8 +19,8 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "http://pglblb.test.upcdn.net/pglblb.json$$$http://pglblb.test.upcdn.net/2026py/0925/202610fullhd.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/202610fullhd.py",
+            "ext": "http://pglblb.test.upcdn.net/pglblb.json$$$https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
@@ -34,89 +34,13 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/57吃瓜.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/57吃瓜.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/57chigua.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/57chigua.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
         },
         {
-            "key": "py_4K_Porn87",
-            "name": "❤️Porn87【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/Porn87.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/Porn87.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-            "key": "py_4K_黄豆短剧",
-            "name": "❤️黄豆短剧【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/黄豆短剧.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/黄豆短剧.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-            "key": "py_4K_angsung",
-            "name": "❤️angsung【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/angsung.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/angsung.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-            "key": "py_4K_中文大全",
-            "name": "❤️中文大全【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/中文大全.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/中文大全.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-            "key": "py_4K_javmenu",
-            "name": "❤️javmenu【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/javmenu.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/javmenu.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-
             "key": "香蕉.py/嗷",
             "name": "5❤️香蕉1区【🔞】",
             "type": 3,
