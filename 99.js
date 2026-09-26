@@ -26,18 +26,50 @@
             "changeable": 1
         },
         {
-            "key": "一个区1",
-            "name": "❤️香蕉1区【🔞】",
+            "key": "香蕉.py/嗷",
+            "name": "5❤️香蕉1区【🔞】",
             "type": 3,
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
+            "playerType": 2,
             "searchable": 1,
             "quickSearch": 1,
+            "filterable": 0,
+            "changeable": 0,
+            "style": {
+                "type": "rect",
+                "ratio": 1.6
+            }
+        },
+        {
+            "key": "5❤️香蕉七区1",
+            "name": "🔞️香蕉7区【🔞】",
+            "type": 3,
+            "playerType": 2,
             "style": {
                 "type": "rect",
                 "ratio": 1.66
             },
-            "changeable": 1
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%897%E5%8C%BA.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%897%E5%8C%BA.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1
+        },
+        {
+            "key": "香蕉九合一",
+            "name": "5❤️蝴蝶影视【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/%E4%B9%9D%E5%90%88%E4%B8%80.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/%E4%B9%9D%E5%90%88%E4%B8%80.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1
         },
         {
             "key": "香蕉九合一",
@@ -169,11 +201,11 @@
             }
         },
         {
-            "key": "香蕉.py/嗷",
-            "name": "5❤️岛国香蕉【🔞】",
+            "key": "香蕉2",
+            "name": "5❤️岛国香蕉1【🔞】",
             "type": 3,
-            "ext": "http://pglblb.test.upcdn.net/pglblb.json$$$http://pglblb.test.upcdn.net/2025py/2026ss/香蕉视频20251215.py",
-            "api": "http://pglblb.test.upcdn.net/2025py/2026ss/香蕉视频20251215.py",
+            "ext": "http://pglblb.test.upcdn.net/pglblb.json$$$http://pglblb.test.upcdn.net/2026py/0925/xjsp_202610.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/xjsp_202610.py",
             "playerType": 2,
             "searchable": 1,
             "quickSearch": 1,

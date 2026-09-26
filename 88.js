@@ -57,18 +57,20 @@
             "filterable": 1
         },
         {
-            "key": "九个区1",
-            "name": "5❤️香蕉9区【🔞】",
+            "key": "csp_xbpq_s直播",
+            "name": "5❤️StripChat【🔞直播】",
             "type": 3,
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E9%A6%99%E8%95%899%E5%8C%BA.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E9%A6%99%E8%95%899%E5%8C%BA.py",
+            "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",
+            "playerType": 2,
+            "api": "csp_XBPQ",
             "searchable": 0,
             "quickSearch": 0,
+            "filterable": 0,
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/StripChat直播xbpq.json",
             "style": {
                 "type": "rect",
-                "ratio": 1.66
-            },
-            "changeable": 1
+                "ratio": 1.65
+            }
         },
         {
             "key": "香蕉九合一",
@@ -86,6 +88,7 @@
             "filterable": 1
         },
         {
+
             "key": "爆色",
             "name": "5❤️爆色｜🔞",
             "type": 3,
@@ -200,23 +203,23 @@
             }
         },
         {
-
-            "key": "csp_xbpq_s直播",
-            "name": "5❤️StripChat【🔞直播】",
+            "key": "香蕉2",
+            "name": "5❤️岛国香蕉1【🔞】",
             "type": 3,
-            "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",
+            "ext": "http://pglblb.test.upcdn.net/pglblb.json$$$http://pglblb.test.upcdn.net/2026py/0925/xjsp_202610.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/xjsp_202610.py",
             "playerType": 2,
-            "api": "csp_XBPQ",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/StripChat直播xbpq.json",
+            "changeable": 0,
             "style": {
                 "type": "rect",
-                "ratio": 1.65
+                "ratio": 1.6
             }
         },
         {
+
             "key": "🔞杏吧资源",
             "name": "🔞杏吧资源",
             "type": 1,
