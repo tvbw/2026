@@ -34,8 +34,8 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/57chigua.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/57chigua.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/57%E5%90%83%E7%93%9C.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/57%E5%90%83%E7%93%9C.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
@@ -1088,9 +1088,9 @@
             "ua": "okHttp/Mod-1.4.0.0"
         },
         {
-            "name": "色播聚合",
+            "name": "ss大全",
             "type": 0,
-            "url": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.m3u",
+            "url": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/18-/main/tv/%E5%81%9A%E7%88%B1%E5%A4%A7%E5%85%A8.txt",
             "ua": "okHttp/Mod-1.4.0.0"
         }
     ]
