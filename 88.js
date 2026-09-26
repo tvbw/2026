@@ -30,7 +30,7 @@
             "key": "csp_xbpq_s直播",
             "name": "5❤️StripChat【🔞直播】",
             "type": 3,
-            "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",
+            "jar": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
             "playerType": 2,
             "api": "csp_XBPQ",
             "searchable": 0,
