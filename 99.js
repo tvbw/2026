@@ -6,8 +6,8 @@
         "user-agent": "Mozilla/5.0 (Linux; Android 12; HarmonyOS; ELS-AN10; HMSCore 6.11.0.302) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 HuaweiBrowser/13.0.3.320 Mobile Safari/537.36"
     },
     "threadinfo": {
-        "chunksize": 512,
-        "threads": 36
+        "chunksize":256,
+        "threads": 12
     },
     "sites": [
         {
@@ -1111,7 +1111,7 @@
         {
             "name": "AI直播",
             "type": 0,
-            "url": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E7%9F%AD%E5%89%A7.txt",
+            "url": "https://ghfast.top/https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E7%9F%AD%E5%89%A7.txt",
             "ua": "okHttp/Mod-1.4.0.0"
         },
         {
