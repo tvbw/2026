@@ -1,6 +1,6 @@
 {
     "wallpaper": "https://imgs.catvod.com",
-    "spider": "http://pglblb.test.upcdn.net/12/1.jar",
+    "spider": "http://pglblb.test.upcdn.net/12/pg202408.jar",
     "header": {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "user-agent": "Mozilla/5.0 (Linux; Android 12; HarmonyOS; ELS-AN10; HMSCore 6.11.0.302) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 HuaweiBrowser/13.0.3.320 Mobile Safari/537.36"
@@ -19,7 +19,7 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/fullhd.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/fullhd.py$$$http://pglblb.test.upcdn.net/2026py/fullhd.py",
             "api": "http://pglblb.test.upcdn.net/2026py/fullhd.py",
             "searchable": 1,
             "quickSearch": 1,
@@ -29,7 +29,7 @@
             "key": "香蕉.py/嗷",
             "name": "5❤️香蕉1区【🔞】",
             "type": 3,
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py$$$https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
             "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
             "playerType": 2,
             "searchable": 1,
