@@ -19,7 +19,7 @@ except ImportError:
             return r
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"
-HOSTS = ["https://www.fullhd.to", "https://www.fullhd.xxx"]
+HOSTS = ["https://www.fullhd.to/", "https://www.fullhd.to/zh/"]
 HOST = HOSTS[0]
 _CATS = None
 _SKIP = {'vr-virtual-reality', 'danish', 'iranian', 'shemale-3p', 'shemale-fuck', 'partner-show', 'shemale-threesome', 'chinese'}
