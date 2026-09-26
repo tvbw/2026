@@ -7,7 +7,7 @@
     },
     "threadinfo": {
         "chunksize": 1024,
-        "threads": 64
+        "threads": 18
     },
 
     "sites": [
