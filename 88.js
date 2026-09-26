@@ -27,43 +27,10 @@
             "changeable": 1
         },
         {
-
-            "key": "py_4K_hsck2",
-            "name": "❤️hsck2【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck2.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck2.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-
-            "key": "py_4K_hsck3",
-            "name": "❤️hsck3【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck3.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck3.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-
             "key": "csp_xbpq_hsck",
             "name": "5❤️hsck【🔞直播】",
             "type": 3,
-            "jar": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+            "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",
             "playerType": 2,
             "api": "csp_XBPQ",
             "searchable": 0,
@@ -79,7 +46,7 @@
             "key": "csp_xbpq_hsck123",
             "name": "5❤️hsck123【🔞直播】",
             "type": 3,
-            "jar": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+            "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",
             "playerType": 2,
             "api": "csp_XBPQ",
             "searchable": 0,
