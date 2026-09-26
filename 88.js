@@ -27,38 +27,6 @@
             "changeable": 1
         },
         {
-            "key": "csp_xbpq_hsck",
-            "name": "5❤️hsck【🔞直播】",
-            "type": 3,
-            "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",
-            "playerType": 2,
-            "api": "csp_XBPQ",
-            "searchable": 0,
-            "quickSearch": 0,
-            "filterable": 0,
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck.json",
-            "style": {
-                "type": "rect",
-                "ratio": 1.65
-            }
-        },
-        {
-            "key": "csp_xbpq_hsck123",
-            "name": "5❤️hsck123【🔞直播】",
-            "type": 3,
-            "jar": "http://pglblb.test.upcdn.net/xbpqxyq.jar",
-            "playerType": 2,
-            "api": "csp_XBPQ",
-            "searchable": 0,
-            "quickSearch": 0,
-            "filterable": 0,
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck123.json",
-            "style": {
-                "type": "rect",
-                "ratio": 1.65
-            }
-        },
-        {
             "key": "csp_xbpq_s直播",
             "name": "5❤️StripChat【🔞直播】",
             "type": 3,
