@@ -29,8 +29,8 @@
             "key": "一个区1",
             "name": "5❤️香蕉1区【🔞】",
             "type": 3,
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%BB%84%E8%89%B2%E4%BB%93%E5%BA%93202610.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E9%A6%99%E8%95%891%E5%8C%BA2026.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E9%A6%99%E8%95%891%E5%8C%BA2026.py",
             "searchable": 1,
             "quickSearch": 1,
             "style": {
@@ -58,8 +58,8 @@
             "key": "九个区1",
             "name": "5❤️香蕉9区【🔞】",
             "type": 3,
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%899%E5%8C%BA.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%899%E5%8C%BA.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E9%A6%99%E8%95%899%E5%8C%BA.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E9%A6%99%E8%95%899%E5%8C%BA.py",
             "searchable": 0,
             "quickSearch": 0,
             "style": {
