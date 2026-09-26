@@ -26,18 +26,20 @@
             "changeable": 1
         },
         {
-            "key": "一个区1",
+            "key": "香蕉.py/嗷",
             "name": "5❤️香蕉1区【🔞】",
             "type": 3,
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%891%E5%8C%BA2026.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%891%E5%8C%BA2026.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%89%E8%A7%86%E9%A2%9120251215.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%89%E8%A7%86%E9%A2%9120251215.py",
+            "playerType": 2,
             "searchable": 1,
             "quickSearch": 1,
+            "filterable": 0,
+            "changeable": 0,
             "style": {
                 "type": "rect",
-                "ratio": 1.66
-            },
-            "changeable": 1
+                "ratio": 1.6
+            }
         },
         {
             "key": "5❤️香蕉七区1",
@@ -198,22 +200,7 @@
             }
         },
         {
-            "key": "香蕉.py/嗷",
-            "name": "5❤️岛国香蕉【🔞】",
-            "type": 3,
-            "ext": "http://pglblb.test.upcdn.net/pglblb.json$$$http://pglblb.test.upcdn.net/2025py/2026ss/香蕉视频20251215.py",
-            "api": "http://pglblb.test.upcdn.net/2025py/2026ss/香蕉视频20251215.py",
-            "playerType": 2,
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 0,
-            "changeable": 0,
-            "style": {
-                "type": "rect",
-                "ratio": 1.6
-            }
-        },
-        {
+
             "key": "csp_xbpq_s直播",
             "name": "5❤️StripChat【🔞直播】",
             "type": 3,
