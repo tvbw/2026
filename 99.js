@@ -12,15 +12,15 @@
     "sites": [
         {
             "key": "py_4K_fullhd-deep1",
-            "name": "❤️FHD老僧【🔞】",
+            "name": "❤️FHD-老墨【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1

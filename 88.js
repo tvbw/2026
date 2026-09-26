@@ -13,7 +13,7 @@
     "sites": [
         {
             "key": "py_4K_fullhd-deep1",
-            "name": "❤️FHD老僧【🔞】",
+            "name": "❤️FHD巴西【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
