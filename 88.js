@@ -19,8 +19,8 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/fullhd.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/fullhd.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
@@ -29,8 +29,8 @@
             "key": "一个区1",
             "name": "5❤️香蕉1区【🔞】",
             "type": 3,
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E9%A6%99%E8%95%891%E5%8C%BA2026.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E9%A6%99%E8%95%891%E5%8C%BA2026.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%891%E5%8C%BA2026.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%891%E5%8C%BA2026.py",
             "searchable": 1,
             "quickSearch": 1,
             "style": {
