@@ -26,52 +26,6 @@
             "changeable": 1
         },
         {
-            "key": "py_4K_57吃瓜",
-            "name": "❤️57吃瓜【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/57chigua.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/57chigua.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-            "key": "香蕉.py/嗷",
-            "name": "5❤️香蕉1区【🔞】",
-            "type": 3,
-            "ext": "http://pglblb.test.upcdn.net/pglblb.json$$$https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
-            "playerType": 2,
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 0,
-            "changeable": 0,
-            "style": {
-                "type": "rect",
-                "ratio": 1.6
-            }
-        },
-        {
-            "key": "5❤️香蕉七区1",
-            "name": "🔞️香蕉7区【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%897%E5%8C%BA.py",
-            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%897%E5%8C%BA.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 1
-        },
-        {
             "key": "csp_xbpq_s直播",
             "name": "5❤️StripChat【🔞直播】",
             "type": 3,
@@ -114,6 +68,37 @@
             },
             "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py",
             "api": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py"
+        },
+        {
+            "key": "香蕉.py/嗷",
+            "name": "5❤️香蕉1区【🔞】",
+            "type": 3,
+            "ext": "http://pglblb.test.upcdn.net/pglblb.json$$$https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
+            "playerType": 2,
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 0,
+            "changeable": 0,
+            "style": {
+                "type": "rect",
+                "ratio": 1.6
+            }
+        },
+        {
+            "key": "5❤️香蕉七区1",
+            "name": "🔞️香蕉7区【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%897%E5%8C%BA.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%897%E5%8C%BA.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1
         },
         {
             "key": "黄果短剧 融合版",
