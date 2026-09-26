@@ -26,6 +26,20 @@
             "changeable": 1
         },
         {
+      "key": "TMDBPanQuark",
+      "name": "TMDB盘搜·夸克网盘(已验证)",
+      "type": 3,
+      "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/TMDBQuark.py",
+      "jar": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "playerType": 1,
+      "ext": {
+        "db": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/tmdbpan_quark.db"
+      }
+    },        {
             "key": "香蕉.py/嗷",
             "name": "5❤️香蕉1区【🔞】",
             "type": 3,
