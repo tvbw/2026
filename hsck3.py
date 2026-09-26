@@ -54,7 +54,7 @@ class Spider(Spider):
                     
         except Exception as e:
             print(f"获取动态主机失败: {e}")
-            return "http://6590ck.cc/"
+            return "https://444.aanck.cc/"
 
     def preprocessClasses(self):
         """预处理分类数据"""
