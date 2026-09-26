@@ -1071,6 +1071,12 @@
             "type": 0,
             "url": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E7%9F%AD%E5%89%A7.txt",
             "ua": "okHttp/Mod-1.4.0.0"
+        },
+        {
+            "name": "色播聚合",
+            "type": 0,
+            "url": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.m3u",
+            "ua": "okHttp/Mod-1.4.0.0"
         }
     ]
 }
