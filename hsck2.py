@@ -472,32 +472,10 @@ class Spider(BaseSpider):
             except: pass
         return None
 
-# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
-_PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
-
-def _cover_fallback(self, pic_url):
-    import urllib.parse
-    raw = pic_url or ''
-    parent_impl = getattr(super(Spider, self), '_cover_fallback', None)
-    if callable(parent_impl):
-        try:
-            raw = parent_impl(pic_url) or raw
-        except Exception:
-            pass
-    if not raw:
-        return ''
-    url = raw
-    for cdn in _PIC_CDN_POOL:
-        if cdn in raw:
-            url = raw.replace(cdn, _PIC_CDN_POOL[0])
-            break
-    proxy_base = getattr(self, 'proxy_base', None)
-    if proxy_base:
-        url = f'{proxy_base}{urllib.parse.quote(url)}'
-    return url
-
-Spider._cover_fallback = _cover_fallback
-# 注册爬虫
-if __name__ == '__main__':
-    from base.spider import Spider as BaseSpider
-    BaseSpider.register(Spider())
+    # ===== 搜索 =====
+    def searchContent(self, key, quick, pg='1'):
+        page = int(pg) if pg else 1
+        url = f'{self.host}/vodsearch/{quote(key)}-------------{page}---.html'
+        html = self._fetch(url, referer=self.host)
+        items = self._parse_list(html) if html else []
+        return {'list': items, 'page': page, 'pagecount': page+1, 'limit': len(items), 'total': len(items)}
