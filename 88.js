@@ -27,46 +27,16 @@
             "changeable": 1
         },
         {
-            "key": "py_4K_fullhd-jals",
-            "name": "❤️FHD美国老僧【🔞】",
+            "key": "py_4K_fullhd-ynss",
+            "name": "❤️美国书生【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd_ja.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd_ja.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-            "key": "py_4K_hsck1",
-            "name": "❤️hsck仓库1【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-            "key": "py_4K_hsck2",
-            "name": "❤️hsck仓库2【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck2.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck2.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
