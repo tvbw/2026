@@ -43,10 +43,10 @@ def _start_proxy():
 class Spider(BaseSpider):
     session = requests.Session()
     HOSTS = [
-        'https://333.agpck.cc/',
         'https://888.0mck.cc/',
         'https://111.0mck.cc/',
         'https://333.aaock.cc/',
+        'https://333.agpck.cc/',
         'http://hsck.net',
         'http://hsck.us',
         'https://999.0mck.cc/',
