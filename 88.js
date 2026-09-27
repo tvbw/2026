@@ -57,7 +57,7 @@
             "changeable": 1
         },
         {
-            "key": "py_4K_hsck1",
+            "key": "py_4K_hsck2",
             "name": "❤️hsck仓库2【🔞】",
             "type": 3,
             "playerType": 2,
