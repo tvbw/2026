@@ -57,16 +57,16 @@
             "changeable": 1
         },
         {
-            "key": "py_4K_hsck",
-            "name": "❤️hsck仓库【🔞】",
+            "key": "py_4K_hsck1",
+            "name": "❤️hsck仓库2【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck.py",
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck2.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck2.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
@@ -103,40 +103,6 @@
             "filterable": 1
         },
         {
-            "key": "香蕉视频js",
-            "name": "5❤️香蕉双加速版【🔞】",
-            "type": 3,
-            "ext": "http://pglblb.test.upcdn.net/2025py/202511ss/%E9%A6%99%E8%95%89%E8%A7%86%E9%A2%91%20-%20%E5%8F%8C%E5%8A%A0%E9%80%9F%E7%89%88.py",
-            "api": "http://pglblb.test.upcdn.net/2025py/202511ss/%E9%A6%99%E8%95%89%E8%A7%86%E9%A2%91%20-%20%E5%8F%8C%E5%8A%A0%E9%80%9F%E7%89%88.py",
-            "playerType": 2,
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 0,
-            "changeable": 0,
-            "style": {
-                "type": "rect",
-                "ratio": 1.6
-            }
-        },
-        {
-
-            "key": "阅妹阁聚合",
-            "name": "5❤️阅妹阁聚合【🔞】",
-            "type": 3,
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E9%98%85%E5%A6%B9%E9%98%81%E8%81%9A%E5%90%88.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E9%98%85%E5%A6%B9%E9%98%81%E8%81%9A%E5%90%88.py",
-            "playerType": 2,
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 0,
-            "changeable": 0,
-            "style": {
-                "type": "rect",
-                "ratio": 1.6
-            }
-        },
-        {
-
             "key": "csp_xbpq_s直播",
             "name": "5❤️StripChat【🔞直播】",
             "type": 3,
