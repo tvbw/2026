@@ -13,7 +13,7 @@
     "sites": [
         {
             "key": "py_4K_fullhd-bxss",
-            "name": "❤️FHD中文书生【🔞】",
+            "name": "❤️FHD中国书生【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
