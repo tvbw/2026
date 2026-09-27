@@ -42,7 +42,6 @@
             "changeable": 1
         },
         {
-
             "key": "py_4K_hsck",
             "name": "❤️hsck仓库【🔞】",
             "type": 3,
@@ -58,40 +57,6 @@
             "changeable": 1
         },
         {
-
-            "key": "csp_xbpq_jptt",
-            "name": "❤️jptt【🔞】",
-            "type": 3,
-            "jar": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
-            "playerType": 2,
-            "api": "csp_XBPQ",
-            "searchable": 0,
-            "quickSearch": 0,
-            "filterable": 0,
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E7%BB%BF%E8%89%B2%E4%BB%93%E5%BA%93xbpq.json",
-            "style": {
-                "type": "rect",
-                "ratio": 1.65
-            }
-        },
-        {
-            "key": "csp_xbpq_hsck天堂",
-            "name": "❤️hsck1【🔞】",
-            "type": 3,
-            "jar": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
-            "playerType": 2,
-            "api": "csp_XBPQ",
-            "searchable": 0,
-            "quickSearch": 0,
-            "filterable": 0,
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/%E7%BB%BF%E8%89%B2%E4%BB%93%E5%BA%93xbpq.json",
-            "style": {
-                "type": "rect",
-                "ratio": 1.65
-            }
-        },
-        {
-
             "key": "csp_xbpq_s直播",
             "name": "5❤️StripChat【🔞直播】",
             "type": 3,

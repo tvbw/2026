@@ -41,6 +41,21 @@
             "changeable": 1
         },
         {
+            "key": "py_4K_hsck",
+            "name": "❤️hsck仓库【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
             "key": "香蕉.py/嗷",
             "name": "5❤️香蕉1区【🔞】",
             "type": 3,
