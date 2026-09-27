@@ -45,6 +45,8 @@
             "key": "黄色仓库",
             "name": "🔞黄仓采集【🔞】",
             "type": 1,
+            "playUrl": "https://jx.bfhsck.com/m3u8/?url=",
+            "ext": "https://hsckzy888.com/api.php/provide/vod/",
             "api": "https://hsckzy888.com/api.php/provide/vod/",
             "categories": [
                 "网红主播",
