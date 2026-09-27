@@ -417,7 +417,7 @@
         },
         {
             "key": "csp_xbpq_s直播-21【🔞】",
-            "name": "21-StripChat[验证cdn]",
+            "name": "21-StripChat.github.dpik.top【🔞直播】",
             "type": 3,
             "playerType": 2,
             "jar": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
