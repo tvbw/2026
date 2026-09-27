@@ -12,23 +12,8 @@
 
     "sites": [
         {
-            "key": "py_4K_fullhd-jals",
-            "name": "❤️FHD日本老僧【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd_ja.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd_ja.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
             "key": "py_4K_fullhd-bxss",
-            "name": "❤️FHD巴西书生【🔞】",
+            "name": "❤️FHD中文书生【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
@@ -37,6 +22,21 @@
             },
             "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
             "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "py_4K_fullhd-jals",
+            "name": "❤️FHD美国老僧【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd_ja.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd_ja.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
