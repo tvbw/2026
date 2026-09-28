@@ -54,30 +54,6 @@
             "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/2048dj.py"
         },
         {
-            "key": "123AV",
-            "name": "5❤️123AV🔞",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/jsjhshs/zwtvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/123AV%E7%9F%AD%E8%A7%86%E9%A2%91.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/jsjhshs/zwtvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/123AV%E7%9F%AD%E8%A7%86%E9%A2%91.py"
-        },
-        {
-            "key": "69新",
-            "name": "5❤️69新🔞",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/jsjhshs/zwtvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/169%E6%96%B0.py#L5940",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/jsjhshs/zwtvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/169%E6%96%B0.py#L5940"
-        },
-        {
             "key": "py_4K_hsck1",
             "name": "❤️hsck仓库1【🔞】",
             "type": 3,
