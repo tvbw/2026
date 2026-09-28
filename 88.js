@@ -50,8 +50,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/2048%E7%9F%AD%E5%89%A7.py#L18",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/2048%E7%9F%AD%E5%89%A7.py#L18"
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/2048dj.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/2048dj.py"
         },
         {
             "key": "123AV",
@@ -62,8 +62,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/123AV.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/123AV.py"
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/jsjhshs/zwtvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/123AV%E7%9F%AD%E8%A7%86%E9%A2%91.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/jsjhshs/zwtvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/123AV%E7%9F%AD%E8%A7%86%E9%A2%91.py"
         },
         {
             "key": "69新",
@@ -74,8 +74,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/169%E6%96%B0.py",
-            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/169%E6%96%B0.py"
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/jsjhshs/zwtvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/169%E6%96%B0.py#L5940",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/jsjhshs/zwtvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/169%E6%96%B0.py#L5940"
         },
         {
             "key": "py_4K_hsck1",
