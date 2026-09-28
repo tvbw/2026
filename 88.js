@@ -42,6 +42,21 @@
             "changeable": 1
         },
         {
+            "key": "py_4K_hsck1",
+            "name": "❤️hsck仓库1【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/hsck.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
             "key": "香蕉1区",
             "name": "5❤️香蕉1区【🔞】",
             "type": 3,
@@ -117,10 +132,21 @@
             "api": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py"
         },
         {
-
+            "key": "57短剧",
+            "name": "5❤️57短剧🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py"
+        },
+        {
 
             "key": "黄果短剧 融合版",
-            "name": "🔞黄果短剧融合版🔞",
+            "name": "5❤️黄果短剧融合版🔞",
             "type": 3,
             "playerType": 2,
             "style": {
@@ -790,18 +816,7 @@
             "changeable": 1
         },
         {
-            "key": "57短剧",
-            "name": "【5星】57短剧",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py"
-        },
-        {
+
             "key": "香蕉视频20251215",
             "name": "【5星】香蕉九区1",
             "type": 3,
