@@ -42,6 +42,42 @@
             "changeable": 1
         },
         {
+            "key": "2048短剧",
+            "name": "5❤️2048短剧🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/2048%E7%9F%AD%E5%89%A7.py#L18",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/2048%E7%9F%AD%E5%89%A7.py#L18"
+        },
+        {
+            "key": "123AV",
+            "name": "5❤️123AV🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/123AV.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/123AV.py"
+        },
+        {
+            "key": "69新",
+            "name": "5❤️69新🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/169%E6%96%B0.py",
+            "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/169%E6%96%B0.py"
+        },
+        {
             "key": "py_4K_hsck1",
             "name": "❤️hsck仓库1【🔞】",
             "type": 3,
