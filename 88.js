@@ -33,30 +33,21 @@
             "changeable": 1
         },
         {
-            "key": "蜜月传媒",
-            "name": "🔞蜜月传媒",
+            "key": "51吃瓜",
+            "name": "❤️51吃瓜【🔞】",
             "type": 3,
             "playerType": 2,
+            "ext": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/51chigua.py",
+            "api": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/51chigua.py",
             "style": {
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/%E8%9C%9C%E6%9C%88%E7%9F%AD%E5%89%A7.py",
-            "api": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/%E8%9C%9C%E6%9C%88%E7%9F%AD%E5%89%A7.py"
+            "changeable": 1
         },
         {
-            "key": "2048短剧",
-            "name": "5❤️2048短剧🔞",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py"
-        },
-        {
+
+
             "key": "香蕉1区",
             "name": "5❤️香蕉1区【🔞】",
             "type": 3,
@@ -132,34 +123,7 @@
             "api": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py"
         },
         {
-            "key": "57短剧",
-            "name": "5❤️57短剧🔞",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py"
-        },
-        {
 
-            "key": "黄果短剧 融合版",
-            "name": "5❤️黄果短剧融合版🔞",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
             "key": "叔叔和侄女",
             "name": "5❤️叔叔和侄女｜🔞",
             "type": 3,
@@ -348,6 +312,58 @@
                 "type": "rect",
                 "ratio": 1.6
             }
+        },
+        {
+            "key": "57短剧",
+            "name": "5❤️57短剧🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py"
+        },
+        {
+
+            "key": "黄果短剧 融合版",
+            "name": "5❤️黄果短剧融合版🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "2048短剧",
+            "name": "5❤️2048短剧🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py"
+        },
+        {
+            "key": "蜜月传媒",
+            "name": "🔞蜜月传媒",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/%E8%9C%9C%E6%9C%88%E7%9F%AD%E5%89%A7.py",
+            "api": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/%E8%9C%9C%E6%9C%88%E7%9F%AD%E5%89%A7.py"
         },
         {
             "key": "51vm",
@@ -863,19 +879,7 @@
             "api": "http://pglblb.test.upcdn.net/2026py/0920/91%E5%90%83%E7%93%9C%E4%B8%AD%E5%BF%83.py"
         },
         {
-            "key": "51吃瓜",
-            "name": "【4星】51吃瓜",
-            "type": 3,
-            "playerType": 2,
-            "ext": "http://pglblb.test.upcdn.net/2026py/51.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/51.py",
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "changeable": 1
-        },
-        {
+
             "key": "51dc",
             "name": "51大赛｜🔞",
             "type": 3,
