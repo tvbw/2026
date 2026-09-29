@@ -1,44 +1,48 @@
 {
     "wallpaper": "https://imgs.catvod.com",
-    "spider": "http://pglblb.test.upcdn.net/12/pg20250415.jar",
-    "header": {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "user-agent": "Mozilla/5.0 (Linux; Android 12; HarmonyOS; ELS-AN10; HMSCore 6.11.0.302) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 HuaweiBrowser/13.0.3.320 Mobile Safari/537.36"
-    },
-    "threadinfo": {
-        "chunksize":256,
-        "threads": 12
-    },
+    "spider": "http://pglblb.test.upcdn.net/12/pg202408.jar",
     "sites": [
         {
-            "key": "py_4K_fullhd-ynss",
-            "name": "❤️美国书生1【🔞】",
+            "key": "py_4K_fullhd-bxss",
+            "name": "❤️FHD中国书生【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/fullhd.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/fullhd.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
         },
         {
-           "key": "py_4K_fullhd-fr",
-            "name": "❤️中国老僧1【🔞】",
+            "key": "py_4K_fullhd-ynss",
+            "name": "❤️美国书生【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/fullhd_fr.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/fullhd_fr.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/fullhd2.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/fullhd2.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
+        },
+        {
+            "key": "2048短剧",
+            "name": "5❤️2048短剧🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py"
         },
         {
             "key": "py_4K_hsck1",
@@ -49,33 +53,18 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/hsck.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/hsck.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
         },
         {
-            "key": "py_4K_hsck2",
-            "name": "❤️hsck仓库2【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/hsck2.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/hsck2.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-            "key": "香蕉.py/嗷",
+            "key": "香蕉1区",
             "name": "5❤️香蕉1区【🔞】",
             "type": 3,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/xj101.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/xj101.py",
             "playerType": 2,
             "searchable": 1,
             "quickSearch": 1,
@@ -87,8 +76,8 @@
             }
         },
         {
-            "key": "5❤️香蕉七区1",
-            "name": "🔞️香蕉7区【🔞】",
+            "key": "香蕉2区",
+            "name": "🔞️香蕉2区【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
@@ -102,19 +91,20 @@
             "filterable": 1
         },
         {
-            "key": "香蕉九合一",
-            "name": "5❤️蝴蝶影视【🔞】",
+            "key": "csp_xbpq_s直播",
+            "name": "5❤️StripChat【🔞直播】",
             "type": 3,
+            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
             "playerType": 2,
+            "api": "csp_XBPQ",
+            "searchable": 0,
+            "quickSearch": 0,
+            "filterable": 0,
+            "ext": "http://pglblb.test.upcdn.net/12/stripchat.json",
             "style": {
                 "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/%E4%B9%9D%E5%90%88%E4%B8%80.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/%E4%B9%9D%E5%90%88%E4%B8%80.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 1
+                "ratio": 1.65
+            }
         },
         {
             "key": "香蕉九合一",
@@ -130,6 +120,18 @@
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 1
+        },
+        {
+            "key": "missav666",
+            "name": "5❤️missav666【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/missav666.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/missav666.py"
         },
         {
             "key": "爆色",
@@ -144,8 +146,21 @@
             "api": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py"
         },
         {
+            "key": "57短剧",
+            "name": "5❤️57短剧🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py"
+        },
+        {
+
             "key": "黄果短剧 融合版",
-            "name": "🔞黄果短剧 融合版",
+            "name": "5❤️黄果短剧融合版🔞",
             "type": 3,
             "playerType": 2,
             "style": {
@@ -191,8 +206,8 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/woshishiq1/hipy-drpy2/ead994f316efa7c1fbedd469ed086c7d257046e1/jaychouqq/yingshi/py9/93%E5%90%881.py#L4",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/woshishiq1/hipy-drpy2/ead994f316efa7c1fbedd469ed086c7d257046e1/jaychouqq/yingshi/py9/93%E5%90%881.py#L4",
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/93%E5%90%881.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/93%E5%90%881.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
@@ -246,38 +261,7 @@
             }
         },
         {
-            "key": "香蕉2",
-            "name": "5❤️岛国香蕉1【🔞】",
-            "type": 3,
-            "ext": "http://pglblb.test.upcdn.net/pglblb.json$$$http://pglblb.test.upcdn.net/2026py/0925/xjsp_202610.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0925/xjsp_202610.py",
-            "playerType": 2,
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 0,
-            "changeable": 0,
-            "style": {
-                "type": "rect",
-                "ratio": 1.6
-            }
-        },
-        {
-            "key": "csp_xbpq_s直播",
-            "name": "5❤️StripChat【🔞直播】",
-            "type": 3,
-            "jar": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
-            "playerType": 2,
-            "api": "csp_XBPQ",
-            "searchable": 0,
-            "quickSearch": 0,
-            "filterable": 0,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/StripChat直播xbpq.json",
-            "style": {
-                "type": "rect",
-                "ratio": 1.65
-            }
-        },
-        {
+
             "key": "🔞杏吧资源",
             "name": "🔞杏吧资源",
             "type": 1,
@@ -308,47 +292,52 @@
             "quickSearch": 1
         },
         {
-            "key": "missav666",
-            "name": "🔍missav666",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/pytesx/missav666.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/pytesx/missav666.py"
+            "key": "黄色仓库",
+            "name": "🔞黄仓采集【🔞】",
+            "type": 1,
+            "playUrl": "https://jx.bfhsck.com/m3u8/?url=",
+            "ext": "https://hsckzy888.com/api.php/provide/vod/",
+            "api": "https://hsckzy888.com/api.php/provide/vod/",
+            "categories": [
+                "网红主播",
+                "国产传媒",
+                "探花系列",
+                "人妻熟女",
+                "日本无码",
+                "美乳巨乳",
+                "强制侵犯",
+                "制服诱惑",
+                "绝色佳人",
+                "风俗泡泡浴",
+                "家庭乱伦",
+                "AV解说",
+                "三级电影",
+                "少女萝莉",
+                "SM调教",
+                "绝顶潮吹",
+                "魔镜系列",
+                "时间停止",
+                "催眠洗脑",
+                "漫改系列",
+                "电车痴汉",
+                "淫欲痴女",
+                "AI换脸",
+                "网爆门",
+                "TS专区",
+                "女性向系列",
+                "女同性恋",
+                "男同性恋",
+                "欧美精品",
+                "国产自拍",
+                "日本动漫",
+                "3D动漫",
+                "韩国主播",
+                "泰国风情",
+                "OnlyFans"
+            ]
         },
         {
-            "key": "香蕉七区1",
-            "name": "🔞️香蕉7区",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "api": "http://pglblb.test.upcdn.net/2025py/2025ss/香蕉七区.py",
-            "ext": "http://pglblb.test.upcdn.net/2025py/2025ss/香蕉七区.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 1
-        },
-        {
-            "key": "九个区1",
-            "name": "🔞️香蕉9区",
-            "type": 3,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/九个区.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/九个区.py",
-            "searchable": 0,
-            "quickSearch": 0,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "changeable": 1
-        },
-        {
+
             "key": "🔞 Beeg.py",
             "name": "4❤️Beeg【🔞】",
             "type": 3,
@@ -372,8 +361,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51视频🔞TG @hshsjk9.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51视频🔞TG @hshsjk9.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51视频🔞TG @hshsjk9.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51视频🔞TG @hshsjk9.py"
         },
         {
             "key": "采花大盗",
@@ -384,8 +373,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/采花大盗.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/采花大盗.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/采花大盗.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/采花大盗.py"
         },
         {
             "key": "mrdld",
@@ -404,8 +393,8 @@
             "name": "3❤️国货【🔞直播】-1",
             "type": 3,
             "playerType": 2,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/色播聚合.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/色播聚合.py",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/色播聚合.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/色播聚合.py",
             "searchable": 0,
             "filterable": 0,
             "changeable": 0
@@ -431,7 +420,7 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/麻豆.js"
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/麻豆.js"
         },
         {
             "key": "溏心次元",
@@ -442,20 +431,20 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py"
         },
         {
             "key": "csp_xbpq_s直播-21【🔞】",
-            "name": "21-StripChat.github.dpik.top【🔞直播】",
+            "name": "21-StripChat[验证cdn]",
             "type": 3,
             "playerType": 2,
-            "jar": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
             "api": "csp_XBPQ",
             "searchable": 0,
             "quickSearch": 0,
             "filterable": 0,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/stripchat直播带票.json",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/stripchat直播带票.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
@@ -496,8 +485,8 @@
             "key": "麻豆瓜网",
             "name": "🔍麻豆瓜网",
             "type": 3,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
             "searchable": 1,
             "quickSearch": 1,
             "style": {
@@ -510,8 +499,8 @@
             "key": "每日大赛",
             "name": "🔍每日大赛",
             "type": 3,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
             "searchable": 1,
             "quickSearch": 1,
             "style": {
@@ -551,12 +540,12 @@
             "key": "csp_xbpq_mylust",
             "name": "4❤️mylust【🔞】",
             "type": 3,
-            "jar": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
             "api": "csp_XBPQ",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/mylust.json",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/mylust.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
@@ -566,12 +555,12 @@
             "key": "csp_XYQHiker_xHamster",
             "name": "4❤️xHamster【🔞】",
             "type": 3,
-            "jar": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
             "api": "csp_XYQHiker",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/xHamster.json",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/xHamster.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.6
@@ -581,12 +570,12 @@
             "key": "csp_XYQHiker_javffm",
             "name": "4❤️JAVFFM【🔞】",
             "type": 3,
-            "jar": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
             "api": "csp_XYQHiker",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/javffm.json",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/javffm.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.6
@@ -601,8 +590,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/夜色.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/夜色.py",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/夜色.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/夜色.py",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
@@ -644,8 +633,8 @@
             "key": "神秘影院1",
             "name": "4❤️神秘影院【🔞】",
             "type": 3,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/神秘影院.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/神秘影院.py",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/神秘影院.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/神秘影院.py",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
@@ -659,8 +648,8 @@
             "key": "hubff-py",
             "name": "3❤️hubff【🔞】",
             "type": 3,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/hubff.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/hubff.py",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/hubff.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/hubff.py",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
@@ -674,12 +663,12 @@
             "key": "csp_xbpq_小黄书【🔞】",
             "name": "3❤️小黄书【🔞】",
             "type": 3,
-            "jar": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
             "api": "csp_XBPQ",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/小黄书xbpq.json",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/小黄书xbpq.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
@@ -689,8 +678,8 @@
             "key": "怦然心动.py",
             "name": "3❤️怦然心动【🔞广】",
             "type": 3,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/怦然心动.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/怦然心动.py",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/怦然心动.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/怦然心动.py",
             "searchable": 1,
             "quickSearch": 1,
             "style": {
@@ -703,27 +692,42 @@
             "key": "csp_xbpq_麻豆av",
             "name": "3❤️麻豆AV【🔞】",
             "type": 3,
-            "jar": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
             "api": "csp_XBPQ",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/麻豆av.json",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/麻豆av.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
             }
         },
         {
+            "key": "py_4K_fullhd-hsck1",
+            "name": "3❤️激情007【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/hsck1.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/hsck1.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
             "key": "csp_xbpq_🔞才是源动力_极乐禁区(修复二级翻页bug).json",
             "name": "3❤️极乐禁区【🔞广】]",
             "type": 3,
-            "jar": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
             "api": "csp_XBPQ",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/🔞才是源动力_极乐禁区(修复二级翻页bug).json",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/🔞才是源动力_极乐禁区(修复二级翻页bug).json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
@@ -733,12 +737,12 @@
             "key": "csp_xbpq_蝴蝶情.json",
             "name": "2❤️蝴蝶情【🔞广】",
             "type": 3,
-            "jar": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
             "api": "csp_XBPQ",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/蝴蝶情.json",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/蝴蝶情.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
@@ -753,23 +757,23 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "jar": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
             "api": "csp_XYQHiker",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/云老婆.json"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/云老婆.json"
         },
         {
             "key": "csp_XYQHiker_鲨鱼av",
             "name": "3❤️鲨鱼av【🔞】",
             "type": 3,
-            "jar": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
             "api": "csp_XYQHiker",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/鲨鱼av.json",
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/鲨鱼av.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.6
@@ -815,18 +819,7 @@
             "changeable": 1
         },
         {
-            "key": "57短剧",
-            "name": "【5星】57短剧",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py"
-        },
-        {
+
             "key": "香蕉视频20251215",
             "name": "【5星】香蕉九区1",
             "type": 3,
@@ -840,21 +833,6 @@
             "changeable": 1
         },
         {
-
-            "key": "一个区1",
-            "name": "香蕉1区",
-            "type": 3,
-            "playerType": 2,
-            "api": "http://pglblb.test.upcdn.net/2025py/202601/1区.py",
-            "ext": "http://pglblb.test.upcdn.net/2025py/202601/1区.py",
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "changeable": 1
-        },
-        {
-
             "key": "爆片库",
             "name": "🔞国产专列",
             "type": 3,
@@ -863,8 +841,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/py9/爆片库.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/py9/爆片库.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/py9/爆片库.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/py9/爆片库.py"
         },
         {
             "key": "拍摄现场1",
@@ -875,8 +853,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/拍摄现场🔞.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/拍摄现场🔞.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/拍摄现场🔞.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/拍摄现场🔞.py"
         },
         {
             "key": "魑魅魍魉1",
@@ -887,8 +865,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py"
         },
         {
             "key": "91qgzx",
@@ -924,8 +902,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py"
         },
         {
             "key": "蜜桃源",
@@ -948,8 +926,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py"
         },
         {
 
@@ -973,8 +951,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/fulleroticmovies🔞.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/fulleroticmovies🔞.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/fulleroticmovies🔞.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/fulleroticmovies🔞.py"
         },
         {
 
@@ -986,8 +964,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/777午夜影院🔞.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/777午夜影院🔞.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/777午夜影院🔞.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/777午夜影院🔞.py"
         },
         {
             "key": "91热爆1",
@@ -998,8 +976,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/91热爆🔞.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/91热爆🔞.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/91热爆🔞.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/91热爆🔞.py"
         },
         {
             "key": "小心御欲",
@@ -1010,8 +988,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/小心御欲🔞.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/小心御欲🔞.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/小心御欲🔞.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/小心御欲🔞.py"
         },
         {
             "key": "xmvm",
@@ -1022,8 +1000,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py"
         },
         {
             "key": "x视频.py",
@@ -1034,8 +1012,8 @@
                 "type": "rect",
                 "ratio": 1.6
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/truvaze.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/truvaze.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/truvaze.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/truvaze.py"
         },
         {
             "key": "女神学神",
@@ -1046,8 +1024,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py",
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py"
         },
         {
 
@@ -1104,7 +1082,7 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "api": "https://gh.catmak.name/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/VF四级老片🔞.py"
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/VF四级老片🔞.py"
         },
         {
             "key": "玉兔",
@@ -1156,13 +1134,13 @@
         {
             "name": "AI直播",
             "type": 0,
-            "url": "https://ghfast.top/https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E7%9F%AD%E5%89%A7.txt",
+            "url": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E7%9F%AD%E5%89%A7.txt",
             "ua": "okHttp/Mod-1.4.0.0"
         },
         {
-            "name": "色播聚合",
+            "name": "ss大全",
             "type": 0,
-            "url": "https://gh.catmak.name/https://raw.githubusercontent.com/FanchangWang/tvbox_config/7e2ca925182458c85d4585b42bb144c2dc3f1c0f/fl/live.txt#L134",
+            "url": "http://pglblb.test.upcdn.net/12/20260928ss.txt",
             "ua": "okHttp/Mod-1.4.0.0"
         }
     ]
