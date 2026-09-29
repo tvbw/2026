@@ -60,16 +60,16 @@
             "changeable": 1
         },
         {
-            "key": "py_4K_hsck2",
-            "name": "❤️hsck仓库2【🔞】",
+            "key": "py_4K_QinAV",
+            "name": "❤️QinAV【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/hsck2.py",
-            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/hsck2.py",
+            "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/QinAV.py",
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/QinAV.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
