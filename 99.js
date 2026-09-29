@@ -261,43 +261,12 @@
             }
         },
         {
-
-            "key": "🔞杏吧资源",
-            "name": "🔞杏吧资源",
-            "type": 1,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "searchable": 0,
-            "quickSearch": 0,
-            "filterable": 1,
-            "api": "https://json.xingba222.com/api.php/provide/vod/"
-        },
-        {
-            "key": "番号",
-            "name": "🔞番号资源",
-            "type": 1,
-            "api": "http://fhapiby.com/api.php/provide/vod/",
-            "searchable": 1,
-            "quickSearch": 1
-        },
-        {
-            "key": "lbzy",
-            "name": "🔞乐播资源",
-            "type": 1,
-            "api": "https://lbapi9.com/api.php/provide/vod/",
-            "searchable": 1,
-            "quickSearch": 1
-        },
-        {
             "key": "黄色仓库",
             "name": "🔞黄仓采集【🔞】",
             "type": 1,
             "playUrl": "https://jx.bfhsck.com/m3u8/?url=",
-            "ext": "https://hsckzy888.com/api.php/provide/vod/",
-            "api": "https://hsckzy888.com/api.php/provide/vod/",
+            "ext": "https://hsckzy888.com/api.php/provide/vod/from/hsckm3u8/at/xmlsea/",
+            "api": "https://hsckzy888.com/api.php/provide/vod/from/hsckm3u8/at/xmlsea/",
             "categories": [
                 "网红主播",
                 "国产传媒",
@@ -337,6 +306,37 @@
             ]
         },
         {
+            "key": "🔞杏吧资源",
+            "name": "🔞杏吧资源",
+            "type": 1,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "searchable": 0,
+            "quickSearch": 0,
+            "filterable": 1,
+            "api": "https://json.xingba222.com/api.php/provide/vod/"
+        },
+        {
+            "key": "番号",
+            "name": "🔞番号资源",
+            "type": 1,
+            "api": "http://fhapiby.com/api.php/provide/vod/",
+            "searchable": 1,
+            "quickSearch": 1
+        },
+        {
+            "key": "lbzy",
+            "name": "🔞乐播资源",
+            "type": 1,
+            "api": "https://lbapi9.com/api.php/provide/vod/",
+            "searchable": 1,
+            "quickSearch": 1
+        },
+        {
+
 
             "key": "🔞 Beeg.py",
             "name": "4❤️Beeg【🔞】",
