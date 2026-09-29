@@ -1,6 +1,6 @@
 {
     "wallpaper": "https://imgs.catvod.com",
-    "spider": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/custom_spider.jar",
+    "spider": "https://fastgit.cc/https://github.com/tvbw/2026/blob/main/aowu.jar",
     "sites": [
         {
             "key": "py_4K_fullhd-bxss",
