@@ -64,17 +64,22 @@ def _start_proxy():
 # ===== Spider =====
 class Spider(BaseSpider):
     session = requests.Session()
-    # 【修改】HOSTS 现在只作为"种子域名"使用，运行中 self.host 会被动态更新
+
+    # 【调整1】更新域名池，hscangku.com 优先；69ck.net 作为重定向源保留在末尾
     HOSTS = [
         'https://hscangku.com/',
         'https://68ck.net/',
         'http://hsck.net',
         'http://hsck.us',
     ]
+
     DEFAULT_CATEGORIES = [
         {'type_id': '21', 'type_name': '欧美高清'},
         {'type_id': '22', 'type_name': '动漫剧情'}
     ]
+
+    # 影视列表特征关键词（用于判断页面是否是真正的影视页）
+    _VODLIST_KEYS = ('stui-vodlist', '/vodplay/', '/v5/', '/vodtype/')
 
     def __init__(self):
         super().__init__()
@@ -87,84 +92,78 @@ class Spider(BaseSpider):
         if self._debug:
             print(f'[hsck] {msg}')
 
-    # ==================== 【修改】域名探测 ====================
+    @staticmethod
+    def _has_vodlist(text):
+        """判断页面是否包含影视列表特征"""
+        if not text:
+            return False
+        return any(k in text for k in Spider._VODLIST_KEYS)
+
+    # ==================== 【调整2】域名探测增加列表特征校验 ====================
     def _detect_working_host(self):
         """
-        探测可用域名，优先找能正常访问内页（不跨域 301 丢路径）的站点。
-        【修改】返回的 host 是重定向后的真实域名，而不是种子域名。
+        探测可用域名：
+        - 首页必须包含影视列表特征（否则可能是统计页/壳站）；
+        - 内页 /vodtype/1-1.html 也必须有列表特征；
+        - 返回的是重定向后的真实域名。
         """
         for host in self.HOSTS:
             try:
-                # 1) 先测首页
                 r = self.session.get(host, timeout=8, verify=False, allow_redirects=True)
-                if r.status_code != 200 or len(r.text) <= 2000:
-                    self._log(f'探测失败(首页异常): {host}')
+                if r.status_code != 200:
+                    self._log(f'探测失败(状态码{r.status_code}): {host}')
                     continue
 
+                text = r.text or ''
                 final_parsed = urlparse(r.url.rstrip('/'))
                 final_host = f'{final_parsed.scheme}://{final_parsed.netloc}'
-                self._log(f'首页OK: {host} -> {final_host} (长度:{len(r.text)})')
 
-                # 2) 再测一个内页，看是否会被重定向到首页（壳站特征）
-                test_url = f'{final_host}/vodtype/1-1.html'
-                r2 = self.session.get(test_url, timeout=8, verify=False, allow_redirects=True)
-                r2_parsed = urlparse(r2.url)
-
-                # 如果内页最终 URL 变成纯域名（路径丢失），说明是壳站，跳过
-                if r2_parsed.path in ('', '/') and \
-                        r2_parsed.netloc.endswith(('.com', '.xyz', '.net', '.us', '.cc', '.tv')):
-                    self._log(f'探测到壳站(内页301丢路径): {host} -> {r2.url}')
-                    # 【修改】即使判定为壳站，如果它明确把我们送到了另一个域名，
-                    # 也把那个域名记下来，作为后续候选
-                    real_host = f'{r2_parsed.scheme}://{r2_parsed.netloc}'
-                    if real_host != final_host:
-                        self._log(f'  但发现新域名，作为候选: {real_host}')
-                        # 用新域名再试一次内页
-                        try:
-                            r3 = self.session.get(
-                                f'{real_host}/vodtype/1-1.html',
-                                timeout=8, verify=False, allow_redirects=True)
-                            if len(r3.text) > 2000 and \
-                                    urlparse(r3.url).path not in ('', '/'):
-                                self._log(f'  候选域名可用: {real_host}')
-                                return real_host
-                        except Exception as e:
-                            self._log(f'  候选域名失败: {e}')
+                # 【新增】首页必须含影视列表特征
+                if not self._has_vodlist(text):
+                    self._log(f'首页无影视列表特征(疑似壳站/统计页): {host} '
+                              f'(长度:{len(text)})')
+                    # 记录重定向后的域名，作为后续候选
+                    if final_host != host.rstrip('/'):
+                        self._log(f'  首页被重定向到: {final_host}')
                     continue
 
-                if len(r2.text) > 2000:
+                self._log(f'首页OK: {host} -> {final_host} (长度:{len(text)})')
+
+                # 再测内页
+                test_url = f'{final_host}/vodtype/1-1.html'
+                r2 = self.session.get(test_url, timeout=8, verify=False,
+                                      allow_redirects=True)
+                if r2.status_code == 200 and self._has_vodlist(r2.text):
                     self.host = final_host
-                    self._log(f'探测成功: {final_host} (首页:{len(r.text)}, 分类页:{len(r2.text)})')
+                    self._log(f'探测成功: {final_host} '
+                              f'(首页:{len(text)}, 分类页:{len(r2.text)})')
                     return final_host
                 else:
-                    self._log(f'探测失败(分类页内容短): {final_host}')
+                    self._log(f'分类页无列表特征: {test_url} '
+                              f'(长度:{len(r2.text) if r2.text else 0})')
             except Exception as e:
                 self._log(f'探测失败: {host} - {e}')
-        # 全部失败，返回第一个种子域名兜底
+
+        self._log('所有种子域名均未通过探测，回退到第一个域名')
         return self.HOSTS[0]
 
-    # ==================== 【修改】从 HTML 中提取数字域名 ====================
+    # ==================== 【调整3】从 HTML 中提取数字域名 ====================
     def _extract_domain_from_html(self, html):
-        """
-        从页面 HTML 中提取数字域名（如 69ck.net, 68ck.net 等），
-        作为备用候选域名。用于网站动态换域名时的自愈。
-        """
+        """从页面 HTML 中提取数字域名（如 69ck.net, 68ck.net 等）"""
         if not html:
             return None
-        # 匹配 https:// 或 http:// 后面跟数字+ck+后缀 的域名
         domains = re.findall(
             r'https?://(\d{1,3}ck\.(?:net|com|xyz|us|cc|tv|top|vip))',
             html, re.I)
         if not domains:
             return None
-        # 去重，且与当前 host 不同
         cur_netloc = urlparse(self.host).netloc
         for d in domains:
             if d.lower() != cur_netloc.lower():
                 return f'https://{d}/'
         return None
 
-    # ==================== 基础方法（不变） ====================
+    # ==================== 基础方法 ====================
     def getName(self):
         return 'hsck'
 
@@ -205,20 +204,19 @@ class Spider(BaseSpider):
             return url
         return f'http://127.0.0.1:{_proxy_port}/{quote(url, safe="")}'
 
-    # ==================== 【核心修改】_fetch 支持递归重定向 ====================
+    # ==================== _fetch（带递归重定向自愈） ====================
     def _fetch(self, url, referer=None, retries=3, _redirect_depth=0):
         """
         带自愈能力的 HTTP 请求：
         - 检测跨域 301/302；
-        - 一旦发现新域名，立即更新 self.host 并递归用新域名 + 原路径请求；
-        - 递归深度超过 5 层时停止，防止死循环；
+        - 发现新域名时立即更新 self.host 并递归用新域名 + 原路径请求；
+        - 递归深度超过 5 层时停止；
         - 全部失败时尝试种子域名列表和 HTML 中提取的新域名。
         """
         if _redirect_depth > 5:
             self._log(f'重定向深度超过限制: {url}')
             return ''
 
-        # 相对路径 -> 绝对路径（使用当前 self.host）
         if not url.startswith('http'):
             url = urljoin(self.host, url)
 
@@ -231,14 +229,13 @@ class Spider(BaseSpider):
                 parsed_final = urlparse(final_url)
                 parsed_req = urlparse(url)
 
-                # ---- 检测跨域重定向 ----
+                # 检测跨域重定向
                 if parsed_final.netloc != parsed_req.netloc:
                     new_host = f'{parsed_final.scheme}://{parsed_final.netloc}'
                     self._log(f'域名跳转: {parsed_req.netloc} -> {parsed_final.netloc}')
-                    # 【关键】持久化新域名，后续所有请求都走这里
                     self.host = new_host
 
-                    # 如果路径被丢了（变成首页），用新域名 + 原路径重新请求
+                    # 路径丢失（变成首页），用新域名 + 原路径重新请求
                     if parsed_final.path in ('', '/'):
                         corrected_path = parsed_req.path
                         if parsed_req.query:
@@ -249,23 +246,25 @@ class Spider(BaseSpider):
                                            referer=new_host + '/',
                                            retries=retries,
                                            _redirect_depth=_redirect_depth + 1)
-                    # 路径没丢，说明重定向本身就是有效页面，直接返回
+                    # 路径没丢，直接返回重定向后内容
                     if r.status_code == 200 and len(r.text) > 1000:
                         r.encoding = 'utf-8'
-                        self._log(f'请求成功(重定向后): {url} -> {final_url} (长度:{len(r.text)})')
+                        self._log(f'请求成功(重定向后): {url} -> {final_url} '
+                                  f'(长度:{len(r.text)})')
                         return r.text
 
-                # ---- 正常返回 ----
+                # 正常返回
                 if r.status_code == 200 and len(r.text) > 1000:
                     r.encoding = 'utf-8'
                     self._log(f'请求成功: {url} -> {final_url} (长度:{len(r.text)})')
                     return r.text
                 else:
-                    self._log(f'请求内容过短: {url} 长度:{len(r.text) if r.text else 0}')
-                    # 【新增】内容过短时，尝试从返回的HTML里提取新域名
+                    self._log(f'请求内容过短: {url} '
+                              f'长度:{len(r.text) if r.text else 0}')
+                    # 内容过短时尝试从页面里挖新域名
                     if r.text:
                         new_domain = self._extract_domain_from_html(r.text)
-                        if new_domain and new_domain != self.host:
+                        if new_domain and new_domain.rstrip('/') != self.host.rstrip('/'):
                             self._log(f'从页面提取到新域名: {new_domain}')
                             self.host = new_domain
                             corrected_path = parsed_req.path
@@ -280,10 +279,9 @@ class Spider(BaseSpider):
                 self._log(f'请求失败 [{attempt+1}]: {url} - {e}')
             time.sleep(1)
 
-        # ---- 备用域名切换（使用种子域名 + 从已获取内容里提取的域名） ----
+        # 备用域名切换
         parsed_req = urlparse(url)
-        fallback_hosts = list(self.HOSTS)
-        for h in fallback_hosts:
+        for h in self.HOSTS:
             if h.rstrip('/') == self.host.rstrip('/'):
                 continue
             try:
@@ -296,7 +294,6 @@ class Spider(BaseSpider):
                                      headers=self._get_headers(referer=h + '/'),
                                      timeout=15, verify=False, allow_redirects=True)
                 if r.status_code == 200 and len(r.text) > 1000:
-                    # 记录真实域名
                     rp = urlparse(r.url)
                     self.host = f'{rp.scheme}://{rp.netloc}'
                     r.encoding = 'utf-8'
@@ -344,22 +341,46 @@ class Spider(BaseSpider):
                 return cat['type_name']
         return f'分类_{tid}'
 
-    # ===== 列表解析（过滤广告 pa-thumb） =====
+    # ==================== 【调整4】_parse_list 增加调试日志 + 放宽匹配 ====================
     def _parse_list(self, html):
         items, seen_vids = [], set()
-        cards = re.findall(r'<li[^>]*>(.*?)</li>', html, re.S)
+        if not html:
+            self._log('_parse_list: html 为空')
+            return items
+
+        all_li = re.findall(r'<li[^>]*>(.*?)</li>', html, re.S)
+        self._log(f'页面上找到 {len(all_li)} 个 <li> 元素')
+
+        # 放宽卡片匹配：只要含 stui-vodlist__box 或影视链接特征就收进来
+        cards = []
+        for li in all_li:
+            if any(k in li for k in ('stui-vodlist__box', '/vodplay/', '/v5/')):
+                cards.append(li)
+        self._log(f'其中包含影视特征(stui-vodlist__box / vodplay / v5)的卡片: '
+                  f'{len(cards)} 个')
+
         for card in cards:
-            if 'stui-vodlist__box' not in card:
-                continue
             a_match = re.search(r'<a[^>]+href="([^"]+)"', card)
             if not a_match:
                 continue
             href = a_match.group(1).strip()
-            if not (href.startswith('/v5/') or href.startswith('/vodplay/')):
+
+            # 【调整5】放宽站内链接过滤：只要不是明显外链（http 开头且不是本站）就收
+            if href.startswith('http'):
+                host_netloc = urlparse(self.host).netloc
+                href_netloc = urlparse(href).netloc
+                if href_netloc and href_netloc != host_netloc:
+                    continue
+            elif not (href.startswith('/v5/') or href.startswith('/vodplay/')
+                      or href.startswith('/voddetail/')):
+                # 站内链接但不是影视详情页，跳过
                 continue
+
+            # 过滤带 pa-thumb 的广告卡片（保留原有逻辑，作为额外保险）
             if 'pa-thumb' in card:
                 continue
-            vid_match = re.search(r'/(?:v5|vodplay)/(\d+)', href)
+
+            vid_match = re.search(r'/(?:v5|vodplay|voddetail)/(\d+)', href)
             if not vid_match:
                 continue
             vid = vid_match.group(1)
@@ -367,8 +388,10 @@ class Spider(BaseSpider):
                 continue
             seen_vids.add(vid)
 
+            # 标题
             title = ''
-            h4 = re.search(r'<h4[^>]*class="title"[^>]*>\s*<a[^>]*>(.*?)</a>', card, re.S)
+            h4 = re.search(r'<h4[^>]*class="title"[^>]*>\s*<a[^>]*>(.*?)</a>',
+                           card, re.S)
             if h4:
                 title = h4.group(1).strip()
             else:
@@ -382,6 +405,7 @@ class Spider(BaseSpider):
             if not title:
                 title = vid
 
+            # 封面
             pic = ''
             img = re.search(r'data-original="([^"]+)"', card)
             if img:
@@ -391,8 +415,11 @@ class Spider(BaseSpider):
                 elif pic.startswith('/'):
                     pic = self.host + pic
 
+            # 备注
             remarks = ''
-            t_span = re.search(r'<span[^>]*class="[^"]*pic-text[^"]*">(.*?)</span>', card, re.S)
+            t_span = re.search(
+                r'<span[^>]*class="[^"]*pic-text[^"]*">(.*?)</span>',
+                card, re.S)
             if t_span:
                 remarks = re.sub(r'<[^>]+>', '', t_span.group(1)).strip()
 
@@ -402,6 +429,7 @@ class Spider(BaseSpider):
                 'vod_pic': self._proxy_url(pic),
                 'vod_remarks': remarks
             })
+
         self._log(f'解析到 {len(items)} 个视频')
         return items
 
@@ -474,7 +502,8 @@ class Spider(BaseSpider):
                 title = full_title
 
         if not title:
-            h3_matches = re.findall(r'<h3[^>]*class="title"[^>]*>(.*?)</h3>', html, re.S)
+            h3_matches = re.findall(r'<h3[^>]*class="title"[^>]*>(.*?)</h3>',
+                                    html, re.S)
             for h3 in h3_matches:
                 clean = re.sub(r'<[^>]+>', '', h3).strip()
                 if clean and clean not in ['目录', '精选内容', '']:
@@ -549,14 +578,18 @@ class Spider(BaseSpider):
                 html = self._fetch(detail_url, referer=self.host)
 
         if html:
-            m = re.search(r'["\'](https?://[^\s"\'<>]+\.(?:m3u8|mp4)[^\s"\'<>]*)["\']', html)
+            m = re.search(
+                r'["\'](https?://[^\s"\'<>]+\.(?:m3u8|mp4)[^\s"\'<>]*)["\']',
+                html)
             if m:
-                return {'parse': 0, 'url': m.group(1), 'header': {'Referer': self.host}}
+                return {'parse': 0, 'url': m.group(1),
+                        'header': {'Referer': self.host}}
 
         if html:
             m3u8 = self._extract_player_aaaa(html)
             if m3u8:
-                return {'parse': 0, 'url': m3u8, 'header': {'Referer': self.host}}
+                return {'parse': 0, 'url': m3u8,
+                        'header': {'Referer': self.host}}
 
         aid = asid = anid = ak = ''
         if 'aid=' in id:
@@ -611,9 +644,12 @@ class Spider(BaseSpider):
             })
             for retry in range(3):
                 try:
-                    self._log(f'请求 count.php (重试{retry}): id={aid}, sid={asid}, nid={anid}')
-                    r = self.session.post(count_url, data=data, headers=headers, timeout=15)
-                    self._log(f'count.php 响应: {r.status_code}, 内容: {r.text[:200]}')
+                    self._log(f'请求 count.php (重试{retry}): '
+                              f'id={aid}, sid={asid}, nid={anid}')
+                    r = self.session.post(count_url, data=data, headers=headers,
+                                          timeout=15)
+                    self._log(f'count.php 响应: {r.status_code}, '
+                              f'内容: {r.text[:200]}')
                     if r.status_code == 200:
                         try:
                             resp = r.json()
@@ -643,7 +679,8 @@ class Spider(BaseSpider):
             all_urls = re.findall(
                 r'(https?://[^\s"\'<>]+\.(?:m3u8|mp4|ts)[^\s"\'<>]*)', html)
             if all_urls:
-                return {'parse': 0, 'url': all_urls[0], 'header': {'Referer': self.host}}
+                return {'parse': 0, 'url': all_urls[0],
+                        'header': {'Referer': self.host}}
 
         return {'parse': 1, 'url': detail_url,
                 'header': {'User-Agent': 'Mozilla/5.0', 'Referer': self.host}}
