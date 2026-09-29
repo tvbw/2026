@@ -22,7 +22,7 @@ class _ProxyHandler(BaseHTTPRequestHandler):
         try:
             real_url = unquote(self.path[1:])
             if not real_url or not real_url.startswith('http'): self.send_response(404); self.end_headers(); return
-            r = _proxy_session.get(real_url, headers={'User-Agent':'Mozilla/5.0','Referer':'http://hscangku.com/'}, timeout=20, verify=False)
+            r = _proxy_session.get(real_url, headers={'User-Agent':'Mozilla/5.0','Referer':''https://111.agrck.cc/'}, timeout=20, verify=False)
             ct = r.headers.get('Content-Type','image/jpeg')
             self.send_response(200); self.send_header('Content-Type',ct)
             self.send_header('Content-Length',len(r.content)); self.send_header('Access-Control-Allow-Origin','*')
