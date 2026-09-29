@@ -43,11 +43,12 @@ def _start_proxy():
 class Spider(BaseSpider):
     session = requests.Session()
     HOSTS = [
+        'https://hscangku.com',
         'https://111.agrck.cc/',
-        'https://333.0nck.cc/',
+        'https://333.agrck.cc/',
         'http://hsck.net',
         'http://hsck.us',
-        'https://999.0mck.cc/',
+        'http://6590ck.cc',
     ]
     DEFAULT_CATEGORIES = [
         {'type_id':'1','type_name':'日韩AV'},{'type_id':'2','type_name':'国产系列'},
