@@ -1,6 +1,6 @@
 {
     "wallpaper": "https://imgs.catvod.com",
-    "spider": "http://pglblb.test.upcdn.net/12/20260706_custom_spider.jar",
+    "spider": "http://pglblb.test.upcdn.net/12/aowu.jar",
     "sites": [
         {
             "key": "py_4K_fullhd-bxss",
