@@ -57,36 +57,6 @@
             "api": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py"
         },
         {
-            "key": "py_4K_hsck1",
-            "name": "❤️hsck仓库1【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-            "key": "py_4K_QinAV",
-            "name": "❤️QinAV【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/QinAV.py",
-            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/QinAV.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
             "key": "香蕉1区",
             "name": "5❤️香蕉1区【🔞】",
             "type": 3,
