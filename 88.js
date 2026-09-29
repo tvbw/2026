@@ -1,6 +1,6 @@
 {
     "wallpaper": "https://imgs.catvod.com",
-    "spider": "http://pglblb.test.upcdn.net/12/aowu.jar",
+    "spider": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/custom_spider.jar",
     "sites": [
         {
             "key": "py_4K_fullhd-bxss",
@@ -82,13 +82,29 @@
             "key": "csp_xbpq_s直播",
             "name": "5❤️StripChat【🔞直播】",
             "type": 3,
-            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
+            "jar": "https://fastgit.cc/https://github.com/tvbw/2026/blob/main/202610xyqxbpq.jar",
             "playerType": 2,
             "api": "csp_XBPQ",
             "searchable": 0,
             "quickSearch": 0,
             "filterable": 0,
-            "ext": "http://pglblb.test.upcdn.net/12/stripchat.json",
+            "ext": "https://fastgit.cc/https://github.com/tvbw/2026/blob/main/stripchat.json",
+            "style": {
+                "type": "rect",
+                "ratio": 1.65
+            }
+        },
+        {
+            "key": "csp_xbpq_s直播-21【🔞】",
+            "name": "StripChat[gh-proxy]",
+            "type": 3,
+            "playerType": 2,
+            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
+            "api": "csp_XBPQ",
+            "searchable": 0,
+            "quickSearch": 0,
+            "filterable": 0,
+            "ext": "https://gh-proxy.com/https://github.com/tvbw/18-/blob/main/tv/xbpq/stripchat直播带票.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
@@ -448,22 +464,7 @@
             "api": "https://gh-proxy.com/https://github.com/tvbw/TXT-18/blob/blob/main/TVbox/dolphin18/ext/溏心次元🔞.py"
         },
         {
-            "key": "csp_xbpq_s直播-21【🔞】",
-            "name": "21-StripChat[验证cdn]",
-            "type": 3,
-            "playerType": 2,
-            "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
-            "api": "csp_XBPQ",
-            "searchable": 0,
-            "quickSearch": 0,
-            "filterable": 0,
-            "ext": "https://gh-proxy.com/https://github.com/tvbw/18-/blob/main/tv/xbpq/stripchat直播带票.json",
-            "style": {
-                "type": "rect",
-                "ratio": 1.65
-            }
-        },
-        {
+
             "key": "日日撸.py",
             "name": "4❤️日日撸【🔞】",
             "type": 3,
