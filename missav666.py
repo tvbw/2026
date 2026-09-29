@@ -47,16 +47,16 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like 
 # 分类（实测可用 dm 路径）
 CLASS_LIST = [
     {"type_id": "/dm539/cn/new", "type_name": "🔥最近更新"},
-    {"type_id": "/dm301/cn/today-hot", "type_name": "⭐今日热门"},
-    {"type_id": "/dm170/cn/weekly-hot", "type_name": "📊本週热门"},
-    {"type_id": "/dm273/cn/monthly-hot", "type_name": "🏆本月热门"},
-    {"type_id": "/dm278/cn/chinese-subtitle", "type_name": "💬中文字幕"},
-    {"type_id": "/dm635/cn/release", "type_name": "✨新作上市"},
     {"type_id": "/dm817/cn/uncensored-leak", "type_name": "🔓无码流出"},
     {"type_id": "/dm597/cn/fc2", "type_name": "💎FC2"},
     {"type_id": "/dm2208642/cn/heyzo", "type_name": "👑HEYZO"},
     {"type_id": "/dm42/cn/tokyohot", "type_name": "♨️东京热"},
     {"type_id": "/dm5199603/cn/1pondo", "type_name": "🔞一本道"},
+    {"type_id": "/dm301/cn/today-hot", "type_name": "⭐今日热门"},
+    {"type_id": "/dm170/cn/weekly-hot", "type_name": "📊本週热门"},
+    {"type_id": "/dm273/cn/monthly-hot", "type_name": "🏆本月热门"},
+    {"type_id": "/dm278/cn/chinese-subtitle", "type_name": "💬中文字幕"},
+    {"type_id": "/dm635/cn/release", "type_name": "✨新作上市"},
 ]
 
 NAV_CODES = re.compile(
