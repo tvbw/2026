@@ -33,6 +33,18 @@
             "changeable": 1
         },
         {
+            "key": "蜜月传媒",
+            "name": "🔞蜜月传媒",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.66
+            },
+            "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/%E8%9C%9C%E6%9C%88%E7%9F%AD%E5%89%A7.py",
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/%E8%9C%9C%E6%9C%88%E7%9F%AD%E5%89%A7.py"
+        },
+        {
             "key": "2048短剧",
             "name": "5❤️2048短剧🔞",
             "type": 3,
