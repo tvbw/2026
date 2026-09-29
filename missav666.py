@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-MissAV 爬虫 (自愈版)
+MissAV 爬虫 (自愈版 · 1080P 真探测优先)
 - 默认节点: https://missav.media （可直连）
 - 导航探活: x99dh.cc / x99dh.one
 - 列表: /dm539/cn/new 等分类 + __卡片结构解析
 - 播放: 管道串 m3u8|...|video → surrit.mrstcdn.store/{uuid}/playlist.m3u8
+- 画质: 自动探测 CDN 上真实存在的最高画质 (默认 1080P，无则降级)
 """
 import sys
 import re
@@ -65,6 +66,73 @@ NAV_CODES = re.compile(
     r'gachinco|xxxav|marriedslash|naughty4610|naughty0930|twav|furuke)$',
     re.I
 )
+
+# ========== 画质探测（并发 + 缓存） ==========
+_PROBE_CACHE = {}
+
+
+def _probe_url(url, timeout=1.5, referer=None):
+    """
+    快速判断 URL 是否真实可访问。
+    使用 Range 请求（只取 1 字节），比 HEAD 更兼容部分只允许 GET 的 CDN。
+    200 / 206 均视为可用。
+    """
+    if not url:
+        return False
+    if url in _PROBE_CACHE:
+        return _PROBE_CACHE[url]
+    import urllib.request as ur
+    result = False
+    try:
+        req = ur.Request(url, headers={
+            "User-Agent": UA,
+            "Referer": referer or url.rsplit('/', 3)[0] + '/',
+            "Range": "bytes=0-0",
+            "Accept": "*/*",
+        })
+        with ur.urlopen(req, timeout=timeout) as r:
+            code = getattr(r, "status", None) or r.getcode()
+            result = 200 <= code < 400
+    except Exception:
+        result = False
+    _PROBE_CACHE[url] = result
+    return result
+
+
+def _probe_resolutions(base_url, referer=None, timeout=1.5):
+    """
+    探测 base_url 下 1080p / 720p / 480p / 360p 哪个真实存在。
+    并发探测，返回按优先级排序的 [(name, url), ...]。
+    - 有 1080P → 列表首位就是 1080P
+    - 没有 1080P → 自动降 720P，其次 480P / 360P
+    - 全部探测失败 → 返回空列表（调用方会走自适应兜底）
+    """
+    if not base_url:
+        return []
+    ladder = [
+        ("1080P", base_url.rstrip("/") + "/1080p/video.m3u8"),
+        ("720P",  base_url.rstrip("/") + "/720p/video.m3u8"),
+        ("480P",  base_url.rstrip("/") + "/480p/video.m3u8"),
+        ("360P",  base_url.rstrip("/") + "/360p/video.m3u8"),
+    ]
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    order = {n: i for i, (n, _) in enumerate(ladder)}
+    alive = []
+    try:
+        with ThreadPoolExecutor(max_workers=len(ladder)) as pool:
+            futs = {pool.submit(_probe_url, u, timeout, referer): (n, u)
+                    for n, u in ladder}
+            for f in as_completed(futs):
+                n, u = futs[f]
+                try:
+                    if f.result():
+                        alive.append((n, u))
+                except Exception:
+                    pass
+    except Exception:
+        return []
+    alive.sort(key=lambda x: order.get(x[0], 999))
+    return alive
 
 
 def unpack_packer(p, a, c, k):
@@ -356,33 +424,42 @@ class Spider(BaseSpider):
                 c = int(packer.group(4))
                 k = packer.group(6).split("|")
                 unpacked = unpack_packer(p, a, c, k)
+                # 兼容 \xNN / \uNNNN 转义
+                unpacked = re.sub(r"\\x([0-9a-fA-F]{2})",
+                                  lambda m: chr(int(m.group(1), 16)), unpacked)
+                unpacked = re.sub(r"\\u([0-9a-fA-F]{4})",
+                                  lambda m: chr(int(m.group(1), 16)), unpacked)
             except Exception:
                 pass
 
         text = (unpacked or "") + "\n" + html
 
-        # 1) 管道串（最可靠）
-        # m3u8|e720..|b723|4248|be28|11fb..|mrstcdn.store|surrit|https|video
-        pipe = re.search(r'm3u8\|([a-zA-Z0-9|.\-]+?)\|video', text, re.I)
-        if pipe:
+        # === 1) 管道串（最可靠） ===
+        # 格式: m3u8|e720..|b723|4248|be28|11fb..|mrstcdn.store|surrit|https|video
+        # 可能同时命中广告串，取字段最多的那个
+        pipes = re.findall(r'm3u8\|([a-zA-Z0-9|.\-]+?)\|video', text, re.I)
+        if pipes:
+            best_pipe = max(pipes, key=lambda s: s.count("|"))
             try:
-                s = ("m3u8|" + pipe.group(1) + "|video").split("|")
+                s = ("m3u8|" + best_pipe + "|video").split("|")
                 if len(s) >= 9:
                     uuid = "%s-%s-%s-%s-%s" % (s[5], s[4], s[3], s[2], s[1])
                     tld, domain = s[6], s[7]
                     base = "https://%s.%s/%s" % (domain, tld, uuid)
-                    # 主播放列表（含多码率）
+                    # ★★★ 关键：真实探测哪个画质存在 ★★★
+                    # 有 1080P 就只给 1080P；没有就依次降 720P → 480P → 360P
+                    for name, url in _probe_resolutions(base, referer=self.baseHost + "/"):
+                        push(name, url)
+                    # 主播放列表永远兜底（多码率自适应）
                     push("自适应", base + "/playlist.m3u8")
-                    # 实际目录为 1080p/720p/480p/360p（非 1280x720）
-                    push("1080P", base + "/1080p/video.m3u8")
-                    push("720P", base + "/720p/video.m3u8")
-                    push("480P", base + "/480p/video.m3u8")
-                    push("360P", base + "/360p/video.m3u8")
             except Exception:
                 pass
 
-        # 2) source= 变量
-        for sm in re.finditer(r"\b(source(?:1280|842|720|480)?)\s*=\s*['\"]([^'\"]+)['\"]", text, re.I):
+        # === 2) source= 变量 ===
+        for sm in re.finditer(
+            r"\b(source(?:1280|842|720|480|360)?)\s*=\s*['\"]([^'\"]+)['\"]",
+            text, re.I
+        ):
             key = sm.group(1).lower()
             val = re.sub(r'https?://[^/]+/jmpres/[^/]+/', 'https://', sm.group(2).strip())
             if "m3u8" not in val and "http" not in val:
@@ -391,23 +468,67 @@ class Spider(BaseSpider):
                 push("1080P超清", val)
             elif key in ("source842", "source720"):
                 push("720P高清", val)
+            elif key == "source480":
+                push("480P流畅", val)
+            elif key == "source360":
+                push("360P省流", val)
             elif key == "source":
                 push("原线", val)
 
-        # 3) UUID 兜底 → surrit.mrstcdn.store
+        # === 3) 通用变量兜底 ===
+        for gm in re.finditer(
+            r"\b(?:url|file|src|video|playurl|play_url|media|hls|m3u8url)"
+            r"\s*[:=]\s*['\"]([^'\"]{8,})['\"]",
+            text, re.I
+        ):
+            val = gm.group(1).strip()
+            if not re.search(r"\.m3u8|\.mp4", val, re.I):
+                continue
+            val = re.sub(r"https?://[^/]+/jmpres/[^/]+/", "https://", val)
+            push("线路", val)
+
+        # === 4) 裸 m3u8 兜底 ===
+        for um in re.finditer(
+            r"https?://[^\s'\"<>\\]+?\.m3u8[^\s'\"<>\\]*", text, re.I
+        ):
+            push("直链", um.group(0))
+
+        # === 5) UUID 兜底 → surrit.mrstcdn.store ===
         if not sources:
-            blacklist = ("snaptrckr", "user_uuid", "popunder", "banner", "cloudflare", "randomuuid")
-            for u in re.findall(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', text, re.I):
+            blacklist = ("snaptrckr", "user_uuid", "popunder", "banner",
+                         "cloudflare", "randomuuid")
+            for u in re.findall(
+                r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',
+                text, re.I
+            ):
                 idx = text.lower().find(u.lower())
                 ctx = text[max(0, idx - 50):idx + 50].lower()
                 if any(b in ctx for b in blacklist):
                     continue
                 base = "https://surrit.mrstcdn.store/%s" % u
+                for name, url in _probe_resolutions(base, referer=self.baseHost + "/"):
+                    push(name, url)
                 push("自适应", base + "/playlist.m3u8")
-                push("1080P", base + "/1080p/video.m3u8")
-                push("720P", base + "/720p/video.m3u8")
-                push("480P", base + "/480p/video.m3u8")
                 break
+
+        # === 6) 最终排序：1080P → 720P → 480P → 360P → 自适应 → ... ===
+        order = {
+            "1080P超清": 0, "1080P": 0,
+            "720P高清":  1, "720P":  1,
+            "480P流畅":  2, "480P":  2,
+            "360P省流":  3, "360P":  3,
+            "自适应":    4,
+            "原线":      5, "线路": 6, "直链": 7,
+        }
+        best = {}   # url -> (rank, name)
+        for name, url in sources:
+            r = order.get(name, 99)
+            if url not in best or r < best[url][0]:
+                best[url] = (r, name)
+        sources = sorted(
+            ((n, u) for u, (_, n) in best.items()),
+            key=lambda x: order.get(x[0], 99)
+        )
 
         return sources
 
@@ -487,17 +608,25 @@ class Spider(BaseSpider):
                     from_list.append(name)
                     url_list.append("正片$%s" % url)
             else:
-                uuid_m = re.search(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', html, re.I)
+                # 极端兜底：直接根据 UUID 猜，并做一次真实探测
+                uuid_m = re.search(
+                    r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',
+                    html, re.I
+                )
                 if uuid_m:
                     u = uuid_m.group(0)
                     base = "https://surrit.mrstcdn.store/%s" % u
-                    from_list = ["自适应", "1080P", "720P", "480P"]
-                    url_list = [
-                        "正片$%s/playlist.m3u8" % base,
-                        "正片$%s/1080p/video.m3u8" % base,
-                        "正片$%s/720p/video.m3u8" % base,
-                        "正片$%s/480p/video.m3u8" % base,
-                    ]
+                    probed = _probe_resolutions(base, referer=self.baseHost + "/")
+                    if probed:
+                        for name, url in probed:
+                            from_list.append(name)
+                            url_list.append("正片$%s" % url)
+                    else:
+                        # 探测全失败，至少给 1080P 让播放器自己试
+                        from_list.append("1080P")
+                        url_list.append("正片$%s/1080p/video.m3u8" % base)
+                    from_list.append("自适应")
+                    url_list.append("正片$%s/playlist.m3u8" % base)
                 else:
                     from_list = ["页面嗅探"]
                     url_list = ["正片$%s" % target]
@@ -563,7 +692,7 @@ class Spider(BaseSpider):
     def destroy(self):
         self.options = {}
 
-# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
+# ==============  万能一键加速（2026-10 五星无探测双 CDN 版）  ==============
 _PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
 
 def _cover_fallback(self, pic_url):
@@ -588,7 +717,10 @@ def _cover_fallback(self, pic_url):
     return url
 
 Spider._cover_fallback = _cover_fallback
+
 # 注册爬虫
 if __name__ == '__main__':
-    from base.spider import Spider as BaseSpider
-    BaseSpider.register(Spider())
+    try:
+        BaseSpider.register(Spider())
+    except Exception:
+        pass
