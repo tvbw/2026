@@ -66,7 +66,7 @@ class Spider(BaseSpider):
     session = requests.Session()
     # 【修改】HOSTS 现在只作为"种子域名"使用，运行中 self.host 会被动态更新
     HOSTS = [
-        'https://69ck.net/',
+        'https://hscangku.com/',
         'https://68ck.net/',
         'http://hsck.net',
         'http://hsck.us',
