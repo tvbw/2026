@@ -1,6 +1,58 @@
 # -*- coding: utf-8 -*-
-# LissAV https://lissav.my/asian/zh-CN/asian/zh-CN
+# LissAV https://lissav.my/asian/zh-CN
 # 播放接口: /asian/zh-CN/api/video/stream?video_uid={uid}
+# ===== 1. 先正常 import 所有模块 =====
+import json
+import random
+import re
+import sys
+import threading
+import time
+from base64 import b64decode, b64encode
+from urllib.parse import urlparse
+
+import requests  # ✅ 先正常 import
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+from pyquery import PyQuery as pq
+sys.path.append('..')
+from base.spider import Spider
+
+# ===== 2. 再放加速头（不能再 import requests） =====
+# =================== 极简万能加速头 ===================
+import re
+from functools import lru_cache
+
+FAST_CDN = "lib.baomitu.com"
+DEAD_MAP = {
+    "rimg.iomycdn.com": FAST_CDN,
+    "rimg.xiakee.com": FAST_CDN,
+    "play.abcyun.com": FAST_CDN,
+    "video.xyzcdn.com": FAST_CDN,
+}
+
+@lru_cache(maxsize=256)
+def _auto_cdn(url: str) -> str:
+    if not url:
+        return ""
+    for dead, fast in DEAD_MAP.items():
+        url = url.replace(dead, fast)
+    if url.startswith("//"):
+        url = "https:" + url
+    try:
+        r = requests.head(url, allow_redirects=True, timeout=2)
+        url = r.url
+    except:
+        pass
+    return url
+
+# 注入 requests
+_real_get = requests.Session.get
+def _patched_get(self, url, *a, **k):
+    url = _auto_cdn(url)
+    return _real_get(self, url, *a, **k)
+requests.Session.get = _patched_get
+# =================== 加速头结束 ===================
 import re
 import json
 import sys
@@ -23,21 +75,21 @@ except ImportError:
 class Spider(BaseSpider):
     def __init__(self):
         self.host = 'https://lissav.my'
-        self.base = '/asian/'
+        self.base = '/asian/zh-CN'
         self.ua = (
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
             'AppleWebKit/537.36 (KHTML, like Gecko) '
             'Chrome/131.0.0.0 Safari/537.36'
         )
         self.channels = {
-            'recent': {'name': '最近更新', 'path': '/asian/videos/recent'},
-            'new_releases': {'name': '新作上市', 'path': '/asian/videos/new-releases'},
-            'hot_today': {'name': '今日热门', 'path': '/asian/videos/hot/today'},
-            'hot_week': {'name': '本周热门', 'path': '/asian/videos/hot/week'},
-            'hot_month': {'name': '本月热门', 'path': '/asian/videos/hot/month'},
-            'uncensored_leak': {'name': '无码流出', 'path': '/asian/videos/tag/%E6%97%A0%E7%A0%81%E6%B5%81%E5%87%BA'},
-            'chinese_sub': {'name': '中文字幕', 'path': '/asian/videos/tag/%E4%B8%AD%E6%96%87%E5%AD%97%E5%B9%95'},
-            'danti': {'name': '单体作品', 'path': '/asian/videos/tag/%E5%8D%95%E4%BD%93%E4%BD%9C%E5%93%81'},
+            'recent': {'name': '最近更新', 'path': '/asian/zh-CN/videos/recent'},
+            'new_releases': {'name': '新作上市', 'path': '/asian/zh-CN/videos/new-releases'},
+            'hot_today': {'name': '今日热门', 'path': '/asian/zh-CN/videos/hot/today'},
+            'hot_week': {'name': '本周热门', 'path': '/asian/zh-CN/videos/hot/week'},
+            'hot_month': {'name': '本月热门', 'path': '/asian/zh-CN/videos/hot/month'},
+            'uncensored_leak': {'name': '无码流出', 'path': '/asian/zh-CN/videos/tag/%E6%97%A0%E7%A0%81%E6%B5%81%E5%87%BA'},
+            'chinese_sub': {'name': '中文字幕', 'path': '/asian/zh-CN/videos/tag/%E4%B8%AD%E6%96%87%E5%AD%97%E5%B9%95'},
+            'danti': {'name': '单体作品', 'path': '/asian/zh-CN/videos/tag/%E5%8D%95%E4%BD%93%E4%BD%9C%E5%93%81'},
         }
 
     def getName(self):
@@ -94,7 +146,7 @@ class Spider(BaseSpider):
         if not html:
             return videos
         for m in re.finditer(
-            r'href="((?:https?://(?:www\.)?lissav\.my)?/asian/video/cid/([a-zA-Z0-9._-]+))"',
+            r'href="((?:https?://(?:www\.)?lissav\.my)?/asian/zh-CN/video/cid/([a-zA-Z0-9._-]+))"',
             html, re.I
         ):
             href, cid = m.group(1), m.group(2)
@@ -321,32 +373,3 @@ class Spider(BaseSpider):
 
     def localProxy(self, param):
         return None
-# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
-_PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
-
-def _cover_fallback(self, pic_url):
-    import urllib.parse
-    raw = pic_url or ''
-    parent_impl = getattr(super(Spider, self), '_cover_fallback', None)
-    if callable(parent_impl):
-        try:
-            raw = parent_impl(pic_url) or raw
-        except Exception:
-            pass
-    if not raw:
-        return ''
-    url = raw
-    for cdn in _PIC_CDN_POOL:
-        if cdn in raw:
-            url = raw.replace(cdn, _PIC_CDN_POOL[0])
-            break
-    proxy_base = getattr(self, 'proxy_base', None)
-    if proxy_base:
-        url = f'{proxy_base}{urllib.parse.quote(url)}'
-    return url
-
-Spider._cover_fallback = _cover_fallback
-# 注册爬虫
-if __name__ == '__main__':
-    from base.spider import Spider as BaseSpider
-    BaseSpider.register(Spider())
