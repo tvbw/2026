@@ -15,6 +15,18 @@
             "api": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/zz聚合.py"
         },
         {
+            "key": "pornhub163",
+            "name": "5❤️pornhub163【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 2
+            },
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/pornhub163.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/pornhub163.py"
+        },
+        {
             "key": "py_4K_fullhd-bxss",
             "name": "❤️FHD中国书生【🔞】",
             "type": 3,
@@ -1147,7 +1159,7 @@
         {
             "name": "AI直播",
             "type": 0,
-            "url": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E7%9F%AD%E5%89%A7.txt",
+            "url": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E7%9F%AD%E5%89%A7.txt",
             "ua": "okHttp/Mod-1.4.0.0"
         },
         {
