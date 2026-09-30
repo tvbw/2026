@@ -18,7 +18,21 @@
             "changeable": 1
         },
         {
-
+            "key": "py_4K_fullhd-ynss",
+            "name": "❤️美国书生【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/fullhd2.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/fullhd2.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
             "key": "正宗聚合",
             "name": "5❤️正宗采集聚合",
             "type": 3,
