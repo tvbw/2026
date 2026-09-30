@@ -55,9 +55,11 @@ class Spider(BaseSpider):
         's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vod'},
         's19': {'name': '📺91AV', 'api': 'https://91av.cyou/api.php/provide/vod/'},
         's43': {'name': '🐾大地', 'api': 'https://dadiapi.com/feifei2/', 'type': 3},
+        's2': {'name': '💧番茄', 'api': 'http://fhapi9.com/api.php/provide/vod/'},
         's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/'},
         's21': {'name': '📺小鸡', 'api': 'https://api.xiaojizy.live/provide/vod/'},
         's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/'},
+        's1': {'name': '🎬香蕉', 'api': 'https://www.xiangjiaozyw.com/api.php/provide/vod/'},
         's5': {'name': '🔥麻花', 'api': 'https://19q.cc/api.php/provide/vod/'},
         's27': {'name': '☁️精东', 'api': 'http://chujia.cc/api.php/provide/vod/'},
         's45': {'name': '🐾滴滴', 'api': 'https://api.ddapi.cc/api.php/provide/vod/'},
@@ -99,7 +101,7 @@ class Spider(BaseSpider):
         qs = urlencode({k: str(params[k]) for k in keys})
         return url + ('&' if '?' in url else '?') + qs
 
-    def _request(self, url):
+    def _request(self, url, timeout=6):
         try:
             if requests is None:
                 import urllib.request
@@ -108,9 +110,9 @@ class Spider(BaseSpider):
                 ctx.check_hostname = False
                 ctx.verify_mode = ssl.CERT_NONE
                 req = urllib.request.Request(url, headers=self.headers)
-                with urllib.request.urlopen(req, timeout=6, context=ctx) as r:
+                with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
                     return r.read().decode('utf-8', 'ignore')
-            r = requests.get(url, headers=self.headers, timeout=6, verify=False)
+            r = requests.get(url, headers=self.headers, timeout=timeout, verify=False)
             r.encoding = 'utf-8'
             return r.text if r.status_code == 200 else ''
         except Exception as e:
@@ -348,13 +350,23 @@ class Spider(BaseSpider):
         return self.searchContentPage(key, quick, pg)
 
     def searchContentPage(self, key, quick, pg=1):
+        import time
         pg = int(pg or 1)
         key = self._text(key)
         if not key:
             return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 40, 'total': 0}
         result = []
+        dup_count = {}   # key -> 已收录的源数量（按响应先后顺序，即速度排序）
         max_page = 1
         items = list(self.SOURCES.items())
+        SRC_TIMEOUT = 8      # 单源搜索超时（秒）
+        DUP_KEEP = 10        # 同一部影片保留响应最快的源数量
+        MAX_TOTAL = 60      # 总结果上限，防止系统卡死
+        FAST_LIMIT = 30      # 结果达到该条数且已跑 3 秒 → 立即返回
+        TOTAL_LIMIT = 20     # 搜索整体最长等待（秒）
+
+        def _norm_name(n):
+            return re.sub(r'\s+', '', self._text(n)).lower()
 
         def _one(sk_so):
             sk, so = sk_so
@@ -366,10 +378,11 @@ class Spider(BaseSpider):
                     url = self._build_url(so['api'], {'wd': key, 'pg': pg})
                 else:
                     url = self._build_url(so['api'], {'ac': 'detail', 'wd': key, 'pg': pg})
-                data = self._parse_response(self._request(url))
+                data = self._parse_response(self._request(url, timeout=SRC_TIMEOUT))
                 if stype not in (0, 2, 3) and not data.get('list'):
                     data2 = self._parse_response(
-                        self._request(self._build_url(so['api'], {'ac': 'videolist', 'wd': key, 'pg': pg}))
+                        self._request(self._build_url(so['api'], {'ac': 'videolist', 'wd': key, 'pg': pg}),
+                                      timeout=SRC_TIMEOUT)
                     )
                     if data2.get('list'):
                         data = data2
@@ -383,24 +396,48 @@ class Spider(BaseSpider):
                 print('search skip', sk, e)
                 return [], 1
 
+        # 不用 with，确保可以提前返回而不等待慢源
+        from concurrent.futures import ThreadPoolExecutor
+        pool = ThreadPoolExecutor(max_workers=10)
+        start = time.time()
         try:
-            from concurrent.futures import ThreadPoolExecutor, as_completed
-            with ThreadPoolExecutor(max_workers=8) as pool:
-                futs = [pool.submit(_one, it) for it in items]
-                for fut in as_completed(futs, timeout=25):
-                    try:
-                        lst, pc = fut.result()
-                        result.extend(lst)
-                        if pc > max_page:
-                            max_page = pc
-                    except Exception:
-                        pass
-        except Exception:
-            for it in items[:15]:
-                lst, pc = _one(it)
-                result.extend(lst)
+            from concurrent.futures import as_completed
+            futs = [pool.submit(_one, it) for it in items]
+            done = 0
+            for fut in as_completed(futs):
+                done += 1
+                try:
+                    lst, pc = fut.result()
+                except Exception:
+                    lst, pc = [], 1
+                # 同一部影片最多保留 DUP_KEEP 个源（先返回的源 = 速度最快）
+                for it in lst:
+                    if len(result) >= MAX_TOTAL:
+                        break
+                    nk = _norm_name(it.get('vod_name')) + '|' + self._text(it.get('vod_year'))
+                    if not nk.strip('|'):
+                        continue
+                    c = dup_count.get(nk, 0)
+                    if c >= DUP_KEEP:
+                        continue
+                    dup_count[nk] = c + 1
+                    result.append(it)
                 if pc > max_page:
                     max_page = pc
+                el = time.time() - start
+                if done == len(futs):
+                    break
+                if len(result) >= FAST_LIMIT and el > 3:
+                    break
+                if el > TOTAL_LIMIT:
+                    break
+        except Exception as e:
+            print('search pool error', e)
+        finally:
+            try:
+                pool.shutdown(wait=False, cancel_futures=True)
+            except Exception:
+                pass
         return {
             'list': result,
             'page': pg,
