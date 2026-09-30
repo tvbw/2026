@@ -15,28 +15,17 @@
             "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/pornhub163.py"
         },
         {
-            "key": "lissav1",
-            "name": "5❤️lissav1【🔞】",
+            "key": "51吃瓜",
+            "name": "5❤️51吃瓜【🔞】",
             "type": 3,
             "playerType": 2,
+            "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
+            "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
             "style": {
                 "type": "rect",
-                "ratio": 2
+                "ratio": 1.66
             },
-            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/LissAV.py#L4",
-            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/LissAV.py#L4"
-        },
-        {
-            "key": "lissav13",
-            "name": "5❤️lissav2【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 2
-            },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/wliqi495-create/jaychouqq/2bb93b1d2cb869f54af348f6799221bc56c56506/yingshi/pytesx/lissav.py#L4",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/wliqi495-create/jaychouqq/2bb93b1d2cb869f54af348f6799221bc56c56506/yingshi/pytesx/lissav.py#L4"
+            "changeable": 1
         },
         {
             "key": "py_4K_fullhd-bxss",
@@ -930,19 +919,7 @@
             "api": "http://pglblb.test.upcdn.net/2026py/0920/91%E5%90%83%E7%93%9C%E4%B8%AD%E5%BF%83.py"
         },
         {
-            "key": "51吃瓜",
-            "name": "【4星】51吃瓜",
-            "type": 3,
-            "playerType": 2,
-            "ext": "http://pglblb.test.upcdn.net/2026py/51.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/51.py",
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "changeable": 1
-        },
-        {
+
             "key": "51dc",
             "name": "51大赛｜🔞",
             "type": 3,
