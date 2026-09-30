@@ -3,18 +3,6 @@
     "spider": "http://pglblb.test.upcdn.net/12/aowu.jar",
     "sites": [
         {
-            "key": "正宗聚合",
-            "name": "5❤️正宗采集聚合",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 2
-            },
-            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/zz聚合.py",
-            "api": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/zz聚合.py"
-        },
-        {
             "key": "pornhub163",
             "name": "5❤️pornhub163【🔞】",
             "type": 3,
@@ -23,8 +11,32 @@
                 "type": "rect",
                 "ratio": 2
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/pornhub163.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/pornhub163.py"
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/pornhub163.py",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/pornhub163.py"
+        },
+        {
+            "key": "lissav1",
+            "name": "5❤️lissav1【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 2
+            },
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/LissAV.py#L4",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/zw110708/tvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E8%87%AA%E7%BC%96/LissAV.py#L4"
+        },
+        {
+            "key": "lissav13",
+            "name": "5❤️lissav2【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 2
+            },
+            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/wliqi495-create/jaychouqq/2bb93b1d2cb869f54af348f6799221bc56c56506/yingshi/pytesx/lissav.py#L4",
+            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/wliqi495-create/jaychouqq/2bb93b1d2cb869f54af348f6799221bc56c56506/yingshi/pytesx/lissav.py#L4"
         },
         {
             "key": "py_4K_fullhd-bxss",
@@ -55,6 +67,18 @@
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
+        },
+        {
+            "key": "正宗聚合",
+            "name": "5❤️正宗采集聚合",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 2
+            },
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/zz聚合.py",
+            "api": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/zz聚合.py"
         },
         {
             "key": "香蕉1区",
