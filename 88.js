@@ -3,43 +3,6 @@
     "spider": "http://pglblb.test.upcdn.net/12/aowu.jar",
     "sites": [
         {
-            "key": "pornhub163",
-            "name": "5❤️pornhub163【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 2
-            },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/pornhub163.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/pornhub163.py"
-        },
-        {
-            "key": "lissav13",
-            "name": "5❤️lissav【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 2
-            },
-            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/lissav.py",
-            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/lissav.py"
-        },
-        {
-            "key": "51吃瓜",
-            "name": "5❤️51吃瓜【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
-            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "changeable": 1
-        },
-        {
             "key": "py_4K_fullhd-bxss",
             "name": "❤️FHD中国书生【🔞】",
             "type": 3,
