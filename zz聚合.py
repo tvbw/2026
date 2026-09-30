@@ -598,8 +598,8 @@ class Spider(BaseSpider):
         SRC_TIMEOUT = 8      # 单源搜索超时（秒）
         DUP_KEEP = 10        # 同一部剧保留响应最快的源数量
         MAX_TOTAL = 30      # 总结果上限，防止系统卡死
-        FAST_LIMIT = 20     # 结果达到该条数且已跑 3 秒 → 立即返回
-        TOTAL_LIMIT = 10     # 搜索整体最长等待（秒）
+        FAST_LIMIT = 30     # 结果达到该条数且已跑 3 秒 → 立即返回
+        TOTAL_LIMIT = 20    # 搜索整体最长等待（秒）
 
         def _norm_name(n):
             return re.sub(r'\s+', '', self._text(n)).lower()
