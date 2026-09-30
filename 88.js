@@ -3,6 +3,18 @@
     "spider": "http://pglblb.test.upcdn.net/12/aowu.jar",
     "sites": [
         {
+            "key": "正宗聚合",
+            "name": "5❤️正宗采集聚合",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 2
+            },
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/zz聚合.py",
+            "api": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/zz聚合.py"
+        },
+        {
             "key": "py_4K_fullhd-bxss",
             "name": "❤️FHD中国书生【🔞】",
             "type": 3,
@@ -28,33 +40,6 @@
             },
             "ext": "http://pglblb.test.upcdn.net/2026py/0928/fullhd2.py",
             "api": "http://pglblb.test.upcdn.net/2026py/0928/fullhd2.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-            "key": "2048短剧",
-            "name": "5❤️2048短剧🔞",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py"
-        },
-        {
-            "key": "py_4K_hsck1",
-            "name": "❤️hsck仓库1【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
@@ -134,6 +119,62 @@
             "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/missav666.py"
         },
         {
+
+            "key": "爆色",
+            "name": "5❤️ss采集聚合｜🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 2
+            },
+            "ext": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/ss聚合.py",
+            "api": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/ss聚合.py"
+        },
+        {
+            "key": "py_4K_93合1",
+            "name": "❤️93合1【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/93%E5%90%881.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/93%E5%90%881.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "叔叔和侄女",
+            "name": "5❤️叔叔和侄女｜🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 2
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/%E5%8F%94%E5%8F%94%E5%92%8C%E4%BE%84%E5%A5%B3.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/%E5%8F%94%E5%8F%94%E5%92%8C%E4%BE%84%E5%A5%B3.py"
+        },
+        {
+            "key": "py_4K_hsck1",
+            "name": "❤️hsck仓库1【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+
             "key": "爆色",
             "name": "5❤️爆色｜🔞",
             "type": 3,
@@ -174,18 +215,19 @@
             "changeable": 1
         },
         {
-            "key": "叔叔和侄女",
-            "name": "5❤️叔叔和侄女｜🔞",
+            "key": "2048短剧",
+            "name": "5❤️2048短剧🔞",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
-                "ratio": 2
+                "ratio": 1.66
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/%E5%8F%94%E5%8F%94%E5%92%8C%E4%BE%84%E5%A5%B3.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/%E5%8F%94%E5%8F%94%E5%92%8C%E4%BE%84%E5%A5%B3.py"
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py"
         },
         {
+
             "key": "Taiav.py",
             "name": "4❤️Taiav国货【🔞】",
             "type": 3,
@@ -198,21 +240,7 @@
             "changeable": 0
         },
         {
-            "key": "py_4K_93合1",
-            "name": "❤️93合1【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0928/93%E5%90%881.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0928/93%E5%90%881.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
+
 
             "key": "supjav.py-py",
             "name": "5❤️supjav【🔞】",
@@ -702,21 +730,6 @@
                 "type": "rect",
                 "ratio": 1.65
             }
-        },
-        {
-            "key": "py_4K_fullhd-hsck1",
-            "name": "3❤️激情007【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/hsck1.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/hsck1.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
         },
         {
             "key": "csp_xbpq_🔞才是源动力_极乐禁区(修复二级翻页bug).json",
