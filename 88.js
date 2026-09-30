@@ -31,8 +31,8 @@
             "name": "5❤️51吃瓜【🔞】",
             "type": 3,
             "playerType": 2,
-            "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
-            "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
             "style": {
                 "type": "rect",
                 "ratio": 1.66
