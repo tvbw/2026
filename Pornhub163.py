@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Pornhub163  https://cn.pornhub163.net/enter
+Pornhub163  https://cn.pornhub163.net
 需 cookie x-index-auth=authed，列表 /video，播放 /embed/{viewkey} 取 m3u8
 2026-09-30 更新：
   1. _parse_list 改为整段 <a> 块解析，新增 data-src/data-original，修复海报图获取
@@ -28,7 +28,7 @@ except ImportError:
             pass
 
 
-HOST = "https://cn.pornhub163.net/enter"
+HOST = "https://cn.pornhub163.net"
 UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
