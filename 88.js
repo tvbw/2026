@@ -15,6 +15,18 @@
             "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/pornhub163.py"
         },
         {
+            "key": "lissav13",
+            "name": "5❤️lissav【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 2
+            },
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/lissav.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/lissav.py"
+        },
+        {
             "key": "51吃瓜",
             "name": "5❤️51吃瓜【🔞】",
             "type": 3,
