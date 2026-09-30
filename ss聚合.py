@@ -48,8 +48,8 @@ class Spider(BaseSpider):
     # type: 1 = 标准 provide/vod JSON（默认）
     # type: 3 = 大地 feifei2（data/vod_url/vod_play/list分类）
     SOURCES = {
+        's41': {'name': '🌸精品', 'api': 'https://jp98.vip/api.php/provide/vod/'},
         's6': {'name': '📺搜AV', 'api': 'https://souavzy.net/api.php/provide/vod/'},
-        's41': {'name': '🐾98', 'api': 'https://jp98.vip/api.php/provide/vod/'},
         's15': {'name': '📺杏吧', 'api': 'https://api.xgbbk8.com/api.php/provide/vod/'},
         's40': {'name': '🐾番茄', 'api': 'https://fqzy.me/api.php/provide/vod/'},
         's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vod'},
