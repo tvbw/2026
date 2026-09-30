@@ -129,7 +129,7 @@ class Spider(BaseSpider):
         qs = urlencode({k: str(params[k]) for k in keys})
         return url + ('&' if '?' in url else '?') + qs
 
-    def _request(self, url, extra_headers=None):
+    def _request(self, url, extra_headers=None, timeout=12):
         try:
             hdr = dict(self.headers)
             if extra_headers:
@@ -141,9 +141,9 @@ class Spider(BaseSpider):
                 ctx.check_hostname = False
                 ctx.verify_mode = ssl.CERT_NONE
                 req = urllib.request.Request(url, headers=hdr)
-                with urllib.request.urlopen(req, timeout=12, context=ctx) as r:
+                with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
                     return r.read().decode('utf-8', 'ignore')
-            r = requests.get(url, headers=hdr, timeout=12, verify=False)
+            r = requests.get(url, headers=hdr, timeout=timeout, verify=False)
             r.encoding = 'utf-8'
             return r.text if r.status_code == 200 else ''
         except Exception as e:
@@ -578,11 +578,13 @@ class Spider(BaseSpider):
         return self.searchContentPage(key, quick, pg)
 
     def searchContentPage(self, key, quick, pg=1):
+        import time
         pg = int(pg or 1)
         key = self._text(key)
         if not key:
             return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 40, 'total': 0}
         result = []
+        dup_count = {}   # key -> 已收录的源数量（按响应先后顺序，即速度排序）
         max_page = 1
         # 优先源：荐片/独播库/极影/tw/绅4K 系列（避免被前 60 条提前截断）
         priority_keys = ['s43', 's44', 's46', 's47', 's48', 's49', 's50', 's51', 's52', 's53']
@@ -593,6 +595,14 @@ class Spider(BaseSpider):
             items = pri + rest[:12]
         else:
             items = pri + rest
+        SRC_TIMEOUT = 8      # 单源搜索超时（秒）
+        DUP_KEEP = 10        # 同一部剧保留响应最快的源数量
+        MAX_TOTAL = 30      # 总结果上限，防止系统卡死
+        FAST_LIMIT = 20     # 结果达到该条数且已跑 3 秒 → 立即返回
+        TOTAL_LIMIT = 10     # 搜索整体最长等待（秒）
+
+        def _norm_name(n):
+            return re.sub(r'\s+', '', self._text(n)).lower()
 
         def _one(sk_so):
             sk, so = sk_so
@@ -603,7 +613,6 @@ class Spider(BaseSpider):
                 if stype in (0, 3):
                     url = self._build_url(so['api'], {'ac': 'videolist', 'wd': key, 'pg': pg})
                 elif stype == 2:
-                    # 荐片：直接 wd
                     url = self._build_url(so['api'], {'wd': key, 'pg': pg})
                 elif stype == 5:
                     url = self._build_url(so['api'], {'wd': key, 'pg': pg})
@@ -611,18 +620,21 @@ class Spider(BaseSpider):
                     url = self._build_url(so['api'], {'t': 'tv', 'pg': pg, 'wd': key})
                 else:
                     url = self._build_url(so['api'], {'ac': 'detail', 'wd': key, 'pg': pg})
-                html = self._request(url) if extra_to is None else self._request_timeout(url, extra_to)
+                html = self._request(url, timeout=SRC_TIMEOUT) if extra_to is None \
+                    else self._request_timeout(url, extra_to)
                 data = self._parse_response(html)
                 # 空结果时兜底 videolist
                 if not data.get('list') and stype not in (0, 2, 3, 5):
                     data2 = self._parse_response(
-                        self._request(self._build_url(so['api'], {'ac': 'videolist', 'wd': key, 'pg': pg}))
+                        self._request(self._build_url(so['api'], {'ac': 'videolist', 'wd': key, 'pg': pg}),
+                                      timeout=SRC_TIMEOUT)
                     )
                     if data2.get('list'):
                         data = data2
                 if not data.get('list') and stype == 2:
                     data2 = self._parse_response(
-                        self._request(self._build_url(so['api'], {'ac': 'detail', 'wd': key, 'pg': pg}))
+                        self._request(self._build_url(so['api'], {'ac': 'detail', 'wd': key, 'pg': pg}),
+                                      timeout=SRC_TIMEOUT)
                     )
                     if data2.get('list'):
                         data = data2
@@ -636,25 +648,48 @@ class Spider(BaseSpider):
                 print('search skip', sk, e)
                 return [], 1
 
+        # 不用 with，确保可以提前返回而不等待慢源
+        from concurrent.futures import ThreadPoolExecutor
+        pool = ThreadPoolExecutor(max_workers=10)
+        start = time.time()
         try:
-            from concurrent.futures import ThreadPoolExecutor, as_completed
-            # 先跑优先源，再跑其余
-            with ThreadPoolExecutor(max_workers=6) as pool:
-                futs = [pool.submit(_one, it) for it in items]
-                for fut in as_completed(futs, timeout=35):
-                    try:
-                        lst, pc = fut.result(timeout=1)
-                        result.extend(lst)
-                        if pc > max_page:
-                            max_page = pc
-                    except Exception:
-                        pass
-        except Exception:
-            for it in items[:20]:
-                lst, pc = _one(it)
-                result.extend(lst)
+            from concurrent.futures import as_completed
+            futs = [pool.submit(_one, it) for it in items]
+            done = 0
+            for fut in as_completed(futs):
+                done += 1
+                try:
+                    lst, pc = fut.result()
+                except Exception:
+                    lst, pc = [], 1
+                # 同一部剧最多保留 DUP_KEEP 个源（先返回的源 = 速度最快）
+                for it in lst:
+                    if len(result) >= MAX_TOTAL:
+                        break
+                    nk = _norm_name(it.get('vod_name')) + '|' + self._text(it.get('vod_year'))
+                    if not nk.strip('|'):
+                        continue
+                    c = dup_count.get(nk, 0)
+                    if c >= DUP_KEEP:
+                        continue
+                    dup_count[nk] = c + 1
+                    result.append(it)
                 if pc > max_page:
                     max_page = pc
+                el = time.time() - start
+                if done == len(futs):
+                    break
+                if len(result) >= FAST_LIMIT and el > 3:
+                    break
+                if el > TOTAL_LIMIT:
+                    break
+        except Exception as e:
+            print('search pool error', e)
+        finally:
+            try:
+                pool.shutdown(wait=False, cancel_futures=True)
+            except Exception:
+                pass
         return {
             'list': result,
             'page': pg,
