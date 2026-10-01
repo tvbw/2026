@@ -3,7 +3,12 @@
     "spider": "http://pglblb.test.upcdn.net/12/aowu.jar",
     "sites": [
         {
-
+            "key": "py93合一",
+            "name": "❤️93合1修改版【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/93he1.py"
+        },
+        {
             "key": "py_StripChat",
             "name": "❤️StripChat【🔞】",
             "type": 3,
