@@ -11,8 +11,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -196,8 +196,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
+      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
+      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -223,8 +223,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
+      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
+      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -238,8 +238,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -253,8 +253,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -502,8 +502,8 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
