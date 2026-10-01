@@ -1,8 +1,119 @@
 {
     "wallpaper": "https://imgs.catvod.com",
-    "spider": "http://pglblb.test.upcdn.net/12/pg202408.jar",
+    "spider": "http://pglblb.test.upcdn.net/12/CatVodSpider.jar",
     "sites": [
         {
+            "key": "py93合一",
+            "name": "❤️93合1修改版【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/93he1.py"
+        },
+        {
+            "key": "py_StripChat",
+            "name": "❤️StripChat【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/StripChat.py"
+        },
+        {
+            "key": "py_sebojuhe",
+            "name": "❤️sebojuhe【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/sebojuhe.py"
+        },
+        {
+            "key": "py_直播大全",
+            "name": "❤️直播大全【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/直播大全.py"
+        },
+        {
+            "key": "py_2048成人短剧[18]",
+            "name": "❤️2048成人短剧[18]【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/2048成人短剧[18].py"
+        },
+        {
+            "key": "py_禁果短剧",
+            "name": "❤️禁果短剧【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/禁果短剧.py"
+        },
+        {
+            "key": "py_野果短剧(3)",
+            "name": "❤️野果短剧(3)【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/野果短剧(3).py"
+        },
+        {
+            "key": "py_精仙阁修复版",
+            "name": "❤️精仙阁修复版【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/精仙阁修复版.py"
+        },
+        {
+            "key": "py_pandalive",
+            "name": "❤️pandalive【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/pandalive.py"
+        },
+        {
+            "key": "py_18av[密]",
+            "name": "❤️18av[密]【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18av[密].py"
+        },
+        {
+            "key": "py_18AV",
+            "name": "❤️18AV【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18AV.py"
+        },
+        {
+            "key": "py_2048成人短剧",
+            "name": "❤️2048成人短剧【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/yjl/py/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7.py"
+        },
+        {
+
+            "key": "py_51吃瓜",
+            "name": "❤️51吃瓜【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/yjl/py/51吃瓜.py"
+        },
+        {
+            "key": "py_51大赛",
+            "name": "❤️51大赛【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/yjl/py/51大赛.py"
+        },
+        {
+            "key": "py_51暗网",
+            "name": "❤️51暗网【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/yjl/py/51暗网.py"
+        },
+        {
+            "key": "py_51爆料",
+            "name": "❤️51爆料【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/yjl/py/51爆料.py"
+        },
+        {
+            "key": "py_51短剧",
+            "name": "❤️51短剧【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/yjl/py/51短剧.py"
+        },
+        {
+            "key": "py_333",
+            "name": "❤️333【🔞】",
+            "type": 3,
+            "api": "https://raw.githubusercontent.com/tvbw/20261001-18/refs/heads/main/yingshi/py9/333.py"
+        },
+        {
+
+
             "key": "py_4K_fullhd-bxss",
             "name": "❤️FHD中国书生【🔞】",
             "type": 3,
@@ -11,53 +122,38 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0928/fullhd.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0928/fullhd.py",
+            "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
         },
         {
             "key": "py_4K_fullhd-ynss",
-            "name": "❤️美国书生【🔞】",
+            "name": "❤️FHD巴西书生【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0928/fullhd2.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0928/fullhd2.py",
+            "ext": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+            "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
         },
         {
-            "key": "2048短剧",
-            "name": "5❤️2048短剧🔞",
+            "key": "正宗聚合",
+            "name": "5❤️正宗采集聚合",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
-                "ratio": 1.66
+                "ratio": 2
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py"
-        },
-        {
-            "key": "py_4K_hsck1",
-            "name": "❤️hsck仓库1【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
+            "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/zz聚合.py",
+            "api": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/zz聚合.py"
         },
         {
             "key": "香蕉1区",
@@ -134,6 +230,76 @@
             "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/missav666.py"
         },
         {
+            "key": "py_4K_Pornhub163",
+            "name": "❤️Pornhub163【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "爆色",
+            "name": "5❤️ss采集聚合｜🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 2
+            },
+            "ext": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/ss聚合.py",
+            "api": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/ss聚合.py"
+        },
+        {
+            "key": "py_4K_93合1",
+            "name": "❤️93合1【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/93%E5%90%881.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/93%E5%90%881.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "叔叔和侄女",
+            "name": "5❤️叔叔和侄女｜🔞",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 2
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/%E5%8F%94%E5%8F%94%E5%92%8C%E4%BE%84%E5%A5%B3.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/%E5%8F%94%E5%8F%94%E5%92%8C%E4%BE%84%E5%A5%B3.py"
+        },
+        {
+            "key": "py_4K_hsck1",
+            "name": "❤️hsck仓库1【🔞】",
+            "type": 3,
+            "playerType": 2,
+            "style": {
+                "type": "rect",
+                "ratio": 1.33
+            },
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+
             "key": "爆色",
             "name": "5❤️爆色｜🔞",
             "type": 3,
@@ -174,18 +340,19 @@
             "changeable": 1
         },
         {
-            "key": "叔叔和侄女",
-            "name": "5❤️叔叔和侄女｜🔞",
+            "key": "2048短剧",
+            "name": "5❤️2048短剧🔞",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
-                "ratio": 2
+                "ratio": 1.66
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/%E5%8F%94%E5%8F%94%E5%92%8C%E4%BE%84%E5%A5%B3.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/%E5%8F%94%E5%8F%94%E5%92%8C%E4%BE%84%E5%A5%B3.py"
+            "ext": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py",
+            "api": "http://pglblb.test.upcdn.net/2026py/0928/2048dj.py"
         },
         {
+
             "key": "Taiav.py",
             "name": "4❤️Taiav国货【🔞】",
             "type": 3,
@@ -198,21 +365,7 @@
             "changeable": 0
         },
         {
-            "key": "py_4K_93合1",
-            "name": "❤️93合1【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0928/93%E5%90%881.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0928/93%E5%90%881.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
+
 
             "key": "supjav.py-py",
             "name": "5❤️supjav【🔞】",
@@ -361,8 +514,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51视频🔞TG @hshsjk9.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51视频🔞TG @hshsjk9.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51视频🔞TG @hshsjk9.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51视频🔞TG @hshsjk9.py"
         },
         {
             "key": "采花大盗",
@@ -373,8 +526,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/采花大盗.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/采花大盗.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/采花大盗.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/采花大盗.py"
         },
         {
             "key": "mrdld",
@@ -393,8 +546,8 @@
             "name": "3❤️国货【🔞直播】-1",
             "type": 3,
             "playerType": 2,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/色播聚合.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/色播聚合.py",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/色播聚合.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/色播聚合.py",
             "searchable": 0,
             "filterable": 0,
             "changeable": 0
@@ -420,7 +573,7 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/麻豆.js"
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/麻豆.js"
         },
         {
             "key": "溏心次元",
@@ -431,8 +584,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py"
         },
         {
             "key": "csp_xbpq_s直播-21【🔞】",
@@ -444,7 +597,7 @@
             "searchable": 0,
             "quickSearch": 0,
             "filterable": 0,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/stripchat直播带票.json",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/stripchat直播带票.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
@@ -485,8 +638,8 @@
             "key": "麻豆瓜网",
             "name": "🔍麻豆瓜网",
             "type": 3,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
             "searchable": 1,
             "quickSearch": 1,
             "style": {
@@ -499,8 +652,8 @@
             "key": "每日大赛",
             "name": "🔍每日大赛",
             "type": 3,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
             "searchable": 1,
             "quickSearch": 1,
             "style": {
@@ -545,7 +698,7 @@
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/mylust.json",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/mylust.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
@@ -560,7 +713,7 @@
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/xHamster.json",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/xHamster.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.6
@@ -575,7 +728,7 @@
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/javffm.json",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/javffm.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.6
@@ -590,8 +743,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/夜色.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/夜色.py",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/夜色.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/夜色.py",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
@@ -633,8 +786,8 @@
             "key": "神秘影院1",
             "name": "4❤️神秘影院【🔞】",
             "type": 3,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/神秘影院.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/神秘影院.py",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/神秘影院.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/神秘影院.py",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
@@ -648,8 +801,8 @@
             "key": "hubff-py",
             "name": "3❤️hubff【🔞】",
             "type": 3,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/hubff.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/hubff.py",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/hubff.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/hubff.py",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
@@ -668,7 +821,7 @@
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/小黄书xbpq.json",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/小黄书xbpq.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
@@ -678,8 +831,8 @@
             "key": "怦然心动.py",
             "name": "3❤️怦然心动【🔞广】",
             "type": 3,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/怦然心动.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/怦然心动.py",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/怦然心动.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/怦然心动.py",
             "searchable": 1,
             "quickSearch": 1,
             "style": {
@@ -697,26 +850,11 @@
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/麻豆av.json",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/麻豆av.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
             }
-        },
-        {
-            "key": "py_4K_fullhd-hsck1",
-            "name": "3❤️激情007【🔞】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/hsck1.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/hsck1.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
         },
         {
             "key": "csp_xbpq_🔞才是源动力_极乐禁区(修复二级翻页bug).json",
@@ -727,7 +865,7 @@
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/🔞才是源动力_极乐禁区(修复二级翻页bug).json",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/🔞才是源动力_极乐禁区(修复二级翻页bug).json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
@@ -742,7 +880,7 @@
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/蝴蝶情.json",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/蝴蝶情.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.65
@@ -762,7 +900,7 @@
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/云老婆.json"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/云老婆.json"
         },
         {
             "key": "csp_XYQHiker_鲨鱼av",
@@ -773,7 +911,7 @@
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0,
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/鲨鱼av.json",
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/鲨鱼av.json",
             "style": {
                 "type": "rect",
                 "ratio": 1.6
@@ -841,8 +979,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/py9/爆片库.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/py9/爆片库.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/py9/爆片库.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/py9/爆片库.py"
         },
         {
             "key": "拍摄现场1",
@@ -853,8 +991,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/拍摄现场🔞.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/拍摄现场🔞.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/拍摄现场🔞.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/拍摄现场🔞.py"
         },
         {
             "key": "魑魅魍魉1",
@@ -865,8 +1003,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py"
         },
         {
             "key": "91qgzx",
@@ -881,19 +1019,7 @@
             "api": "http://pglblb.test.upcdn.net/2026py/0920/91%E5%90%83%E7%93%9C%E4%B8%AD%E5%BF%83.py"
         },
         {
-            "key": "51吃瓜",
-            "name": "【4星】51吃瓜",
-            "type": 3,
-            "playerType": 2,
-            "ext": "http://pglblb.test.upcdn.net/2026py/51.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/51.py",
-            "style": {
-                "type": "rect",
-                "ratio": 1.66
-            },
-            "changeable": 1
-        },
-        {
+
             "key": "51dc",
             "name": "51大赛｜🔞",
             "type": 3,
@@ -902,8 +1028,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py"
         },
         {
             "key": "蜜桃源",
@@ -926,8 +1052,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py"
         },
         {
 
@@ -951,8 +1077,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/fulleroticmovies🔞.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/fulleroticmovies🔞.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/fulleroticmovies🔞.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/fulleroticmovies🔞.py"
         },
         {
 
@@ -964,8 +1090,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/777午夜影院🔞.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/777午夜影院🔞.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/777午夜影院🔞.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/777午夜影院🔞.py"
         },
         {
             "key": "91热爆1",
@@ -976,8 +1102,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/91热爆🔞.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/91热爆🔞.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/91热爆🔞.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/91热爆🔞.py"
         },
         {
             "key": "小心御欲",
@@ -988,8 +1114,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/小心御欲🔞.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/小心御欲🔞.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/小心御欲🔞.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/小心御欲🔞.py"
         },
         {
             "key": "xmvm",
@@ -1000,8 +1126,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py"
         },
         {
             "key": "x视频.py",
@@ -1012,8 +1138,8 @@
                 "type": "rect",
                 "ratio": 1.6
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/truvaze.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/truvaze.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/truvaze.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/truvaze.py"
         },
         {
             "key": "女神学神",
@@ -1024,8 +1150,8 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py",
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py"
+            "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py",
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py"
         },
         {
 
@@ -1082,7 +1208,7 @@
                 "type": "rect",
                 "ratio": 1.66
             },
-            "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/VF四级老片🔞.py"
+            "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/VF四级老片🔞.py"
         },
         {
             "key": "玉兔",
@@ -1134,7 +1260,7 @@
         {
             "name": "AI直播",
             "type": 0,
-            "url": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E7%9F%AD%E5%89%A7.txt",
+            "url": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E7%9F%AD%E5%89%A7.txt",
             "ua": "okHttp/Mod-1.4.0.0"
         },
         {
