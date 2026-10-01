@@ -11,23 +11,23 @@
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0928/fullhd.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0928/fullhd.py",
+            "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
         },
         {
             "key": "py_4K_fullhd-ynss",
-            "name": "❤️美国书生【🔞】",
+            "name": "❤️FHD巴西书生【🔞】",
             "type": 3,
             "playerType": 2,
             "style": {
                 "type": "rect",
                 "ratio": 1.33
             },
-            "ext": "http://pglblb.test.upcdn.net/2026py/0928/fullhd2.py",
-            "api": "http://pglblb.test.upcdn.net/2026py/0928/fullhd2.py",
+            "ext": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+            "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
             "searchable": 1,
             "quickSearch": 1,
             "changeable": 1
