@@ -3,6 +3,112 @@
     "spider": "http://pglblb.test.upcdn.net/12/aowu.jar",
     "sites": [
         {
+
+            "key": "py_StripChat",
+            "name": "❤️StripChat【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/StripChat.py"
+        },
+        {
+            "key": "py_sebojuhe",
+            "name": "❤️sebojuhe【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/sebojuhe.py"
+        },
+        {
+            "key": "py_直播大全",
+            "name": "❤️直播大全【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/直播大全.py"
+        },
+        {
+            "key": "py_2048成人短剧[18]",
+            "name": "❤️2048成人短剧[18]【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/2048成人短剧[18].py"
+        },
+        {
+            "key": "py_禁果短剧",
+            "name": "❤️禁果短剧【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/禁果短剧.py"
+        },
+        {
+            "key": "py_野果短剧(3)",
+            "name": "❤️野果短剧(3)【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/野果短剧(3).py"
+        },
+        {
+            "key": "py_精仙阁修复版",
+            "name": "❤️精仙阁修复版【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/精仙阁修复版.py"
+        },
+        {
+            "key": "py_pandalive",
+            "name": "❤️pandalive【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/pandalive.py"
+        },
+        {
+            "key": "py_18av[密]",
+            "name": "❤️18av[密]【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18av[密].py"
+        },
+        {
+            "key": "py_18AV",
+            "name": "❤️18AV【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18AV.py"
+        },
+        {
+            "key": "py_2048成人短剧",
+            "name": "❤️2048成人短剧【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/yjl/py/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7.py"
+        },
+        {
+
+            "key": "py_51吃瓜",
+            "name": "❤️51吃瓜【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/yjl/py/51吃瓜.py"
+        },
+        {
+            "key": "py_51大赛",
+            "name": "❤️51大赛【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/yjl/py/51大赛.py"
+        },
+        {
+            "key": "py_51暗网",
+            "name": "❤️51暗网【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/yjl/py/51暗网.py"
+        },
+        {
+            "key": "py_51爆料",
+            "name": "❤️51爆料【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/yjl/py/51爆料.py"
+        },
+        {
+            "key": "py_51短剧",
+            "name": "❤️51短剧【🔞】",
+            "type": 3,
+            "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/yjl/py/51短剧.py"
+        },
+        {
+            "key": "py_333",
+            "name": "❤️333【🔞】",
+            "type": 3,
+            "api": "https://raw.githubusercontent.com/tvbw/20261001-18/refs/heads/main/yingshi/py9/333.py"
+        },
+        {
+
+
             "key": "py_4K_fullhd-bxss",
             "name": "❤️FHD中国书生【🔞】",
             "type": 3,
