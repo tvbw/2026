@@ -134,21 +134,7 @@
       "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/missav666.py"
     },
     {
-      "key": "py_4K_Pornhub163",
-      "name": "❤️Pornhub163【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
+
       "key": "爆色",
       "name": "5❤️ss采集聚合｜🔞",
       "type": 3,
@@ -161,19 +147,6 @@
       "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py"
     },
     {
-      "key": "Taiav.py",
-      "name": "4❤️Taiav日本【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/tinyav.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/tinyav.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0
-    },
-    {
-
       "key": "py_missav免翻全分类版",
       "name": "5❤️missav免翻【🔞】",
       "type": 3,
@@ -189,20 +162,19 @@
       "changeable": 1
     },
     {
-      "key": "硬硬av",
-      "name": "5❤️IninAV【🔞】",
+      "key": "py_4K_Pornhub163",
+      "name": "❤️Pornhub163【🔞】",
       "type": 3,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/ininav.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/ininav.py",
       "playerType": 2,
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0,
       "style": {
         "type": "rect",
-        "ratio": 1.6
-      }
+        "ratio": 1.33
+      },
+      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
+      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
     },
     {
       "key": "py_18av[密]",
@@ -215,21 +187,6 @@
       },
       "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
       "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "py_4K_hsck1",
-      "name": "❤️hsck仓库1【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -274,6 +231,49 @@
       },
       "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py",
       "api": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py"
+    },
+    {
+      "key": "py_4K_hsck1",
+      "name": "❤️hsck仓库1【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
+      "api": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
+      "key": "硬硬av",
+      "name": "5❤️IninAV【🔞】",
+      "type": 3,
+      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/ininav.py",
+      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/ininav.py",
+      "playerType": 2,
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "changeable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 1.6
+      }
+    },
+    {
+      "key": "Taiav.py",
+      "name": "4❤️Taiav日本【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/tinyav.py",
+      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/tinyav.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "changeable": 0
     },
     {
       "key": "py_2048成人短剧",
