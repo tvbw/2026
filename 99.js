@@ -42,7 +42,7 @@
         "ratio": 2
       },
       "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/zz聚合.py",
-      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/blob/main/zz聚合.py"
+      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/zz聚合.py"
     },
     {
       "key": "香蕉1区",
@@ -157,8 +157,8 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/blob/main/ss聚合.py",
-      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/blob/main/ss聚合.py"
+      "ext": "https://gh.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py",
+      "api": "https://gh.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py"
     },
     {
       "key": "Taiav.py",
