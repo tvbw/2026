@@ -49,8 +49,8 @@
       "key": "香蕉1区",
       "name": "5❤️香蕉1区【🔞】",
       "type": 3,
-      "ext": "http://pglblb.test.upcdn.net/2026py/0928/xj101.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0928/xj101.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
       "playerType": 2,
       "searchable": 1,
       "quickSearch": 1,
@@ -70,8 +70,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%897%E5%8C%BA.py",
-      "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E9%A6%99%E8%95%897%E5%8C%BA.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj102.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj102.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
@@ -86,7 +86,7 @@
       "searchable": 0,
       "quickSearch": 0,
       "filterable": 0,
-      "ext": "http://pglblb.test.upcdn.net/12/stripchat.json",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
       "style": {
         "type": "rect",
         "ratio": 1.65
@@ -101,8 +101,8 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "/main/sebojuhe.py",
-      "api": "/main/sebojuhe.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -253,8 +253,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "/main/18av%5B%E5%AF%86%5D.py",
-      "api": "/main/18av%5B%E5%AF%86%5D.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -309,8 +309,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "/main/Pornhub163.py",
-      "api": "/main/Pornhub163.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -334,8 +334,8 @@
       "key": "硬硬av",
       "name": "5❤️IninAV【🔞】",
       "type": 3,
-      "ext": "/main/ininav.py",
-      "api": "/main/ininav.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py/main/ininav.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py/main/ininav.py",
       "playerType": 2,
       "searchable": 1,
       "quickSearch": 1,
@@ -351,8 +351,8 @@
       "name": "4❤️Taiav日本【🔞】",
       "type": 3,
       "playerType": 2,
-      "ext": "/main/tinyav.py",
-      "api": "/main/tinyav.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py/main/tinyav.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py/main/tinyav.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
@@ -1101,8 +1101,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "1001-18/main/yingshi/py9/女神学神.py",
-      "api": "1001-18/main/yingshi/py9/女神学神.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py"
     },
     {
       "key": "百花资源库",
