@@ -150,7 +150,21 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/missav666.py"
     },
     {
-
+      "key": "py_4K_93合1",
+      "name": "❤️93合1【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/93he1.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/93he1.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
       "key": "爆色",
       "name": "5❤️ss采集聚合｜🔞",
       "type": 3,
@@ -161,32 +175,6 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py"
-    },
-    {
-
-      "key": "51吃瓜",
-      "name": "4❤️51吃瓜｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py"
-    },
-    {
-
-      "key": "51dc",
-      "name": "4❤️51大赛｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51大赛.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51大赛.py"
     },
     {
       "key": "每日大赛",
@@ -203,6 +191,56 @@
       "changeable": 1
     },
     {
+      "key": "mrdld",
+      "name": "4❤️每日大乱斗｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
+    },
+    {
+      "key": "51dc",
+      "name": "4❤️51大赛｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51大赛.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51大赛.py"
+    },
+    {
+      "key": "51吃瓜",
+      "name": "4❤️51吃瓜｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py"
+    },
+    {
+
+      "key": "叔叔和侄女",
+      "name": "5❤️叔叔和侄女｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/叔叔和侄女.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/叔叔和侄女.py"
+    },
+    {
+
       "key": "溏心次元",
       "name": "溏心次元｜🔞",
       "type": 3,
@@ -244,47 +282,9 @@
     },
     {
 
-      "key": "py_4K_93合1",
-      "name": "❤️93合1【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/93he1.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/93he1.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "叔叔和侄女",
-      "name": "5❤️叔叔和侄女｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/叔叔和侄女.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/叔叔和侄女.py"
-    },
-    {
 
 
-      "key": "爆色",
-      "name": "5❤️爆色｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py"
-    },
-    {
+
       "key": "py_2048成人短剧",
       "name": "❤️2048成人短剧【🔞】",
       "type": 3,
@@ -475,6 +475,18 @@
       "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51视频🔞TG @hshsjk9.py"
     },
     {
+      "key": "爆色",
+      "name": "5❤️爆色｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py",
+      "api": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py"
+    },
+    {
       "key": "采花大盗",
       "name": "🔞采花大盗",
       "type": 3,
@@ -487,18 +499,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/%E9%87%87%E8%8A%B1%E5%A4%A7%E7%9B%97.py"
     },
     {
-      "key": "mrdld",
-      "name": "4❤️每日大乱斗｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E6%AF%8F%E6%97%A5%E5%A4%A7%E4%B9%B1%E6%96%97.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0920/%E6%AF%8F%E6%97%A5%E5%A4%A7%E4%B9%B1%E6%96%97.py"
-    },
-    {
+
       "key": "色播",
       "name": "❤️国货【🔞直播】-1",
       "type": 3,
