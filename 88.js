@@ -107,6 +107,21 @@
       "filterable": 1
     },
     {
+      "key": "supjav.py-py",
+      "name": "5❤️supjav【🔞】",
+      "type": 3,
+      "ext": "http://pglblb.test.upcdn.net/2026py/0920/supjav.py",
+      "api": "http://pglblb.test.upcdn.net/2026py/0920/supjav.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "changeable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      }
+    },
+    {
       "key": "missav666",
       "name": "5❤️missav666【🔞】",
       "type": 3,
@@ -146,6 +161,80 @@
       "api": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/ss聚合.py"
     },
     {
+      "key": "Taiav.py",
+      "name": "4❤️Taiav日本【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/tinyav.py",
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/tinyav.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "changeable": 0
+    },
+    {
+
+      "key": "py_missav免翻全分类版",
+      "name": "5❤️missav免翻【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "http://pglblb.test.upcdn.net/2026py/0920/missav免翻全分类版.py",
+      "api": "http://pglblb.test.upcdn.net/2026py/0920/missav免翻全分类版.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
+      "key": "硬硬av",
+      "name": "5❤️IninAV【🔞】",
+      "type": 3,
+      "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/ininav.py",
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/ininav.py",
+      "playerType": 2,
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "changeable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 1.6
+      }
+    },
+    {
+      "key": "py_18av[密]",
+      "name": "❤️18av[密]【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
+      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
+      "key": "py_4K_hsck1",
+      "name": "❤️hsck仓库1【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
+      "api": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
       "key": "py_4K_93合1",
       "name": "❤️93合1【🔞】",
       "type": 3,
@@ -173,36 +262,8 @@
       "api": "http://pglblb.test.upcdn.net/2026py/%E5%8F%94%E5%8F%94%E5%92%8C%E4%BE%84%E5%A5%B3.py"
     },
     {
-      "key": "py_4K_hsck1",
-      "name": "❤️hsck仓库1【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "py_18av[密]",
-      "name": "❤️18av[密]【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
-      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
+
+
       "key": "爆色",
       "name": "5❤️爆色｜🔞",
       "type": 3,
@@ -287,64 +348,7 @@
       "changeable": 1
     },
     {
-      "key": "Taiav.py",
-      "name": "4❤️Taiav国货【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "ext": "http://pglblb.test.upcdn.net/2026py/tinyav.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/tinyav.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0
-    },
-    {
-      "key": "supjav.py-py",
-      "name": "5❤️supjav【🔞】",
-      "type": 3,
-      "ext": "http://pglblb.test.upcdn.net/2026py/0920/supjav.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0920/supjav.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      }
-    },
-    {
-      "key": "py_missav免翻全分类版",
-      "name": "5❤️missav免翻【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/0920/missav免翻全分类版.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0920/missav免翻全分类版.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "硬硬av",
-      "name": "5❤️岛国AV【🔞】",
-      "type": 3,
-      "ext": "http://pglblb.test.upcdn.net/2026py/0920/ininav.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0920/ininav.py",
-      "playerType": 2,
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.6
-      }
-    },
-    {
+
       "key": "黄色仓库",
       "name": "🔞黄仓采集【🔞】",
       "type": 1,
