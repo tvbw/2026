@@ -185,15 +185,15 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/51大赛.py",
-      "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/51大赛.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51大赛.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51大赛.py"
     },
     {
       "key": "每日大赛",
       "name": "4❤️每日大赛｜🔞",
       "type": 3,
-      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
-      "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/每日大赛.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大赛.py",
       "searchable": 1,
       "quickSearch": 1,
       "style": {
