@@ -1,6 +1,6 @@
 {
   "wallpaper": "https://imgs.catvod.com",
-  "spider": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/pg202408.jar",
+  "spider": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/aowu.jar",
   "sites": [
     {
       "key": "py_4K_fullhd-bxss",
@@ -11,8 +11,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
-      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+      "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -26,8 +26,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
-      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+      "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -41,8 +41,8 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/zz聚合.py",
-      "api": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/zz聚合.py"
+      "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/zz聚合.py",
+      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/blob/main/zz聚合.py"
     },
     {
       "key": "香蕉1区",
@@ -130,8 +130,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/missav666.py",
-      "api": "https://down.mxw.xx.kg/https://raw.githubusercontent.com/tvbw/2026/main/missav666.py"
+      "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/missav666.py",
+      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/missav666.py"
     },
     {
       "key": "py_4K_Pornhub163",
@@ -157,16 +157,16 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/ss聚合.py",
-      "api": "https://gh-proxy.com/https://github.com/tvbw/2026/blob/main/ss聚合.py"
+      "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/blob/main/ss聚合.py",
+      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/blob/main/ss聚合.py"
     },
     {
       "key": "Taiav.py",
       "name": "4❤️Taiav日本【🔞】",
       "type": 3,
       "playerType": 2,
-      "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/tinyav.py",
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/tinyav.py",
+      "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/tinyav.py",
+      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/tinyav.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
@@ -192,8 +192,8 @@
       "key": "硬硬av",
       "name": "5❤️IninAV【🔞】",
       "type": 3,
-      "ext": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/ininav.py",
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/ininav.py",
+      "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/ininav.py",
+      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/ininav.py",
       "playerType": 2,
       "searchable": 1,
       "quickSearch": 1,
@@ -213,8 +213,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
-      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
+      "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
+      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -284,8 +284,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
-      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
+      "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
+      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -299,8 +299,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -314,8 +314,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -506,8 +506,8 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
-      "api": "https://ghproxy.net/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "ext": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "api": "https://ghfile.geekertao.top/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
