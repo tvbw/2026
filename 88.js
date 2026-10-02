@@ -126,8 +126,8 @@
       "key": "supjav.py-py",
       "name": "5❤️supjav【🔞】",
       "type": 3,
-      "ext": "http://pglblb.test.upcdn.net/2026py/0920/supjav.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0920/supjav.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/supjav.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/supjav.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
@@ -305,8 +305,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "http://pglblb.test.upcdn.net/2026py/0928/93%E5%90%881.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0928/93%E5%90%881.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/93he1.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/93he1.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -320,8 +320,8 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "http://pglblb.test.upcdn.net/2026py/%E5%8F%94%E5%8F%94%E5%92%8C%E4%BE%84%E5%A5%B3.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/%E5%8F%94%E5%8F%94%E5%92%8C%E4%BE%84%E5%A5%B3.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/叔叔和侄女.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/叔叔和侄女.py"
     },
     {
 
