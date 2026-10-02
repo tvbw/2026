@@ -92,6 +92,21 @@
       }
     },
     {
+      "key": "ss直播3",
+      "name": "❤️国货【🔞直播】-3",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
       "key": "香蕉九合一",
       "name": "5❤️蝴蝶影视【🔞】",
       "type": 3,
@@ -147,6 +162,72 @@
       "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py"
     },
     {
+      "key": "每日大赛",
+      "name": "🔍每日大赛",
+      "type": 3,
+      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
+      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "changeable": 1
+    },
+    {
+
+      "key": "麻豆",
+      "name": "麻豆视频｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/麻豆.js"
+    },
+    {
+      "key": "溏心次元",
+      "name": "溏心次元｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py",
+      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py"
+    },
+    {
+      "key": "日日撸.py",
+      "name": "4❤️日日撸【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E6%97%A5%E6%97%A5%E6%92%B8.py",
+      "api": "http://pglblb.test.upcdn.net/2026py/0920/%E6%97%A5%E6%97%A5%E6%92%B8.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "changeable": 0
+    },
+    {
+      "key": "推特APP",
+      "name": "🔞推特APP",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "http://pglblb.test.upcdn.net/2026py/%E6%8E%A8%E7%89%B9APP.py",
+      "api": "http://pglblb.test.upcdn.net/2026py/%E6%8E%A8%E7%89%B9APP.py"
+    },
+    {
       "key": "py_missav免翻全分类版",
       "name": "5❤️missav免翻【🔞】",
       "type": 3,
@@ -162,21 +243,7 @@
       "changeable": 1
     },
     {
-      "key": "py_4K_Pornhub163",
-      "name": "❤️Pornhub163【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
+
       "key": "py_18av[密]",
       "name": "❤️18av[密]【🔞】",
       "type": 3,
@@ -231,6 +298,21 @@
       },
       "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py",
       "api": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py"
+    },
+    {
+      "key": "py_4K_Pornhub163",
+      "name": "❤️Pornhub163【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
+      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
     },
     {
       "key": "py_4K_hsck1",
@@ -498,44 +580,8 @@
       "api": "http://pglblb.test.upcdn.net/2026py/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.py"
     },
     {
-      "key": "ss直播3",
-      "name": "❤️国货【🔞直播】-3",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "麻豆",
-      "name": "麻豆视频｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/麻豆.js"
-    },
-    {
-      "key": "溏心次元",
-      "name": "溏心次元｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py"
-    },
-    {
+
+
       "key": "csp_xbpq_s直播-21【🔞】",
       "name": "21-StripChat[验证cdn]",
       "type": 3,
@@ -552,22 +598,7 @@
       }
     },
     {
-      "key": "日日撸.py",
-      "name": "4❤️日日撸【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E6%97%A5%E6%97%A5%E6%92%B8.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0920/%E6%97%A5%E6%97%A5%E6%92%B8.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0
-    },
-    {
+
       "key": "小黄书.py",
       "name": "4❤️小黄书【🔞】",
       "type": 3,
@@ -597,32 +628,7 @@
       "changeable": 1
     },
     {
-      "key": "每日大赛",
-      "name": "🔍每日大赛",
-      "type": 3,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "changeable": 1
-    },
-    {
-      "key": "推特APP",
-      "name": "🔞推特APP",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/%E6%8E%A8%E7%89%B9APP.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/%E6%8E%A8%E7%89%B9APP.py"
-    },
-    {
+
       "key": "玩物社区-py",
       "name": "4❤️玩物社区【🔞】",
       "type": 3,
