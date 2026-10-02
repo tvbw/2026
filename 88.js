@@ -41,8 +41,8 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/zz聚合.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/zz聚合.py"
+      "ext": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py",
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
     },
     {
       "key": "香蕉1区",
@@ -157,8 +157,8 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py"
+      "ext": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py",
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py"
     },
     {
       "key": "Taiav.py",
