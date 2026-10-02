@@ -1,7 +1,6 @@
 {
   "spider": "https://raw.githubusercontent.com/tvbw/2026/main/wex.jpg",
   "wallpaper": "https://imgs.catvod.com",
-
   "sites": [
     {
       "key": "py_4K_fullhd-bxss",
@@ -227,7 +226,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py"
     },
     {
-
       "key": "叔叔和侄女",
       "name": "5❤️叔叔和侄女｜🔞",
       "type": 3,
@@ -240,7 +238,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/叔叔和侄女.py"
     },
     {
-
       "key": "溏心次元",
       "name": "溏心次元｜🔞",
       "type": 3,
@@ -281,10 +278,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/推特APP.py"
     },
     {
-
-
-
-
       "key": "py_2048成人短剧",
       "name": "❤️2048成人短剧【🔞】",
       "type": 3,
@@ -357,7 +350,6 @@
       "changeable": 1
     },
     {
-
       "key": "黄色仓库",
       "name": "🔞黄仓采集【🔞】",
       "type": 1,
@@ -499,7 +491,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/%E9%87%87%E8%8A%B1%E5%A4%A7%E7%9B%97.py"
     },
     {
-
       "key": "色播",
       "name": "❤️国货【🔞直播】-1",
       "type": 3,
@@ -523,8 +514,6 @@
       "api": "http://pglblb.test.upcdn.net/2026py/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.py"
     },
     {
-
-
       "key": "csp_xbpq_s直播-21【🔞】",
       "name": "StripChat单机",
       "type": 3,
@@ -541,7 +530,6 @@
       }
     },
     {
-
       "key": "小黄书.py",
       "name": "4❤️小黄书【🔞】",
       "type": 3,
@@ -571,7 +559,6 @@
       "changeable": 1
     },
     {
-
       "key": "玩物社区-py",
       "name": "4❤️玩物社区【🔞】",
       "type": 3,
@@ -827,7 +814,6 @@
       "api": "http://pglblb.test.upcdn.net/2026py/sszb.py"
     },
     {
-
       "key": "黄果短剧",
       "name": "【5星】黄果短剧",
       "type": 3,
@@ -892,7 +878,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py"
     },
     {
-
       "key": "蜜桃源",
       "name": "🔞蜜桃源",
       "type": 3,
@@ -901,8 +886,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "http://pglblb.test.upcdn.net/2026py/%E8%9C%9C%E6%A1%83%E6%BA%90.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/%E8%9C%9C%E6%A1%83%E6%BA%90.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/蜜桃源.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/蜜桃源.py"
     },
     {
       "key": "黄色仓库动态版",
@@ -927,6 +912,17 @@
       },
       "ext": "http://pglblb.test.upcdn.net/2026py/%E7%A5%9E%E7%A7%98%E7%94%B5%E5%BD%B1.py",
       "api": "http://pglblb.test.upcdn.net/2026py/%E7%A5%9E%E7%A7%98%E7%94%B5%E5%BD%B1.py"
+    },
+    {
+      "key": "VF四级老片",
+      "name": "VF四级老片｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/VF四级老片🔞.py"
     },
     {
       "key": "fulleroticmovies",
@@ -1056,17 +1052,6 @@
         "ratio": 1.66
       },
       "changeable": 1
-    },
-    {
-      "key": "VF四级老片",
-      "name": "VF四级老片｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/VF四级老片🔞.py"
     },
     {
       "key": "玉兔",
