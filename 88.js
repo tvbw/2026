@@ -163,8 +163,34 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py"
     },
     {
+
+      "key": "51吃瓜",
+      "name": "4❤️51吃瓜｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py"
+    },
+    {
+
+      "key": "51dc",
+      "name": "4❤️51大赛｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/51大赛.py",
+      "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/51大赛.py"
+    },
+    {
       "key": "每日大赛",
-      "name": "🔍每日大赛",
+      "name": "4❤️每日大赛｜🔞",
       "type": 3,
       "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
       "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
@@ -177,7 +203,6 @@
       "changeable": 1
     },
     {
-
       "key": "麻豆",
       "name": "麻豆视频｜🔞",
       "type": 3,
@@ -238,7 +263,7 @@
         "ratio": 1.33
       },
       "ext": "http://pglblb.test.upcdn.net/2026py/0920/missav免翻全分类版.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0920/missav免翻全分类版.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/missav免翻全分类版.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -258,6 +283,18 @@
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
+    },
+    {
+      "key": "18av1",
+      "name": "5❤️18av【🔞-1】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "http://pglblb.test.upcdn.net/2026py/18av1.py",
+      "api": "http://pglblb.test.upcdn.net/2026py/18av1.py"
     },
     {
       "key": "py_4K_93合1",
@@ -299,64 +336,6 @@
       },
       "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py",
       "api": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py"
-    },
-    {
-      "key": "py_4K_Pornhub163",
-      "name": "❤️Pornhub163【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "py_4K_hsck1",
-      "name": "❤️hsck仓库1【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0928/hsck.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "硬硬av",
-      "name": "5❤️IninAV【🔞】",
-      "type": 3,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py/main/ininav.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py/main/ininav.py",
-      "playerType": 2,
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.6
-      }
-    },
-    {
-      "key": "Taiav.py",
-      "name": "4❤️Taiav日本【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py/main/tinyav.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py/main/tinyav.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0
     },
     {
       "key": "py_2048成人短剧",
@@ -584,7 +563,7 @@
 
 
       "key": "csp_xbpq_s直播-21【🔞】",
-      "name": "21-StripChat[验证cdn]",
+      "name": "StripChat单机",
       "type": 3,
       "playerType": 2,
       "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
@@ -812,8 +791,8 @@
       }
     },
     {
-      "key": "csp_xbpq_🔞才是源动力_极乐禁区(修复二级翻页bug).json",
-      "name": "3❤️极乐禁区【🔞广】]",
+      "key": "csp_xbpq_极乐禁区",
+      "name": "3❤️极乐禁区【🔞广】",
       "type": 3,
       "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "api": "csp_XBPQ",
@@ -885,18 +864,7 @@
       "api": "http://pglblb.test.upcdn.net/2026py/sszb.py"
     },
     {
-      "key": "18av1",
-      "name": "5❤️18av【🔞-1】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/18av1.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/18av1.py"
-    },
-    {
+
       "key": "黄果短剧",
       "name": "【5星】黄果短剧",
       "type": 3,
@@ -961,30 +929,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py"
     },
     {
-      "key": "91qgzx",
-      "name": "【4星】91吃瓜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/0920/91%E5%90%83%E7%93%9C%E4%B8%AD%E5%BF%83.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0920/91%E5%90%83%E7%93%9C%E4%B8%AD%E5%BF%83.py"
-    },
-    {
-      "key": "51dc",
-      "name": "51大赛｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py",
-      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py"
-    },
-    {
+
       "key": "蜜桃源",
       "name": "🔞蜜桃源",
       "type": 3,
