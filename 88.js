@@ -1,6 +1,6 @@
 {
   "wallpaper": "https://imgs.catvod.com",
-  "spider": "http://pglblb.test.upcdn.net/12/aowu.jar",
+  "spider": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/aowu.jar",
   "sites": [
     {
       "key": "py_4K_fullhd-bxss",
