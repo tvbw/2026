@@ -52,7 +52,6 @@ def _patched_get(self, url, *a, **k):
     return _real_get(self, url, *a, **k)
 requests.Session.get = _patched_get
 # =================== 加速头结束 ===================
-
 import json
 import random
 import re
@@ -90,7 +89,7 @@ class Spider(Spider):
         pass
 
     def getName(self):
-        return "51吃瓜"
+        return "🌈 51吸瓜"
 
     def isVideoFormat(self, url):
         # Treat direct media formats as playable without parsing
@@ -241,10 +240,10 @@ class Spider(Spider):
             response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
             
             if response.status_code != 200:
-                return {'list': [{'vod_play_from': '51吃瓜', 'vod_play_url': f'页面加载失败${url}'}]}
+                return {'list': [{'vod_play_from': '51吸瓜', 'vod_play_url': f'页面加载失败${url}'}]}
                 
             data = self.getpq(response.text)
-            vod = {'vod_play_from': '51吃瓜'}
+            vod = {'vod_play_from': '51吸瓜'}
             
             # Get content/description
             try:
@@ -257,7 +256,7 @@ class Spider(Spider):
                             clist.append('[a=cr:' + json.dumps({'id': href, 'name': title}) + '/]' + title + '[/a]')
                 vod['vod_content'] = ' '.join(clist) if clist else data('.post-title').text()
             except:
-                vod['vod_content'] = data('.post-title').text() or '51吃瓜视频'
+                vod['vod_content'] = data('.post-title').text() or '51吸瓜视频'
             
             # Get video URLs (build episode list when multiple players exist)
             try:
@@ -314,7 +313,7 @@ class Spider(Spider):
             
         except Exception as e:
             print(f"detailContent error: {e}")
-            return {'list': [{'vod_play_from': '51吃瓜', 'vod_play_url': f'详情页加载失败${ids[0] if ids else ""}'}]}
+            return {'list': [{'vod_play_from': '51吸瓜', 'vod_play_url': f'详情页加载失败${ids[0] if ids else ""}'}]}
 
     def searchContent(self, key, quick, pg="1"):
         try:
@@ -447,9 +446,9 @@ class Spider(Spider):
         """Get working host from known dynamic URLs"""
         # Known working URLs from the dynamic gateway
         dynamic_urls = [
-            'https://boat.tjktxpcwp.cc/',
-            'https://butter.tjktxpcwp.cc/', 
-            'https://across.tjktxpcwp.cc/'
+            'https://access.ntnvmblbz.cc/',
+            'https://breath.ntnvmblbz.cc/', 
+            'https://book.ntnvmblbz.cc/'
         ]
         
         # Test each URL to find a working one
