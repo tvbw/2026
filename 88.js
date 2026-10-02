@@ -1,6 +1,6 @@
 {
   "wallpaper": "https://imgs.catvod.com",
-  "spider": "http://pglblb.test.upcdn.net/12/wex.jpg",
+  "spider": "https://raw.githubusercontent.com/tvbw/2026/main/custom_spider.jar",
 
   "sites": [
     {
