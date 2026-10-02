@@ -1,6 +1,6 @@
 {
+  "spider": "https://raw.githubusercontent.com/tvbw/2026/main/wex.jpg",
   "wallpaper": "https://imgs.catvod.com",
-  "spider": "https://raw.githubusercontent.com/tvbw/2026/main/custom_spider.jar",
 
   "sites": [
     {
@@ -12,8 +12,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/202610fullhd.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/202610fullhd.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -80,7 +80,7 @@
       "key": "csp_xbpq_s直播",
       "name": "5❤️StripChat【🔞直播】",
       "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "playerType": 2,
       "api": "csp_XBPQ",
       "searchable": 0,
@@ -146,8 +146,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "/main/missav666.py",
-      "api": "/main/missav666.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/missav666.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/missav666.py"
     },
     {
 
@@ -367,8 +367,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
-      "api": "/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -382,8 +382,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "api": "/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -397,8 +397,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "api": "/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -542,8 +542,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "1001-18/main/yingshi/py9/采花大盗.py",
-      "api": "1001-18/main/yingshi/py9/采花大盗.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/%E9%87%87%E8%8A%B1%E5%A4%A7%E7%9B%97.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/%E9%87%87%E8%8A%B1%E5%A4%A7%E7%9B%97.py"
     },
     {
       "key": "mrdld",
@@ -587,7 +587,7 @@
       "name": "21-StripChat[验证cdn]",
       "type": 3,
       "playerType": 2,
-      "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "api": "csp_XBPQ",
       "searchable": 0,
       "quickSearch": 0,
@@ -648,7 +648,7 @@
       "key": "csp_xbpq_mylust",
       "name": "4❤️mylust【🔞】",
       "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "api": "csp_XBPQ",
       "searchable": 1,
       "quickSearch": 1,
@@ -663,7 +663,7 @@
       "key": "csp_XYQHiker_xHamster",
       "name": "4❤️xHamster【🔞】",
       "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "api": "csp_XYQHiker",
       "searchable": 1,
       "quickSearch": 1,
@@ -678,7 +678,7 @@
       "key": "csp_XYQHiker_javffm",
       "name": "4❤️JAVFFM【🔞】",
       "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "api": "csp_XYQHiker",
       "searchable": 1,
       "quickSearch": 1,
@@ -771,7 +771,7 @@
       "key": "csp_xbpq_小黄书【🔞】",
       "name": "3❤️小黄书【🔞】",
       "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "api": "csp_XBPQ",
       "searchable": 1,
       "quickSearch": 1,
@@ -800,7 +800,7 @@
       "key": "csp_xbpq_麻豆av",
       "name": "3❤️麻豆AV【🔞】",
       "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "api": "csp_XBPQ",
       "searchable": 1,
       "quickSearch": 1,
@@ -815,7 +815,7 @@
       "key": "csp_xbpq_🔞才是源动力_极乐禁区(修复二级翻页bug).json",
       "name": "3❤️极乐禁区【🔞广】]",
       "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "api": "csp_XBPQ",
       "searchable": 1,
       "quickSearch": 1,
@@ -830,7 +830,7 @@
       "key": "csp_xbpq_蝴蝶情.json",
       "name": "2❤️蝴蝶情【🔞广】",
       "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "api": "csp_XBPQ",
       "searchable": 1,
       "quickSearch": 1,
@@ -850,7 +850,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "api": "csp_XYQHiker",
       "searchable": 1,
       "quickSearch": 1,
@@ -861,7 +861,7 @@
       "key": "csp_XYQHiker_鲨鱼av",
       "name": "3❤️鲨鱼av【🔞】",
       "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/12/202610xyqxbpq.jar",
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "api": "csp_XYQHiker",
       "searchable": 1,
       "quickSearch": 1,
@@ -933,8 +933,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "1001-18-/main/jaychouqq/yingshi/py9/爆片库.py",
-      "api": "1001-18-/main/jaychouqq/yingshi/py9/爆片库.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/爆片库.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/爆片库.py"
     },
     {
       "key": "拍摄现场1",
