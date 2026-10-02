@@ -1,10 +1,6 @@
 {
   "wallpaper": "https://imgs.catvod.com",
-  "spider": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/aowu.jar",
-  "threadinfo": {
-    "chunksize": 256,
-    "threads": 18
-  },
+  "spider": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/custom_spider.jar",
 
   "sites": [
     {
