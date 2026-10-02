@@ -1,6 +1,6 @@
 {
   "wallpaper": "https://imgs.catvod.com",
-  "spider": "http://pglblb.test.upcdn.net/12/pg20250415.jar",
+  "spider": "http://pglblb.test.upcdn.net/12/wex.jpg",
 
   "sites": [
     {
@@ -12,8 +12,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/202610fullhd.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/202610fullhd.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
