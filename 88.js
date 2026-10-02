@@ -250,8 +250,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "http://pglblb.test.upcdn.net/2026py/%E6%8E%A8%E7%89%B9APP.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/%E6%8E%A8%E7%89%B9APP.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/推特APP.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/推特APP.py"
     },
     {
       "key": "py_missav免翻全分类版",
@@ -262,7 +262,7 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "http://pglblb.test.upcdn.net/2026py/0920/missav免翻全分类版.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/missav免翻全分类版.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/missav免翻全分类版.py",
       "searchable": 1,
       "quickSearch": 1,
