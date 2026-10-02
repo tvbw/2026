@@ -12,8 +12,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/202610fullhd.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/202610fullhd.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/202610fullhd.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/202610fullhd.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -27,8 +27,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -42,8 +42,8 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py",
-      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
     },
     {
       "key": "香蕉1区",
@@ -101,8 +101,8 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "ext": "/main/sebojuhe.py",
+      "api": "/main/sebojuhe.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -146,8 +146,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/missav666.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/missav666.py"
+      "ext": "/main/missav666.py",
+      "api": "/main/missav666.py"
     },
     {
 
@@ -159,15 +159,15 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py",
-      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py"
     },
     {
       "key": "每日大赛",
       "name": "🔍每日大赛",
       "type": 3,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
+      "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/每日大赛.py",
       "searchable": 1,
       "quickSearch": 1,
       "style": {
@@ -186,7 +186,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/麻豆.js"
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/麻豆.js"
     },
     {
       "key": "溏心次元",
@@ -197,8 +197,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py",
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py"
     },
     {
       "key": "日日撸.py",
@@ -253,8 +253,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
+      "ext": "/main/18av%5B%E5%AF%86%5D.py",
+      "api": "/main/18av%5B%E5%AF%86%5D.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -309,8 +309,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/Pornhub163.py",
+      "ext": "/main/Pornhub163.py",
+      "api": "/main/Pornhub163.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -334,8 +334,8 @@
       "key": "硬硬av",
       "name": "5❤️IninAV【🔞】",
       "type": 3,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/ininav.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/ininav.py",
+      "ext": "/main/ininav.py",
+      "api": "/main/ininav.py",
       "playerType": 2,
       "searchable": 1,
       "quickSearch": 1,
@@ -351,8 +351,8 @@
       "name": "4❤️Taiav日本【🔞】",
       "type": 3,
       "playerType": 2,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/tinyav.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/tinyav.py",
+      "ext": "/main/tinyav.py",
+      "api": "/main/tinyav.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
@@ -367,8 +367,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
+      "ext": "/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
+      "api": "/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -382,8 +382,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "ext": "/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "api": "/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -397,8 +397,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "ext": "/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "api": "/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -530,8 +530,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51视频🔞TG @hshsjk9.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51视频🔞TG @hshsjk9.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51视频🔞TG @hshsjk9.py",
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51视频🔞TG @hshsjk9.py"
     },
     {
       "key": "采花大盗",
@@ -542,8 +542,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/采花大盗.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/采花大盗.py"
+      "ext": "1001-18/main/yingshi/py9/采花大盗.py",
+      "api": "1001-18/main/yingshi/py9/采花大盗.py"
     },
     {
       "key": "mrdld",
@@ -562,8 +562,8 @@
       "name": "❤️国货【🔞直播】-1",
       "type": 3,
       "playerType": 2,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/色播聚合.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/色播聚合.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/色播聚合.py",
+      "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/色播聚合.py",
       "searchable": 0,
       "filterable": 0,
       "changeable": 0
@@ -592,7 +592,7 @@
       "searchable": 0,
       "quickSearch": 0,
       "filterable": 0,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/stripchat直播带票.json",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/stripchat直播带票.json",
       "style": {
         "type": "rect",
         "ratio": 1.65
@@ -618,8 +618,8 @@
       "key": "麻豆瓜网",
       "name": "🔍麻豆瓜网",
       "type": 3,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
+      "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
       "searchable": 1,
       "quickSearch": 1,
       "style": {
@@ -653,7 +653,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/mylust.json",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/mylust.json",
       "style": {
         "type": "rect",
         "ratio": 1.65
@@ -668,7 +668,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/xHamster.json",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/xHamster.json",
       "style": {
         "type": "rect",
         "ratio": 1.6
@@ -683,7 +683,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/javffm.json",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/javffm.json",
       "style": {
         "type": "rect",
         "ratio": 1.6
@@ -698,8 +698,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/夜色.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/夜色.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/夜色.py",
+      "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/夜色.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
@@ -741,8 +741,8 @@
       "key": "神秘影院1",
       "name": "4❤️神秘影院【🔞】",
       "type": 3,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/神秘影院.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/神秘影院.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/神秘影院.py",
+      "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/神秘影院.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
@@ -756,8 +756,8 @@
       "key": "hubff-py",
       "name": "3❤️hubff【🔞】",
       "type": 3,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/hubff.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/hubff.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/hubff.py",
+      "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/hubff.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
@@ -776,7 +776,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/小黄书xbpq.json",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/小黄书xbpq.json",
       "style": {
         "type": "rect",
         "ratio": 1.65
@@ -786,8 +786,8 @@
       "key": "怦然心动.py",
       "name": "3❤️怦然心动【🔞广】",
       "type": 3,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/怦然心动.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/怦然心动.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/怦然心动.py",
+      "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/怦然心动.py",
       "searchable": 1,
       "quickSearch": 1,
       "style": {
@@ -805,7 +805,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/麻豆av.json",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/麻豆av.json",
       "style": {
         "type": "rect",
         "ratio": 1.65
@@ -820,7 +820,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/🔞才是源动力_极乐禁区(修复二级翻页bug).json",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/🔞才是源动力_极乐禁区(修复二级翻页bug).json",
       "style": {
         "type": "rect",
         "ratio": 1.65
@@ -835,7 +835,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/蝴蝶情.json",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/蝴蝶情.json",
       "style": {
         "type": "rect",
         "ratio": 1.65
@@ -855,7 +855,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/云老婆.json"
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/云老婆.json"
     },
     {
       "key": "csp_XYQHiker_鲨鱼av",
@@ -866,7 +866,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/鲨鱼av.json",
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/鲨鱼av.json",
       "style": {
         "type": "rect",
         "ratio": 1.6
@@ -933,8 +933,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/py9/爆片库.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/20261001-18-/main/jaychouqq/yingshi/py9/爆片库.py"
+      "ext": "1001-18-/main/jaychouqq/yingshi/py9/爆片库.py",
+      "api": "1001-18-/main/jaychouqq/yingshi/py9/爆片库.py"
     },
     {
       "key": "拍摄现场1",
@@ -945,8 +945,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/拍摄现场🔞.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/拍摄现场🔞.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/拍摄现场🔞.py",
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/拍摄现场🔞.py"
     },
     {
       "key": "魑魅魍魉1",
@@ -957,8 +957,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py",
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/魑魅魍魉🔞.py"
     },
     {
       "key": "91qgzx",
@@ -981,8 +981,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py",
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/51大赛🔞TG @hshsjk9.py"
     },
     {
       "key": "蜜桃源",
@@ -1005,8 +1005,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py",
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py"
     },
     {
       "key": "smvm",
@@ -1029,8 +1029,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/fulleroticmovies🔞.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/fulleroticmovies🔞.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/fulleroticmovies🔞.py",
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/fulleroticmovies🔞.py"
     },
     {
       "key": "777午夜影院",
@@ -1041,8 +1041,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/777午夜影院🔞.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/777午夜影院🔞.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/777午夜影院🔞.py",
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/777午夜影院🔞.py"
     },
     {
       "key": "91热爆1",
@@ -1053,8 +1053,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/91热爆🔞.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/91热爆🔞.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/91热爆🔞.py",
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/91热爆🔞.py"
     },
     {
       "key": "小心御欲",
@@ -1065,8 +1065,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/小心御欲🔞.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/小心御欲🔞.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/小心御欲🔞.py",
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/小心御欲🔞.py"
     },
     {
       "key": "xmvm",
@@ -1077,8 +1077,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py",
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py"
     },
     {
       "key": "x视频.py",
@@ -1089,8 +1089,8 @@
         "type": "rect",
         "ratio": 1.6
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/truvaze.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/18-/main/tv/py/truvaze.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/truvaze.py",
+      "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/truvaze.py"
     },
     {
       "key": "女神学神",
@@ -1101,8 +1101,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py",
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py"
+      "ext": "1001-18/main/yingshi/py9/女神学神.py",
+      "api": "1001-18/main/yingshi/py9/女神学神.py"
     },
     {
       "key": "百花资源库",
@@ -1158,7 +1158,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://github.dpik.top/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/VF四级老片🔞.py"
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/VF四级老片🔞.py"
     },
     {
       "key": "玉兔",
@@ -1210,7 +1210,7 @@
     {
       "name": "AI直播",
       "type": 0,
-      "url": "https://github.dpik.top/https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E7%9F%AD%E5%89%A7.txt",
+      "url": "https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E7%9F%AD%E5%89%A7.txt",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
