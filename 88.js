@@ -530,50 +530,6 @@
       }
     },
     {
-      "key": "小黄书.py",
-      "name": "4❤️小黄书【🔞】",
-      "type": 3,
-      "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E5%B0%8F%E9%BB%84%E4%B9%A6.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0925/%E5%B0%8F%E9%BB%84%E4%B9%A6.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.6
-      }
-    },
-    {
-      "key": "麻豆瓜网",
-      "name": "🔍麻豆瓜网",
-      "type": 3,
-      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
-      "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "changeable": 1
-    },
-    {
-      "key": "玩物社区-py",
-      "name": "4❤️玩物社区【🔞】",
-      "type": 3,
-      "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E7%8E%A9%E7%89%A9%E7%A4%BE%E5%8C%BA.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0920/%E7%8E%A9%E7%89%A9%E7%A4%BE%E5%8C%BA.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.6
-      }
-    },
-    {
       "key": "csp_xbpq_mylust",
       "name": "4❤️mylust【🔞】",
       "type": 3,
