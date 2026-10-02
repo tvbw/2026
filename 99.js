@@ -1,6 +1,6 @@
 {
   "wallpaper": "https://imgs.catvod.com",
-  "spider": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fm.jar",
+  "spider": "http://pglblb.test.upcdn.net/12/fm.jar",
   "sites": [
     {
       "key": "py_4K_fullhd-bxss",
