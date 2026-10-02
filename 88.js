@@ -203,17 +203,6 @@
       "changeable": 1
     },
     {
-      "key": "麻豆",
-      "name": "麻豆视频｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/麻豆.js"
-    },
-    {
       "key": "溏心次元",
       "name": "溏心次元｜🔞",
       "type": 3,
@@ -254,49 +243,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/推特APP.py"
     },
     {
-      "key": "py_missav免翻全分类版",
-      "name": "5❤️missav免翻【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/missav免翻全分类版.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/missav免翻全分类版.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
 
-      "key": "py_18av[密]",
-      "name": "❤️18av[密]【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/18av%5B%E5%AF%86%5D.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "18av1",
-      "name": "5❤️18av【🔞-1】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/18av1.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/18av1.py"
-    },
-    {
       "key": "py_4K_93合1",
       "name": "❤️93合1【🔞】",
       "type": 3,
@@ -454,6 +401,21 @@
         "泰国风情",
         "OnlyFans"
       ]
+    },
+    {
+      "key": "py_missav免翻全分类版",
+      "name": "5❤️missav免翻【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/missav免翻全分类版.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/missav免翻全分类版.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
     },
     {
       "key": "🔞杏吧资源",
