@@ -3,38 +3,8 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "py_4K_fullhd-fullhd",
-      "name": "❤️FHD书生中国【1】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "py_4K_fullhd-fullhd2",
-      "name": "❤️FHD书生世界【2】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
       "key": "py_4K_fullhd-fullhd3",
-      "name": "❤️FHD老僧中国【3】",
+      "name": "❤️FHD老僧中国",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -48,31 +18,19 @@
       "changeable": 1
     },
     {
-      "key": "py_4K_fullhd4",
-      "name": "❤️FHD老毛世界【4】",
+      "key": "py_4K_fullhd-fullhd2",
+      "name": "❤️FHD书生世界",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd4.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd4.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
-    },
-    {
-      "key": "正宗聚合",
-      "name": "5❤️正宗采集聚合",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
     },
     {
       "key": "香蕉1区",
@@ -1050,6 +1008,18 @@
       "api": "https://apiyutu.com/api.php/provide/vod/at/xml/",
       "searchable": 1,
       "quickSearch": 1
+    },
+    {
+      "key": "正宗聚合",
+      "name": "5❤️正宗采集聚合",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
     },
     {
       "key": "18av",

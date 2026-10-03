@@ -1,25 +1,25 @@
 {
-  "spider": "https://raw.githubusercontent.com/tvbw/2026/main/aowu.png",
+  "spider": "https://raw.githubusercontent.com/tvbw/2026/main/aowu.jar",
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "py_4K_fullhd-bxss",
-      "name": "❤️FHD中国书生【🔞】",
+      "key": "py_4K_fullhd-fullhd3",
+      "name": "❤️FHD老僧中国",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
     },
     {
-      "key": "py_4K_fullhd-ynss",
-      "name": "❤️FHD巴西书生【🔞】",
+      "key": "py_4K_fullhd-fullhd2",
+      "name": "❤️FHD书生世界",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -31,18 +31,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
-    },
-    {
-      "key": "正宗聚合",
-      "name": "5❤️正宗采集聚合",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
     },
     {
       "key": "香蕉1区",
@@ -115,8 +103,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "http://pglblb.test.upcdn.net/2026py/%E4%B9%9D%E5%90%88%E4%B8%80.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/%E4%B9%9D%E5%90%88%E4%B8%80.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/9he1.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/9he1.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
@@ -527,50 +515,6 @@
       "style": {
         "type": "rect",
         "ratio": 1.65
-      }
-    },
-    {
-      "key": "小黄书.py",
-      "name": "4❤️小黄书【🔞】",
-      "type": 3,
-      "ext": "http://pglblb.test.upcdn.net/2026py/0925/%E5%B0%8F%E9%BB%84%E4%B9%A6.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0925/%E5%B0%8F%E9%BB%84%E4%B9%A6.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.6
-      }
-    },
-    {
-      "key": "麻豆瓜网",
-      "name": "🔍麻豆瓜网",
-      "type": 3,
-      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
-      "api": "https://raw.githubusercontent.com/tvbw/18-/main/tv/py/麻豆瓜网.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "changeable": 1
-    },
-    {
-      "key": "玩物社区-py",
-      "name": "4❤️玩物社区【🔞】",
-      "type": 3,
-      "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E7%8E%A9%E7%89%A9%E7%A4%BE%E5%8C%BA.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/0920/%E7%8E%A9%E7%89%A9%E7%A4%BE%E5%8C%BA.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.6
       }
     },
     {
@@ -1064,6 +1008,18 @@
       "api": "https://apiyutu.com/api.php/provide/vod/at/xml/",
       "searchable": 1,
       "quickSearch": 1
+    },
+    {
+      "key": "正宗聚合",
+      "name": "5❤️正宗采集聚合",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
     },
     {
       "key": "18av",
