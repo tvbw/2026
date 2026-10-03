@@ -4,7 +4,7 @@
   "sites": [
     {
       "key": "py_4K_fullhd-fullhd3",
-      "name": "❤️FHD老僧中国",
+      "name": "❤️FHD老僧中国【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -19,7 +19,7 @@
     },
     {
       "key": "py_4K_fullhd-fullhd2",
-      "name": "❤️FHD书生世界",
+      "name": "❤️FHD书生世界【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -31,6 +31,54 @@
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
+    },
+    {
+
+      "key": "py_StripChat",
+      "name": "❤️StripChat直播PY【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/StripChat.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/StripChat.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
+      "key": "csp_xbpq_s直播【🔞】",
+      "name": "❤️StripChat直播XB【🔞】",
+      "type": 3,
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+      "playerType": 2,
+      "api": "csp_XBPQ",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
+      "style": {
+        "type": "rect",
+        "ratio": 1.65
+      }
+    },
+    {
+      "key": "csp_xbpq_s直播-21c",
+      "name": "❤️StripChat单机❤️",
+      "type": 3,
+      "playerType": 2,
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+      "api": "csp_XBPQ",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/stripchat直播带票.json",
+      "style": {
+        "type": "rect",
+        "ratio": 1.65
+      }
     },
     {
       "key": "香蕉1区",
@@ -62,22 +110,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
-    },
-    {
-      "key": "csp_xbpq_s直播",
-      "name": "5❤️StripChat【🔞直播】",
-      "type": 3,
-      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
-      "playerType": 2,
-      "api": "csp_XBPQ",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
-      "style": {
-        "type": "rect",
-        "ratio": 1.65
-      }
     },
     {
       "key": "ss直播3",
@@ -255,7 +287,7 @@
     },
     {
       "key": "推特APP",
-      "name": "🔞推特APP",
+      "name": "4❤️推特APP【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -444,7 +476,7 @@
     },
     {
       "key": "51vm",
-      "name": "51视频｜🔞",
+      "name": "3❤️51视频｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -456,7 +488,7 @@
     },
     {
       "key": "爆色",
-      "name": "5❤️爆色｜🔞",
+      "name": "3❤️爆色｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -468,7 +500,7 @@
     },
     {
       "key": "采花大盗",
-      "name": "🔞采花大盗",
+      "name": "3❤️采花大盗🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -500,22 +532,6 @@
       },
       "ext": "http://pglblb.test.upcdn.net/2026py/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.py",
       "api": "http://pglblb.test.upcdn.net/2026py/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.py"
-    },
-    {
-      "key": "csp_xbpq_s直播-21【🔞】",
-      "name": "StripChat单机",
-      "type": 3,
-      "playerType": 2,
-      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
-      "api": "csp_XBPQ",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/stripchat直播带票.json",
-      "style": {
-        "type": "rect",
-        "ratio": 1.65
-      }
     },
     {
       "key": "csp_xbpq_mylust",
