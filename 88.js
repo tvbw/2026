@@ -33,6 +33,23 @@
       "changeable": 1
     },
     {
+
+      "key": "py_4K_StripChat",
+      "name": "❤️StripChat直播",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/StripChat.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/StripChat.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
+
       "key": "香蕉1区",
       "name": "5❤️香蕉1区【🔞】",
       "type": 3,
