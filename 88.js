@@ -44,45 +44,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/duanju202610.js"
     },
     {
-      "key": "csp_xbpq_tinytv",
-      "name": "❤️TinyAV_播放修复【🔞】",
-      "type": 3,
-      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
-      "playerType": 2,
-      "api": "csp_XBPQ",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/TinyAV_%E6%92%AD%E6%94%BE%E4%BF%AE%E5%A4%8D.json",
-      "style": {
-        "type": "rect",
-        "ratio": 1.65
-      }
-    },
-    {
-
-      "key": "央视直播",
-      "name": "5❤️央视直播",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-         "api": "https://ghfast.top/https://raw.githubusercontent.com/IY-CPU/IY/main/lib/drpy2.min.js",
-         "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/央视直播.js"
-    },
-    {
-      "key": "py_StripChat",
-      "name": "❤️StripChat直播PY【🔞】",
-      "type": 3,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/StripChat.py"
-    },
-    {
       "key": "csp_xbpq_s直播【🔞】",
       "name": "❤️StripChat直播XB【🔞】",
       "type": 3,
