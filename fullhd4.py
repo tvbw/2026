@@ -25,6 +25,9 @@ class Spider(Spider):
     global xurl
     global headerx
 
+    # 详情页 HTML 缓存：detailContent 写入，playerContent 读取
+    _html_cache = {}
+
     def getName(self):
         return "首页"
 
@@ -38,7 +41,7 @@ class Spider(Spider):
         pass
 
     # ------------------------------------------------------------------
-    # 通用工具：稳健取图（兼容 KVS 各类懒加载写法）
+    # 通用工具：稳健取图
     # ------------------------------------------------------------------
     def _get_pic(self, vod):
         img = vod.find('img')
@@ -59,7 +62,7 @@ class Spider(Spider):
         return pic
 
     # ------------------------------------------------------------------
-    # 通用工具：取名字/ID/时长（各页面复用）
+    # 通用工具：解析列表项
     # ------------------------------------------------------------------
     def _parse_item(self, vod):
         name = ""
@@ -275,8 +278,7 @@ class Spider(Spider):
                 for vod in vods:
                     videos.append(self._parse_item(vod))
 
-            result = {'list': videos}
-            return result
+            return {'list': videos}
         except Exception as e:
             print(f"Error in homeVideoContent: {str(e)}")
             return {'list': []}
@@ -307,17 +309,16 @@ class Spider(Spider):
         except Exception as e:
             print(f"Error in categoryContent: {str(e)}")
 
-        result = {
+        return {
             'list': videos,
             'page': pg,
             'pagecount': 9999,
             'limit': 90,
             'total': 999999
         }
-        return result
 
     # ------------------------------------------------------------------
-    # 详情
+    # 详情：关键改动 —— 把整页 HTML 缓存起来给 playerContent 复用
     # ------------------------------------------------------------------
     def detailContent(self, ids):
         global pm
@@ -326,9 +327,13 @@ class Spider(Spider):
         videos = []
         if 'http' not in did:
             did = xurl + did
+
         res1 = requests.get(url=did, headers=headerx, timeout=10)
         res1.encoding = "utf-8"
         res = res1.text
+
+        # 【缓存】保存详情页 HTML
+        self._html_cache[did] = res
 
         content = '👉' + self.extract_middle_text(res, '<h1>', '</h1>', 0)
 
@@ -352,51 +357,40 @@ class Spider(Spider):
         return result
 
     # ------------------------------------------------------------------
-    # 播放（优化：Session 复用 + 正则解析 + 单连接跟跳转）
+    # 播放：关键改动 —— 复用缓存 + 不再主动探 302，交给播放器
     # ------------------------------------------------------------------
     def playerContent(self, flag, id, vipFlags):
         if 'http' not in id:
             id = xurl + id
 
         headers = dict(headerx)
-        headers['Referer'] = id
+        headers['Referer'] = id   # 关键：给播放器带 Referer，过 CDN 防盗链
 
         try:
-            with requests.Session() as s:
-                s.headers.update(headers)
+            # 1) 优先用 detailContent 缓存的 HTML，避免二次 GET
+            res = self._html_cache.get(id)
+            if res is None:
+                res = requests.get(id, headers=headers, timeout=10).text
 
-                res = s.get(id, timeout=10).text
+            # 2) 优先正则抓 <source src>，失败再兜底 video_url
+            m = re.search(r'<source[^>]+src=["\']([^"\']+)["\']', res)
+            if not m:
+                m = re.search(r'video_url\s*[:=]\s*["\']([^"\']+)["\']', res)
+            if not m:
+                return {"parse": 0, "playUrl": '', "url": '', "header": headerx}
 
-                # 优先正则抓 source
-                m = re.search(r'<source[^>]+src=["\']([^"\']+)["\']', res)
-                if not m:
-                    # KVS 兜底：flashvars 里的 video_url
-                    m = re.search(r'video_url\s*[:=]\s*["\']([^"\']+)["\']', res)
-                if not m:
-                    return {"parse": 0, "playUrl": '', "url": '', "header": headerx}
+            src_value = m.group(1)
+            if src_value.startswith('//'):
+                src_value = 'https:' + src_value
+            elif not src_value.startswith('http'):
+                src_value = xurl + src_value.lstrip('/')
 
-                src_value = m.group(1)
-                if src_value.startswith('//'):
-                    src_value = 'https:' + src_value
-                elif not src_value.startswith('http'):
-                    src_value = xurl + src_value.lstrip('/')
-
-                # 同一 Session 内最多跟 3 跳
-                final_url = src_value
-                for _ in range(3):
-                    r = s.head(final_url, allow_redirects=False, timeout=5)
-                    if r.status_code in (301, 302, 303, 307, 308):
-                        loc = r.headers.get('Location')
-                        if loc:
-                            final_url = loc
-                            continue
-                    break
-
+            # 3) 直接返回，让播放器自己跟 302（这是本次最大的提速点）
             return {
                 "parse": 0,
                 "playUrl": '',
-                "url": final_url,
-                "header": headerx
+                "url": src_value,
+                "header": headers
             }
         except Exception as e:
             print(f"Error in playerContent: {str(e)}")
@@ -429,14 +423,13 @@ class Spider(Spider):
         except Exception as e:
             print(f"Error in searchContentPage: {str(e)}")
 
-        result = {
+        return {
             'list': videos,
             'page': page,
             'pagecount': 9999,
             'limit': 90,
             'total': 999999
         }
-        return result
 
     def searchContent(self, key, quick):
         return self.searchContentPage(key, quick, '1')
@@ -449,3 +442,32 @@ class Spider(Spider):
         elif params['type'] == "ts":
             return self.proxyTs(params)
         return None
+# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
+_PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
+
+def _cover_fallback(self, pic_url):
+    import urllib.parse
+    raw = pic_url or ''
+    parent_impl = getattr(super(Spider, self), '_cover_fallback', None)
+    if callable(parent_impl):
+        try:
+            raw = parent_impl(pic_url) or raw
+        except Exception:
+            pass
+    if not raw:
+        return ''
+    url = raw
+    for cdn in _PIC_CDN_POOL:
+        if cdn in raw:
+            url = raw.replace(cdn, _PIC_CDN_POOL[0])
+            break
+    proxy_base = getattr(self, 'proxy_base', None)
+    if proxy_base:
+        url = f'{proxy_base}{urllib.parse.quote(url)}'
+    return url
+
+Spider._cover_fallback = _cover_fallback
+# 注册爬虫
+if __name__ == '__main__':
+    from base.spider import Spider as BaseSpider
+    BaseSpider.register(Spider())
