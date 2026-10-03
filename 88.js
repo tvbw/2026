@@ -115,8 +115,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "http://pglblb.test.upcdn.net/2026py/%E4%B9%9D%E5%90%88%E4%B8%80.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/%E4%B9%9D%E5%90%88%E4%B8%80.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/9he1.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/9he1.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
