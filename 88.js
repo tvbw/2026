@@ -3,74 +3,8 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "51短剧",
-      "name": "5❤️51短剧【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/8e7d7cbcf44430370020936288630d347d45810c/yingshi/py9/51%E7%9F%AD%E5%89%A7.py"
-    },
-    {
-      "key": "lk21",
-      "name": "5❤️lk21【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/lk21.py"
-    },
-    {
-      "key": "animexin",
-      "name": "5❤️animexin【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/animexin.py"
-    },
-    {
-      "key": "[成人]骚女汇🔞",
-      "name": "5❤️[成人]骚女汇🔞【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/[成人]骚女汇🔞.py"
-    },
-    {
-      "key": "oppabiz",
-      "name": "5❤️oppabiz【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/oppabiz.py"
-    },
-    {
-      "key": "spankbang",
-      "name": "5❤️spankbang【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/spankbang.py"
-    },
-    {
       "key": "xb6v修护",
-      "name": "5❤️xb6v修护【🔞】",
+      "name": "❤️6V影视【正牌】",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -80,31 +14,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-      "key": "AVBeBe",
-      "name": "5❤️AVBeBe【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/AVBeBe.py"
-    },
-    {
-      "key": "央视网",
-      "name": "5❤️央视网",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/%E5%A4%AE%E8%A7%86%E7%BD%91.py"
-    },
-    {
-
-
-
       "key": "py_4K_fullhd-fullhd3",
       "name": "❤️FHD老僧中国【🔞】",
       "type": 3,
@@ -146,17 +55,16 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/duanju202610.js"
     },
     {
-
       "key": "51短剧",
-      "name": "5❤️51短剧🔞",
+      "name": "5❤️51短剧【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51短剧.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51短剧.py"
     },
     {
       "key": "csp_xbpq_s直播【🔞】",
@@ -356,8 +264,20 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py"
     },
     {
+      "key": "AVBeBe",
+      "name": "4❤️AVBeBe【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/avbebe.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/avbebe.py"
+    },
+    {
       "key": "叔叔和侄女",
-      "name": "5❤️叔叔和侄女｜🔞",
+      "name": "4❤️叔叔和侄女｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -809,6 +729,17 @@
         "type": "rect",
         "ratio": 1.65
       }
+    },
+    {
+      "key": "[成人]骚女汇🔞",
+      "name": "3❤️骚女汇【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/[成人]骚女汇🔞.py"
     },
     {
       "key": "csp_xbpq_极乐禁区",
