@@ -58,12 +58,10 @@
       "key": "51短剧",
       "name": "5❤️51短剧【🔞】",
       "type": 3,
-      "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51短剧.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51短剧.py"
     },
     {
