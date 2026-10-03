@@ -30,10 +30,7 @@ except ImportError:
 class Spider(BaseSpider):
     def init(self, extend="{}"):
         self.dynamic_urls = [
-            "https://zh.stripchat.com",
             "https://zh.stripchat.global",
-            "https://zh.stripol.com",
-            "https://stripchat.com",
         ]
         self.Doppiocdn = "doppiocdn.org"
         self.ua = (
