@@ -6,9 +6,7 @@ import sys
 import json
 import base64
 import urllib.parse
-from Crypto.Cipher import ARC4
-from Crypto.Util.Padding import unpad
-import binascii
+import concurrent.futures
 
 sys.path.append('..')
 
@@ -25,8 +23,9 @@ class Spider(Spider):
     global xurl
     global headerx
 
-    # 详情页 HTML 缓存：detailContent 写入，playerContent 读取
+    # 详情页 HTML 缓存 与 直链缓存
     _html_cache = {}
+    _src_cache = {}
 
     def getName(self):
         return "首页"
@@ -41,7 +40,7 @@ class Spider(Spider):
         pass
 
     # ------------------------------------------------------------------
-    # 通用工具：稳健取图
+    # 取图
     # ------------------------------------------------------------------
     def _get_pic(self, vod):
         img = vod.find('img')
@@ -62,7 +61,7 @@ class Spider(Spider):
         return pic
 
     # ------------------------------------------------------------------
-    # 通用工具：解析列表项
+    # 列表项解析
     # ------------------------------------------------------------------
     def _parse_item(self, vod):
         name = ""
@@ -86,6 +85,65 @@ class Spider(Spider):
             "vod_remarks": remark
         }
 
+    # ------------------------------------------------------------------
+    # 并发探活工具
+    # ------------------------------------------------------------------
+    def _probe_source(self, session, url, headers):
+        """用 Range 只取 1 字节，验证该源是否可用；返回 (url, ok)"""
+        try:
+            r = session.get(
+                url,
+                headers={**headers, 'Range': 'bytes=0-1'},
+                timeout=5,
+                stream=True,
+                allow_redirects=True,
+            )
+            code = r.status_code
+            r.close()
+            return url, code in (200, 206)
+        except Exception:
+            return url, False
+
+    def _resolve_sources(self, res, page_url, headers):
+        """
+        从详情页 HTML 中提取所有候选直链，
+        多个候选时并发探活，选最先可用的一个返回。
+        """
+        # 优先 <source src=...>
+        urls = re.findall(r'<source[^>]+src=["\']([^"\']+)["\']', res)
+        if not urls:
+            # KVS 兜底
+            urls = re.findall(r'video_url\s*[:=]\s*["\']([^"\']+)["\']', res)
+
+        norm = []
+        for u in urls:
+            if u.startswith('//'):
+                u = 'https:' + u
+            elif not u.startswith('http'):
+                u = xurl + u.lstrip('/')
+            if u not in norm:
+                norm.append(u)
+
+        if not norm:
+            return ""
+        if len(norm) == 1:
+            return norm[0]
+
+        # 并发探活，谁先可用用谁
+        best = norm[0]
+        with requests.Session() as s:
+            s.headers.update(headers)
+            workers = min(4, len(norm))
+            with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as ex:
+                futs = {ex.submit(self._probe_source, s, u, headers): u for u in norm}
+                for f in concurrent.futures.as_completed(futs):
+                    u, ok = f.result()
+                    if ok:
+                        best = u
+                        break
+        return best
+
+    # ------------------------------------------------------------------
     def extract_middle_text(self, text, start_str, end_str, pl,
                             start_index1: str = '', end_index2: str = ''):
         if pl == 3:
@@ -152,9 +210,8 @@ class Spider(Spider):
     # 首页分类
     # ------------------------------------------------------------------
     def homeContent(self, filter):
-        result = {}
         result = {"class": [
-       {"type_id": "latest-updates", "type_name": "新"},
+        {"type_id": "latest-updates", "type_name": "新"},
         {"type_id": "top-rated", "type_name": "佳"},
         {"type_id": "most-popular", "type_name": "热"},
         {"type_id": "sites/kink-classics/", "type_name": "King"},
@@ -257,9 +314,7 @@ class Spider(Spider):
         {"type_id": "categories/thong", "type_name": "Thong🌠"},
         {"type_id": "categories/stockings", "type_name": "Stockings🌠"},
         {"type_id": "categories/pantyhose", "type_name": "Pantyhose🌠"}
-        ],
-        }
-        return result
+        ]}
 
     # ------------------------------------------------------------------
     # 首页视频
@@ -269,15 +324,11 @@ class Spider(Spider):
         try:
             detail = requests.get(url=xurl, headers=headerx, timeout=10)
             detail.encoding = "utf-8"
-            res = detail.text
-            doc = BeautifulSoup(res, "lxml")
-
+            doc = BeautifulSoup(detail.text, "lxml")
             section = doc.find('div', id="list_videos_videos_watched_right_now_items")
             if section:
-                vods = section.find_all(['div', 'article'], class_="item")
-                for vod in vods:
+                for vod in section.find_all(['div', 'article'], class_="item"):
                     videos.append(self._parse_item(vod))
-
             return {'list': videos}
         except Exception as e:
             print(f"Error in homeVideoContent: {str(e)}")
@@ -287,25 +338,16 @@ class Spider(Spider):
     # 分类
     # ------------------------------------------------------------------
     def categoryContent(self, cid, pg, filter, ext):
-        result = {}
         videos = []
         try:
-            if pg and int(pg) > 1:
-                url = f'{xurl}{cid}/{pg}/'
-            else:
-                url = f'{xurl}{cid}/'
-
+            url = f'{xurl}{cid}/{pg}/' if (pg and int(pg) > 1) else f'{xurl}{cid}/'
             detail = requests.get(url=url, headers=headerx, timeout=10)
             detail.encoding = "utf-8"
-            res = detail.text
-            doc = BeautifulSoup(res, "lxml")
-
+            doc = BeautifulSoup(detail.text, "lxml")
             section = doc.find('div', class_="list-videos")
             if section:
-                vods = section.find_all(['div', 'article'], class_="item")
-                for vod in vods:
+                for vod in section.find_all(['div', 'article'], class_="item"):
                     videos.append(self._parse_item(vod))
-
         except Exception as e:
             print(f"Error in categoryContent: {str(e)}")
 
@@ -318,7 +360,7 @@ class Spider(Spider):
         }
 
     # ------------------------------------------------------------------
-    # 详情：关键改动 —— 把整页 HTML 缓存起来给 playerContent 复用
+    # 详情：这里就把直链抓出来缓存
     # ------------------------------------------------------------------
     def detailContent(self, ids):
         global pm
@@ -332,8 +374,12 @@ class Spider(Spider):
         res1.encoding = "utf-8"
         res = res1.text
 
-        # 【缓存】保存详情页 HTML
         self._html_cache[did] = res
+
+        # 关键：此刻并发探活所有候选源，把直链缓存好
+        play_headers = {**headerx, 'Referer': did}
+        src = self._resolve_sources(res, did, play_headers)
+        self._src_cache[did] = src
 
         content = '👉' + self.extract_middle_text(res, '<h1>', '</h1>', 0)
 
@@ -342,83 +388,72 @@ class Spider(Spider):
             'href=".*?">(.*?)</a>'
         )
 
-        bofang = did
-
         videos.append({
             "vod_id": did,
             "vod_actor": yanuan,
             "vod_director": '',
             "vod_content": content,
             "vod_play_from": '💗FullHD💗',
-            "vod_play_url": bofang
+            "vod_play_url": f'正片${did}'   # 只显示「正片」按钮
         })
 
         result['list'] = videos
         return result
 
     # ------------------------------------------------------------------
-    # 播放：关键改动 —— 复用缓存 + 不再主动探 302，交给播放器
+    # 播放：零网络请求，直接吐缓存的直链
     # ------------------------------------------------------------------
     def playerContent(self, flag, id, vipFlags):
         if 'http' not in id:
             id = xurl + id
 
         headers = dict(headerx)
-        headers['Referer'] = id   # 关键：给播放器带 Referer，过 CDN 防盗链
+        headers['Referer'] = id
+        headers['Origin'] = 'https://www.fullhd.to'
 
-        try:
-            # 1) 优先用 detailContent 缓存的 HTML，避免二次 GET
-            res = self._html_cache.get(id)
-            if res is None:
-                res = requests.get(id, headers=headers, timeout=10).text
+        # 1) 优先用详情页阶段缓存好的直链
+        src = self._src_cache.get(id)
 
-            # 2) 优先正则抓 <source src>，失败再兜底 video_url
-            m = re.search(r'<source[^>]+src=["\']([^"\']+)["\']', res)
-            if not m:
-                m = re.search(r'video_url\s*[:=]\s*["\']([^"\']+)["\']', res)
-            if not m:
-                return {"parse": 0, "playUrl": '', "url": '', "header": headerx}
+        # 2) 缓存失效（比如框架只调了 playerContent）时兜底现场抓一次
+        if not src:
+            try:
+                res = self._html_cache.get(id)
+                if res is None:
+                    res = requests.get(id, headers=headers, timeout=10).text
+                    self._html_cache[id] = res
+                src = self._resolve_sources(res, id, headers)
+                self._src_cache[id] = src
+            except Exception as e:
+                print(f"Error resolving src: {str(e)}")
+                src = ""
 
-            src_value = m.group(1)
-            if src_value.startswith('//'):
-                src_value = 'https:' + src_value
-            elif not src_value.startswith('http'):
-                src_value = xurl + src_value.lstrip('/')
+        if not src:
+            return {"parse": 0, "playUrl": '', "url": '', "header": headers}
 
-            # 3) 直接返回，让播放器自己跟 302（这是本次最大的提速点）
-            return {
-                "parse": 0,
-                "playUrl": '',
-                "url": src_value,
-                "header": headers
-            }
-        except Exception as e:
-            print(f"Error in playerContent: {str(e)}")
-            return {"parse": 0, "playUrl": '', "url": '', "header": headerx}
+        # 3) 直链返回：parse=0 jx=0 让框架走直连，不再解析不再代理
+        return {
+            "parse": 0,
+            "playUrl": '',
+            "url": src,
+            "header": headers,
+            "jx": 0,
+        }
 
     # ------------------------------------------------------------------
     # 搜索
     # ------------------------------------------------------------------
     def searchContentPage(self, key, quick, page):
-        result = {}
         videos = []
         if not page:
             page = '1'
-        if page == '1':
-            url = f'{xurl}search/{key}/'
-        else:
-            url = f'{xurl}search/{key}/{str(page)}/'
-
+        url = f'{xurl}search/{key}/' if page == '1' else f'{xurl}search/{key}/{str(page)}/'
         try:
             detail = requests.get(url=url, headers=headerx, timeout=10)
             detail.encoding = "utf-8"
-            res = detail.text
-            doc = BeautifulSoup(res, "lxml")
-
+            doc = BeautifulSoup(detail.text, "lxml")
             section = doc.find('div', class_="list-videos")
             if section:
-                vods = section.find_all(['div', 'article'], class_="item")
-                for vod in vods:
+                for vod in section.find_all(['div', 'article'], class_="item"):
                     videos.append(self._parse_item(vod))
         except Exception as e:
             print(f"Error in searchContentPage: {str(e)}")
@@ -442,32 +477,3 @@ class Spider(Spider):
         elif params['type'] == "ts":
             return self.proxyTs(params)
         return None
-# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
-_PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
-
-def _cover_fallback(self, pic_url):
-    import urllib.parse
-    raw = pic_url or ''
-    parent_impl = getattr(super(Spider, self), '_cover_fallback', None)
-    if callable(parent_impl):
-        try:
-            raw = parent_impl(pic_url) or raw
-        except Exception:
-            pass
-    if not raw:
-        return ''
-    url = raw
-    for cdn in _PIC_CDN_POOL:
-        if cdn in raw:
-            url = raw.replace(cdn, _PIC_CDN_POOL[0])
-            break
-    proxy_base = getattr(self, 'proxy_base', None)
-    if proxy_base:
-        url = f'{proxy_base}{urllib.parse.quote(url)}'
-    return url
-
-Spider._cover_fallback = _cover_fallback
-# 注册爬虫
-if __name__ == '__main__':
-    from base.spider import Spider as BaseSpider
-    BaseSpider.register(Spider())
