@@ -14,6 +14,19 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
+
+      "key": "/iptv",
+      "name": "5❤️电视直播",
+      "type": 3,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/iptv234.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/iptv234.py"
+    },
+    {
+
       "key": "py_4K_fullhd-fullhd3",
       "name": "❤️FHD老僧中国【🔞】",
       "type": 3,
@@ -55,16 +68,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/duanju202610.js"
     },
     {
-      "key": "51短剧",
-      "name": "5❤️51短剧【🔞】",
-      "type": 3,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51短剧.py"
-    },
-    {
+
       "key": "csp_xbpq_s直播【🔞】",
       "name": "❤️StripChat直播XB【🔞】",
       "type": 3,
