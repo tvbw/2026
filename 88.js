@@ -44,6 +44,27 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/duanju202610.js"
     },
     {
+      "key": "央视直播",
+      "name": "5❤️央视直播",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/央视直播.js"
+    },
+    {
+      "key": "py_StripChat",
+      "name": "❤️StripChat直播PY【🔞】",
+      "type": 3,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/StripChat.py"
+    },
+    {
       "key": "csp_xbpq_s直播【🔞】",
       "name": "❤️StripChat直播XB【🔞】",
       "type": 3,
