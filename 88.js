@@ -33,6 +33,17 @@
       "changeable": 1
     },
     {
+      "key": "短剧大全",
+      "name": "5❤️短剧大全【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/duanju202610.js"
+    },
+    {
 
       "key": "py_StripChat",
       "name": "❤️StripChat直播PY【🔞】",
@@ -76,49 +87,6 @@
       }
     },
     {
-      "key": "py_红果短剧",
-      "name": "❤️红果短剧",
-      "type": 3,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/TVboxTest/main/py/%E7%B4%85%E6%9E%9C_%E5%88%87%E9%9B%86%E6%B5%81%E6%9A%A2.py"
-    },
-    {
-
-      "key": "pyYouTube",
-      "name": "❤️YouTube",
-      "type": 3,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/TVboxTest/main/py/YouTube%E2%85%A0.py"
-    },
-    {
-      "key": "py_精英突击",
-      "name": "❤️精英突击",
-      "type": 3,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/TVboxTest/main/py/精英突击.py"
-    },
-    {
-      "key": "黄剧",
-      "name": "麻豆视频｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/TVboxTest/main/js/%E9%BB%84%E5%89%A7.js"
-    },
-    {
-
       "key": "香蕉1区",
       "name": "5❤️香蕉1区【🔞】",
       "type": 3,
