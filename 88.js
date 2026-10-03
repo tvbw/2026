@@ -4,7 +4,7 @@
   "sites": [
     {
       "key": "py_4K_fullhd-fullhd",
-      "name": "❤️FHD书生中国【🔞1】",
+      "name": "❤️FHD书生中国【1】",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -18,24 +18,8 @@
       "changeable": 1
     },
     {
-            "key": "py_4K_fullhd-fullhd3",
-            "name": "❤️FHD老僧中国【🔞1】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
-            "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
-
       "key": "py_4K_fullhd-fullhd2",
-      "name": "❤️FHD书生世界【🔞1】",
+      "name": "❤️FHD书生世界【2】",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -49,21 +33,36 @@
       "changeable": 1
     },
     {
-            "key": "py_4K_fullhd4",
-            "name": "❤️FHD老僧世界【🔞1】",
-            "type": 3,
-            "playerType": 2,
-            "style": {
-                "type": "rect",
-                "ratio": 1.33
-            },
-            "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd4.py",
-            "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd4.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1
-        },
-        {
+      "key": "py_4K_fullhd-fullhd3",
+      "name": "❤️FHD老僧中国【3】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
+      "key": "py_4K_fullhd4",
+      "name": "❤️FHD老毛世界【4】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd4.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd4.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
       "key": "正宗聚合",
       "name": "5❤️正宗采集聚合",
       "type": 3,
