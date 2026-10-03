@@ -11,7 +11,6 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
       "searchable": 1,
       "quickSearch": 1,
