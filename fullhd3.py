@@ -16,18 +16,13 @@ xurl = "https://www.fullhd.to/zh/"
 
 headerx = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36'
-}
-
-# 创建全局会话对象，复用连接
-session = requests.Session()
-session.headers.update(headerx)
+          }
 
 pm = ''
 
 class Spider(Spider):
     global xurl
     global headerx
-    global session
 
     def getName(self):
         return "首页"
@@ -101,33 +96,6 @@ class Spider(Spider):
                 new_list = [f'✨{item}' for item in matches]
                 jg = '$$$'.join(new_list)
                 return jg
-
-    def get_image_url(self, vod_element):
-        """统一处理图片URL获取，优化加载速度"""
-        # 优先查找lazyload图片
-        img = vod_element.find('img', class_="lazyload")
-        if img and img.get('data-src'):
-            pic = img['data-src']
-        else:
-            # 其次查找普通图片
-            img = vod_element.find('img', class_="thumb_img")
-            if img and img.get('src'):
-                pic = img['src']
-            else:
-                # 最后查找任何图片标签
-                img = vod_element.find('img')
-                pic = img.get('src') if img else ""
-        
-        # 统一处理图片URL
-        if pic:
-            if pic.startswith('//'):
-                pic = 'https:' + pic
-            elif pic.startswith('/'):
-                pic = xurl.rstrip('/') + pic
-            elif not pic.startswith('http'):
-                pic = xurl.rstrip('/') + '/' + pic.lstrip('/')
-        
-        return pic
 
     def homeContent(self, filter):
         result = {}
@@ -242,41 +210,57 @@ class Spider(Spider):
     def homeVideoContent(self):
         videos = []
         try:
-            # 使用会话并设置超时
-            detail = session.get(url=xurl, timeout=10)
+            detail = requests.get(url=xurl, headers=headerx)
             detail.encoding = "utf-8"
             res = detail.text
-            # 使用更快的解析器
-            doc = BeautifulSoup(res, "html.parser")
+            doc = BeautifulSoup(res, "lxml")
 
-            # 获取视频列表
-            section = doc.find('div', id="list_videos_videos_watched_right_now_items")
-            if section:
+            # Get videos from different sections
+            sections = {
+                "latest-updates": "最新视频",
+                "top-rated": "最佳视频",
+                "most-popular": "热门影片"
+            }
+            
+            for section_id, section_name in sections.items():
+                section = doc.find('div', id=f"list_videos_videos_watched_right_now_items")
+                if not section:
+                    continue
+                    
                 vods = section.find_all('div', class_="item")
                 for vod in vods:
-                    # 获取标题和链接
-                    link = vod.find('a')
-                    if not link:
-                        continue
+                    names = vod.find_all('a')
+                    name = names[0]['title'] if names and 'title' in names[0].attrs else section_name
+
+                    ids = vod.find_all('a')
+                    id = ids[0]['href'] if ids else ""
+
+                    # 获取图片 - 适配两种不同的img标签结构
+                    pic = ""
+                    # 第一种方式：查找带有data-src属性的img标签
+                    pics = vod.find('img', class_="lazyload")
+                    if pics and pics.get('data-src'):
+                        pic = pics['data-src']
+                    # 第二种方式：查找带有src属性的img标签
+                    if not pic:
+                        pics = vod.find('img', class_="thumb_img")
+                        if pics and pics.get('src'):
+                            pic = pics['src']
                     
-                    name = link.get('title', '').strip()
-                    id = link.get('href', '')
-                    
-                    # 获取图片
-                    pic = self.get_image_url(vod)
-                    
-                    # 获取时长
+                    # 如果找到了图片但URL不完整，添加基础URL
+                    if pic and 'http' not in pic:
+                        pic = xurl + pic
+
                     remarks = vod.find('span', class_="duration")
                     remark = remarks.text.strip() if remarks else ""
 
-                    if name:  # 只有有标题的才添加
-                        video = {
-                            "vod_id": id,
-                            "vod_name": name,
-                            "vod_pic": pic,
-                            "vod_remarks": remark
-                        }
-                        videos.append(video)
+                    video = {
+                        "vod_id": id,
+                        "vod_name": name,
+                        "vod_pic": pic,
+                        "vod_remarks": remark
+                    }
+                    videos.append(video)
 
             result = {'list': videos}
             return result
@@ -289,42 +273,51 @@ class Spider(Spider):
         videos = []
         try:
             if pg and int(pg) > 1:
-                url = f'{xurl.rstrip("/")}/{cid}/{pg}/'
+                url = f'{xurl}/{cid}/{pg}/'
             else:
-                url = f'{xurl.rstrip("/")}/{cid}/'
+                url = f'{xurl}/{cid}/'
 
-            # 使用会话并设置超时
-            detail = session.get(url=url, timeout=10)
+            detail = requests.get(url=url, headers=headerx)
             detail.encoding = "utf-8"
             res = detail.text
-            doc = BeautifulSoup(res, "html.parser")
+            doc = BeautifulSoup(res, "lxml")
 
             section = doc.find('div', class_="list-videos")
             if section:
                 vods = section.find_all('div', class_="item")
                 for vod in vods:
-                    link = vod.find('a')
-                    if not link:
-                        continue
+                    names = vod.find_all('a')
+                    name = names[0]['title'] if names and 'title' in names[0].attrs else ""
+
+                    ids = vod.find_all('a')
+                    id = ids[0]['href'] if ids else ""
+
+                    # 获取图片 - 适配两种不同的img标签结构
+                    pic = ""
+                    # 第一种方式：查找带有data-src属性的img标签
+                    pics = vod.find('img', class_="lazyload")
+                    if pics and pics.get('data-src'):
+                        pic = pics['data-src']
+                    # 第二种方式：查找带有src属性的img标签
+                    if not pic:
+                        pics = vod.find('img', class_="thumb_img")
+                        if pics and pics.get('src'):
+                            pic = pics['src']
                     
-                    name = link.get('title', '').strip()
-                    id = link.get('href', '')
-                    
-                    # 获取图片
-                    pic = self.get_image_url(vod)
-                    
-                    # 获取时长
+                    # 如果找到了图片但URL不完整，添加基础URL
+                    if pic and 'http' not in pic:
+                        pic = xurl + pic
+
                     remarks = vod.find('span', class_="duration")
                     remark = remarks.text.strip() if remarks else ""
 
-                    if name:
-                        video = {
-                            "vod_id": id,
-                            "vod_name": name,
-                            "vod_pic": pic,
-                            "vod_remarks": remark
-                        }
-                        videos.append(video)
+                    video = {
+                        "vod_id": id,
+                        "vod_name": name,
+                        "vod_pic": pic,
+                        "vod_remarks": remark
+                    }
+                    videos.append(video)
 
         except Exception as e:
             print(f"Error in categoryContent: {str(e)}")
@@ -345,90 +338,57 @@ class Spider(Spider):
         videos = []
         playurl = ''
         if 'http' not in did:
-            did = xurl.rstrip('/') + '/' + did.lstrip('/')
-        
-        try:
-            # 使用会话并设置超时
-            res1 = session.get(url=did, timeout=10)
-            res1.encoding = "utf-8"
-            res = res1.text
+            did = xurl + did
+        res1 = requests.get(url=did, headers=headerx)
+        res1.encoding = "utf-8"
+        res = res1.text
 
-            content = '👉' + self.extract_middle_text(res,'<h1>','</h1>', 0)
+        content = '👉' + self.extract_middle_text(res,'<h1>','</h1>', 0)
 
-            yanuan = self.extract_middle_text(res, '<span>Pornstars:</span>','</div>',1, 'href=".*?">(.*?)</a>')
+        yanuan = self.extract_middle_text(res, '<span>Pornstars:</span>','</div>',1, 'href=".*?">(.*?)</a>')
 
-            bofang = did
+        bofang = did
 
-            videos.append({
-                "vod_id": did,
-                "vod_actor": yanuan,
-                "vod_director": '',
-                "vod_content": content,
-                "vod_play_from": '老僧酿酒',
-                "vod_play_url": bofang
-                         })
+        videos.append({
+            "vod_id": did,
+            "vod_actor": yanuan,
+            "vod_director": '',
+            "vod_content": content,
+            "vod_play_from": '老僧酿酒',
+            "vod_play_url": bofang
+                     })
 
-            result['list'] = videos
-            return result
-        except Exception as e:
-            print(f"Error in detailContent: {str(e)}")
-            return {'list': []}
+        result['list'] = videos
+        return result
 
     def playerContent(self, flag, id, vipFlags):
-        try:
-            parts = id.split("http")
-            xiutan = 0
-            if xiutan == 0:
-                if len(parts) > 1:
-                    before_https, after_https = parts[0], 'http' + parts[1]
-                
-                # 使用会话获取页面
-                res = session.get(url=after_https, timeout=10)
-                res_text = res.text
+        parts = id.split("http")
+        xiutan = 0
+        if xiutan == 0:
+            if len(parts) > 1:
+                before_https, after_https = parts[0], 'http' + parts[1]
+            res = requests.get(url=after_https, headers=headerx)
+            res = res.text
 
-                url2 = self.extract_middle_text(res_text, '<video', '</video>', 0).replace('\\', '')
-                soup = BeautifulSoup(url2, 'html.parser')
-                first_source = soup.find('source')
-                if not first_source:
-                    return {}
-                    
-                src_value = first_source.get('src')
-                if not src_value:
-                    return {}
+            url2 = self.extract_middle_text(res, '<video', '</video>', 0).replace('\\', '')
+            soup = BeautifulSoup(url2, 'html.parser')
+            first_source = soup.find('source')
+            src_value = first_source.get('src')
 
-                # 直接获取最终重定向地址，减少请求次数
-                redirect_url = src_value
-                max_redirects = 3
-                for _ in range(max_redirects):
-                    try:
-                        response = session.head(redirect_url, allow_redirects=False, timeout=5)
-                        if response.status_code in [301, 302] and 'Location' in response.headers:
-                            redirect_url = response.headers['Location']
-                            # 处理相对URL
-                            if redirect_url.startswith('//'):
-                                redirect_url = 'https:' + redirect_url
-                            elif redirect_url.startswith('/'):
-                                # 从原始URL提取域名
-                                from urllib.parse import urlparse
-                                parsed = urlparse(src_value)
-                                base_domain = f"{parsed.scheme}://{parsed.netloc}"
-                                redirect_url = base_domain + redirect_url
-                        else:
-                            break
-                    except:
-                        break
+            response = requests.head(src_value, allow_redirects=False)
+            if response.status_code == 302:
+                redirect_url = response.headers['Location']
 
-                result = {}
-                result["parse"] = xiutan
-                result["playUrl"] = ''
-                result["url"] = redirect_url
-                result["header"] = headerx
-                return result
-        except Exception as e:
-            print(f"Error in playerContent: {str(e)}")
-            return {}
+            response = requests.head(redirect_url, allow_redirects=False)
+            if response.status_code == 302:
+                redirect_url = response.headers['Location']
 
-        return {}
+            result = {}
+            result["parse"] = xiutan
+            result["playUrl"] = ''
+            result["url"] = redirect_url
+            result["header"] = headerx
+            return result
 
     def searchContentPage(self, key, quick, page):
         result = {}
@@ -436,43 +396,52 @@ class Spider(Spider):
         if not page:
             page = '1'
         if page == '1':
-            url = f'{xurl.rstrip("/")}/search/{key}/'
+            url = f'{xurl}/search/{key}/'
         else:
-            url = f'{xurl.rstrip("/")}/search/{key}/{str(page)}/'
+            url = f'{xurl}/search/{key}/{str(page)}/'
 
         try:
-            # 使用会话并设置超时
-            detail = session.get(url=url, timeout=10)
+            detail = requests.get(url=url, headers=headerx)
             detail.encoding = "utf-8"
             res = detail.text
-            doc = BeautifulSoup(res, "html.parser")
+            doc = BeautifulSoup(res, "lxml")
 
             section = doc.find('div', class_="list-videos")
             if section:
                 vods = section.find_all('div', class_="item")
                 for vod in vods:
-                    link = vod.find('a')
-                    if not link:
-                        continue
+                    names = vod.find_all('a')
+                    name = names[0]['title'] if names and 'title' in names[0].attrs else ""
+
+                    ids = vod.find_all('a')
+                    id = ids[0]['href'] if ids else ""
+
+                    # 获取图片 - 适配两种不同的img标签结构
+                    pic = ""
+                    # 第一种方式：查找带有data-src属性的img标签
+                    pics = vod.find('img', class_="lazyload")
+                    if pics and pics.get('data-src'):
+                        pic = pics['data-src']
+                    # 第二种方式：查找带有src属性的img标签
+                    if not pic:
+                        pics = vod.find('img', class_="thumb_img")
+                        if pics and pics.get('src'):
+                            pic = pics['src']
                     
-                    name = link.get('title', '').strip()
-                    id = link.get('href', '')
-                    
-                    # 获取图片
-                    pic = self.get_image_url(vod)
-                    
-                    # 获取时长
+                    # 如果找到了图片但URL不完整，添加基础URL
+                    if pic and 'http' not in pic:
+                        pic = xurl + pic
+
                     remarks = vod.find('span', class_="duration")
                     remark = remarks.text.strip() if remarks else ""
 
-                    if name:
-                        video = {
-                            "vod_id": id,
-                            "vod_name": name,
-                            "vod_pic": pic,
-                            "vod_remarks": remark
-                        }
-                        videos.append(video)
+                    video = {
+                        "vod_id": id,
+                        "vod_name": name,
+                        "vod_pic": pic,
+                        "vod_remarks": remark
+                    }
+                    videos.append(video)
         except Exception as e:
             print(f"Error in searchContentPage: {str(e)}")
 
@@ -495,32 +464,4 @@ class Spider(Spider):
             return self.proxyMedia(params)
         elif params['type'] == "ts":
             return self.proxyTs(params)
-# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
-_PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
-
-def _cover_fallback(self, pic_url):
-    import urllib.parse
-    raw = pic_url or ''
-    parent_impl = getattr(super(Spider, self), '_cover_fallback', None)
-    if callable(parent_impl):
-        try:
-            raw = parent_impl(pic_url) or raw
-        except Exception:
-            pass
-    if not raw:
-        return ''
-    url = raw
-    for cdn in _PIC_CDN_POOL:
-        if cdn in raw:
-            url = raw.replace(cdn, _PIC_CDN_POOL[0])
-            break
-    proxy_base = getattr(self, 'proxy_base', None)
-    if proxy_base:
-        url = f'{proxy_base}{urllib.parse.quote(url)}'
-    return url
-
-Spider._cover_fallback = _cover_fallback
-# 注册爬虫
-if __name__ == '__main__':
-    from base.spider import Spider as BaseSpider
-    BaseSpider.register(Spider())
+        return None
