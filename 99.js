@@ -1,5 +1,5 @@
 {
-  "spider": "https://raw.githubusercontent.com/tvbw/2026/main/aowu.jar",
+  "spider": "https://raw.githubusercontent.com/tvbw/2026/main/custom_spider.jar",
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
