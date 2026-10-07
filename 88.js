@@ -3,117 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "abjav",
-      "name": "❤️abjav",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/abjav.py"
-    },
-    {
-      "key": "[成人]蝙蝠视频🔞",
-      "name": "❤️[成人]蝙蝠视频🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/[成人]蝙蝠视频🔞.py"
-    },
-    {
-      "key": "stripchat-live",
-      "name": "❤️stripchat-live",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/stripchat-live.py"
-    },
-    {
-      "key": "ysp-live(1)",
-      "name": "❤️ysp-live(1)",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/ysp-live(1).py"
-    },
-    {
-      "key": "欲望之眼🔞",
-      "name": "❤️欲望之眼🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/欲望之眼🔞.py"
-    },
-    {
-      "key": "萝莉岛",
-      "name": "❤️萝莉岛",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/萝莉岛.py"
-    },
-    {
-      "key": "午夜影视",
-      "name": "❤️午夜影视",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/午夜影视.py"
-    },
-    {
-      "key": "成人卡通",
-      "name": "❤️成人卡通",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/%E6%88%90%E4%BA%BA%E5%8D%A1%E9%80%9A_%E8%B3%87%E6%96%99%E5%A4%BE%E5%88%86%E9%A1%9E%E7%89%88.py"
-    },
-    {
-      "key": "暗黑蜜桃🔞",
-      "name": "❤️暗黑蜜桃🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/暗黑蜜桃🔞.py"
-    },
-    {
-      "key": "蜜桃视频",
-      "name": "❤️蜜桃视频",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/蜜桃视频.py"
-    },
-    {
-
       "key": "xb6v修护",
       "name": "❤️6V影视【正牌】",
       "type": 3,
@@ -122,33 +11,10 @@
         "type": "rect",
         "ratio": 1.66
       },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py",
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-      "key": "xb6v修护",
-      "name": "❤️6V影视【正牌】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
-    },
-    {
-
-      "key": "/iptv",
-      "name": "5❤️电视直播",
-      "type": 3,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/iptv234.py",
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/pytesx/iptv234.py"
-    },
-    {
-
       "key": "py_4K_fullhd-fullhd3",
       "name": "❤️FHD老僧中国【🔞】",
       "type": 3,
@@ -412,8 +278,20 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/叔叔和侄女.py"
     },
     {
+      "key": "成人卡通",
+      "name": "4❤️成人卡通｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/成人卡通.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/成人卡通.py"
+    },
+    {
       "key": "溏心次元",
-      "name": "溏心次元｜🔞",
+      "name": "4❤️溏心次元｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -1132,6 +1010,39 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py",
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py"
+    },
+    {
+      "key": "[成人]蝙蝠视频🔞",
+      "name": "❤️[成人]蝙蝠视频🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/[成人]蝙蝠视频🔞.py"
+    },
+    {
+       "key": "欲望之眼🔞",
+      "name": "❤️欲望之眼🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/欲望之眼🔞.py"
+    },
+    {
+      "key": "午夜影视",
+      "name": "❤️午夜影视",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/午夜影视.py"
     },
     {
       "key": "百花资源库",
