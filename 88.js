@@ -15,6 +15,13 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
+  "key": "Nostr",
+  "name": "Nostr推荐",
+  "type": 3,
+  "api": "csp_Nostr",
+  "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
+    },
+    {
       "key": "py_4K_fullhd-fullhd3",
       "name": "❤️FHD老僧中国【🔞】",
       "type": 3,
@@ -250,8 +257,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua1.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua1.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py"
     },
     {
       "key": "AVBeBe",
