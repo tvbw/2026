@@ -250,8 +250,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua1.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua1.py"
     },
     {
       "key": "AVBeBe",
