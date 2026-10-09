@@ -446,9 +446,9 @@ class Spider(Spider):
         """Get working host from known dynamic URLs"""
         # Known working URLs from the dynamic gateway
         dynamic_urls = [
-            'https://access.ntnvmblbz.cc/',
-            'https://breath.ntnvmblbz.cc/', 
-            'https://book.ntnvmblbz.cc/'
+            'https://access.wkngpljmf.cc/',
+            'https://burn.wkngpljmf.cc/', 
+            'https://barrier.wkngpljmf.cc/'
         ]
         
         # Test each URL to find a working one
