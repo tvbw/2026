@@ -1,7 +1,26 @@
 {
-  "spider": "https://raw.githubusercontent.com/tvbw/2026/main/custom_spider.jar",
+  "spider": "https://raw.githubusercontent.com/tvbw/2026/main/fm.jar",
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
+    {
+      "key": "xb6v修护",
+      "name": "❤️6V影视【正牌】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
+    },
+    {
+      "key": "Nostr",
+      "name": "Nostr推荐",
+      "type": 3,
+      "api": "csp_Nostr",
+      "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
+    },
     {
       "key": "py_4K_fullhd-fullhd3",
       "name": "❤️FHD老僧中国【🔞】",
@@ -33,20 +52,15 @@
       "changeable": 1
     },
     {
-
-      "key": "py_StripChat",
-      "name": "❤️StripChat直播PY【🔞】",
+      "key": "短剧大全",
+      "name": "5❤️短剧大全【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 1.33
+        "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/StripChat.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/StripChat.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/duanju202610.js"
     },
     {
       "key": "csp_xbpq_s直播【🔞】",
@@ -246,8 +260,20 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py"
     },
     {
+      "key": "AVBeBe",
+      "name": "4❤️AVBeBe【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/avbebe.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/avbebe.py"
+    },
+    {
       "key": "叔叔和侄女",
-      "name": "5❤️叔叔和侄女｜🔞",
+      "name": "4❤️叔叔和侄女｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -258,8 +284,20 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/叔叔和侄女.py"
     },
     {
+      "key": "成人卡通",
+      "name": "4❤️成人卡通｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/成人卡通.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/成人卡通.py"
+    },
+    {
       "key": "溏心次元",
-      "name": "溏心次元｜🔞",
+      "name": "4❤️溏心次元｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -701,6 +739,17 @@
       }
     },
     {
+      "key": "[成人]骚女汇🔞",
+      "name": "3❤️骚女汇【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/[成人]骚女汇🔞.py"
+    },
+    {
       "key": "csp_xbpq_极乐禁区",
       "name": "3❤️极乐禁区【🔞广】",
       "type": 3,
@@ -969,6 +1018,39 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/女神学神.py"
     },
     {
+      "key": "[成人]蝙蝠视频🔞",
+      "name": "❤️[成人]蝙蝠视频🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/[成人]蝙蝠视频🔞.py"
+    },
+    {
+      "key": "欲望之眼🔞",
+      "name": "❤️欲望之眼🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/欲望之眼🔞.py"
+    },
+    {
+      "key": "午夜影视",
+      "name": "❤️午夜影视",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/午夜影视.py"
+    },
+    {
       "key": "百花资源库",
       "name": "百花",
       "type": 1,
@@ -1076,6 +1158,24 @@
       "name": "AI直播",
       "type": 0,
       "url": "https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E7%9F%AD%E5%89%A7.txt",
+      "ua": "okHttp/Mod-1.4.0.0"
+    },
+    {
+      "name": "黄豆短剧",
+      "type": 0,
+      "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E9%BB%84%E8%B1%86%E7%9F%AD%E5%89%A7.m3u",
+      "ua": "okHttp/Mod-1.4.0.0"
+    },
+    {
+      "name": "欧美剧场1",
+      "type": 0,
+      "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E8%A7%86%E9%A2%91.txt",
+      "ua": "okHttp/Mod-1.4.0.0"
+    },
+    {
+      "name": "欧美剧场2",
+      "type": 0,
+      "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E6%AC%A7%E7%BE%8E%E8%A7%86%E9%A2%91.m3u",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
