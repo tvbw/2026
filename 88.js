@@ -1161,21 +1161,24 @@
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
-      "name": "黄豆短剧",
-      "type": 0,
-      "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E9%BB%84%E8%B1%86%E7%9F%AD%E5%89%A7.m3u",
-      "ua": "okHttp/Mod-1.4.0.0"
+      "name": "央視頻",
+      "url": "https://capi.yangshipin.cn/api/oms/pc/navigation/home_top_nav",
+      "api": "https://raw.githubusercontent.com/wliqi495-create/jaychou123/8e1c29fc6a75a68eebb8ad6ce6c9339dc755b086/yingshi/py9/yangshipin.py#L4",
+      "ext": "https://raw.githubusercontent.com/wliqi495-create/jaychou123/8e1c29fc6a75a68eebb8ad6ce6c9339dc755b086/yingshi/json1/yangshipin.json#L4",
+      "epg": "https://github.com/litiande03/epg/raw/refs/heads/master/pl.xml.gz",
+      "timeZone": "Asia/Shanghai",
+      "timeout": 30
     },
     {
-      "name": "欧美剧场1",
+      "name": "欧美剧场",
       "type": 0,
       "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E8%A7%86%E9%A2%91.txt",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
-      "name": "欧美剧场2",
+      "name": "午夜剧场",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E6%AC%A7%E7%BE%8E%E8%A7%86%E9%A2%91.m3u",
+      "url": "https://raw.githubusercontent.com/a97083435/tang/f0f9da23de258df61f7f99e696e579a3124da55d/tvbox/zhibo/Bunbun.m3u",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
