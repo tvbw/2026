@@ -22,68 +22,6 @@
       "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
     },
     {
-      "key": "MissAV",
-      "name": "📀MissAV🪜[🔞]",
-      "type": 3,
-      "api": "csp_MissAV",
-      "api": "https://raw.githubusercontent.com/natasha520/py/main/missav.py"
-    },
-    {
-      "key": "getav",
-      "name": "📀GetAV🪜[🔞]",
-      "type": 3,
-      "api": "csp_getav",
-      "api": "https://raw.githubusercontent.com/natasha520/py/main/getav.py"
-    },
-    {
-      "key": "Jable",
-      "name": "📀Jable🪜[🔞]",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/natasha520/py/main/Jable.py"
-    },
-    {
-      "key": "Javmenu",
-      "name": "📀Javmenu🪜[🔞]",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/natasha520/py/main/Javmenu.py"
-    },
-    {
-      "key": "catemby",
-      "name": "📀CatEmby🪜[🔞]",
-      "type": 3,
-      "api": "https://gh-proxy.org/raw.githubusercontent.com/natasha520/py/main/catemby.py"
-    },
-    {
-      "key": "Xvideos",
-      "name": "📀Xvideos🪜[🔞]",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/natasha520/py/main/Xvideos.py"
-    },
-    {
-      "key": "Pornhub",
-      "name": "📀Pornhub🪜[🔞]",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/natasha520/py/main/Pornhub.py"
-    },
-    {
-      "key": "黄剧",
-      "name": "📀黄剧[🔞]",
-      "type": 3,
-      "api": "https://gh-proxy.org/raw.githubusercontent.com/natasha520/js/refs/heads/main/%E9%BB%84%E5%89%A7.js"
-    },
-    {
-      "key": "kbdj",
-      "name": "📀狂飙🪜[🔞]",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/natasha520/py/main/%E7%8B%82%E9%A3%99%E7%9F%AD%E5%89%A7.py"
-    },
-    {
-      "key": "青桔短剧",
-      "name": "📀青桔🪜[🔞]",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/natasha520/py/main/%E9%9D%92%E6%A1%94%E7%9F%AD%E5%89%A7.py"
-    },
-    {
       "key": "py_4K_fullhd-fullhd3",
       "name": "❤️FHD老僧中国【🔞】",
       "type": 3,
