@@ -15,40 +15,39 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-  "key": "Nostr",
-  "name": "Nostr推荐",
-  "type": 3,
-  "api": "csp_Nostr",
-  "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
+      "key": "Nostr",
+      "name": "Nostr推荐",
+      "type": 3,
+      "api": "csp_Nostr",
+      "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
     },
     {
-
-     "key":"MissAV",
-      "name":"📀MissAV🪜[🔞]",
-      "type":3,
-      "api":"csp_MissAV",
-	  "api": "https://gh-proxy.org/raw.githubusercontent.com/natasha520/py/refs/heads/main/missav.py"
-	},
+      "key": "MissAV",
+      "name": "📀MissAV🪜[🔞]",
+      "type": 3,
+      "api": "csp_MissAV",
+      "api": "https://raw.githubusercontent.com/natasha520/py/main/missav.py"
+    },
     {
-      "key":"getav",
-      "name":"📀GetAV🪜[🔞]",
-      "type":3,
-      "api":"csp_getav",
-	  "api": "https://gh-proxy.org/raw.githubusercontent.com/natasha520/py/refs/heads/main/getav.py"
-	},
+      "key": "getav",
+      "name": "📀GetAV🪜[🔞]",
+      "type": 3,
+      "api": "csp_getav",
+      "api": "https://raw.githubusercontent.com/natasha520/py/main/getav.py"
+    },
     {
       "key": "Jable",
       "name": "📀Jable🪜[🔞]",
       "type": 3,
-      "api": "https://gh-proxy.org/raw.githubusercontent.com/natasha520/py/refs/heads/main/Jable.py"
+      "api": "https://raw.githubusercontent.com/natasha520/py/main/Jable.py"
     },
     {
       "key": "Javmenu",
       "name": "📀Javmenu🪜[🔞]",
       "type": 3,
-      "api": "https://gh-proxy.org/raw.githubusercontent.com/natasha520/py/refs/heads/main/Javmenu.py"
+      "api": "https://raw.githubusercontent.com/natasha520/py/main/Javmenu.py"
     },
-	{
+    {
       "key": "catemby",
       "name": "📀CatEmby🪜[🔞]",
       "type": 3,
@@ -58,13 +57,13 @@
       "key": "Xvideos",
       "name": "📀Xvideos🪜[🔞]",
       "type": 3,
-      "api": "https://gh-proxy.org/raw.githubusercontent.com/natasha520/py/refs/heads/main/Xvideos.py"
+      "api": "https://raw.githubusercontent.com/natasha520/py/main/Xvideos.py"
     },
     {
       "key": "Pornhub",
       "name": "📀Pornhub🪜[🔞]",
       "type": 3,
-      "api": "https://gh-proxy.org/raw.githubusercontent.com/natasha520/py/refs/heads/main/Pornhub.py"
+      "api": "https://raw.githubusercontent.com/natasha520/py/main/Pornhub.py"
     },
     {
       "key": "黄剧",
@@ -72,20 +71,19 @@
       "type": 3,
       "api": "https://gh-proxy.org/raw.githubusercontent.com/natasha520/js/refs/heads/main/%E9%BB%84%E5%89%A7.js"
     },
-	{
-	  "key": "kbdj",
-	  "name": "📀狂飙🪜[🔞]",
-	  "type": 3,
-	  "api": "https://gh-proxy.org/raw.githubusercontent.com/natasha520/py/refs/heads/main/%E7%8B%82%E9%A3%99%E7%9F%AD%E5%89%A7.py"
-    },
-	{
-	  "key": "青桔短剧",
-	  "name": "📀青桔🪜[🔞]",
-	  "type": 3,
-	  "api": "https://gh-proxy.org/raw.githubusercontent.com/natasha520/py/refs/heads/main/%E9%9D%92%E6%A1%94%E7%9F%AD%E5%89%A7.py"
-	},
     {
-
+      "key": "kbdj",
+      "name": "📀狂飙🪜[🔞]",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/natasha520/py/main/%E7%8B%82%E9%A3%99%E7%9F%AD%E5%89%A7.py"
+    },
+    {
+      "key": "青桔短剧",
+      "name": "📀青桔🪜[🔞]",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/natasha520/py/main/%E9%9D%92%E6%A1%94%E7%9F%AD%E5%89%A7.py"
+    },
+    {
       "key": "py_4K_fullhd-fullhd3",
       "name": "❤️FHD老僧中国【🔞】",
       "type": 3,
@@ -127,7 +125,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/duanju202610.js"
     },
     {
-
       "key": "csp_xbpq_s直播【🔞】",
       "name": "❤️StripChat直播XB【🔞】",
       "type": 3,
@@ -1094,7 +1091,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/[成人]蝙蝠视频🔞.py"
     },
     {
-       "key": "欲望之眼🔞",
+      "key": "欲望之眼🔞",
       "name": "❤️欲望之眼🔞",
       "type": 3,
       "playerType": 2,
