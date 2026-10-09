@@ -99,10 +99,10 @@ class Spider(BaseSpider):
 
     def get_working_host(self):
         dynamic_urls = [
-            'https://almost.lfuncmua.cc/',
-            'https://cabin.lfuncmua.cc/',
-            'https://d1b22xrhrg268b.cloudfront.net/',
-            'https://bunch.lfuncmua.cc/'
+            'https://m.mldebiqm.cc/',
+            'https://bag.mldebiqm.cc/',
+            'https://access.mldebiqm.cc/',
+            'https://ability.mldebiqm.cc/'
         ]
         for url in dynamic_urls:
             try:
