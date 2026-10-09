@@ -99,11 +99,10 @@ class Spider(BaseSpider):
 
     def get_working_host(self):
         dynamic_urls = [
-            'https://ago.ndrvspplb.cc/',
-            'https://allow.ndrvspplb.cc/',
-            'https://century.ndrvspplb.cc/',
-            'https://become.ndrvspplb.cc/',
-            'https://mrds.com/'
+            'https://ago.ecvjzmnsw.cc/',
+            'https://breath.ecvjzmnsw.cc/',
+            'https://away.ecvjzmnsw.cc/',
+            'https://alter.ecvjzmnsw.cc/'
         ]
         for url in dynamic_urls:
             try:
