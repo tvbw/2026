@@ -1162,6 +1162,24 @@
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
+      "name": "黄豆短剧",
+      "type": 0,
+      "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E9%BB%84%E8%B1%86%E7%9F%AD%E5%89%A7.m3u",
+      "ua": "okHttp/Mod-1.4.0.0"
+    },
+    {
+      "name": "欧美剧场1",
+      "type": 0,
+      "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E8%A7%86%E9%A2%91.txt",
+      "ua": "okHttp/Mod-1.4.0.0"
+    },
+    {
+      "name": "欧美剧场2",
+      "type": 0,
+      "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E6%AC%A7%E7%BE%8E%E8%A7%86%E9%A2%91.m3u",
+      "ua": "okHttp/Mod-1.4.0.0"
+    },
+    {
       "name": "ss大全",
       "type": 0,
       "url": "http://pglblb.test.upcdn.net/12/20260928ss.txt",
