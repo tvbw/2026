@@ -60,7 +60,7 @@ class Spider(BaseSpider):
         's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/at/m3u8'},
         's21': {'name': '📺小鸡', 'api': 'https://api.xiaojizy.live/provide/vod/'},
         's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/at/m3u8'},
-        's1': {'name': '🎬香蕉', 'api': 'https://www.xiangjiaozyw.com/api.php/provide/vod/at/m3u8'},
+        's1': {'name': '🎬香蕉', 'api': 'https://www.xiangjiaozyw.com/api.php/provide/vod/'},
         's27': {'name': '☁️精东', 'api': 'http://chujia.cc/api.php/provide/vod/'},
         's45': {'name': '🐾滴滴', 'api': 'https://api.ddapi.cc/api.php/provide/vod/at/m3u8'},
         's30': {'name': '⚡JKUN', 'api': 'https://jkunzyapi.com/api.php/provide/vod'},
