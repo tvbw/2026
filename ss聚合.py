@@ -51,12 +51,9 @@ class Spider(BaseSpider):
         's41': {'name': '🌸精品', 'api': 'https://jp98.vip/api.php/provide/vod/at/m3u8'},
         's5': {'name': '🔥麻花', 'api': 'https://19q.cc/api.php/provide/vod/at/m3u8'},
         's6': {'name': '📺搜AV', 'api': 'https://souavzy.net/api.php/provide/vod/at/m3u8'},
-        's15': {'name': '📺杏吧', 'api': 'https://api.xgbbk8.com/api.php/provide/vod/at/m3u8'},
-        's40': {'name': '🐾番茄', 'api': 'https://fqzy.me/api.php/provide/vod/'},
         's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vod'},
         's19': {'name': '📺91AV', 'api': 'https://91av.cyou/api.php/provide/vod/at/m3u8'},
         's43': {'name': '🐾大地', 'api': 'https://dadiapi.com/feifei2/', 'type': 3},
-        's2': {'name': '💧番茄', 'api': 'http://fhapi9.com/api.php/provide/vod/'},
         's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/at/m3u8'},
         's21': {'name': '📺小鸡', 'api': 'https://api.xiaojizy.live/provide/vod/'},
         's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/at/m3u8'},
@@ -86,6 +83,9 @@ class Spider(BaseSpider):
         's38': {'name': '🐾聚合2', 'api': 'http://150.109.94.44:1112/api.php/provide/vod/at/m3u8'},
         's16': {'name': '📺CK资源', 'api': 'https://ckzy.me/api.php/provide/vod/at/m3u8'},
         's50': {'name': '🧸嘿嘿', 'api': 'https://api.heiapi.cc/api.php/provide/vod/at/m3u8'},
+        's40': {'name': '🐾番茄1', 'api': 'https://fqzy.me/api.php/provide/vod//at/m3u8'},
+        's2': {'name': '💧番茄2', 'api': 'http://fhapi9.com/api.php/provide/vod/'},
+        's15': {'name': '📺杏吧', 'api': 'https://api.xgbbk8.com/api.php/provide/vod/at/m3u8'},
         's49': {'name': '📺湿园', 'api': 'https://xxavs.com/api.php/provide/vod/at/m3u8'},
     }
 
