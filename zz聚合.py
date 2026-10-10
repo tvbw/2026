@@ -70,9 +70,10 @@ class Spider(BaseSpider):
 
     # type: 0=XML旧版  1=JSON标准(默认)  2=代理源  3=大地feifei2
     SOURCES = {
-        's1': {'name': '🎬电影天堂', 'api': 'http://caiji.dyttzyapi.com/api.php/provide/vod/at/m3u8'},
-        's2': {'name': '💧无水印', 'api': 'https://api.wsyzy.net/api.php/provide/vod/at/m3u8'},
         's3': {'name': '🧸量子', 'api': 'https://cj.lziapi.com/api.php/provide/vod/from/lzm3u8/'},
+        's24': {'name': '📺最大', 'api': 'https://api.zuidapi.com/api.php/provide/vod/at/m3u8'},
+        's2': {'name': '💧无水印', 'api': 'https://api.wsyzy.net/api.php/provide/vod/at/m3u8'},
+        's1': {'name': '🎬电影天堂', 'api': 'http://caiji.dyttzyapi.com/api.php/provide/vod/at/m3u8'},
         's4': {'name': '📺1080资源', 'api': 'https://api.yyzy-tv.vip/inc/apijson.php'},
         's5': {'name': '🔥大众资源', 'api': 'https://cdn.dzzyapi.com/api.php/provide/vod/at/m3u8'},
         's6': {'name': '📺天涯', 'api': 'https://tyyszy.com/api.php/provide/vod/at/m3u8'},
@@ -92,7 +93,7 @@ class Spider(BaseSpider):
         's20': {'name': '🌕光速', 'api': 'https://api.guangsuapi.com/api.php/provide/vod/at/m3u8'},
         's21': {'name': '📺西瓜', 'api': 'https://caiji.xgzyapi.com/api.php/provide/vod/at/m3u8'},
         's22': {'name': '📺新浪', 'api': 'https://api.xinlangapi.com/xinlangapi.php/provide/vod/at/m3u8'},
-        's24': {'name': '📺最大', 'api': 'https://api.zuidapi.com/api.php/provide/vod/at/m3u8'},
+
         's25': {'name': '🌸樱花', 'api': 'https://m3u8.apiyhzy.com/api.php/provide/vod/at/m3u8'},
         's26': {'name': '🐮牛牛', 'api': 'https://api.niuniuzy.me/api.php/provide/vod/at/m3u8'},
         's27': {'name': '☁️百度云', 'api': 'https://api.apibdzy.com/api.php/provide/vod/at/m3u8'},
