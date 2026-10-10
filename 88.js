@@ -3,6 +3,18 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "正宗聚合",
+      "name": "❤️影视聚合",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
+    },
+    {
       "key": "xb6v修护",
       "name": "❤️6V影视【正牌】",
       "type": 3,
@@ -1108,18 +1120,7 @@
       "quickSearch": 1
     },
     {
-      "key": "正宗聚合",
-      "name": "5❤️正宗采集聚合",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
-    },
-    {
+
       "key": "18av",
       "name": "5❤️18av【🔞】",
       "type": 3,
