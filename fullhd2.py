@@ -1,36 +1,3 @@
-import re
-from functools import lru_cache
-
-FAST_CDN = "lib.baomitu.com"
-DEAD_MAP = {
-    "rimg.iomycdn.com": FAST_CDN,
-    "rimg.xiakee.com": FAST_CDN,
-    "play.abcyun.com": FAST_CDN,
-    "video.xyzcdn.com": FAST_CDN,
-}
-
-@lru_cache(maxsize=256)
-def _auto_cdn(url: str) -> str:
-    if not url:
-        return ""
-    for dead, fast in DEAD_MAP.items():
-        url = url.replace(dead, fast)
-    if url.startswith("//"):
-        url = "https:" + url
-    try:
-        r = requests.head(url, allow_redirects=True, timeout=2)
-        url = r.url
-    except:
-        pass
-    return url
-
-# 注入 requests
-_real_get = requests.Session.get
-def _patched_get(self, url, *a, **k):
-    url = _auto_cdn(url)
-    return _real_get(self, url, *a, **k)
-requests.Session.get = _patched_get
-# =================== 加速头结束 ===================
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -45,7 +12,7 @@ import binascii
 
 sys.path.append('..')
 
-xurl = "https://www.fullhd.to/uk/"
+xurl = "https://www.fullhd.to/zh/"
 
 headerx = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36'
