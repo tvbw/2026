@@ -23,7 +23,7 @@
     },
     {
       "key": "py_4K_fullhd-fullhd3",
-      "name": "❤️FHD老僧中国KO【🔞】",
+      "name": "❤️FHD老僧世界",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -38,7 +38,7 @@
     },
     {
       "key": "py_4K_fullhd-fullhd2",
-      "name": "❤️FHD书生世界TH【🔞】",
+      "name": "❤️FHD书生RU",
       "type": 3,
       "playerType": 2,
       "style": {
