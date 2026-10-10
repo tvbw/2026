@@ -49,6 +49,13 @@ class Spider(BaseSpider):
     )
     headers = {'User-Agent': UA}
 
+    # ★ 只保留 m3u8 资源的总开关
+    #   True  -> 从采集站返回的播放地址中，只保留包含 .m3u8 的剧集
+    #   False -> 保持原样（mp4/flv/m3u8 都返回）
+    #   注意：source 中带 parse=1 的源（需要走解析站）不会被过滤，
+    #        因为它们的地址是需要解析后才会拿到真正的 m3u8。
+    M3U8_ONLY = True
+
     # 绅士影视解析站（优先顺序）
     PARSERS = [
         {'name': '组豪富英', 'api': 'https://coffee-5c93e1f751eb.edge.tvapp.eu.org:31000/api/?key=6f8622b2-8402-43c9-ae29-0adaa292bc71&url='},
@@ -354,6 +361,38 @@ class Spider(BaseSpider):
                 }
         return self._parse_xml(html)
 
+    # ★ 新增：从播放地址里只保留 .m3u8 的剧集
+    def _filter_m3u8(self, from_arr, url_arr, source_name):
+        """
+        输入:
+            from_arr: 线路名列表
+            url_arr:  与 from_arr 一一对应的播放串（集名$地址#集名$地址...）
+        输出:
+            new_from, new_url 只保留含 .m3u8 的剧集
+        """
+        new_from, new_url = [], []
+        max_len = max(len(from_arr), len(url_arr))
+        for i in range(max_len):
+            f = from_arr[i] if i < len(from_arr) else ('%s-线路%d' % (source_name, i + 1))
+            u = url_arr[i] if i < len(url_arr) else ''
+            if not u:
+                continue
+            kept = []
+            for ep in u.split('#'):
+                if not ep:
+                    continue
+                if '$' in ep:
+                    _, url = ep.split('$', 1)
+                else:
+                    url = ep
+                # 核心：包含 .m3u8 就保留（忽略大小写，支持 ?token= 等后缀）
+                if '.m3u8' in url.lower():
+                    kept.append(ep)
+            if kept:
+                new_from.append(f)
+                new_url.append('#'.join(kept))
+        return new_from, new_url
+
     def _clean_item(self, item, source_key, source_name, is_detail=False):
         o = self._normalize_vod(dict(item))
         o['vod_id'] = self._text(o.get('vod_id'))
@@ -361,8 +400,18 @@ class Spider(BaseSpider):
             o['vod_id'] = '%s@@%s' % (source_key, o['vod_id'])
         rem = self._text(o.get('vod_remarks'))
         o['vod_remarks'] = '%s | %s' % (source_name, rem)
+
+        source_obj = self.SOURCES.get(source_key) or {}
+        # parse=1 的源需要走解析站，最终地址由解析后得到 m3u8，不能在这里过滤
+        need_parse = bool(source_obj.get('parse'))
+
         from_arr = [s.strip() for s in self._text(o.get('vod_play_from')).split('$$$') if s.strip()]
         url_arr = [s.strip() for s in self._text(o.get('vod_play_url')).split('$$$')]
+
+        # ★ 只保留 m3u8
+        if self.M3U8_ONLY and not need_parse and (from_arr or any(url_arr)):
+            from_arr, url_arr = self._filter_m3u8(from_arr, url_arr, source_name)
+
         if from_arr:
             from_arr = [x if x.startswith(source_name) else '%s-%s' % (source_name, x) for x in from_arr]
         if not from_arr and any(url_arr):
@@ -430,7 +479,6 @@ class Spider(BaseSpider):
                 filters[sk] = [{'key': 'cateId', 'name': '分类', 'value': vals}]
                 self._first_cate[sk] = 'tv'
             elif sk == 's43':
-
                 vals = [
                     {'n': '电影', 'v': '1'},
                     {'n': '电视剧', 'v': '2'},
@@ -470,14 +518,12 @@ class Spider(BaseSpider):
             if not cate_id:
                 cate_id = self._first_cate.get(tid) or 'site_duoduo'
             params = {'t': cate_id, 'pg': pg, 'categoryId': '1'}
-            # extend 可覆盖 categoryId
             if isinstance(extend, dict) and extend.get('categoryId') is not None:
                 params['categoryId'] = self._text(extend.get('categoryId'))
             url = self._build_url(source['api'], params)
         elif stype in (2, 4):
             params = {'pg': pg}
             if not cate_id:
-                # dbo 无 t 时列表为空，默认连续剧
                 cate_id = self._first_cate.get(tid) or 'tv'
             params['t'] = cate_id
             url = self._build_url(source['api'], params)
@@ -566,6 +612,12 @@ class Spider(BaseSpider):
             cleaned = self._clean_item(it, source_key, source['name'], True)
             cleaned['vod_id'] = str(raw)
             cleaned['vod_pic'] = self._fix_pic(cleaned.get('vod_pic'))
+
+            # ★ 详情页里，如果过滤后没有 m3u8 播放地址（且非解析源），直接跳过
+            if (self.M3U8_ONLY and not source.get('parse')
+                    and not self._text(cleaned.get('vod_play_url'))):
+                continue
+
             if not self._text(cleaned.get('vod_play_from')) and self._text(cleaned.get('vod_play_url')):
                 segs = self._text(cleaned.get('vod_play_url')).split('$$$')
                 cleaned['vod_play_from'] = '$$$'.join(
@@ -584,9 +636,8 @@ class Spider(BaseSpider):
         if not key:
             return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 40, 'total': 0}
         result = []
-        dup_count = {}   # key -> 已收录的源数量（按响应先后顺序，即速度排序）
+        dup_count = {}
         max_page = 1
-        # 优先源：荐片/独播库/极影/tw/绅4K 系列（避免被前 60 条提前截断）
         priority_keys = ['s43', 's44', 's46', 's47', 's48', 's49', 's50', 's51', 's52', 's53']
         all_items = list(self.SOURCES.items())
         pri = [(k, v) for k, v in all_items if k in priority_keys]
@@ -595,11 +646,11 @@ class Spider(BaseSpider):
             items = pri + rest[:12]
         else:
             items = pri + rest
-        SRC_TIMEOUT = 8      # 单源搜索超时（秒）
-        DUP_KEEP = 10        # 同一部剧保留响应最快的源数量
-        MAX_TOTAL = 30      # 总结果上限，防止系统卡死
-        FAST_LIMIT = 30     # 结果达到该条数且已跑 3 秒 → 立即返回
-        TOTAL_LIMIT = 20    # 搜索整体最长等待（秒）
+        SRC_TIMEOUT = 8
+        DUP_KEEP = 10
+        MAX_TOTAL = 30
+        FAST_LIMIT = 30
+        TOTAL_LIMIT = 20
 
         def _norm_name(n):
             return re.sub(r'\s+', '', self._text(n)).lower()
@@ -608,7 +659,6 @@ class Spider(BaseSpider):
             sk, so = sk_so
             try:
                 stype = so.get('type') or 1
-                # 独播库较慢，单独加长超时
                 extra_to = 15 if sk == 's44' else None
                 if stype in (0, 3):
                     url = self._build_url(so['api'], {'ac': 'videolist', 'wd': key, 'pg': pg})
@@ -623,7 +673,6 @@ class Spider(BaseSpider):
                 html = self._request(url, timeout=SRC_TIMEOUT) if extra_to is None \
                     else self._request_timeout(url, extra_to)
                 data = self._parse_response(html)
-                # 空结果时兜底 videolist
                 if not data.get('list') and stype not in (0, 2, 3, 5):
                     data2 = self._parse_response(
                         self._request(self._build_url(so['api'], {'ac': 'videolist', 'wd': key, 'pg': pg}),
@@ -648,7 +697,6 @@ class Spider(BaseSpider):
                 print('search skip', sk, e)
                 return [], 1
 
-        # 不用 with，确保可以提前返回而不等待慢源
         from concurrent.futures import ThreadPoolExecutor
         pool = ThreadPoolExecutor(max_workers=10)
         start = time.time()
@@ -662,7 +710,6 @@ class Spider(BaseSpider):
                     lst, pc = fut.result()
                 except Exception:
                     lst, pc = [], 1
-                # 同一部剧最多保留 DUP_KEEP 个源（先返回的源 = 速度最快）
                 for it in lst:
                     if len(result) >= MAX_TOTAL:
                         break
@@ -718,13 +765,11 @@ class Spider(BaseSpider):
             print('request error', url, e)
             return ''
 
-
     def _parse_url(self, token_url, prefer=''):
         """绅士影视解析逻辑：多解析站轮询取直链"""
         from urllib.parse import quote
         if not token_url:
             return ''
-        # 已是直链
         if re.search(r'\.(m3u8|mp4|flv|mkv)(\?|$)', token_url, re.I):
             return token_url
         cands = []
@@ -732,12 +777,10 @@ class Spider(BaseSpider):
             for p in self.PARSERS:
                 if prefer in p['api'] or prefer in p.get('name', ''):
                     cands.append(p)
-        # co_ 令牌：组豪富英 / 12321 优先
         if token_url.startswith('co_') or token_url.startswith('CO4K') or 'tvapp' in (prefer or ''):
             for p in self.PARSERS:
                 if p['name'] in ('组豪富英', '12321') and p not in cands:
                     cands.insert(0, p)
-        # 页面链接优先 huaqi / 12321
         if re.search(r'https?://', token_url) and not re.search(r'\.(m3u8|mp4)(\?|$)', token_url, re.I):
             for p in self.PARSERS:
                 if p['name'] in ('huaqi', '12321') and p not in cands:
@@ -789,7 +832,6 @@ class Spider(BaseSpider):
             first = play_url.split(';')[0]
             if re.match(r'^https?://', first, re.I):
                 play_url = first
-        # 独播库 type5：网盘链接含 | 或 @@，调接口解析真实地址
         if ('|' in play_url and '@@' in play_url) or (
             'pan.baidu.com' in play_url or 'pan.quark.cn' in play_url or 'drive.uc.cn' in play_url
         ):
@@ -797,12 +839,10 @@ class Spider(BaseSpider):
             fl = self._text(flag)
             if '-' in fl:
                 fl = fl.split('-', 1)[-1]
-            # flag 用空或站点名均可
             resp = self._request(self._build_url(api, {'flag': fl or '', 'play': play_url}))
             j = self._safe_json(resp) or {}
             real = j.get('url')
             if isinstance(real, list):
-                # ["RAW", "https://..."] 或 ["proxy", "..."]
                 for x in real:
                     xs = self._text(x)
                     if xs.startswith('http'):
@@ -824,7 +864,6 @@ class Spider(BaseSpider):
             if real:
                 return {'parse': 0, 'jx': 0, 'url': real, 'header': hdr}
             return {'parse': 0, 'jx': 0, 'url': play_url, 'header': hdr}
-        # 旧 dbo：相对 /play/xxx → 调接口取 m3u8（必须带 Referer）
         if play_url.startswith('/play/') or re.match(r'^\d+-ep\d+', play_url):
             path = play_url if play_url.startswith('/') else '/play/' + play_url
             fl = self._text(flag)
@@ -864,7 +903,6 @@ class Spider(BaseSpider):
                         hdr[k] = v
             if real:
                 return {'parse': 0, 'jx': 0, 'url': real, 'header': hdr}
-            # 二次尝试：去掉 /play/ 前缀
             if path.startswith('/play/'):
                 resp2 = self._request(
                     self._build_url(api, {'flag': fl, 'play': path[6:]}),
@@ -881,15 +919,12 @@ class Spider(BaseSpider):
                 'parse': 0, 'jx': 0, 'url': play_url,
                 'header': {'User-Agent': self.UA},
             }
-        # 需要解析：按 flag/源 优先匹配解析站
         prefer = ''
         fl = self._text(flag)
-        # 从 SOURCES 找 parser 标记
         for sk, so in self.SOURCES.items():
             if so.get('parse') and (sk in fl or so['name'].replace('🐾', '') in fl or so['name'] in fl):
                 prefer = so.get('parser') or ''
                 break
-        # token 前缀 / 线路名提示（绅2K·P = co_ → tvapp）
         if not prefer:
             for tk, api in (('CO4K', '175.24.181.180'), ('co_egg', 'tvapp.eu.org'),
                             ('co_', 'tvapp.eu.org'), ('zijian', '123jx.vip'), ('JYY', '175.24.181.180')):
@@ -904,7 +939,6 @@ class Spider(BaseSpider):
             prefer = '123jx.vip'
         if not prefer and ('绅4K·P' in fl or '4K·P' in fl):
             prefer = 'jx.meilinvps.com'
-        # co_ 令牌必须优先用组豪富英
         if play_url.startswith('co_') or play_url.startswith('CO4K'):
             prefer = prefer or 'tvapp.eu.org'
         real = self._parse_url(play_url, prefer)
