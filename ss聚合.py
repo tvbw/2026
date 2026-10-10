@@ -49,7 +49,7 @@ class Spider(BaseSpider):
     # type: 3 = 大地 feifei2（data/vod_url/vod_play/list分类）
     SOURCES = {
         's41': {'name': '🌸精品', 'api': 'https://jp98.vip/api.php/provide/vod/at/m3u8'},
-        's5': {'name': '🔥麻花', 'api': 'https://19q.cc/api.php/provide/vod/at/m3u8'},
+        's5': {'name': '🔥麻花', 'api': 'https://19q.cc/api.php/provide/vod'},
         's6': {'name': '📺搜AV', 'api': 'https://souavzy.net/api.php/provide/vod/at/m3u8'},
         's15': {'name': '📺杏吧', 'api': 'https://api.xgbbk8.com/api.php/provide/vod/at/m3u8'},
         's40': {'name': '🐾番茄', 'api': 'https://fqzy.me/api.php/provide/vod/'},
@@ -68,7 +68,7 @@ class Spider(BaseSpider):
         's32': {'name': '🍃百花', 'api': 'https://bhziyuan.com/api.php/provide/vod/at/m3u8'},
         's25': {'name': '🌸仓库', 'api': 'https://hsckzy888.com/api.php/provide/vod/at/m3u8'},
         's39': {'name': '🐾CK百货', 'api': 'https://ckbh1.xyz/api.php/provide/vod'},
-        's42': {'name': '🐾森林', 'api': 'https://slapibf.com/api.php/provide/vod/at/m3u8'},
+        's42': {'name': '🐾森林', 'api': 'https://slapibf.com/api.php/provide/vod'},
         's9': {'name': '📺美少女', 'api': 'https://www.msnii.com/api/json.php'},
         's10': {'name': '📺饮水机', 'api': 'https://www.xrbsp.com/api/json.php'},
         's11': {'name': '📺香奶儿', 'api': 'https://www.gdlsp.com/api/json.php'},
