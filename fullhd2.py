@@ -1,22 +1,3 @@
-# ===== 1. 先正常 import 所有模块 =====
-import json
-import random
-import re
-import sys
-import threading
-import time
-from base64 import b64decode, b64encode
-from urllib.parse import urlparse
-
-import requests  # ✅ 先正常 import
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import unpad
-from pyquery import PyQuery as pq
-sys.path.append('..')
-from base.spider import Spider
-
-# ===== 2. 再放加速头（不能再 import requests） =====
-# =================== 极简万能加速头 ===================
 import re
 from functools import lru_cache
 
@@ -546,35 +527,4 @@ class Spider(Spider):
             return self.proxyMedia(params)
         elif params['type'] == "ts":
             return self.proxyTs(params)
-
         return None
-
-# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
-_PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
-
-def _cover_fallback(self, pic_url):
-    import urllib.parse
-    raw = pic_url or ''
-    parent_impl = getattr(super(Spider, self), '_cover_fallback', None)
-    if callable(parent_impl):
-        try:
-            raw = parent_impl(pic_url) or raw
-        except Exception:
-            pass
-    if not raw:
-        return ''
-    url = raw
-    for cdn in _PIC_CDN_POOL:
-        if cdn in raw:
-            url = raw.replace(cdn, _PIC_CDN_POOL[0])
-            break
-    proxy_base = getattr(self, 'proxy_base', None)
-    if proxy_base:
-        url = f'{proxy_base}{urllib.parse.quote(url)}'
-    return url
-
-Spider._cover_fallback = _cover_fallback
-# 注册爬虫
-if __name__ == '__main__':
-    from base.spider import Spider as BaseSpider
-    BaseSpider.register(Spider())
