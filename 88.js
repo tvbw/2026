@@ -3,67 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-
-      "key": "244544",
-      "name": "❤️244544",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/244544.py",
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/244544.py"
-    },
-    {
-      "key": "91porna",
-      "name": "❤️91porna",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/91porna.py",
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/91porna.py"
-    },
-    {
-      "key": "hongguo_range",
-      "name": "❤️hongguo_range",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/hongguo_range.py",
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/hongguo_range.py"
-    },
-    {
-      "key": "hqporner",
-      "name": "❤️hqporner",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/hqporner.py",
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/hqporner.py"
-    },
-    {
-      "key": "xn--69",
-      "name": "❤️xn--69",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xn--69.py",
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xn--69.py"
-    },
-    {
       "key": "海角情-修复",
       "name": "❤️海角情-修复",
       "type": 3,
@@ -72,12 +11,12 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/海角情-修复.py",
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/海角情-修复.py"
+      "ext": "https://raw.githubusercontent.com/xjyss/TT/37a30aeb014edacf49eaaf20127cf987bcc51f94/PY/%E4%B8%89%E5%8C%BA.py#L22",
+      "api": "https://raw.githubusercontent.com/xjyss/TT/37a30aeb014edacf49eaaf20127cf987bcc51f94/PY/%E4%B8%89%E5%8C%BA.py#L22"
     },
     {
       "key": "白嫖之王-封面修复第二版",
-      "name": "❤️白嫖之王-封面修复第二版",
+      "name": "❤️白嫖之王",
       "type": 3,
       "playerType": 2,
       "style": {
