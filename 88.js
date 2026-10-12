@@ -3,6 +3,104 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+
+      "key": "244544",
+      "name": "❤️244544",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/244544.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/244544.py"
+    },
+    {
+      "key": "91porna",
+      "name": "❤️91porna",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/91porna.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/91porna.py"
+    },
+    {
+      "key": "hongguo_range",
+      "name": "❤️hongguo_range",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/hongguo_range.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/hongguo_range.py"
+    },
+    {
+      "key": "hqporner",
+      "name": "❤️hqporner",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/hqporner.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/hqporner.py"
+    },
+    {
+      "key": "xn--69",
+      "name": "❤️xn--69",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xn--69.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xn--69.py"
+    },
+    {
+      "key": "海角情-修复",
+      "name": "❤️海角情-修复",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/海角情-修复.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/海角情-修复.py"
+    },
+    {
+      "key": "白嫖之王-封面修复第二版",
+      "name": "❤️白嫖之王-封面修复第二版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/白嫖之王-封面修复第二版.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/白嫖之王-封面修复第二版.py"
+    },
+    {
+      "key": "18jspa",
+      "name": "❤️18jspa",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18jspa.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18jspa.py"
+    },
+    {
+
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
@@ -27,13 +125,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-      "key": "Nostr",
-      "name": "Nostr推荐",
-      "type": 3,
-      "api": "csp_Nostr",
-      "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
-    },
-    {
+
       "key": "py_4K_fullhd-fullhd3",
       "name": "❤️FHD老僧世界",
       "type": 3,
@@ -1120,7 +1212,13 @@
       "quickSearch": 1
     },
     {
-
+      "key": "Nostr",
+      "name": "Nostr推荐",
+      "type": 3,
+      "api": "csp_Nostr",
+      "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
+    },
+    {
       "key": "18av",
       "name": "5❤️18av【🔞】",
       "type": 3,
@@ -1159,6 +1257,18 @@
       "name": "AI直播",
       "type": 0,
       "url": "https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E9%BB%84%E8%B1%86%E7%9F%AD%E5%89%A7.txt",
+      "ua": "okHttp/Mod-1.4.0.0"
+    },
+    {
+      "name": "电视直播",
+      "type": 0,
+      "url": "https://raw.githubusercontent.com/tvbw/20261001-18/main/%E7%94%B5%E8%A7%86%E5%8F%B0.txt",
+      "ua": "okHttp/Mod-1.4.0.0"
+    },
+    {
+      "name": "午夜直播",
+      "type": 0,
+      "url": "https://raw.githubusercontent.com/tvbw/20261001-18/main/%E5%8D%88%E5%A4%9C%E5%8A%87%E5%9C%BA.m3u",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
