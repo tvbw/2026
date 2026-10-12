@@ -1,55 +1,3 @@
-# ===== 1. 先正常 import 所有模块 =====
-import json
-import random
-import re
-import sys
-import threading
-import time
-from base64 import b64decode, b64encode
-from urllib.parse import urlparse
-
-import requests  # ✅ 先正常 import
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import unpad
-from pyquery import PyQuery as pq
-sys.path.append('..')
-from base.spider import Spider
-
-# ===== 2. 再放加速头（不能再 import requests） =====
-# =================== 极简万能加速头 ===================
-import re
-from functools import lru_cache
-
-FAST_CDN = "lib.baomitu.com"
-DEAD_MAP = {
-    "rimg.iomycdn.com": FAST_CDN,
-    "rimg.xiakee.com": FAST_CDN,
-    "play.abcyun.com": FAST_CDN,
-    "video.xyzcdn.com": FAST_CDN,
-}
-
-@lru_cache(maxsize=256)
-def _auto_cdn(url: str) -> str:
-    if not url:
-        return ""
-    for dead, fast in DEAD_MAP.items():
-        url = url.replace(dead, fast)
-    if url.startswith("//"):
-        url = "https:" + url
-    try:
-        r = requests.head(url, allow_redirects=True, timeout=2)
-        url = r.url
-    except:
-        pass
-    return url
-
-# 注入 requests
-_real_get = requests.Session.get
-def _patched_get(self, url, *a, **k):
-    url = _auto_cdn(url)
-    return _real_get(self, url, *a, **k)
-requests.Session.get = _patched_get
-# =================== 加速头结束 ===================
 import sys
 sys.path.append('..')
 from base.spider import Spider
@@ -69,8 +17,8 @@ class Spider(Spider):
         return "苹果视频"
     
     def init(self, extend=""):
-        self.host = "https://618041.xyz"
-        self.api_host = "https://h5.xxoo168.org"
+        self.host = "https://618940.xyz"
+        self.api_host = "https://h5.xxoo169.org"
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -112,26 +60,26 @@ class Spider(Spider):
         result = {}
         # 只保留指定的分类
         classes = [
-            {'type_id': '618041.xyz_1', 'type_name': '全部视频'},
-            {'type_id': '618041.xyz_13', 'type_name': '香蕉精品'},
-            {'type_id': '618041.xyz_22', 'type_name': '制服诱惑'},
-            {'type_id': '618041.xyz_6', 'type_name': '国产视频'},
-            {'type_id': '618041.xyz_8', 'type_name': '清纯少女'},
-            {'type_id': '618041.xyz_9', 'type_name': '辣妹大奶'},
-            {'type_id': '618041.xyz_10', 'type_name': '女同专属'},
-            {'type_id': '618041.xyz_11', 'type_name': '素人出演'},
-            {'type_id': '618041.xyz_12', 'type_name': '角色扮演'},
-            {'type_id': '618041.xyz_20', 'type_name': '人妻熟女'},
-            {'type_id': '618041.xyz_23', 'type_name': '日韩剧情'},
-            {'type_id': '618041.xyz_21', 'type_name': '经典伦理'},
-            {'type_id': '618041.xyz_7', 'type_name': '成人动漫'},
-            {'type_id': '618041.xyz_14', 'type_name': '精品二区'},
-            {'type_id': '618041.xyz_53', 'type_name': '动漫中字'},
-            {'type_id': '618041.xyz_52', 'type_name': '日本无码'},
-            {'type_id': '618041.xyz_33', 'type_name': '中文字幕'},
-            {'type_id': '618041.xyz_32', 'type_name': '国产自拍'},
-            {'type_id': '618041.xyz_40', 'type_name': '精品专区'},
-            {'type_id': '618041.xyz_44', 'type_name': '国产大奶'}
+            {'type_id': '618940.xyz_1', 'type_name': '全部视频'},
+            {'type_id': '618940.xyz_13', 'type_name': '香蕉精品'},
+            {'type_id': '618940.xyz_22', 'type_name': '制服诱惑'},
+            {'type_id': '618940.xyz_6', 'type_name': '国产视频'},
+            {'type_id': '618940.xyz_8', 'type_name': '清纯少女'},
+            {'type_id': '618940.xyz_9', 'type_name': '辣妹大奶'},
+            {'type_id': '618940.xyz_10', 'type_name': '女同专属'},
+            {'type_id': '618940.xyz_11', 'type_name': '素人出演'},
+            {'type_id': '618940.xyz_12', 'type_name': '角色扮演'},
+            {'type_id': '618940.xyz_20', 'type_name': '人妻熟女'},
+            {'type_id': '618940.xyz_23', 'type_name': '日韩剧情'},
+            {'type_id': '618940.xyz_21', 'type_name': '经典伦理'},
+            {'type_id': '618940.xyz_7', 'type_name': '成人动漫'},
+            {'type_id': '618940.xyz_14', 'type_name': '精品二区'},
+            {'type_id': '618940.xyz_53', 'type_name': '动漫中字'},
+            {'type_id': '618940.xyz_52', 'type_name': '日本无码'},
+            {'type_id': '618940.xyz_33', 'type_name': '中文字幕'},
+            {'type_id': '618940.xyz_32', 'type_name': '国产自拍'},
+            {'type_id': '618940.xyz_40', 'type_name': '精品专区'},
+            {'type_id': '618940.xyz_44', 'type_name': '国产大奶'}
         ]
         result['class'] = classes
         try:
@@ -148,26 +96,26 @@ class Spider(Spider):
         """分类定义 - 兼容性方法"""
         return {
             'class': [
-                {'type_id': '618041.xyz_1', 'type_name': '全部视频'},
-                {'type_id': '618041.xyz_13', 'type_name': '香蕉精品'},
-                {'type_id': '618041.xyz_22', 'type_name': '制服诱惑'},
-                {'type_id': '618041.xyz_6', 'type_name': '国产视频'},
-                {'type_id': '618041.xyz_8', 'type_name': '清纯少女'},
-                {'type_id': '618041.xyz_9', 'type_name': '辣妹大奶'},
-                {'type_id': '618041.xyz_10', 'type_name': '女同专属'},
-                {'type_id': '618041.xyz_11', 'type_name': '素人出演'},
-                {'type_id': '618041.xyz_12', 'type_name': '角色扮演'},
-                {'type_id': '618041.xyz_20', 'type_name': '人妻熟女'},
-                {'type_id': '618041.xyz_23', 'type_name': '日韩剧情'},
-                {'type_id': '618041.xyz_21', 'type_name': '经典伦理'},
-                {'type_id': '618041.xyz_7', 'type_name': '成人动漫'},
-                {'type_id': '618041.xyz_14', 'type_name': '精品二区'},
-                {'type_id': '618041.xyz_53', 'type_name': '动漫中字'},
-                {'type_id': '618041.xyz_52', 'type_name': '日本无码'},
-                {'type_id': '618041.xyz_33', 'type_name': '中文字幕'},
-                {'type_id': '618041.xyz_32', 'type_name': '国产自拍'},
-                {'type_id': '618041.xyz_40', 'type_name': '精品专区'},
-                {'type_id': '618041.xyz_44', 'type_name': '国产大奶'}
+                {'type_id': '618940.xyz_1', 'type_name': '全部视频'},
+                {'type_id': '618940.xyz_13', 'type_name': '香蕉精品'},
+                {'type_id': '618940.xyz_22', 'type_name': '制服诱惑'},
+                {'type_id': '618940.xyz_6', 'type_name': '国产视频'},
+                {'type_id': '618940.xyz_8', 'type_name': '清纯少女'},
+                {'type_id': '618940.xyz_9', 'type_name': '辣妹大奶'},
+                {'type_id': '618940.xyz_10', 'type_name': '女同专属'},
+                {'type_id': '618940.xyz_11', 'type_name': '素人出演'},
+                {'type_id': '618940.xyz_12', 'type_name': '角色扮演'},
+                {'type_id': '618940.xyz_20', 'type_name': '人妻熟女'},
+                {'type_id': '618940.xyz_23', 'type_name': '日韩剧情'},
+                {'type_id': '618940.xyz_21', 'type_name': '经典伦理'},
+                {'type_id': '618940.xyz_7', 'type_name': '成人动漫'},
+                {'type_id': '618940.xyz_14', 'type_name': '精品二区'},
+                {'type_id': '618940.xyz_53', 'type_name': '动漫中字'},
+                {'type_id': '618940.xyz_52', 'type_name': '日本无码'},
+                {'type_id': '618940.xyz_33', 'type_name': '中文字幕'},
+                {'type_id': '618940.xyz_32', 'type_name': '国产自拍'},
+                {'type_id': '618940.xyz_40', 'type_name': '精品专区'},
+                {'type_id': '618940.xyz_44', 'type_name': '国产大奶'}
             ]
         }
 
@@ -597,9 +545,9 @@ class Spider(Spider):
                 if not vod_id:
                     vod_id = str(hash(link) % 1000000)
                 
-                final_vod_id = f"618041.xyz_{vod_id}"
+                final_vod_id = f"618940.xyz_{vod_id}"
                 if category_id:
-                    final_vod_id = f"618041.xyz_{category_id}_{vod_id}"
+                    final_vod_id = f"618940.xyz_{category_id}_{vod_id}"
                 
                 # 提取加密的标题并解密
                 title_elem = element.xpath('.//p[@class="km-script"]/text()')
@@ -759,69 +707,3 @@ class Spider(Spider):
             return response
         except Exception as e:
             self.log(f"网络请求失败: {url}, 错误: {str(e)}")
-# ==============  万能一键加速（2025-12 五星无探测双CDN版）  ==============
-def _cover_fallback(self, pic_url):
-    """
-    极速无探测双 CDN（2025-06 白名单）
-    1. 优先lib.baomitu.com（443 ms））→  open.oppomobile.com
-    2. 主域名与原始相同则回退次速节点
-    3. 支持代理前缀（可选）
-    """
-    import urllib.parse
-    try:
-        raw = (super()._cover_fallback(pic_url) if hasattr(super(), '_cover_fallback') else pic_url) or ''
-        if not raw:
-            return ''
-    except Exception:
-        raw = pic_url or ''
-    # 白名单 CDN 按速度顺序
-    fast_pool = [
-        'lib.baomitu.com',   # 大陆 OPPO CDN
-        'open.oppomobile.com'    ]
-
-    # 默认用最快节点；若已是最快则顺次下跳
-    for cdn in fast_pool:
-        candidate = raw.replace('lib.baomitu.com', cdn).replace('open.oppomobile.com', cdn)
-        if candidate != raw:          # 替换成功即跳出
-            url = candidate
-            break
-    else:                             # 已全部是白名单，用次速回退
-        url = raw.replace('open.oppomobile.com', 'lib.baomitu.com') \
-                 .replace('lib.baomitu.com', 'open.oppomobile.com')
-    # 可选代理前缀
-    if getattr(self, 'proxy_base', None):
-        url = f'{self.proxy_base}{urllib.parse.quote(url)}'
-    return url
-# ==============  万能一键加速（2025-12 五星无探测双CDN版）  ==============
-def _cover_fallback(self, pic_url):
-    """
-    极速无探测双 CDN（2025-06 白名单）
-    1. 优先lib.baomitu.com（443 ms））→  open.oppomobile.com
-    2. 主域名与原始相同则回退次速节点
-    3. 支持代理前缀（可选）
-    """
-    import urllib.parse
-    try:
-        raw = (super()._cover_fallback(pic_url) if hasattr(super(), '_cover_fallback') else pic_url) or ''
-        if not raw:
-            return ''
-    except Exception:
-        raw = pic_url or ''
-    # 白名单 CDN 按速度顺序
-    fast_pool = [
-        'lib.baomitu.com',   # 大陆 OPPO CDN
-        'open.oppomobile.com'    ]
-
-    # 默认用最快节点；若已是最快则顺次下跳
-    for cdn in fast_pool:
-        candidate = raw.replace('lib.baomitu.com', cdn).replace('open.oppomobile.com', cdn)
-        if candidate != raw:          # 替换成功即跳出
-            url = candidate
-            break
-    else:                             # 已全部是白名单，用次速回退
-        url = raw.replace('open.oppomobile.com', 'lib.baomitu.com') \
-                 .replace('lib.baomitu.com', 'open.oppomobile.com')
-    # 可选代理前缀
-    if getattr(self, 'proxy_base', None):
-        url = f'{self.proxy_base}{urllib.parse.quote(url)}'
-    return url
