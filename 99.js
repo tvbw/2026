@@ -3,6 +3,18 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "正宗聚合",
+      "name": "❤️影视聚合",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
+    },
+    {
       "key": "xb6v修护",
       "name": "❤️6V影视【正牌】",
       "type": 3,
@@ -15,15 +27,8 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-      "key": "Nostr",
-      "name": "Nostr推荐",
-      "type": 3,
-      "api": "csp_Nostr",
-      "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
-    },
-    {
       "key": "py_4K_fullhd-fullhd3",
-      "name": "❤️FHD老僧中国【🔞】",
+      "name": "❤️FHD老僧世界",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -38,7 +43,7 @@
     },
     {
       "key": "py_4K_fullhd-fullhd2",
-      "name": "❤️FHD书生世界【🔞】",
+      "name": "❤️FHD书生中国",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -466,6 +471,30 @@
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
+    },
+    {
+      "key": "白嫖之王-封面修复第二版",
+      "name": "❤️白嫖之王【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/白嫖之王-封面修复第二版.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/白嫖之王-封面修复第二版.py"
+    },
+    {
+      "key": "18jspa",
+      "name": "❤️18jspa【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18jspa.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18jspa.py"
     },
     {
       "key": "🔞杏吧资源",
@@ -1108,16 +1137,11 @@
       "quickSearch": 1
     },
     {
-      "key": "正宗聚合",
-      "name": "5❤️正宗采集聚合",
+      "key": "Nostr",
+      "name": "Nostr推荐",
       "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
+      "api": "csp_Nostr",
+      "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
     },
     {
       "key": "18av",
@@ -1157,25 +1181,31 @@
     {
       "name": "AI直播",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E7%9F%AD%E5%89%A7.txt",
+      "url": "https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E9%BB%84%E8%B1%86%E7%9F%AD%E5%89%A7.txt",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
-      "name": "黄豆短剧",
+      "name": "电视直播",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E9%BB%84%E8%B1%86%E7%9F%AD%E5%89%A7.m3u",
+      "url": "https://raw.githubusercontent.com/tvbw/20261001-18/main/%E7%94%B5%E8%A7%86%E5%8F%B0.txt",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
-      "name": "欧美剧场1",
+      "name": "午夜直播",
+      "type": 0,
+      "url": "https://raw.githubusercontent.com/tvbw/20261001-18/main/%E5%8D%88%E5%A4%9C%E5%8A%87%E5%9C%BA.m3u",
+      "ua": "okHttp/Mod-1.4.0.0"
+    },
+    {
+      "name": "欧美剧场",
       "type": 0,
       "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E8%A7%86%E9%A2%91.txt",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
-      "name": "欧美剧场2",
+      "name": "午夜剧场",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E6%AC%A7%E7%BE%8E%E8%A7%86%E9%A2%91.m3u",
+      "url": "https://raw.githubusercontent.com/a97083435/tang/f0f9da23de258df61f7f99e696e579a3124da55d/tvbox/zhibo/Bunbun.m3u",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {

@@ -3,43 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "海角情-修复",
-      "name": "❤️海角情-修复",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/xjyss/TT/37a30aeb014edacf49eaaf20127cf987bcc51f94/PY/%E4%B8%89%E5%8C%BA.py#L22",
-      "api": "https://raw.githubusercontent.com/xjyss/TT/37a30aeb014edacf49eaaf20127cf987bcc51f94/PY/%E4%B8%89%E5%8C%BA.py#L22"
-    },
-    {
-      "key": "白嫖之王-封面修复第二版",
-      "name": "❤️白嫖之王",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/白嫖之王-封面修复第二版.py",
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/白嫖之王-封面修复第二版.py"
-    },
-    {
-      "key": "18jspa",
-      "name": "❤️18jspa",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18jspa.py",
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18jspa.py"
-    },
-    {
-
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
@@ -64,7 +27,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-
       "key": "py_4K_fullhd-fullhd3",
       "name": "❤️FHD老僧世界",
       "type": 3,
@@ -509,6 +471,30 @@
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
+    },
+    {
+      "key": "白嫖之王-封面修复第二版",
+      "name": "❤️白嫖之王【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/白嫖之王-封面修复第二版.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/白嫖之王-封面修复第二版.py"
+    },
+    {
+      "key": "18jspa",
+      "name": "❤️18jspa【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18jspa.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18jspa.py"
     },
     {
       "key": "🔞杏吧资源",
