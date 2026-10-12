@@ -13,7 +13,7 @@ class Spider(Spider):
         return "菠萝七区"
     
     def init(self, extend=""):
-        self.host = "https://6182147.xyz"
+        self.host = "https://618600.xyz"
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
             'Connection': 'keep-alive',
@@ -23,7 +23,7 @@ class Spider(Spider):
 
     def homeContent(self, filter):
         classes = [
-            {'type_id': f'618608.xyz_{i}', 'type_name': n} for i, n in [
+            {'type_id': f'618600.xyz_{i}', 'type_name': n} for i, n in [
                 ('37','国产AV'), ('43','探花AV'), ('40','网黄UP主'), ('49','绿帽淫妻'),
                 ('44','国产传媒'), ('41','福利姬'), ('39','字幕'), ('45','水果派'),
                 ('42','主播直播'), ('38','欧美'), ('66','FC2'), ('46','性爱教学'),
@@ -117,32 +117,3 @@ class Spider(Spider):
             return requests.get(url, headers=self.headers, timeout=10, verify=False)
         except:
             return None
-# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
-_PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
-
-def _cover_fallback(self, pic_url):
-    import urllib.parse
-    raw = pic_url or ''
-    parent_impl = getattr(super(Spider, self), '_cover_fallback', None)
-    if callable(parent_impl):
-        try:
-            raw = parent_impl(pic_url) or raw
-        except Exception:
-            pass
-    if not raw:
-        return ''
-    url = raw
-    for cdn in _PIC_CDN_POOL:
-        if cdn in raw:
-            url = raw.replace(cdn, _PIC_CDN_POOL[0])
-            break
-    proxy_base = getattr(self, 'proxy_base', None)
-    if proxy_base:
-        url = f'{proxy_base}{urllib.parse.quote(url)}'
-    return url
-
-Spider._cover_fallback = _cover_fallback
-# 注册爬虫
-if __name__ == '__main__':
-    from base.spider import Spider as BaseSpider
-    BaseSpider.register(Spider())
