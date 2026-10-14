@@ -392,9 +392,9 @@ class Spider(Spider):
         """Get working host from known dynamic URLs"""
         # Known working URLs from the dynamic gateway
         dynamic_urls = [
-            'https://access.wkngpljmf.cc/',
-            'https://burn.wkngpljmf.cc/', 
-            'https://barrier.wkngpljmf.cc/'
+            'https://belief.zeexdtaom.cc/',
+            'https://car.zeexdtaom.cc/', 
+            'https://award.zeexdtaom.cc/'
         ]
         
         # Test each URL to find a working one
