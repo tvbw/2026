@@ -3,6 +3,19 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "Twitter精选",
+      "name": "❤️Twitter精选",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/Twitter精选.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/Twitter精选.py"
+    },
+    {
+
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
