@@ -16,6 +16,32 @@
     },
     {
 
+      "key": "sweetpornos+详情页翻译",
+      "name": "❤️sweetpornos+详情页翻译",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/sweetpornos+详情页翻译.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/sweetpornos+详情页翻译.py"
+    },
+    {
+
+      "key": "eporner大站",
+      "name": "❤️eporner大站",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/eporner大站.py",
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/eporner大站.py"
+    },
+    {
+
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
