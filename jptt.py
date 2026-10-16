@@ -33,7 +33,7 @@ class Spider(BaseSpider):
             ext = {}
         self.proxy = ext.get('proxy', {})
         self.plp = ext.get('plp', '')
-        self.host = 'https://jptttvcity7.cc'
+        self.host = 'https://jptt.tv'
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
             "Referer": self.host + "/",
