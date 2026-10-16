@@ -3,8 +3,21 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "禁片天堂",
+      "name": "❤️禁片天堂【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/jptt.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/jptt.py"
+    },
+    {
+
       "key": "sweetpornos+详情页翻译",
-      "name": "❤️sweetpornos",
+      "name": "❤️sweetpornos【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -40,7 +53,7 @@
     },
     {
       "key": "py_4K_fullhd-fullhd3",
-      "name": "❤️FHD老僧世界",
+      "name": "❤️FHD老僧世界【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -55,7 +68,7 @@
     },
     {
       "key": "py_4K_fullhd-fullhd2",
-      "name": "❤️FHD书生中国",
+      "name": "❤️FHD书生中国【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
