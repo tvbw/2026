@@ -106,7 +106,7 @@ class Spider(Spider):
                         continue
                     img = img_elements[0]
                     if not img.startswith('http'):
-                        img = 'https://jptttvcity7.cc' + img
+                        img = 'https://jptttvcity7.cc/' + img
 
                     desc_elements = video.xpath('.//p[contains(@class,"p_duration")]/text()')
                     desc = desc_elements[0].strip() if desc_elements else ''
@@ -142,7 +142,7 @@ class Spider(Spider):
 
     def detailContent(self, array):
         tid = array[0]
-        url = tid if tid.startswith('http') else f'https://jptttvcity7.cc{tid}'
+        url = tid if tid.startswith('http') else f'https://jptttvcity7.cc/{tid}'
         try:
             rsp = self.fetch(url)
             root = etree.HTML(rsp.text)
@@ -153,7 +153,7 @@ class Spider(Spider):
             pic_elements = root.xpath('//video/@poster')
             pic = pic_elements[0] if pic_elements else ""
             if pic and not pic.startswith('http'):
-                pic = 'https://jptttvcity7.cc' + pic
+                pic = 'https://jptttvcity7.cc/' + pic
 
             desc_elements = root.xpath('//div[contains(@class,"info_original")]//p/text()')
             desc = desc_elements[0].strip() if desc_elements else title
@@ -196,7 +196,7 @@ class Spider(Spider):
                         elif match.startswith('http'):
                             return match
                         else:
-                            return 'https://jptttvcity7.cc' + match
+                            return 'https://jptttvcity7.cc/' + match
 
             js_patterns = [
                 r'src\s*:\s*["\']([^"\']+\.m3u8[^"\']*)["\']',
@@ -212,7 +212,7 @@ class Spider(Spider):
                     elif video_url.startswith('http'):
                         return video_url
                     else:
-                        return 'https://jptttvcity7.cc' + video_url
+                        return 'https://jptttvcity7.cc/' + video_url
 
             all_m3u8 = re.findall(r'["\'](https?://[^"\']+\.m3u8[^"\']*)["\']', html)
             if all_m3u8:
@@ -242,7 +242,7 @@ class Spider(Spider):
                         continue
                     img = img_elements[0]
                     if not img.startswith('http'):
-                        img = 'https://jptttvcity7.cc' + img
+                        img = 'https://jptttvcity7.cc/' + img
 
                     desc_elements = video.xpath('.//p[contains(@class,"p_duration")]/text()')
                     desc = desc_elements[0].strip() if desc_elements else ''
@@ -277,7 +277,7 @@ class Spider(Spider):
                     result["playUrl"] = ''
                     result["url"] = id
                 else:
-                    url = id if id.startswith('http') else f'https://jptttvcity7.cc{id}'
+                    url = id if id.startswith('http') else f'https://jptttvcity7.cc/{id}'
                     rsp = self.fetch(url)
                     play_url = self.extractVideoUrl(rsp.text)
                     result["parse"] = 0
@@ -291,8 +291,8 @@ class Spider(Spider):
 
             result["header"] = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36",
-                "Referer": "https://jptt.tv/",
-                "Origin": "https://jptt.tv"
+                "Referer": "https://jptttvcity7.cc/",
+                "Origin": "https://jptttvcity7.cc/"
             }
         return result
 
