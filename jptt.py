@@ -291,8 +291,8 @@ class Spider(Spider):
 
             result["header"] = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36",
-                "Referer": "https://jptttvcity7.cc/",
-                "Origin": "https://jptttvcity7.cc"
+                "Referer": "https://jptt.tv/",
+                "Origin": "https://jptt.tv"
             }
         return result
 
