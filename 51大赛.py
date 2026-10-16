@@ -47,10 +47,9 @@ class Spider(BaseSpider):
 
     def get_working_host(self):
         dynamic_urls = [
-            'https://m.mldebiqm.cc/',
-            'https://bag.mldebiqm.cc/',
-            'https://access.mldebiqm.cc/',
-            'https://ability.mldebiqm.cc/'
+            'https://afford.fzzwajodb.cc/',
+            'https://angry.fzzwajodb.cc/',
+            'https://buy.fzzwajodb.cc/'
         ]
         for url in dynamic_urls:
             try:
