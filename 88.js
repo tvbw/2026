@@ -3,19 +3,22 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "禁片天堂",
+      "key": "csp_xbpq_禁片天堂",
       "name": "❤️禁片天堂【🔞】",
       "type": 3,
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "playerType": 2,
+      "api": "csp_XBPQ",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/jptt.json",
       "style": {
         "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/jptt.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/jptt.py"
+        "ratio": 1.65
+      }
     },
     {
-
       "key": "sweetpornos+详情页翻译",
       "name": "❤️sweetpornos【🔞】",
       "type": 3,
