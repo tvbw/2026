@@ -19,7 +19,6 @@
       }
     },
     {
-
       "key": "sweetpornos+详情页翻译",
       "name": "❤️sweetpornos【🔞】",
       "type": 3,
@@ -97,8 +96,8 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/duanju202610.js"
     },
     {
-      "key": "csp_xbpq_s直播-21c",
-      "name": "❤️StripChat直播❤️",
+      "key": "csp_xbpq_StripChat",
+      "name": "❤️StripChat直播【🔞】",
       "type": 3,
       "playerType": 2,
       "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
