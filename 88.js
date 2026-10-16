@@ -19,6 +19,7 @@
       }
     },
     {
+
       "key": "sweetpornos+详情页翻译",
       "name": "❤️sweetpornos【🔞】",
       "type": 3,
@@ -270,7 +271,7 @@
     },
     {
       "key": "51dc",
-      "name": "4❤️51大赛｜🔞",
+      "name": "4❤️51爆料｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -1213,15 +1214,15 @@
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
-      "name": "电视直播",
+      "name": "易发直播",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/tvbw/20261001-18/main/%E7%94%B5%E8%A7%86%E5%8F%B0.txt",
+      "url": "https://raw.githubusercontent.com/fafa002/yf2025/main/yiyifafa.txt",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
       "name": "午夜直播",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/tvbw/20261001-18/main/%E5%8D%88%E5%A4%9C%E5%8A%87%E5%9C%BA.m3u",
+      "url": "https://newrecha.neocities.org/live/xxx%E8%A7%86%E9%A2%91%E8%B5%84%E6%BA%90.txt",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
