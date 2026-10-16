@@ -3,22 +3,19 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "csp_xbpq_禁片天堂1",
-      "name": "❤️禁片天堂1【🔞】",
+      "key": "禁片天堂",
+      "name": "❤️禁片天堂py【🔞】",
       "type": 3,
-      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
       "playerType": 2,
-      "api": "csp_XBPQ",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/jptt1.json",
       "style": {
         "type": "rect",
-        "ratio": 1.65
-      }
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/jptt.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/jptt.py"
     },
     {
+
       "key": "csp_xbpq_禁片天堂2",
       "name": "❤️禁片天堂2【🔞】",
       "type": 3,
