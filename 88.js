@@ -96,8 +96,24 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/duanju202610.js"
     },
     {
+      "key": "csp_xbpq_s直播【🔞】",
+      "name": "❤️StripChat直播XB1【🔞】",
+      "type": 3,
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+      "playerType": 2,
+      "api": "csp_XBPQ",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
+      "style": {
+        "type": "rect",
+        "ratio": 1.65
+      }
+    },
+    {
       "key": "csp_xbpq_StripChat",
-      "name": "❤️StripChat直播【🔞】",
+      "name": "❤️StripChat直播2【🔞】",
       "type": 3,
       "playerType": 2,
       "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
