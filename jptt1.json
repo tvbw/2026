@@ -57,7 +57,7 @@
     //"类型值":"*", 
     //"分类url": "https://av.com/json/category/ctg_{cateId}_page_{catePg}.json?times={时间秒戳};;cm0cF",
     "分类": "最近加入&无码&中文字幕&人妻&素人&美少女&学生妹&巨乳&中出&AV女优片&口交&近亲",
-    "分类值": "list?sort=1&list?sort=2&list?sort=3&list?sort=4&list?sort=5&list?sort=6&tag_list?id=212&tag_list?id=278&tag_list?id=16&tag_list?id=9&tag_list?id=18&tag_list?id=52&tag_list?id=15&tag_list?id=2&tag_list?id=3&tag_list?id=34&tag_list?id=112",
+    "分类值": "list?sort=1&list?sort=2&list?sort=212&tag_list?id=278&tag_list?id=16&tag_list?id=9&tag_list?id=18&tag_list?id=52&tag_list?id=15&tag_list?id=2&tag_list?id=3&tag_list?id=34&tag_list?id=112",
     "筛选":{
 
 "list":[
@@ -66,12 +66,6 @@
   "value":[
 {"v":"2","n":"最新发行"},
 {"v":"1","n":"最近更新"},
-
-{"v":"3","n":"今日人气🔥"},
-{"v":"4","n":"本周人气"},
-{"v":"5","n":"本月人气"},
-{"v":"6","n":"总人气"}
-
 ]}
 ]
 
