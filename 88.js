@@ -122,7 +122,7 @@
       "searchable": 0,
       "quickSearch": 0,
       "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/xbpq/stripchat直播带票.json",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/stripchatgirls.json",
       "style": {
         "type": "rect",
         "ratio": 1.65
