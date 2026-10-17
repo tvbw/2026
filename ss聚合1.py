@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-# 聚合平台3 - 影视资源 API 聚合
-# 对应 聚合平台3 (2).js；结构参考 ppnix.py
+# 聚合平台3 - 影视资源 API 聚合【重构版】
+# 重构点：解析优先顺序改为SOURCES前5个源，清理冗余重复低效代码
 import json
 import re
 import sys
 from urllib.parse import quote, urlencode
 
 sys.path.append('..')
+
 try:
     from base.spider import Spider as BaseSpider
 except ImportError:
@@ -21,28 +22,6 @@ except ImportError:
 
 
 class Spider(BaseSpider):
-    def init(self, extend=""):
-        self._first_cate = {}
-
-    def getName(self):
-        return '聚合平台3'
-
-    def isVideoFormat(self, url):
-        if not url:
-            return False
-        u = str(url).lower()
-        if any(x in u for x in ('.mp4', '.m3u8', '.flv', '.mkv')):
-            return True
-        if u.startswith('magnet:') or u.startswith('ed2k:'):
-            return True
-        return False
-
-    def manualVideoCheck(self):
-        pass
-
-    def destroy(self):
-        pass
-
     UA = (
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
         'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
@@ -56,66 +35,73 @@ class Spider(BaseSpider):
     #        因为它们的地址是需要解析后才会拿到真正的 m3u8。
     M3U8_ONLY = True
 
-    # 绅士影视解析站（优先顺序）
-    PARSERS = [
-        {'name': '组豪富英', 'api': 'https://coffee-5c93e1f751eb.edge.tvapp.eu.org:31000/api/?key=6f8622b2-8402-43c9-ae29-0adaa292bc71&url='},
-        {'name': '组4K·P', 'api': 'https://jx.meilinvps.com/api/?key=7dba17e4cc9b887faf7afaf9a20fd391&url='},
-        {'name': '组4K·C', 'api': 'https://vip1.123jx.vip/api/?key=f60311e9bc7c1eac9dcaf5e336647b65&url='},
-        {'name': '组C4K·E', 'api': 'http://175.24.181.180:5000/api/jiexi/common?Key=Dg3tqWmzSgcKGlZY2c&url='},
-        {'name': 'huaqi', 'api': 'https://api.huaqi.pro/api/?key=5bd0db7c858ba9f999373450f3651af7&url='},
-        {'name': 'zqcb', 'api': 'https://kx.zyzqcb.cc/api/?key=df8bfba9c7ce22ff751465ec8cb73623&url='},
-        {'name': '789', 'api': 'https://jx.789jiexi.icu:4433/?url='},
-        {'name': '12321', 'api': 'https://test1.12321app.com/daoliansiquanjia.php?url='},
-    ]
-
     # type: 0=XML旧版  1=JSON标准(默认)  2=代理源  3=大地feifei2
     SOURCES = {
         's41': {'name': '🌸精品', 'api': 'https://jp98.vip/api.php/provide/vod/at/m3u8'},
-        's5': {'name': '🔥麻花', 'api': 'https://19q.cc/api.php/provide/vod/at/m3u8'},
+        's5': {'name': '🔥麻花', 'api': 'shturl.cc/b1iLYUNmhkN6yRYHpYBez2E1z2hhyH3v'},
         's6': {'name': '📺搜AV', 'api': 'https://souavzy.net/api.php/provide/vod/at/m3u8'},
         's8': {'name': '⚡极品', 'api': 'https://jipinvip1.com/api.php/provide/vod/at/m3u8'},
         's32': {'name': '🍃百花', 'api': 'https://bhziyuan.com/api.php/provide/vod/at/m3u8'},
         's25': {'name': '🌸仓库', 'api': 'https://hsckzy888.com/api.php/provide/vod/at/m3u8'},
         's39': {'name': '🐾CK百货', 'api': 'https://ckbh1.xyz/api.php/provide/vod'},
-        's42': {'name': '🐾森林', 'api': 'https://slapibf.com/api.php/provide/vod'},
-        's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vod'},
+        's42': {'name': '🐾森林', 'api': 'shturl.cc/CzGvDs48H4psF74HRvcGqBAkGLrGc'},
+        's29': {'name': '🦅乐播', 'api': 'shturl.cc/pIIhK4oiNjyG27VnO1LovIqc1jWY'},
         's19': {'name': '📺91AV', 'api': 'https://91av.cyou/api.php/provide/vod/at/m3u8'},
         's43': {'name': '🐾大地', 'api': 'https://dadiapi.com/feifei2/', 'type': 3},
         's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/at/m3u8'},
-        's21': {'name': '📺小鸡', 'api': 'https://api.xiaojizy.live/provide/vod/'},
+        's21': {'name': '📺小鸡', 'api': 'shturl.cc/bZVAMeBCAV7giIS56KJ3mXtYiPhK'},
         's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/at/m3u8'},
-        's1': {'name': '🎬香蕉', 'api': 'https://www.xiangjiaozyw.com/api.php/provide/vod/'},
-        's27': {'name': '☁️精东', 'api': 'http://chujia.cc/api.php/provide/vod/'},
+        's1': {'name': '🎬香蕉', 'api': 'shturl.cc/B5TaC7EqR7UVUefyD9QGw3ldEbuo4fDD6mYMB8v'},
+        's27': {'name': '☁️精东', 'api': 'shturl.cc/Sfh4D6v4nEJIIZwkPHu6n8ORJPz'},
         's45': {'name': '🐾滴滴', 'api': 'https://api.ddapi.cc/api.php/provide/vod/at/m3u8'},
-        's30': {'name': '⚡JKUN', 'api': 'https://jkunzyapi.com/api.php/provide/vod'},
+        's30': {'name': '⚡JKUN', 'api': 'shturl.cc/PTJCcXxzAbprvCvFgGYBhRg8Anv4H4J'},
         's9': {'name': '📺美少女', 'api': 'https://www.msnii.com/api/json.php'},
         's10': {'name': '📺饮水机', 'api': 'https://www.xrbsp.com/api/json.php'},
         's11': {'name': '📺香奶儿', 'api': 'https://www.gdlsp.com/api/json.php'},
         's12': {'name': '🐯白嫖', 'api': 'https://www.kxgav.com/api/json.php'},
         's14': {'name': '📺潢AV', 'api': 'https://www.pgxdy.com/api/json.php'},
-        's31': {'name': '👑桃花', 'api': 'https://thzy1.me/api.php/provide/vod/at/m3u8'},
+        's31': {'name': '👑桃花', 'api': 'shturl.cc/Qvz1b2PBvpTVQg2N8DgVJ9Qx2GAGjhh2rN'},
         's4': {'name': '📺鲨鱼', 'api': 'https://shayuzy3.com/api.php/provide/vod/'},
         's22': {'name': '📺大奶', 'api': 'https://apidanaizi.com/api.php/provide/vod/at/m3u8'},
         's24': {'name': '📺黑料', 'api': 'https://heiliaozyapi.com/api.php/provide/vod/at/m3u8'},
         's26': {'name': '🐮玉兔', 'api': 'https://apiyutu.com/api.php/provide/vod/at/m3u8'},
         's33': {'name': '🐾老色', 'api': 'https://apilsbzy1.com/api.php/provide/vod/at/m3u8'},
         's34': {'name': '🐾辣椒', 'api': 'https://apilj.com/api.php/provide/vod/at/m3u8'},
-        's35': {'name': '🐾javbus', 'api': 'https://javbus.sbs/api.php/provide/vod/at/m3u8'},
+        's35': {'name': '🐾javbus', 'api': 'shturl.cc/Rv5R1CrXPaF10jhLDUGZbhnD5tJqWHrOCVWm'},
         's37': {'name': '🐾火速', 'api': 'https://api.huosuapi.cc/api.php/provide/vod/at/m3u8'},
         's38': {'name': '🐾聚合2', 'api': 'http://150.109.94.44:1112/api.php/provide/vod/at/m3u8'},
         's16': {'name': '📺CK资源', 'api': 'https://ckzy.me/api.php/provide/vod/at/m3u8'},
         's50': {'name': '🧸嘿嘿', 'api': 'https://api.heiapi.cc/api.php/provide/vod/at/m3u8'},
-        's40': {'name': '🐾番茄1', 'api': 'https://fqzy.me/api.php/provide/vod//at/m3u8'},
-        's2': {'name': '💧番茄2', 'api': 'http://fhapi9.com/api.php/provide/vod/'},
+        's40': {'name': '🐾番茄1', 'api': 'shturl.cc/pL8TYnui88INBpAjrpBghh6zdEbgMMc7fh'},
+        's2': {'name': '💧番茄2', 'api': 'shturl.cc/K5uXvnIed5w7qbalOSCirS4AIrEs'},
         's15': {'name': '📺杏吧', 'api': 'https://api.xgbbk8.com/api.php/provide/vod/at/m3u8'},
         's49': {'name': '📺湿园', 'api': 'https://xxavs.com/api.php/provide/vod/at/m3u8'},
     }
 
-    def _text(self, v):
+    def init(self, extend=""):
+        self._first_cate = {}
+
+    def getName(self):
+        return '聚合平台3'
+
+    @staticmethod
+    def isVideoFormat(url):
+        if not url:
+            return False
+        u = str(url).lower()
+        if any(x in u for x in ('.mp4', '.m3u8', '.flv', '.mkv')):
+            return True
+        if u.startswith(('magnet:', 'ed2k:')):
+            return True
+        return False
+
+    @staticmethod
+    def _text(v):
         return str(v if v is not None else '').strip()
 
-    def _build_url(self, base, params=None):
-        url = self._text(base).strip(' "\'')
+    @staticmethod
+    def _build_url(base, params=None):
+        url = Spider._text(base).strip(' "\'')
         params = params or {}
         keys = [k for k, v in params.items() if v is not None and str(v) != '']
         if not keys:
@@ -144,16 +130,17 @@ class Spider(BaseSpider):
             print('request error', url, e)
             return ''
 
-    def _safe_json(self, s):
+    @staticmethod
+    def _safe_json(s):
+        if not s:
+            return None
+        # 大整数 id 保精度
+        s2 = re.sub(
+            r'"(vod_id|id|type_id|list_id|vodId)"\s*:\s*(\d{16,})',
+            r'"\1":"\2"',
+            str(s),
+        )
         try:
-            if not s:
-                return None
-            # 大整数 id 保精度
-            s2 = re.sub(
-                r'"(vod_id|id|type_id|list_id|vodId)"\s*:\s*(\d{16,})',
-                r'"\1":"\2"',
-                str(s),
-            )
             return json.loads(s2)
         except Exception:
             try:
@@ -161,17 +148,19 @@ class Spider(BaseSpider):
             except Exception:
                 return None
 
-    def _fix_pic(self, url):
-        url = self._text(url)
+    @staticmethod
+    def _fix_pic(url):
+        url = Spider._text(url)
         if not url:
             return ''
         if url.startswith('//'):
             return 'https:' + url
-        if url.startswith('http://') or url.startswith('https://'):
+        if url.startswith(('http://', 'https://')):
             return url
         return ''
 
-    def _extract_cdata(self, s):
+    @staticmethod
+    def _extract_cdata(s):
         if not s:
             return ''
         m = re.search(r'<!\[CDATA\[([\s\S]*?)\]\]>', s)
@@ -179,7 +168,8 @@ class Spider(BaseSpider):
             return m.group(1).strip()
         return re.sub(r'<[^>]+>', '', s).strip()
 
-    def _normalize_vod(self, item):
+    @staticmethod
+    def _normalize_vod(item):
         if not item or not isinstance(item, dict):
             return item
         o = dict(item)
@@ -223,7 +213,7 @@ class Spider(BaseSpider):
             o['type_name'] = o['list_name']
         if not o.get('type_name') and o.get('type'):
             o['type_name'] = o['type']
-        o['vod_pic'] = self._fix_pic(o.get('vod_pic'))
+        o['vod_pic'] = Spider._fix_pic(o.get('vod_pic'))
         return o
 
     def _parse_xml(self, html):
@@ -267,8 +257,8 @@ class Spider(BaseSpider):
             dl = re.search(r'<dl>([\s\S]*?)</dl>', v, re.I)
             if dl:
                 for dm in re.finditer(
-                    r'<dd[^>]*?(?:flag=["\']([^"\']+)["\']|flag=([^\s>]+))[^>]*>([\s\S]*?)</dd>',
-                    dl.group(1), re.I
+                        r'<dd[^>]*?(?:flag=["\']([^"\']+)["\']|flag=([^\s>]+))[^>]*>([\s\S]*?)</dd>',
+                        dl.group(1), re.I
                 ):
                     flag = self._text(dm.group(1) or dm.group(2) or dt or '播放')
                     content = self._extract_cdata(dm.group(3) or '')
@@ -307,13 +297,6 @@ class Spider(BaseSpider):
             if j.get('status') is not None and (isinstance(j.get('data'), list) or j.get('page')):
                 page_obj = j.get('page') or {}
                 classes = []
-                if isinstance(j.get('list'), list) and j['list']:
-                    first = j['list'][0]
-                    if first and (first.get('list_id') is not None or first.get('list_name')):
-                        classes = [{
-                            'type_id': self._text(c.get('list_id') or c.get('type_id') or c.get('id')),
-                            'type_name': self._text(c.get('list_name') or c.get('type_name') or c.get('name')),
-                        } for c in j['list']]
                 raw = j['data'] if isinstance(j.get('data'), list) else []
                 return {
                     'list': [self._normalize_vod(x) for x in raw],
@@ -348,19 +331,12 @@ class Spider(BaseSpider):
                 }
         return self._parse_xml(html)
 
-    # ★ 新增：从播放地址里只保留 .m3u8 的剧集
     def _filter_m3u8(self, from_arr, url_arr, source_name):
-        """
-        输入:
-            from_arr: 线路名列表
-            url_arr:  与 from_arr 一一对应的播放串（集名$地址#集名$地址...）
-        输出:
-            new_from, new_url 只保留含 .m3u8 的剧集
-        """
+        """只保留含 .m3u8 的剧集"""
         new_from, new_url = [], []
         max_len = max(len(from_arr), len(url_arr))
         for i in range(max_len):
-            f = from_arr[i] if i < len(from_arr) else ('%s-线路%d' % (source_name, i + 1))
+            f = from_arr[i] if i < len(from_arr) else f'{source_name}-线路{i + 1}'
             u = url_arr[i] if i < len(url_arr) else ''
             if not u:
                 continue
@@ -368,11 +344,7 @@ class Spider(BaseSpider):
             for ep in u.split('#'):
                 if not ep:
                     continue
-                if '$' in ep:
-                    _, url = ep.split('$', 1)
-                else:
-                    url = ep
-                # 核心：包含 .m3u8 就保留（忽略大小写，支持 ?token= 等后缀）
+                _, url = ep.split('$', 1) if '$' in ep else ('', ep)
                 if '.m3u8' in url.lower():
                     kept.append(ep)
             if kept:
@@ -384,30 +356,24 @@ class Spider(BaseSpider):
         o = self._normalize_vod(dict(item))
         o['vod_id'] = self._text(o.get('vod_id'))
         if not is_detail:
-            o['vod_id'] = '%s@@%s' % (source_key, o['vod_id'])
+            o['vod_id'] = f'{source_key}@@{o["vod_id"]}'
         rem = self._text(o.get('vod_remarks'))
-        o['vod_remarks'] = '%s | %s' % (source_name, rem)
-
+        o['vod_remarks'] = f'{source_name} | {rem}'
         source_obj = self.SOURCES.get(source_key) or {}
-        # parse=1 的源需要走解析站，最终地址由解析后得到 m3u8，不能在这里过滤
         need_parse = bool(source_obj.get('parse'))
-
         from_arr = [s.strip() for s in self._text(o.get('vod_play_from')).split('$$$') if s.strip()]
         url_arr = [s.strip() for s in self._text(o.get('vod_play_url')).split('$$$')]
-
-        # ★ 只保留 m3u8
         if self.M3U8_ONLY and not need_parse and (from_arr or any(url_arr)):
             from_arr, url_arr = self._filter_m3u8(from_arr, url_arr, source_name)
-
         if from_arr:
-            from_arr = [x if x.startswith(source_name) else '%s-%s' % (source_name, x) for x in from_arr]
+            from_arr = [x if x.startswith(source_name) else f'{source_name}-{x}' for x in from_arr]
         if not from_arr and any(url_arr):
-            from_arr = ['%s-线路%d' % (source_name, i + 1) for i in range(len(url_arr))]
-        if from_arr and url_arr:
-            while len(url_arr) < len(from_arr):
-                url_arr.append('')
-            while len(from_arr) < len(url_arr):
-                from_arr.append('%s-线路%d' % (source_name, len(from_arr) + 1))
+            from_arr = [f'{source_name}-线路{i + 1}' for i in range(len(url_arr))]
+        # 对齐数组长度
+        while len(url_arr) < len(from_arr):
+            url_arr.append('')
+        while len(from_arr) < len(url_arr):
+            from_arr.append(f'{source_name}-线路{len(from_arr) + 1}')
         o['vod_play_from'] = '$$$'.join(from_arr)
         o['vod_play_url'] = '$$$'.join(url_arr)
         o.pop('vod_down_from', None)
@@ -433,14 +399,14 @@ class Spider(BaseSpider):
         return vals, first_cate
 
     def homeContent(self, filter):
-        # 只返回源列表，不逐个请求分类（否则 40+ 源会卡死加载）
         classes = []
         filters = {}
         self._first_cate = {'s43': '1', 's44': 'site_duoduo'}
         default_vals = [{'n': '全部(最新)', 'v': ''}]
         for sk, so in self.SOURCES.items():
             classes.append({'type_id': sk, 'type_name': so['name']})
-            if (so.get('type') or 1) == 5:
+            st = so.get('type') or 1
+            if st == 5:
                 vals = [
                     {'n': '玩偶', 'v': 'site_wanou'},
                     {'n': '木偶', 'v': 'site_muou'},
@@ -455,7 +421,7 @@ class Spider(BaseSpider):
                 ]
                 filters[sk] = [{'key': 'cateId', 'name': '站点', 'value': vals}]
                 self._first_cate[sk] = 'site_duoduo'
-            elif (so.get('type') or 1) == 4:
+            elif st == 4:
                 vals = [
                     {'n': '全部(连续剧)', 'v': 'tv'},
                     {'n': '连续剧', 'v': 'tv'},
@@ -479,9 +445,6 @@ class Spider(BaseSpider):
             else:
                 filters[sk] = [{'key': 'cateId', 'name': '分类', 'value': list(default_vals)}]
         return {'class': classes, 'filters': filters if filter else {}}
-
-    def homeVideoContent(self):
-        return {'list': []}
 
     def categoryContent(self, tid, pg, filter, extend):
         pg = int(pg or 1)
@@ -548,6 +511,7 @@ class Spider(BaseSpider):
         if not source:
             return {'list': []}
         stype = source.get('type') or 1
+        html = ''
         if stype == 0:
             html = self._request(self._build_url(source['api'], {'ac': 'videolist', 'ids': real_id}))
         elif stype == 5:
@@ -574,7 +538,7 @@ class Spider(BaseSpider):
                 html_vl = self._request(self._build_url(source['api'], {'ac': 'videolist', 'ids': real_id}))
                 dvl = self._parse_response(html_vl)
                 if (dvl.get('list') or [None])[0] and self._text(
-                    (dvl['list'][0].get('vod_play_url') or dvl['list'][0].get('vod_url') or '')
+                        (dvl['list'][0].get('vod_play_url') or dvl['list'][0].get('vod_url') or '')
                 ):
                     html = html_vl
             if stype == 2:
@@ -590,7 +554,7 @@ class Spider(BaseSpider):
                         if html3:
                             d3 = self._parse_response(html3)
                             if (d3.get('list') or [None])[0] and self._text(
-                                (d3['list'][0].get('vod_play_url') or d3['list'][0].get('vod_url') or '')
+                                    (d3['list'][0].get('vod_play_url') or d3['list'][0].get('vod_url') or '')
                             ):
                                 html = html3
         data = self._parse_response(html)
@@ -599,22 +563,16 @@ class Spider(BaseSpider):
             cleaned = self._clean_item(it, source_key, source['name'], True)
             cleaned['vod_id'] = str(raw)
             cleaned['vod_pic'] = self._fix_pic(cleaned.get('vod_pic'))
-
-            # ★ 详情页里，如果过滤后没有 m3u8 播放地址（且非解析源），直接跳过
             if (self.M3U8_ONLY and not source.get('parse')
                     and not self._text(cleaned.get('vod_play_url'))):
                 continue
-
             if not self._text(cleaned.get('vod_play_from')) and self._text(cleaned.get('vod_play_url')):
                 segs = self._text(cleaned.get('vod_play_url')).split('$$$')
                 cleaned['vod_play_from'] = '$$$'.join(
-                    ['%s-线路%d' % (source['name'], i + 1) for i in range(len(segs))]
+                    [f'{source["name"]}-线路{i + 1}' for i in range(len(segs))]
                 )
             out.append(cleaned)
         return {'list': out}
-
-    def searchContent(self, key, quick, pg='1'):
-        return self.searchContentPage(key, quick, pg)
 
     def searchContentPage(self, key, quick, pg=1):
         import time
@@ -646,7 +604,6 @@ class Spider(BaseSpider):
             sk, so = sk_so
             try:
                 stype = so.get('type') or 1
-                extra_to = 15 if sk == 's44' else None
                 if stype in (0, 3):
                     url = self._build_url(so['api'], {'ac': 'videolist', 'wd': key, 'pg': pg})
                 elif stype == 2:
@@ -657,8 +614,7 @@ class Spider(BaseSpider):
                     url = self._build_url(so['api'], {'t': 'tv', 'pg': pg, 'wd': key})
                 else:
                     url = self._build_url(so['api'], {'ac': 'detail', 'wd': key, 'pg': pg})
-                html = self._request(url, timeout=SRC_TIMEOUT) if extra_to is None \
-                    else self._request_timeout(url, extra_to)
+                html = self._request(url, timeout=SRC_TIMEOUT)
                 data = self._parse_response(html)
                 if not data.get('list') and stype not in (0, 2, 3, 5):
                     data2 = self._parse_response(
@@ -684,15 +640,12 @@ class Spider(BaseSpider):
                 print('search skip', sk, e)
                 return [], 1
 
-        from concurrent.futures import ThreadPoolExecutor
+        from concurrent.futures import ThreadPoolExecutor, as_completed
         pool = ThreadPoolExecutor(max_workers=10)
         start = time.time()
+        futs = [pool.submit(_one, it) for it in items]
         try:
-            from concurrent.futures import as_completed
-            futs = [pool.submit(_one, it) for it in items]
-            done = 0
             for fut in as_completed(futs):
-                done += 1
                 try:
                     lst, pc = fut.result()
                 except Exception:
@@ -711,8 +664,6 @@ class Spider(BaseSpider):
                 if pc > max_page:
                     max_page = pc
                 el = time.time() - start
-                if done == len(futs):
-                    break
                 if len(result) >= FAST_LIMIT and el > 3:
                     break
                 if el > TOTAL_LIMIT:
@@ -720,10 +671,8 @@ class Spider(BaseSpider):
         except Exception as e:
             print('search pool error', e)
         finally:
-            try:
-                pool.shutdown(wait=False, cancel_futures=True)
-            except Exception:
-                pass
+            pool.shutdown(wait=False, cancel_futures=True)
+
         return {
             'list': result,
             'page': pg,
@@ -732,47 +681,36 @@ class Spider(BaseSpider):
             'total': 9999,
         }
 
-    def _request_timeout(self, url, timeout=15, extra_headers=None):
-        try:
-            hdr = dict(self.headers)
-            if extra_headers:
-                hdr.update(extra_headers)
-            if requests is None:
-                import urllib.request, ssl
-                ctx = ssl.create_default_context()
-                ctx.check_hostname = False
-                ctx.verify_mode = ssl.CERT_NONE
-                req = urllib.request.Request(url, headers=hdr)
-                with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
-                    return r.read().decode('utf-8', 'ignore')
-            r = requests.get(url, headers=hdr, timeout=timeout, verify=False)
-            r.encoding = 'utf-8'
-            return r.text if r.status_code == 200 else ''
-        except Exception as e:
-            print('request error', url, e)
-            return ''
+    def searchContent(self, key, quick, pg='1'):
+        return self.searchContentPage(key, quick, pg)
 
     def _parse_url(self, token_url, prefer=''):
-        """绅士影视解析逻辑：多解析站轮询取直链"""
+        """★ 修改：优先解析源取SOURCES前5个源(s41,s5,s6,s8,s32)"""
         from urllib.parse import quote
         if not token_url:
             return ''
         if re.search(r'\.(m3u8|mp4|flv|mkv)(\?|$)', token_url, re.I):
             return token_url
+
+        # 取SOURCES前5个作为优先解析列表
+        source_items = list(self.SOURCES.items())[:5]
+        # 转换成解析站格式 {name, api}，拼接解析参数 ?url=
+        parsers = []
+        for _, s in source_items:
+            api_base = s['api']
+            sep = '&' if '?' in api_base else '?'
+            parsers.append({
+                "name": s['name'],
+                "api": f"{api_base}{sep}url="
+            })
+
         cands = []
         if prefer:
-            for p in self.PARSERS:
+            for p in parsers:
                 if prefer in p['api'] or prefer in p.get('name', ''):
                     cands.append(p)
-        if token_url.startswith('co_') or token_url.startswith('CO4K') or 'tvapp' in (prefer or ''):
-            for p in self.PARSERS:
-                if p['name'] in ('组豪富英', '12321') and p not in cands:
-                    cands.insert(0, p)
-        if re.search(r'https?://', token_url) and not re.search(r'\.(m3u8|mp4)(\?|$)', token_url, re.I):
-            for p in self.PARSERS:
-                if p['name'] in ('huaqi', '12321') and p not in cands:
-                    cands.insert(0, p)
-        cands += [p for p in self.PARSERS if p not in cands]
+        cands += [p for p in parsers if p not in cands]
+
         urls_try = [token_url]
         try:
             enc = quote(token_url, safe='')
@@ -780,6 +718,7 @@ class Spider(BaseSpider):
                 urls_try.append(enc)
         except Exception:
             pass
+
         for p in cands:
             for tu in urls_try:
                 try:
@@ -820,7 +759,7 @@ class Spider(BaseSpider):
             if re.match(r'^https?://', first, re.I):
                 play_url = first
         if ('|' in play_url and '@@' in play_url) or (
-            'pan.baidu.com' in play_url or 'pan.quark.cn' in play_url or 'drive.uc.cn' in play_url
+                'pan.baidu.com' in play_url or 'pan.quark.cn' in play_url or 'drive.uc.cn' in play_url
         ):
             api = self.SOURCES.get('s44', {}).get('api') or ''
             fl = self._text(flag)
@@ -830,13 +769,12 @@ class Spider(BaseSpider):
             j = self._safe_json(resp) or {}
             real = j.get('url')
             if isinstance(real, list):
-                for x in real:
+                real = ''
+                for x in j.get('url', []):
                     xs = self._text(x)
                     if xs.startswith('http'):
                         real = xs
                         break
-                else:
-                    real = self._text(real[-1] if real else '')
             else:
                 real = self._text(real or '')
             hdr = {'User-Agent': self.UA}
@@ -868,10 +806,7 @@ class Spider(BaseSpider):
                 self._build_url(api, {'flag': fl, 'play': path}),
                 extra_headers=dbo_hdr,
             )
-            try:
-                j = self._safe_json(resp) or {}
-            except Exception:
-                j = {}
+            j = self._safe_json(resp) or {}
             real = self._text(j.get('url') or '')
             hdr = {
                 'User-Agent': self.UA,
@@ -912,22 +847,6 @@ class Spider(BaseSpider):
             if so.get('parse') and (sk in fl or so['name'].replace('🐾', '') in fl or so['name'] in fl):
                 prefer = so.get('parser') or ''
                 break
-        if not prefer:
-            for tk, api in (('CO4K', '175.24.181.180'), ('co_egg', 'tvapp.eu.org'),
-                            ('co_', 'tvapp.eu.org'), ('zijian', '123jx.vip'), ('JYY', '175.24.181.180')):
-                if play_url.startswith(tk):
-                    prefer = api
-                    break
-        if not prefer and ('绅2K' in fl or '2K·P' in fl or fl.endswith('-co') or fl == 'co'):
-            prefer = 'tvapp.eu.org'
-        if not prefer and ('绅4K·E' in fl or '极影' in fl):
-            prefer = '175.24.181.180'
-        if not prefer and ('绅4K·C' in fl or '4K·C' in fl):
-            prefer = '123jx.vip'
-        if not prefer and ('绅4K·P' in fl or '4K·P' in fl):
-            prefer = 'jx.meilinvps.com'
-        if play_url.startswith('co_') or play_url.startswith('CO4K'):
-            prefer = prefer or 'tvapp.eu.org'
         real = self._parse_url(play_url, prefer)
         if real:
             return {
@@ -938,6 +857,3 @@ class Spider(BaseSpider):
             'parse': 1, 'jx': 1, 'url': play_url,
             'header': {'User-Agent': self.UA},
         }
-
-    def localProxy(self, param):
-        return None
