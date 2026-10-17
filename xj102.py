@@ -70,7 +70,7 @@ class Spider(Spider):
         return "苹果视频"
     
     def init(self, extend=""):
-        self.host = "https://618622.xyz"
+        self.host = "https://618940.xyz"
         self.api_host = "https://h5.xxoo169.org"
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -144,26 +144,25 @@ class Spider(Spider):
     def homeVideoContent(self):
         """分类定义 - 兼容性方法"""
         return {
-        classes = [
-            {'type_id': '618622.xyz_36', 'type_name': '全部影片'},
-            {'type_id': '618622.xyz_13', 'type_name': '精品二区'},
-            {'type_id': '618622.xyz_37', 'type_name': '国产AV'},
-            {'type_id': '618622.xyz_43', 'type_name': '探花AV'},
-            {'type_id': '618622.xyz_40', 'type_name': '网黄UP主'},
-            {'type_id': '618622.xyz_49', 'type_name': '绿帽淫妻'},
-            {'type_id': '618622.xyz_44', 'type_name': '国产传媒'},
-            {'type_id': '618622.xyz_41', 'type_name': '福利姬'},
-            {'type_id': '618622.xyz_39', 'type_name': '字幕'},
-            {'type_id': '618622.xyz_45', 'type_name': '水果π'},
-            {'type_id': '618622.xyz_42', 'type_name': '主播直播'},
-            {'type_id': '618622.xyz_38', 'type_name': '欧美'},
-            {'type_id': '618622.xyz_66', 'type_name': 'FC2'},
-            {'type_id': '618622.xyz_46', 'type_name': '性爱教学'},
-            {'type_id': '618622.xyz_48', 'type_name': '三级'},
-            {'type_id': '618622.xyz_47', 'type_name': '动漫'}
-        ]
+            'class': [
+                {'type_id': '618622.xyz_36', 'type_name': '全部影片'},
+                {'type_id': '618622.xyz_13', 'type_name': '精品二区'},
+                {'type_id': '618622.xyz_37', 'type_name': '国产AV'},
+                {'type_id': '618622.xyz_43', 'type_name': '探花AV'},
+                {'type_id': '618622.xyz_40', 'type_name': '网黄UP主'},
+                {'type_id': '618622.xyz_49', 'type_name': '绿帽淫妻'},
+                {'type_id': '618622.xyz_44', 'type_name': '国产传媒'},
+                {'type_id': '618622.xyz_41', 'type_name': '福利姬'},
+                {'type_id': '618622.xyz_39', 'type_name': '字幕'},
+                {'type_id': '618622.xyz_45', 'type_name': '水果π'},
+                {'type_id': '618622.xyz_42', 'type_name': '主播直播'},
+                {'type_id': '618622.xyz_38', 'type_name': '欧美'},
+                {'type_id': '618622.xyz_66', 'type_name': 'FC2'},
+                {'type_id': '618622.xyz_46', 'type_name': '性爱教学'},
+                {'type_id': '618622.xyz_48', 'type_name': '三级'},
+                {'type_id': '618622.xyz_47', 'type_name': '动漫'}
+            ]
         }
-
     def categoryContent(self, tid, pg, filter, extend):
         """分类内容 - 修改为使用固定页数设置"""
         try:
@@ -590,9 +589,9 @@ class Spider(Spider):
                 if not vod_id:
                     vod_id = str(hash(link) % 1000000)
                 
-                final_vod_id = f"618622.xyz_{vod_id}"
+                final_vod_id = f"618940.xyz_{vod_id}"
                 if category_id:
-                    final_vod_id = f"618622.xyz_{category_id}_{vod_id}"
+                    final_vod_id = f"618940.xyz_{category_id}_{vod_id}"
                 
                 # 提取加密的标题并解密
                 title_elem = element.xpath('.//p[@class="km-script"]/text()')
@@ -751,4 +750,4 @@ class Spider(Spider):
                 response = requests.post(url, headers=headers, data=data, timeout=timeout, verify=False)
             return response
         except Exception as e:
-            self.log(f"网络请求失败: {url}, 错误: {str(e)}")
+            self.log(f"网络请求失败: {url}, 错误: {str(e)}") 
