@@ -38,7 +38,7 @@ class Spider(BaseSpider):
         's15': {'name': '📺杏吧', 'api': 'https://api.xgbbk8.com/api.php/provide/vod/'},
         's40': {'name': '🐾番茄1', 'api': 'https://fqzy.me/api.php/provide/vod/'},
         's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vod'},
-        's43': {'name': '🐾大地', 'api': 'http://dadiapi.com/api.php'},
+        's43': {'name': '🐾大地', 'api': 'http://dadiapi.com/api.php',"type": 0},
         's2': {'name': '💧番茄2', 'api': 'http://fhapi9.com/api.php/provide/vod/'},
         's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/'},
         's21': {'name': '📺小鸡', 'api': 'https://api.xiaojizy.live/provide/vod/'},
@@ -402,19 +402,6 @@ class Spider(BaseSpider):
             classes.append({'type_id': sk, 'type_name': so['name']})
             st = so.get('type') or 1
 
-            # s43大地源保留它自己硬编码分类
-            if sk == 's43':
-                vals = [
-                    {'n': '电影', 'v': '1'},
-                    {'n': '电视剧', 'v': '2'},
-                    {'n': '动漫', 'v': '3'},
-                    {'n': '综艺', 'v': '4'},
-                    {'n': '纪录片', 'v': '50'},
-                    {'n': 'Netflix', 'v': '99'},
-                ]
-                filters[sk] = [{'key': 'cateId', 'name': '分类', 'value': vals}]
-                self._first_cate[sk] = '1'
-            elif sk in top5_keys:
                 # ✅前5个源：远程请求接口自动提取真实分类
                 try:
                     vals, first_c = self._load_filter(sk, so)
