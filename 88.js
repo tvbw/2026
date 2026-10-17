@@ -51,8 +51,8 @@
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py"
     },
     {
       "key": "sweetpornos+详情页翻译",
