@@ -1,33 +1,79 @@
+# ===== 1. 先正常 import 所有模块 =====
+import json
+import random
+import re
+import sys
+import threading
+import time
+from base64 import b64decode, b64encode
+from urllib.parse import urlparse
+
+import requests  # ✅ 先正常 import
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+from pyquery import PyQuery as pq
+sys.path.append('..')
+from base.spider import Spider
+
+# ===== 2. 再放加速头（不能再 import requests） =====
+# =================== 极简万能加速头 ===================
+import re
+from functools import lru_cache
+
+FAST_CDN = "lib.baomitu.com"
+DEAD_MAP = {
+    "rimg.iomycdn.com": FAST_CDN,
+    "rimg.xiakee.com": FAST_CDN,
+    "play.abcyun.com": FAST_CDN,
+    "video.xyzcdn.com": FAST_CDN,
+}
+
+@lru_cache(maxsize=256)
+def _auto_cdn(url: str) -> str:
+    if not url:
+        return ""
+    for dead, fast in DEAD_MAP.items():
+        url = url.replace(dead, fast)
+    if url.startswith("//"):
+        url = "https:" + url
+    try:
+        r = requests.head(url, allow_redirects=True, timeout=2)
+        url = r.url
+    except:
+        pass
+    return url
+
+# 注入 requests
+_real_get = requests.Session.get
+def _patched_get(self, url, *a, **k):
+    url = _auto_cdn(url)
+    return _real_get(self, url, *a, **k)
+requests.Session.get = _patched_get
+# =================== 加速头结束 ===================
+
 import json
 import re
 import sys
 from urllib.parse import quote, urlencode
-
 sys.path.append('..')
-
 try:
     from base.spider import Spider as BaseSpider
 except ImportError:
     class BaseSpider(object):
         def init(self, extend=""):
             pass
-
 try:
     import requests
 except ImportError:
     requests = None
-
-
 class Spider(BaseSpider):
     UA = (
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
         'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     )
     headers = {'User-Agent': UA}
-
     # ★ 只保留 m3u8 资源的总开关，默认开启
     M3U8_ONLY = True
-
     # type: 0=XML旧版  1=JSON标准(默认)  2=代理源  3=大地feifei2
     # ==========【字典顺序 = 首页源 + 解析优先前5源 + 自动子分类开启的前5源，调换条目顺序即可切换】==========
     SOURCES = {
