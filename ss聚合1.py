@@ -36,11 +36,10 @@ class Spider(BaseSpider):
     SOURCES = {
         's41': {'name': '🌸精品', 'api': 'https://jp98.vip/api.php/provide/vod/'},
         's15': {'name': '📺杏吧', 'api': 'https://api.xgbbk8.com/api.php/provide/vod/'},
-        's40': {'name': '🐾番茄', 'api': 'https://fqzy.me/api.php/provide/vod/'},
+        's40': {'name': '🐾番茄1', 'api': 'https://fqzy.me/api.php/provide/vod/'},
         's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vod'},
-        's19': {'name': '📺91AV', 'api': 'https://91av.cyou/api.php/provide/vod/'},
         's43': {'name': '🐾大地', 'api': 'https://dadiapi.com/feifei2/', 'type': 3},
-        's2': {'name': '💧番茄', 'api': 'http://fhapi9.com/api.php/provide/vod/'},
+        's2': {'name': '💧番茄2', 'api': 'http://fhapi9.com/api.php/provide/vod/'},
         's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/'},
         's21': {'name': '📺小鸡', 'api': 'https://api.xiaojizy.live/provide/vod/'},
         's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/'},
@@ -71,6 +70,7 @@ class Spider(BaseSpider):
         's37': {'name': '🐾火速', 'api': 'https://api.huosuapi.cc/api.php/provide/vod/'},
         's38': {'name': '🐾聚合2', 'api': 'http://150.109.94.44:1112/api.php/provide/vod/'},
         's16': {'name': '📺CK资源', 'api': 'https://ckzy.me/api.php/provide/vod'},
+        's19': {'name': '📺91AV', 'api': 'https://91av.cyou/api.php/provide/vod/'},
         's50': {'name': '🧸嘿嘿', 'api': 'https://api.heiapi.cc/api.php/provide/vod/'},
         's49': {'name': '📺湿园', 'api': 'https://xxavs.com/api.php/provide/vod'},
     }
