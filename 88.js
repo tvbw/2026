@@ -39,21 +39,6 @@
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1.py"
     },
     {
-      "key": "香蕉九合一",
-      "name": "❤️香蕉9合2【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/9he1.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/9he1.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
       "key": "csp_xbpq_禁片天堂",
       "name": "❤️禁片天堂【🔞】",
       "type": 3,
@@ -124,7 +109,6 @@
       "changeable": 1
     },
     {
-
       "key": "csp_xbpq_s直播【🔞】",
       "name": "❤️StripChat直播1【🔞】",
       "type": 3,
@@ -219,6 +203,37 @@
       }
     },
     {
+      "key": "supjav.py",
+      "name": "5❤️supjav唐三【🔞】",
+      "type": 3,
+      "ext": "https://raw.githubusercontent.com/alantang1977/aj/e0f9e1eac672646eb11cca0dd479ce6aa952e7f9/py/py18/Supjav.py#L4",
+      "api": "https://raw.githubusercontent.com/alantang1977/aj/e0f9e1eac672646eb11cca0dd479ce6aa952e7f9/py/py18/Supjav.py#L4",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "changeable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      }
+    },
+    {
+      "key": "supjav",
+      "name": "5❤️supjav测试【🔞】",
+      "type": 3,
+      "ext": "https://raw.githubusercontent.com/dobbelina/repository.dobbelina/9ab32473b875cc9c848c4c7a7263930376233856/plugin.video.cumination/resources/lib/sites/supjav.py#L4",
+      "api": "https://raw.githubusercontent.com/dobbelina/repository.dobbelina/9ab32473b875cc9c848c4c7a7263930376233856/plugin.video.cumination/resources/lib/sites/supjav.py#L4",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "changeable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      }
+    },
+    {
+
       "key": "missav666",
       "name": "5❤️missav666【🔞】",
       "type": 3,
