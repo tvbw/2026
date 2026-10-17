@@ -3,8 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-
-
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
