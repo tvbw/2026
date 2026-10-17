@@ -70,7 +70,7 @@ class Spider(Spider):
         return "苹果视频"
     
     def init(self, extend=""):
-        self.host = "https://618940.xyz"
+        self.host = "https://618622.xyz"
         self.api_host = "https://h5.xxoo169.org"
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -113,26 +113,26 @@ class Spider(Spider):
         result = {}
         # 只保留指定的分类
         classes = [
-            {'type_id': '618940.xyz_1', 'type_name': '全部视频'},
-            {'type_id': '618940.xyz_13', 'type_name': '香蕉精品'},
-            {'type_id': '618940.xyz_22', 'type_name': '制服诱惑'},
-            {'type_id': '618940.xyz_6', 'type_name': '国产视频'},
-            {'type_id': '618940.xyz_8', 'type_name': '清纯少女'},
-            {'type_id': '618940.xyz_9', 'type_name': '辣妹大奶'},
-            {'type_id': '618940.xyz_10', 'type_name': '女同专属'},
-            {'type_id': '618940.xyz_11', 'type_name': '素人出演'},
-            {'type_id': '618940.xyz_12', 'type_name': '角色扮演'},
-            {'type_id': '618940.xyz_20', 'type_name': '人妻熟女'},
-            {'type_id': '618940.xyz_23', 'type_name': '日韩剧情'},
-            {'type_id': '618940.xyz_21', 'type_name': '经典伦理'},
-            {'type_id': '618940.xyz_7', 'type_name': '成人动漫'},
-            {'type_id': '618940.xyz_14', 'type_name': '精品二区'},
-            {'type_id': '618940.xyz_53', 'type_name': '动漫中字'},
-            {'type_id': '618940.xyz_52', 'type_name': '日本无码'},
-            {'type_id': '618940.xyz_33', 'type_name': '中文字幕'},
-            {'type_id': '618940.xyz_32', 'type_name': '国产自拍'},
-            {'type_id': '618940.xyz_40', 'type_name': '精品专区'},
-            {'type_id': '618940.xyz_44', 'type_name': '国产大奶'}
+            {'type_id': '618622.xyz_1', 'type_name': '全部视频'},
+            {'type_id': '618622.xyz_13', 'type_name': '香蕉精品'},
+            {'type_id': '618622.xyz_22', 'type_name': '制服诱惑'},
+            {'type_id': '618622.xyz_6', 'type_name': '国产视频'},
+            {'type_id': '618622.xyz_8', 'type_name': '清纯少女'},
+            {'type_id': '618622.xyz_9', 'type_name': '辣妹大奶'},
+            {'type_id': '618622.xyz_10', 'type_name': '女同专属'},
+            {'type_id': '618622.xyz_11', 'type_name': '素人出演'},
+            {'type_id': '618622.xyz_12', 'type_name': '角色扮演'},
+            {'type_id': '618622.xyz_20', 'type_name': '人妻熟女'},
+            {'type_id': '618622.xyz_23', 'type_name': '日韩剧情'},
+            {'type_id': '618622.xyz_21', 'type_name': '经典伦理'},
+            {'type_id': '618622.xyz_7', 'type_name': '成人动漫'},
+            {'type_id': '618622.xyz_14', 'type_name': '精品二区'},
+            {'type_id': '618622.xyz_53', 'type_name': '动漫中字'},
+            {'type_id': '618622.xyz_52', 'type_name': '日本无码'},
+            {'type_id': '618622.xyz_33', 'type_name': '中文字幕'},
+            {'type_id': '618622.xyz_32', 'type_name': '国产自拍'},
+            {'type_id': '618622.xyz_40', 'type_name': '精品专区'},
+            {'type_id': '618622.xyz_44', 'type_name': '国产大奶'}
         ]
         result['class'] = classes
         try:
@@ -149,26 +149,26 @@ class Spider(Spider):
         """分类定义 - 兼容性方法"""
         return {
             'class': [
-                {'type_id': '618940.xyz_1', 'type_name': '全部视频'},
-                {'type_id': '618940.xyz_13', 'type_name': '香蕉精品'},
-                {'type_id': '618940.xyz_22', 'type_name': '制服诱惑'},
-                {'type_id': '618940.xyz_6', 'type_name': '国产视频'},
-                {'type_id': '618940.xyz_8', 'type_name': '清纯少女'},
-                {'type_id': '618940.xyz_9', 'type_name': '辣妹大奶'},
-                {'type_id': '618940.xyz_10', 'type_name': '女同专属'},
-                {'type_id': '618940.xyz_11', 'type_name': '素人出演'},
-                {'type_id': '618940.xyz_12', 'type_name': '角色扮演'},
-                {'type_id': '618940.xyz_20', 'type_name': '人妻熟女'},
-                {'type_id': '618940.xyz_23', 'type_name': '日韩剧情'},
-                {'type_id': '618940.xyz_21', 'type_name': '经典伦理'},
-                {'type_id': '618940.xyz_7', 'type_name': '成人动漫'},
-                {'type_id': '618940.xyz_14', 'type_name': '精品二区'},
-                {'type_id': '618940.xyz_53', 'type_name': '动漫中字'},
-                {'type_id': '618940.xyz_52', 'type_name': '日本无码'},
-                {'type_id': '618940.xyz_33', 'type_name': '中文字幕'},
-                {'type_id': '618940.xyz_32', 'type_name': '国产自拍'},
-                {'type_id': '618940.xyz_40', 'type_name': '精品专区'},
-                {'type_id': '618940.xyz_44', 'type_name': '国产大奶'}
+                {'type_id': '618622.xyz_1', 'type_name': '全部视频'},
+                {'type_id': '618622.xyz_13', 'type_name': '香蕉精品'},
+                {'type_id': '618622.xyz_22', 'type_name': '制服诱惑'},
+                {'type_id': '618622.xyz_6', 'type_name': '国产视频'},
+                {'type_id': '618622.xyz_8', 'type_name': '清纯少女'},
+                {'type_id': '618622.xyz_9', 'type_name': '辣妹大奶'},
+                {'type_id': '618622.xyz_10', 'type_name': '女同专属'},
+                {'type_id': '618622.xyz_11', 'type_name': '素人出演'},
+                {'type_id': '618622.xyz_12', 'type_name': '角色扮演'},
+                {'type_id': '618622.xyz_20', 'type_name': '人妻熟女'},
+                {'type_id': '618622.xyz_23', 'type_name': '日韩剧情'},
+                {'type_id': '618622.xyz_21', 'type_name': '经典伦理'},
+                {'type_id': '618622.xyz_7', 'type_name': '成人动漫'},
+                {'type_id': '618622.xyz_14', 'type_name': '精品二区'},
+                {'type_id': '618622.xyz_53', 'type_name': '动漫中字'},
+                {'type_id': '618622.xyz_52', 'type_name': '日本无码'},
+                {'type_id': '618622.xyz_33', 'type_name': '中文字幕'},
+                {'type_id': '618622.xyz_32', 'type_name': '国产自拍'},
+                {'type_id': '618622.xyz_40', 'type_name': '精品专区'},
+                {'type_id': '618622.xyz_44', 'type_name': '国产大奶'}
             ]
         }
 
@@ -598,9 +598,9 @@ class Spider(Spider):
                 if not vod_id:
                     vod_id = str(hash(link) % 1000000)
                 
-                final_vod_id = f"618940.xyz_{vod_id}"
+                final_vod_id = f"618622.xyz_{vod_id}"
                 if category_id:
-                    final_vod_id = f"618940.xyz_{category_id}_{vod_id}"
+                    final_vod_id = f"618622.xyz_{category_id}_{vod_id}"
                 
                 # 提取加密的标题并解密
                 title_elem = element.xpath('.//p[@class="km-script"]/text()')
