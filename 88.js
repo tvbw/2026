@@ -28,7 +28,7 @@
     },
     {
       "key": "香蕉9合",
-      "name": "❤️香蕉9合1",
+      "name": "❤️香蕉9合1【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -37,6 +37,21 @@
       },
       "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1.py",
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1.py"
+    },
+    {
+      "key": "香蕉九合一",
+      "name": "❤️香蕉9合2【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/9he1.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/9he1.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
     },
     {
       "key": "csp_xbpq_禁片天堂",
@@ -119,7 +134,7 @@
       "searchable": 0,
       "quickSearch": 0,
       "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
       "style": {
         "type": "rect",
         "ratio": 1.65
@@ -188,21 +203,7 @@
       "changeable": 1
     },
     {
-      "key": "香蕉九合一",
-      "name": "5❤️蝴蝶影视【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/9he1.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/9he1.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
+
       "key": "supjav.py-py",
       "name": "5❤️supjav【🔞】",
       "type": 3,
