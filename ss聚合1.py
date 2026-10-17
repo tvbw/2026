@@ -39,7 +39,7 @@ class Spider(BaseSpider):
         's40': {'name': '🐾番茄1', 'api': 'https://fqzy.me/api.php/provide/vod/'},
         's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vod'},
         's43': {'name': '🐾大地', 'api': 'https://dadiapi.com/feifei2/', 'type': 3},
-        's2': {'name': '💧番茄2', 'api': 'http://fhapi9.com/api.php/provide/vod/'},
+        's2': {'name': '💧番茄2', 'api': 'http://fhapi9.com/api.php/provide/vod, 'type': 2'},
         's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/'},
         's21': {'name': '📺小鸡', 'api': 'https://api.xiaojizy.live/provide/vod/'},
         's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/'},
