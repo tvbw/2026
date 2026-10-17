@@ -187,53 +187,6 @@
       "changeable": 1
     },
     {
-
-      "key": "supjav.py-py",
-      "name": "5❤️supjav【🔞】",
-      "type": 3,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/supjav.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/supjav.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      }
-    },
-    {
-      "key": "supjav.py",
-      "name": "5❤️supjav唐三【🔞】",
-      "type": 3,
-      "ext": "https://raw.githubusercontent.com/alantang1977/aj/e0f9e1eac672646eb11cca0dd479ce6aa952e7f9/py/py18/Supjav.py#L4",
-      "api": "https://raw.githubusercontent.com/alantang1977/aj/e0f9e1eac672646eb11cca0dd479ce6aa952e7f9/py/py18/Supjav.py#L4",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      }
-    },
-    {
-      "key": "supjav",
-      "name": "5❤️supjav测试【🔞】",
-      "type": 3,
-      "ext": "https://raw.githubusercontent.com/dobbelina/repository.dobbelina/9ab32473b875cc9c848c4c7a7263930376233856/plugin.video.cumination/resources/lib/sites/supjav.py#L4",
-      "api": "https://raw.githubusercontent.com/dobbelina/repository.dobbelina/9ab32473b875cc9c848c4c7a7263930376233856/plugin.video.cumination/resources/lib/sites/supjav.py#L4",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      }
-    },
-    {
-
       "key": "missav666",
       "name": "5❤️missav666【🔞】",
       "type": 3,
@@ -300,7 +253,7 @@
     },
     {
       "key": "51吃瓜",
-      "name": "4❤️51吃瓜｜🔞",
+      "name": "❤️51吃瓜动态配置版",
       "type": 3,
       "playerType": 2,
       "style": {
