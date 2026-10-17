@@ -70,7 +70,7 @@ class Spider(Spider):
         return "苹果视频"
     
     def init(self, extend=""):
-        self.host = "https://618940.xyz"
+        self.host = "https://618622.xyz"
         self.api_host = "https://h5.xxoo169.org"
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
