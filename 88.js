@@ -3,6 +3,68 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "七区",
+      "name": "❤️七区",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/franksun1211/TXT/8e2ae871dc243be757de9ef19438e3c6a9270e44/HTB/CFL/py/%E4%B8%83%E5%8C%BA.py#L21",
+      "api": "https://raw.githubusercontent.com/franksun1211/TXT/8e2ae871dc243be757de9ef19438e3c6a9270e44/HTB/CFL/py/%E4%B8%83%E5%8C%BA.py#L21"
+    },
+    {
+      "key": "香蕉聚合",
+      "name": "❤️香蕉聚合",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/LIUJEI/TS/0a221ead329fd8476c505bcd1ff8a52a13e53293/XB/%E8%81%9A%E5%90%88.py#L456",
+      "api": "https://raw.githubusercontent.com/LIUJEI/TS/0a221ead329fd8476c505bcd1ff8a52a13e53293/XB/%E8%81%9A%E5%90%88.py#L456"
+    },
+    {
+      "key": "香蕉618",
+      "name": "❤️香蕉618",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/aa123jg/tvbox-FL/4b2b872d77fcccc385d7f8edae32bca101c3d326/wyykFL/py/[%E7%91%9F]618.py#L23",
+      "api": "https://raw.githubusercontent.com/aa123jg/tvbox-FL/4b2b872d77fcccc385d7f8edae32bca101c3d326/wyykFL/py/[%E7%91%9F]618.py#L23"
+    },
+    {
+
+      "key": "香蕉视频(1)",
+      "name": "❤️香蕉视频(1)",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/JACKFIRE777/jaychouqq/d642b1f44b076a29fbbbd5147574dc11950d04a1/yingshi/py9/%E9%A6%99%E8%95%89%E8%A7%86%E9%A2%91(1).py#L34",
+      "api": "https://raw.githubusercontent.com/JACKFIRE777/jaychouqq/d642b1f44b076a29fbbbd5147574dc11950d04a1/yingshi/py9/%E9%A6%99%E8%95%89%E8%A7%86%E9%A2%91(1).py#L34"
+    },
+    {
+      "key": "香蕉视频在用版",
+      "name": "❤️香蕉在用版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/mkjkxa/tvbox_collect/3d6139ab5b1703bc43de53694da4acd029cdde36/yuanwangokkTV-BOX18/Jsm/PY/%E9%A6%99%E8%95%89%E8%A7%86%E9%A2%91.py#L21",
+      "api": "https://raw.githubusercontent.com/mkjkxa/tvbox_collect/3d6139ab5b1703bc43de53694da4acd029cdde36/yuanwangokkTV-BOX18/Jsm/PY/%E9%A6%99%E8%95%89%E8%A7%86%E9%A2%91.py#L21"
+    },
+    {
+
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
@@ -75,8 +137,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -107,7 +169,7 @@
       "searchable": 0,
       "quickSearch": 0,
       "filterable": 0,
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
       "style": {
         "type": "rect",
         "ratio": 1.65
