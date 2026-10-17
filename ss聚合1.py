@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# 聚合平台3 - 影视资源 API 聚合【修复优化版2】
-# 修改：移除type4硬编码假分类；仅SOURCES前5源自动拉取真实二级分类，其余源禁用远程拉取防崩溃
+# 聚合平台3 - 影视资源 API 聚合【修复优化版3】
+# 修改：删除大地s43硬编码错误分类；所有源统一自动提取分类，无任何写死分类
 import json
 import re
 import sys
@@ -36,14 +36,15 @@ class Spider(BaseSpider):
     SOURCES = {
         's41': {'name': '🌸精品', 'api': 'https://jp98.vip/api.php/provide/vod/'},
         's15': {'name': '📺杏吧', 'api': 'https://api.xgbbk8.com/api.php/provide/vod/'},
-        's40': {'name': '🐾番茄1', 'api': 'https://fqzy.me/api.php/provide/vod/'},
+        's40': {'name': '🐾番茄', 'api': 'https://fqzy.me/api.php/provide/vod/'},
         's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vod'},
-        's43': {'name': '🐾大地', 'api': 'http://dadiapi.com/api.php',"type": 0},
-        's2': {'name': '💧番茄2', 'api': 'http://fhapi9.com/api.php/provide/vod/'},
+        's19': {'name': '📺91AV', 'api': 'https://91av.cyou/api.php/provide/vod/'},
+        's43': {'name': '🐾大地', 'api': 'https://dadiapi.com/feifei2/', 'type': 3},
+        's2': {'name': '💧番茄', 'api': 'http://fhapi9.com/api.php/provide/vod/'},
         's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/'},
         's21': {'name': '📺小鸡', 'api': 'https://api.xiaojizy.live/provide/vod/'},
         's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/'},
-        's6': {'name': '📺搜AV', 'api': 'https://souavzy.net/api.php/provide/vod/'},        
+        's1': {'name': '🎬香蕉', 'api': 'https://www.xiangjiaozyw.com/api.php/provide/vod/'},
         's5': {'name': '🔥麻花', 'api': 'https://19q.cc/api.php/provide/vod/'},
         's27': {'name': '☁️精东', 'api': 'http://chujia.cc/api.php/provide/vod/'},
         's45': {'name': '🐾滴滴', 'api': 'https://api.ddapi.cc/api.php/provide/vod/'},
@@ -52,6 +53,7 @@ class Spider(BaseSpider):
         's32': {'name': '🍃百花', 'api': 'https://bhziyuan.com/api.php/provide/vod/'},
         's25': {'name': '🌸仓库', 'api': 'https://hsckzy888.com/api.php/provide/vod/'},
         's39': {'name': '🐾CK百货', 'api': 'https://ckbh1.xyz/api.php/provide/vod/'},
+        's6': {'name': '📺搜AV', 'api': 'https://souavzy.net/api.php/provide/vod/'},
         's42': {'name': '🐾森林', 'api': 'https://slapibf.com/api.php/provide/vod/'},
         's9': {'name': '📺美少女', 'api': 'https://www.msnii.com/api/json.php'},
         's10': {'name': '📺饮水机', 'api': 'https://www.xrbsp.com/api/json.php'},
@@ -60,7 +62,6 @@ class Spider(BaseSpider):
         's14': {'name': '📺潢AV', 'api': 'https://www.pgxdy.com/api/json.php'},
         's31': {'name': '👑桃花', 'api': 'https://thzy1.me/api.php/provide/vod/'},
         's4': {'name': '📺鲨鱼', 'api': 'https://shayuzy5.com/api.php/provide/vod/'},
-        's19': {'name': '📺91AV', 'api': 'https://91av.cyou/api.php/provide/vod/'},
         's22': {'name': '📺大奶', 'api': 'https://apidanaizi.com/api.php/provide/vod/'},
         's24': {'name': '📺黑料', 'api': 'https://heiliaozyapi.com/api.php/provide/vod/'},
         's26': {'name': '🐮玉兔', 'api': 'https://apiyutu.com/api.php/provide/vod'},
@@ -393,26 +394,24 @@ class Spider(BaseSpider):
     def homeContent(self, filter):
         classes = []
         filters = {}
-        self._first_cate = {'s43': '1'}
+        self._first_cate = {}
         default_vals = [{'n': '全部(最新)', 'v': ''}]
-        # 获取前5个源key列表，只有这5个源会远程请求接口自动加载子分类
+        # 自动获取前5个源key，仅这5个发起网络请求拉取分类，其余源只显示全部(最新)
         top5_keys = list(self.SOURCES.keys())[:5]
 
         for sk, so in self.SOURCES.items():
             classes.append({'type_id': sk, 'type_name': so['name']})
-            st = so.get('type') or 1
-
-                # ✅前5个源：远程请求接口自动提取真实分类
+            if sk in top5_keys:
+                # ✅前5源（包括大地s43）统一远程自动拉取真实分类
                 try:
                     vals, first_c = self._load_filter(sk, so)
                     filters[sk] = [{'key': 'cateId', 'name': '分类', 'value': vals}]
                     if first_c:
                         self._first_cate[sk] = first_c
                 except Exception:
-                    # 请求失败回退到默认
                     filters[sk] = [{'key': 'cateId', 'name': '分类', 'value': list(default_vals)}]
             else:
-                # ❗其余源：不请求网络，只保留【全部(最新)】，防止批量并发卡死
+                # ❗其余源不访问网络，只保留全部(最新)，防止并发崩溃
                 filters[sk] = [{'key': 'cateId', 'name': '分类', 'value': list(default_vals)}]
         return {'class': classes, 'filters': filters if filter else {}}
 
@@ -460,13 +459,13 @@ class Spider(BaseSpider):
             cate_id = self._text(filter.get('cateId'))
         stype = source.get('type') or 1
         if not cate_id and stype == 2 and self._first_cate.get(tid):
-            cate_id = self._first_cate[tid]
+            cate_id = self._first_cate.get(tid)
         if stype in (0, 3):
             params = {'ac': 'videolist', 'pg': pg}
             if cate_id:
                 params['t'] = cate_id
             url = self._build_url(source['api'], params)
-        elif stype in (2, 4):
+        elif stype ==2:
             params = {'pg': pg}
             if not cate_id:
                 cate_id = self._first_cate.get(tid) or ''
@@ -509,10 +508,6 @@ class Spider(BaseSpider):
         html = ''
         if stype == 0:
             html = self._request(self._build_url(source['api'], {'ac': 'videolist', 'ids': real_id}))
-        elif stype == 4:
-            html = self._request(self._build_url(source['api'], {'ac': 'detail', 'ids': real_id}))
-            if not html:
-                html = self._request(self._build_url(source['api'], {'ids': real_id}))
         elif stype == 3:
             html = self._request(self._build_url(source['api'], {'ac': 'videolist', 'ids': real_id}))
             tmp = self._parse_response(html)
