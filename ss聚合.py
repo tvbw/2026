@@ -81,19 +81,13 @@ class Spider(BaseSpider):
         if not url:
             return False
         u = str(url).lower()
-        return any(x in u for x in ('.mp4', '.m3u8', '.flv', '.mkv'))
+        return any(x in u for x in ('.m3u8', '.mp4', '.flv', '.mkv'))
 
     def manualVideoCheck(self):
         pass
 
     def destroy(self):
         pass
-
-    UA = (
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-        'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-    )
-    headers = {'User-Agent': UA}
 
     # type: 1 = 标准 provide/vod JSON（默认）
     # type: 3 = 大地 feifei2（data/vod_url/vod_play/list分类）
