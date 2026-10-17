@@ -1,100 +1,51 @@
-# ===== 1. 先正常 import 所有模块 =====
-import json
-import random
-import re
-import sys
-import threading
-import time
-from base64 import b64decode, b64encode
-from urllib.parse import urlparse
-
-import requests  # ✅ 先正常 import
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import unpad
-from pyquery import PyQuery as pq
-sys.path.append('..')
-from base.spider import Spider
-
-# ===== 2. 再放加速头（不能再 import requests） =====
-# =================== 极简万能加速头 ===================
-import re
-from functools import lru_cache
-
-FAST_CDN = "lib.baomitu.com"
-DEAD_MAP = {
-    "rimg.iomycdn.com": FAST_CDN,
-    "rimg.xiakee.com": FAST_CDN,
-    "play.abcyun.com": FAST_CDN,
-    "video.xyzcdn.com": FAST_CDN,
-}
-
-@lru_cache(maxsize=256)
-def _auto_cdn(url: str) -> str:
-    if not url:
-        return ""
-    for dead, fast in DEAD_MAP.items():
-        url = url.replace(dead, fast)
-    if url.startswith("//"):
-        url = "https:" + url
-    try:
-        r = requests.head(url, allow_redirects=True, timeout=2)
-        url = r.url
-    except:
-        pass
-    return url
-
-# 注入 requests
-_real_get = requests.Session.get
-def _patched_get(self, url, *a, **k):
-    url = _auto_cdn(url)
-    return _real_get(self, url, *a, **k)
-requests.Session.get = _patched_get
-# =================== 加速头结束 ===================
-
 import json
 import re
 import sys
 from urllib.parse import quote, urlencode
+
 sys.path.append('..')
+
 try:
     from base.spider import Spider as BaseSpider
 except ImportError:
     class BaseSpider(object):
         def init(self, extend=""):
             pass
+
 try:
     import requests
 except ImportError:
     requests = None
+
+
 class Spider(BaseSpider):
     UA = (
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
         'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     )
     headers = {'User-Agent': UA}
+
     # ★ 只保留 m3u8 资源的总开关，默认开启
     M3U8_ONLY = True
+
     # type: 0=XML旧版  1=JSON标准(默认)  2=代理源  3=大地feifei2
     # ==========【字典顺序 = 首页源 + 解析优先前5源 + 自动子分类开启的前5源，调换条目顺序即可切换】==========
     SOURCES = {
         's41': {'name': '🌸精品', 'api': 'https://jp98.vip/api.php/provide/vod/at/m3u8'},
         's27': {'name': '☁️精东', 'api': 'http://chujia.cc/api.php/provide/vod/at/m3u8'},
-        's31': {'name': '👑桃花', 'api': 'https://thzy1.me/api.php/provide/vod/at/m3u8'},
         's24': {'name': '📺黑料', 'api': 'https://heiliaozyapi.com/api.php/provide/vod/at/m3u8'},
-        's35': {'name': '🐾javbus', 'api': 'https://javbus.sbs/api.php/provide/vod/at/m3u8'},
+        's31': {'name': '👑桃花', 'api': 'https://thzy1.me/api.php/provide/vod/at/m3u8'},
+        's45': {'name': '🐾滴滴', 'api': 'https://api.ddapi.cc/api.php/provide/vod/at/m3u8'},
+        's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/at/m3u8'},
+        's32': {'name': '🍃百花', 'api': 'https://bhziyuan.com/api.php/provide/vod/at/m3u8'},
         's15': {'name': '📺杏吧', 'api': 'https://api.xgbbk8.com/api.php/provide/vod/at/m3u8'},
         's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vod/at/m3u8'},
-        's32': {'name': '🍃百花', 'api': 'https://bhziyuan.com/api.php/provide/vod/at/m3u8'},
-        's4': {'name': '📺鲨鱼', 'api': 'https://shayuzy5.com/api.php/provide/vod/at/m3u8'},
-        's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/at/m3u8'},
         's50': {'name': '🧸动漫', 'api': 'https://api.heiapi.cc/api.php/provide/vod/at/m3u8'},
         's25': {'name': '🌸仓库', 'api': 'https://hsckzy888.com/api.php/provide/vod/from/hsckm3u8/'},
         's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/at/m3u8'},
-        's21': {'name': '📺小鸡', 'api': 'https://api.xjzyapi.com/provide/vod?at=xml&ac=list'},
+        's21': {'name': '📺小鸡', 'api': 'https://api.xjzyapi.com/provide/vod'},
         's43': {'name': '🐾大地', 'api': 'https://dadiapi.com/feifei2/', 'type': 3},
         's8': {'name': '⚡极品', 'api': 'https://jipinvip2.com/api.php/provide/vod/?ac=list'},
-        's14': {'name': '📺潢AV', 'api': 'https://www.pgxdy.com/api/json.php'},
-        's45': {'name': '🐾滴滴', 'api': 'https://api.ddapi.cc/api.php/provide/vod/at/m3u8'},
         's30': {'name': '⚡JKUN', 'api': 'https://jkunzyapi.com/api.php/provide/vod/at/m3u8'},
         's39': {'name': '🐾CK百货', 'api': 'https://ckbh1.xyz/api.php/provide/vod/?ac=list'},
         's42': {'name': '🐾森林', 'api': 'https://slapibf.com/api.php/provide/vod/?ac=list'},
@@ -103,16 +54,19 @@ class Spider(BaseSpider):
         's10': {'name': '📺饮水机', 'api': 'https://www.xrbsp.com/api/json.php'},
         's11': {'name': '📺香奶儿', 'api': 'https://www.gdlsp.com/api/json.php'},
         's12': {'name': '🐯白嫖', 'api': 'https://www.kxgav.com/api/json.php'},
+        's14': {'name': '📺潢AV', 'api': 'https://www.pgxdy.com/api/json.php'},
+        's4': {'name': '📺鲨鱼', 'api': 'https://shayuzy5.com/api.php/provide/vod/at/m3u8'},
         's22': {'name': '📺大奶', 'api': 'https://apidanaizi.com/api.php/provide/vod/at/m3u8'},
         's26': {'name': '🐮玉兔', 'api': 'https://apiyutu.com/api.php/provide/vod/at/m3u8'},
+        's33': {'name': '🐾老色', 'api': 'https://apilsbzy1.com/api.php/provide/vod/at/m3u8'},
+        's34': {'name': '🐾辣椒', 'api': 'https://apilj.com/api.php/provide/vod/'},
+        's19': {'name': '📺91AV', 'api': 'https://91av.cyou/api.php/provide/vod/at/m3u8'},
+        's35': {'name': '🐾javbus', 'api': 'https://javbus.sbs/api.php/provide/vod/at/m3u8'},
         's37': {'name': '🐾火速', 'api': 'https://api.huosuapi.cc/api.php/provide/vod/?ac=list'},
         's38': {'name': '🐾聚合2', 'api': 'http://150.109.94.44:1112/api.php/provide/vod/at/m3u8'},
         's16': {'name': '📺CK资源', 'api': 'https://ckzy.me/api.php/provide/vod/at/m3u8'},
         's6': {'name': '📺搜AV', 'api': 'https://souavzy.net/api.php/provide/vod/at/m3u8'},
         's49': {'name': '📺湿园', 'api': 'https://xxavs.com/api.php/provide/vod/at/m3u8'},
-        's33': {'name': '🐾老色', 'api': 'https://apilsbzy1.com/api.php/provide/vod/at/m3u8'},
-        's34': {'name': '🐾辣椒', 'api': 'https://apilj.com/api.php/provide/vod/'},
-        's19': {'name': '📺91AV', 'api': 'https://91av.cyou/api.php/provide/vod/at/m3u8'},
     }
 
     def init(self, extend=""):
