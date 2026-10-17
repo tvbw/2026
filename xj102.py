@@ -81,7 +81,7 @@ class Spider(Spider):
             'Referer': self.host
         }
         # 定义特殊分区ID列表，包含所有需要特殊处理的分类
-        self.special_categories = ['36', '13', '33', '37', '43', '40', '49', '44', '41','39','45','42','38','66','46','48','47']
+        self.special_categories = ['36', '13','37', '43', '40', '49', '44', '41','39','45','42','38','66','46','48','47']
         self.log(f"苹果视频爬虫初始化完成，主站: {self.host}")
 
     def html(self, content):
