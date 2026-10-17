@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# 聚合平台3 - 影视资源 API 聚合【重构版】
-# 重构点：解析优先顺序改为SOURCES前5个源，清理冗余重复低效代码
+# 聚合平台3 - 影视资源 API 聚合【修复优化版】
+# 修改：移除失效type5站点；首页默认展示SOURCES第一个源更新；搜索防崩溃加固；解析优先前5源；清理废弃代码
 import json
 import re
 import sys
@@ -28,52 +28,49 @@ class Spider(BaseSpider):
     )
     headers = {'User-Agent': UA}
 
-    # ★ 只保留 m3u8 资源的总开关
-    #   True  -> 从采集站返回的播放地址中，只保留包含 .m3u8 的剧集
-    #   False -> 保持原样（mp4/flv/m3u8 都返回）
-    #   注意：source 中带 parse=1 的源（需要走解析站）不会被过滤，
-    #        因为它们的地址是需要解析后才会拿到真正的 m3u8。
+    # ★ 只保留 m3u8 资源的总开关，默认开启
     M3U8_ONLY = True
 
     # type: 0=XML旧版  1=JSON标准(默认)  2=代理源  3=大地feifei2
+    # ==========【字典顺序 = 首页源 + 解析优先前5源，调换条目顺序即可切换】==========
     SOURCES = {
         's41': {'name': '🌸精品', 'api': 'https://jp98.vip/api.php/provide/vod/at/m3u8'},
-        's5': {'name': '🔥麻花', 'api': 'shturl.cc/b1iLYUNmhkN6yRYHpYBez2E1z2hhyH3v'},
+        's5': {'name': '🔥麻花', 'api': 'shturl.cc/mGRZKL6N3lr5GZ75rjklTx3AX5nysBSp'},
         's6': {'name': '📺搜AV', 'api': 'https://souavzy.net/api.php/provide/vod/at/m3u8'},
         's8': {'name': '⚡极品', 'api': 'https://jipinvip1.com/api.php/provide/vod/at/m3u8'},
         's32': {'name': '🍃百花', 'api': 'https://bhziyuan.com/api.php/provide/vod/at/m3u8'},
         's25': {'name': '🌸仓库', 'api': 'https://hsckzy888.com/api.php/provide/vod/at/m3u8'},
-        's39': {'name': '🐾CK百货', 'api': 'https://ckbh1.xyz/api.php/provide/vod'},
-        's42': {'name': '🐾森林', 'api': 'shturl.cc/CzGvDs48H4psF74HRvcGqBAkGLrGc'},
-        's29': {'name': '🦅乐播', 'api': 'shturl.cc/pIIhK4oiNjyG27VnO1LovIqc1jWY'},
+        's39': {'name': '🐾CK百货', 'api': 'shturl.cc/W62Bi3UJUD3EbhUWIk4uGf107m6'},
+        's42': {'name': '🐾森林', 'api': 'shturl.cc/6AVA8O46eE8hbLDmTx9J1HSnJxV2u'},
+        's29': {'name': '🦅乐播', 'api': 'shturl.cc/Bh2zxR5ftp9OscPCyRYHABzpM521'},
         's19': {'name': '📺91AV', 'api': 'https://91av.cyou/api.php/provide/vod/at/m3u8'},
         's43': {'name': '🐾大地', 'api': 'https://dadiapi.com/feifei2/', 'type': 3},
-        's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/at/m3u8'},
-        's21': {'name': '📺小鸡', 'api': 'shturl.cc/bZVAMeBCAV7giIS56KJ3mXtYiPhK'},
+        's18': {'name': '📺155', 'api': 'shturl.cc/O4Db24F4UZDR7gKCetg0RaeWL3liWTJybXlo'},
+        's21': {'name': '📺小鸡', 'api': 'shturl.cc/NNcc3jheeOO1nkv4Zt7mAW7QQpfw'},
         's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/at/m3u8'},
-        's1': {'name': '🎬香蕉', 'api': 'shturl.cc/B5TaC7EqR7UVUefyD9QGw3ldEbuo4fDD6mYMB8v'},
-        's27': {'name': '☁️精东', 'api': 'shturl.cc/Sfh4D6v4nEJIIZwkPHu6n8ORJPz'},
+        's1': {'name': '🎬香蕉', 'api': 'shturl.cc/s2xe70MIPu358VyzC3rt3G8BXm5VWABrFSktK0I'},
+        's27': {'name': '☁️精东', 'api': 'shturl.cc/gUpIVAWFLpPZSqZycNQsjXVEUnv'},
         's45': {'name': '🐾滴滴', 'api': 'https://api.ddapi.cc/api.php/provide/vod/at/m3u8'},
-        's30': {'name': '⚡JKUN', 'api': 'shturl.cc/PTJCcXxzAbprvCvFgGYBhRg8Anv4H4J'},
+        's30': {'name': '⚡JKUN', 'api': 'shturl.cc/lkUAXO4vtRd9gtu6i4b0f2bkKrl97mG'},
         's9': {'name': '📺美少女', 'api': 'https://www.msnii.com/api/json.php'},
         's10': {'name': '📺饮水机', 'api': 'https://www.xrbsp.com/api/json.php'},
         's11': {'name': '📺香奶儿', 'api': 'https://www.gdlsp.com/api/json.php'},
         's12': {'name': '🐯白嫖', 'api': 'https://www.kxgav.com/api/json.php'},
         's14': {'name': '📺潢AV', 'api': 'https://www.pgxdy.com/api/json.php'},
-        's31': {'name': '👑桃花', 'api': 'shturl.cc/Qvz1b2PBvpTVQg2N8DgVJ9Qx2GAGjhh2rN'},
+        's31': {'name': '👑桃花', 'api': 'shturl.cc/lLFYfA7aMQWaJRlb9YIq48UZ3h2Favfuxz'},
         's4': {'name': '📺鲨鱼', 'api': 'https://shayuzy3.com/api.php/provide/vod/'},
         's22': {'name': '📺大奶', 'api': 'https://apidanaizi.com/api.php/provide/vod/at/m3u8'},
         's24': {'name': '📺黑料', 'api': 'https://heiliaozyapi.com/api.php/provide/vod/at/m3u8'},
         's26': {'name': '🐮玉兔', 'api': 'https://apiyutu.com/api.php/provide/vod/at/m3u8'},
         's33': {'name': '🐾老色', 'api': 'https://apilsbzy1.com/api.php/provide/vod/at/m3u8'},
         's34': {'name': '🐾辣椒', 'api': 'https://apilj.com/api.php/provide/vod/at/m3u8'},
-        's35': {'name': '🐾javbus', 'api': 'shturl.cc/Rv5R1CrXPaF10jhLDUGZbhnD5tJqWHrOCVWm'},
+        's35': {'name': '🐾javbus', 'api': 'shturl.cc/8UxyPXblFZd34aWDqdcFF22PLfiYkn517hDC'},
         's37': {'name': '🐾火速', 'api': 'https://api.huosuapi.cc/api.php/provide/vod/at/m3u8'},
         's38': {'name': '🐾聚合2', 'api': 'http://150.109.94.44:1112/api.php/provide/vod/at/m3u8'},
         's16': {'name': '📺CK资源', 'api': 'https://ckzy.me/api.php/provide/vod/at/m3u8'},
         's50': {'name': '🧸嘿嘿', 'api': 'https://api.heiapi.cc/api.php/provide/vod/at/m3u8'},
-        's40': {'name': '🐾番茄1', 'api': 'shturl.cc/pL8TYnui88INBpAjrpBghh6zdEbgMMc7fh'},
-        's2': {'name': '💧番茄2', 'api': 'shturl.cc/K5uXvnIed5w7qbalOSCirS4AIrEs'},
+        's40': {'name': '🐾番茄1', 'api': 'shturl.cc/LSUoMUhnaOQNCnddkRMjP0ySmz6G9ijS2b'},
+        's2': {'name': '💧番茄2', 'api': 'shturl.cc/gh6Uop5HCVeyRGJORQCjNdwgC8lv'},
         's15': {'name': '📺杏吧', 'api': 'https://api.xgbbk8.com/api.php/provide/vod/at/m3u8'},
         's49': {'name': '📺湿园', 'api': 'https://xxavs.com/api.php/provide/vod/at/m3u8'},
     }
@@ -134,7 +131,6 @@ class Spider(BaseSpider):
     def _safe_json(s):
         if not s:
             return None
-        # 大整数 id 保精度
         s2 = re.sub(
             r'"(vod_id|id|type_id|list_id|vodId)"\s*:\s*(\d{16,})',
             r'"\1":"\2"',
@@ -293,7 +289,6 @@ class Spider(BaseSpider):
             return empty
         j = self._safe_json(html)
         if j:
-            # 大地 feifei2
             if j.get('status') is not None and (isinstance(j.get('data'), list) or j.get('page')):
                 page_obj = j.get('page') or {}
                 classes = []
@@ -332,7 +327,6 @@ class Spider(BaseSpider):
         return self._parse_xml(html)
 
     def _filter_m3u8(self, from_arr, url_arr, source_name):
-        """只保留含 .m3u8 的剧集"""
         new_from, new_url = [], []
         max_len = max(len(from_arr), len(url_arr))
         for i in range(max_len):
@@ -369,7 +363,6 @@ class Spider(BaseSpider):
             from_arr = [x if x.startswith(source_name) else f'{source_name}-{x}' for x in from_arr]
         if not from_arr and any(url_arr):
             from_arr = [f'{source_name}-线路{i + 1}' for i in range(len(url_arr))]
-        # 对齐数组长度
         while len(url_arr) < len(from_arr):
             url_arr.append('')
         while len(from_arr) < len(url_arr):
@@ -399,29 +392,15 @@ class Spider(BaseSpider):
         return vals, first_cate
 
     def homeContent(self, filter):
+        """homeContent 返回源分类列表，APP点分类进入；首页内容交给 homeVideoContent"""
         classes = []
         filters = {}
-        self._first_cate = {'s43': '1', 's44': 'site_duoduo'}
+        self._first_cate = {'s43': '1'}
         default_vals = [{'n': '全部(最新)', 'v': ''}]
         for sk, so in self.SOURCES.items():
             classes.append({'type_id': sk, 'type_name': so['name']})
             st = so.get('type') or 1
-            if st == 5:
-                vals = [
-                    {'n': '玩偶', 'v': 'site_wanou'},
-                    {'n': '木偶', 'v': 'site_muou'},
-                    {'n': '蜡笔', 'v': 'site_labi'},
-                    {'n': '至臻', 'v': 'site_zhizhen'},
-                    {'n': '二小', 'v': 'site_erxiao'},
-                    {'n': '虎斑', 'v': 'site_huban'},
-                    {'n': '快映', 'v': 'site_kuaiying'},
-                    {'n': '闪电', 'v': 'site_shandian'},
-                    {'n': '欧哥', 'v': 'site_ouge'},
-                    {'n': '多多', 'v': 'site_duoduo'},
-                ]
-                filters[sk] = [{'key': 'cateId', 'name': '站点', 'value': vals}]
-                self._first_cate[sk] = 'site_duoduo'
-            elif st == 4:
+            if st == 4:
                 vals = [
                     {'n': '全部(连续剧)', 'v': 'tv'},
                     {'n': '连续剧', 'v': 'tv'},
@@ -446,6 +425,38 @@ class Spider(BaseSpider):
                 filters[sk] = [{'key': 'cateId', 'name': '分类', 'value': list(default_vals)}]
         return {'class': classes, 'filters': filters if filter else {}}
 
+    def homeVideoContent(self):
+        """首页：自动取SOURCES字典第一个源的最新更新，调换SOURCES顺序即可切换首页源"""
+        if not self.SOURCES:
+            return {"list": []}
+        first_key = list(self.SOURCES.keys())[0]
+        source = self.SOURCES[first_key]
+        stype = source.get('type') or 1
+        cate_id = self._first_cate.get(first_key, '')
+        if stype in (0,3):
+            params = {"ac":"videolist","pg":1}
+            if cate_id:
+                params['t'] = cate_id
+            url = self._build_url(source['api'], params)
+        elif stype ==2:
+            params = {"pg":1}
+            if cate_id:
+                params['t'] = cate_id
+            url = self._build_url(source['api'], params)
+        else:
+            params = {"ac":"videolist","pg":1}
+            if cate_id:
+                params['t'] = cate_id
+            url = self._build_url(source['api'], params)
+        resp = self._request(url)
+        data = self._parse_response(resp)
+        out = []
+        for it in data.get("list",[]):
+            item = self._clean_item(it, first_key, source['name'], False)
+            item['vod_pic'] = self._fix_pic(item.get('vod_pic'))
+            out.append(item)
+        return {"list": out}
+
     def categoryContent(self, tid, pg, filter, extend):
         pg = int(pg or 1)
         source = self.SOURCES.get(str(tid))
@@ -463,13 +474,6 @@ class Spider(BaseSpider):
             params = {'ac': 'videolist', 'pg': pg}
             if cate_id:
                 params['t'] = cate_id
-            url = self._build_url(source['api'], params)
-        elif stype == 5:
-            if not cate_id:
-                cate_id = self._first_cate.get(tid) or 'site_duoduo'
-            params = {'t': cate_id, 'pg': pg, 'categoryId': '1'}
-            if isinstance(extend, dict) and extend.get('categoryId') is not None:
-                params['categoryId'] = self._text(extend.get('categoryId'))
             url = self._build_url(source['api'], params)
         elif stype in (2, 4):
             params = {'pg': pg}
@@ -514,10 +518,6 @@ class Spider(BaseSpider):
         html = ''
         if stype == 0:
             html = self._request(self._build_url(source['api'], {'ac': 'videolist', 'ids': real_id}))
-        elif stype == 5:
-            html = self._request(self._build_url(source['api'], {'ac': 'detail', 'ids': real_id}))
-            if not html or not self._parse_response(html).get('list'):
-                html = self._request(self._build_url(source['api'], {'ids': real_id}))
         elif stype == 4:
             html = self._request(self._build_url(source['api'], {'ac': 'detail', 'ids': real_id}))
             if not html:
@@ -583,19 +583,21 @@ class Spider(BaseSpider):
         result = []
         dup_count = {}
         max_page = 1
-        priority_keys = ['s43', 's44', 's46', 's47', 's48', 's49', 's50', 's51', 's52', 's53']
+        # 搜索防崩溃参数
+        DUP_KEEP = 10      # 同一个片名最多保留10条结果，防止多源重复刷屏
+        MAX_TOTAL = 40     # 总结果上限
+        FAST_LIMIT = 30
+        TOTAL_LIMIT = 18   # 全局超时秒数，防止卡死
+        SRC_TIMEOUT =7
+
+        priority_keys = ['s43']
         all_items = list(self.SOURCES.items())
         pri = [(k, v) for k, v in all_items if k in priority_keys]
         rest = [(k, v) for k, v in all_items if k not in priority_keys]
         if quick:
-            items = pri + rest[:12]
+            items = pri + rest[:10]
         else:
             items = pri + rest
-        SRC_TIMEOUT = 8
-        DUP_KEEP = 10
-        MAX_TOTAL = 30
-        FAST_LIMIT = 30
-        TOTAL_LIMIT = 20
 
         def _norm_name(n):
             return re.sub(r'\s+', '', self._text(n)).lower()
@@ -608,25 +610,15 @@ class Spider(BaseSpider):
                     url = self._build_url(so['api'], {'ac': 'videolist', 'wd': key, 'pg': pg})
                 elif stype == 2:
                     url = self._build_url(so['api'], {'wd': key, 'pg': pg})
-                elif stype == 5:
-                    url = self._build_url(so['api'], {'wd': key, 'pg': pg})
                 elif stype == 4:
                     url = self._build_url(so['api'], {'t': 'tv', 'pg': pg, 'wd': key})
                 else:
                     url = self._build_url(so['api'], {'ac': 'detail', 'wd': key, 'pg': pg})
                 html = self._request(url, timeout=SRC_TIMEOUT)
                 data = self._parse_response(html)
-                if not data.get('list') and stype not in (0, 2, 3, 5):
+                if not data.get('list') and stype not in (0, 2, 3):
                     data2 = self._parse_response(
-                        self._request(self._build_url(so['api'], {'ac': 'videolist', 'wd': key, 'pg': pg}),
-                                      timeout=SRC_TIMEOUT)
-                    )
-                    if data2.get('list'):
-                        data = data2
-                if not data.get('list') and stype == 2:
-                    data2 = self._parse_response(
-                        self._request(self._build_url(so['api'], {'ac': 'detail', 'wd': key, 'pg': pg}),
-                                      timeout=SRC_TIMEOUT)
+                        self._request(self._build_url(so['api'], {'ac': 'videolist', 'wd': key, 'pg': pg}),timeout=SRC_TIMEOUT)
                     )
                     if data2.get('list'):
                         data = data2
@@ -641,7 +633,7 @@ class Spider(BaseSpider):
                 return [], 1
 
         from concurrent.futures import ThreadPoolExecutor, as_completed
-        pool = ThreadPoolExecutor(max_workers=10)
+        pool = ThreadPoolExecutor(max_workers=8)
         start = time.time()
         futs = [pool.submit(_one, it) for it in items]
         try:
@@ -664,7 +656,7 @@ class Spider(BaseSpider):
                 if pc > max_page:
                     max_page = pc
                 el = time.time() - start
-                if len(result) >= FAST_LIMIT and el > 3:
+                if len(result) >= FAST_LIMIT and el > 2.5:
                     break
                 if el > TOTAL_LIMIT:
                     break
@@ -685,16 +677,14 @@ class Spider(BaseSpider):
         return self.searchContentPage(key, quick, pg)
 
     def _parse_url(self, token_url, prefer=''):
-        """★ 修改：优先解析源取SOURCES前5个源(s41,s5,s6,s8,s32)"""
+        """解析优先顺序取自SOURCES前5个源，调换字典顺序自动变化"""
         from urllib.parse import quote
         if not token_url:
             return ''
         if re.search(r'\.(m3u8|mp4|flv|mkv)(\?|$)', token_url, re.I):
             return token_url
 
-        # 取SOURCES前5个作为优先解析列表
         source_items = list(self.SOURCES.items())[:5]
-        # 转换成解析站格式 {name, api}，拼接解析参数 ?url=
         parsers = []
         for _, s in source_items:
             api_base = s['api']
