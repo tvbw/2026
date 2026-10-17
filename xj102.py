@@ -4,53 +4,6 @@ import random
 import re
 import sys
 import threading
-import time
-from base64 import b64decode, b64encode
-from urllib.parse import urlparse
-
-import requests  # ✅ 先正常 import
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import unpad
-from pyquery import PyQuery as pq
-sys.path.append('..')
-from base.spider import Spider
-
-# ===== 2. 再放加速头（不能再 import requests） =====
-# =================== 极简万能加速头 ===================
-import re
-from functools import lru_cache
-
-FAST_CDN = "lib.baomitu.com"
-DEAD_MAP = {
-    "rimg.iomycdn.com": FAST_CDN,
-    "rimg.xiakee.com": FAST_CDN,
-    "play.abcyun.com": FAST_CDN,
-    "video.xyzcdn.com": FAST_CDN,
-}
-
-@lru_cache(maxsize=256)
-def _auto_cdn(url: str) -> str:
-    if not url:
-        return ""
-    for dead, fast in DEAD_MAP.items():
-        url = url.replace(dead, fast)
-    if url.startswith("//"):
-        url = "https:" + url
-    try:
-        r = requests.head(url, allow_redirects=True, timeout=2)
-        url = r.url
-    except:
-        pass
-    return url
-
-# 注入 requests
-_real_get = requests.Session.get
-def _patched_get(self, url, *a, **k):
-    url = _auto_cdn(url)
-    return _real_get(self, url, *a, **k)
-requests.Session.get = _patched_get
-# =================== 加速头结束 ===================
-
 import sys
 sys.path.append('..')
 from base.spider import Spider
@@ -65,10 +18,10 @@ import base64
 import hashlib
 
 class Spider(Spider):
-    
+
     def getName(self):
         return "苹果视频"
-    
+
     def init(self, extend=""):
         self.host = "https://618622.xyz"
         self.api_host = "https://h5.xxoo169.org"
@@ -81,7 +34,7 @@ class Spider(Spider):
             'Referer': self.host
         }
         # 定义特殊分区ID列表，包含所有需要特殊处理的分类
-        self.special_categories = ['36', '13','37', '43', '40', '49', '44', '41','39','45','42','38','66','46','48','47']
+        self.special_categories = ['36', '13', '33', '37', '43', '40', '49', '44', '41','39','45','42','38','66','46','48','47']
         self.log(f"苹果视频爬虫初始化完成，主站: {self.host}")
 
     def html(self, content):
@@ -111,24 +64,26 @@ class Spider(Spider):
     def homeContent(self, filter):
         """获取首页内容和分类"""
         result = {}
-        # 只保留指定的分类
+        # [修改] 每个分类的 type_id 前缀 = 该分类实际所在的域名
+        # 浏览器逐个打开分类页核对地址栏域名，填到这里！
+        # 已知：精品二区(13) 在 618622.xyz；国产AV(37) 在 618634.xyz
         classes = [
             {'type_id': '618622.xyz_36', 'type_name': '全部影片'},
-            {'type_id': '618622.xyz_13', 'type_name': '精品二区'},
-            {'type_id': '618622.xyz_37', 'type_name': '国产AV'},
-            {'type_id': '618622.xyz_43', 'type_name': '探花AV'},
-            {'type_id': '618622.xyz_40', 'type_name': '网黄UP主'},
-            {'type_id': '618622.xyz_49', 'type_name': '绿帽淫妻'},
-            {'type_id': '618622.xyz_44', 'type_name': '国产传媒'},
-            {'type_id': '618622.xyz_41', 'type_name': '福利姬'},
-            {'type_id': '618622.xyz_39', 'type_name': '字幕'},
-            {'type_id': '618622.xyz_45', 'type_name': '水果π'},
-            {'type_id': '618622.xyz_42', 'type_name': '主播直播'},
-            {'type_id': '618622.xyz_38', 'type_name': '欧美'},
-            {'type_id': '618622.xyz_66', 'type_name': 'FC2'},
-            {'type_id': '618622.xyz_46', 'type_name': '性爱教学'},
-            {'type_id': '618622.xyz_48', 'type_name': '三级'},
-            {'type_id': '618622.xyz_47', 'type_name': '动漫'}
+            {'type_id': '618622.xyz_13', 'type_name': '精品二区'},      # 已核对：618622.xyz
+            {'type_id': '618634.xyz_37', 'type_name': '国产AV'},        # [修改] 已核对：618634.xyz
+            {'type_id': '618622.xyz_43', 'type_name': '探花AV'},        # TODO: 核对域名
+            {'type_id': '618622.xyz_40', 'type_name': '网黄UP主'},      # TODO: 核对域名
+            {'type_id': '618622.xyz_49', 'type_name': '绿帽淫妻'},      # TODO: 核对域名
+            {'type_id': '618622.xyz_44', 'type_name': '国产传媒'},      # TODO: 核对域名
+            {'type_id': '618622.xyz_41', 'type_name': '福利姬'},        # TODO: 核对域名
+            {'type_id': '618622.xyz_39', 'type_name': '字幕'},          # TODO: 核对域名
+            {'type_id': '618622.xyz_45', 'type_name': '水果π'},         # TODO: 核对域名
+            {'type_id': '618622.xyz_42', 'type_name': '主播直播'},      # TODO: 核对域名
+            {'type_id': '618622.xyz_38', 'type_name': '欧美'},          # TODO: 核对域名
+            {'type_id': '618622.xyz_66', 'type_name': 'FC2'},           # TODO: 核对域名
+            {'type_id': '618622.xyz_46', 'type_name': '性爱教学'},      # TODO: 核对域名
+            {'type_id': '618622.xyz_48', 'type_name': '三级'},          # TODO: 核对域名
+            {'type_id': '618622.xyz_47', 'type_name': '动漫'}           # TODO: 核对域名
         ]
         result['class'] = classes
         try:
@@ -147,7 +102,7 @@ class Spider(Spider):
             'class': [
                 {'type_id': '618622.xyz_36', 'type_name': '全部影片'},
                 {'type_id': '618622.xyz_13', 'type_name': '精品二区'},
-                {'type_id': '618622.xyz_37', 'type_name': '国产AV'},
+                {'type_id': '618634.xyz_37', 'type_name': '国产AV'},    # [修改] 与 homeContent 保持一致
                 {'type_id': '618622.xyz_43', 'type_name': '探花AV'},
                 {'type_id': '618622.xyz_40', 'type_name': '网黄UP主'},
                 {'type_id': '618622.xyz_49', 'type_name': '绿帽淫妻'},
@@ -164,17 +119,20 @@ class Spider(Spider):
             ]
         }
     def categoryContent(self, tid, pg, filter, extend):
-        """分类内容 - 修改为使用固定页数设置"""
+        """分类内容 - tid 前缀域名即分类真实所在域名"""
         try:
             domain, type_id = tid.split('_')
             url = f"https://{domain}/index.php/vod/type/id/{type_id}.html"
             if pg and pg != '1':
                 url = url.replace('.html', f'/page/{pg}.html')
             self.log(f"访问分类URL: {url}")
-            rsp = self.fetch(url, headers=self.headers)
+            # [修改] 请求时 Referer 也用该分类自己的域名，避免跨域被拒绝
+            cat_headers = self.headers.copy()
+            cat_headers['Referer'] = f"https://{domain}/"
+            rsp = self.fetch(url, headers=cat_headers)
             doc = self.html(rsp.text)
             videos = self._get_videos(doc, category_id=type_id, limit=20)
-            
+
             # 尝试从分页元素中获取页数
             pagecount = 50  # 默认值
             try:
@@ -190,9 +148,9 @@ class Spider(Spider):
                                 break
             except:
                 pass
-            
+
             total = pagecount * 20
-            
+
             return {
                 'list': videos,
                 'page': int(pg),
@@ -210,22 +168,22 @@ class Spider(Spider):
             # 构造搜索URL
             search_url = f"{self.host}/index.php/vod/type/id/1/wd/{urllib.parse.quote(key)}/page/{pg}.html"
             self.log(f"搜索URL: {search_url}")
-            
+
             # 发送请求
             rsp = self.fetch(search_url, headers=self.headers)
             if not rsp or rsp.status_code != 200:
                 self.log("搜索请求失败")
                 return {'list': []}
-            
+
             # 解析HTML
             doc = self.html(rsp.text)
             if not doc:
                 self.log("搜索页面解析失败")
                 return {'list': []}
-            
+
             # 提取搜索结果
             videos = self._get_videos(doc, limit=20)
-            
+
             # 尝试从分页元素中获取页数
             pagecount = 5  # 默认值
             try:
@@ -241,9 +199,9 @@ class Spider(Spider):
                                 break
             except:
                 pass
-            
+
             total = pagecount * 20
-            
+
             return {
                 'list': videos,
                 'page': int(pg),
@@ -259,7 +217,7 @@ class Spider(Spider):
         """详情页面 - 特别处理特殊分区的链接"""
         try:
             vid = ids[0]
-            
+
             # 检查是否是特殊分区的链接
             if vid.startswith('special_'):
                 # 解析特殊分区ID格式: special_{category_id}_{video_id}_{encoded_url}
@@ -269,15 +227,15 @@ class Spider(Spider):
                     video_id = parts[2]
                     encoded_url = '_'.join(parts[3:])
                     play_url = urllib.parse.unquote(encoded_url)
-                    
+
                     self.log(f"特殊分区视频，直接使用链接: {play_url}")
-                    
+
                     # 从播放链接中提取视频URL
                     parsed_url = urllib.parse.urlparse(play_url)
                     query_params = urllib.parse.parse_qs(parsed_url.query)
                     video_url = query_params.get('v', [''])[0]
                     pic_url = query_params.get('b', [''])[0]
-                    
+
                     # 从链接中提取标题（加密的）
                     path_parts = parsed_url.path.split('/')
                     if len(path_parts) > 0:
@@ -285,7 +243,7 @@ class Spider(Spider):
                         title = self._decrypt_title(encrypted_title)
                     else:
                         title = "未知标题"
-                    
+
                     return {
                         'list': [{
                             'vod_id': vid,
@@ -301,17 +259,22 @@ class Spider(Spider):
                             'vod_play_url': f"第1集${play_url}"
                         }]
                     }
-            
-            # 常规处理
-            if '_' in vid and len(vid.split('_')) > 2:
-                domain, category_id, video_id = vid.split('_')
+
+            # 常规处理：[修改] 前缀可能带点号，最多按 2 段或 3 段切
+            parts = vid.split('_')
+            if len(parts) >= 3:
+                domain = parts[0]
+                video_id = parts[-1]
+                detail_url = f"https://{domain}/index.php/vod/detail/id/{video_id}.html"
             else:
-                domain, video_id = vid.split('_')
-            
-            detail_url = f"https://{domain}/index.php/vod/detail/id/{video_id}.html"
-            
+                domain, video_id = parts[0], parts[-1]
+                detail_url = f"https://{domain}/index.php/vod/detail/id/{video_id}.html"
+
             self.log(f"访问详情URL: {detail_url}")
-            rsp = self.fetch(detail_url, headers=self.headers)
+            # [修改] Referer 用详情页自己的域名
+            detail_headers = self.headers.copy()
+            detail_headers['Referer'] = f"https://{domain}/"
+            rsp = self.fetch(detail_url, headers=detail_headers)
             doc = self.html(rsp.text)
             video_info = self._get_detail(doc, rsp.text, vid)
             return {'list': [video_info]} if video_info else {'list': []}
@@ -323,7 +286,7 @@ class Spider(Spider):
         """播放链接 - 特别处理特殊分区的链接"""
         try:
             self.log(f"获取播放链接: flag={flag}, id={id}")
-            
+
             # 检查是否是特殊分区的链接
             if id.startswith('special_'):
                 # 解析特殊分区ID格式: special_{category_id}_{video_id}_{encoded_url}
@@ -331,33 +294,33 @@ class Spider(Spider):
                 if len(parts) >= 4:
                     encoded_url = '_'.join(parts[3:])
                     play_url = urllib.parse.unquote(encoded_url)
-                    
+
                     self.log(f"特殊分区视频，直接使用链接: {play_url}")
-                    
+
                     # 从播放链接中提取视频URL
                     parsed_url = urllib.parse.urlparse(play_url)
                     query_params = urllib.parse.parse_qs(parsed_url.query)
                     video_url = query_params.get('v', [''])[0]
-                    
+
                     if video_url:
                         # 确保URL是完整的
                         if video_url.startswith('//'):
                             video_url = 'https:' + video_url
                         elif not video_url.startswith('http'):
                             video_url = urljoin(self.host, video_url)
-                        
+
                         self.log(f"从特殊链接中提取到视频地址: {video_url}")
                         return {'parse': 0, 'playUrl': '', 'url': video_url}
                     else:
                         self.log(f"未找到视频参数，返回原始链接")
                         return {'parse': 1, 'playUrl': '', 'url': play_url}
-            
+
             # 检查传入的ID是否为完整URL，如果是则直接解析
             if id.startswith('http'):
                 self.log("ID 是一个完整URL，直接解析参数")
                 parsed_url = urllib.parse.urlparse(id)
                 query_params = urllib.parse.parse_qs(parsed_url.query)
-                
+
                 # 尝试获取视频参数
                 video_url = query_params.get('v', [''])[0]
                 if video_url:
@@ -369,7 +332,7 @@ class Spider(Spider):
                     elif not video_url.startswith('http'):
                         # 尝试添加基本域名
                         video_url = urljoin(self.host, video_url)
-                    
+
                     self.log(f"从 URL 参数中提取到视频地址: {video_url}")
                     return {'parse': 0, 'playUrl': '', 'url': video_url}
                 else:
@@ -377,6 +340,7 @@ class Spider(Spider):
                     return {'parse': 1, 'playUrl': '', 'url': id}
 
             # 从新的 id 格式中提取视频ID和分类ID
+            # [修改] 前缀域名可能含点号，从后面取分类ID和视频ID
             if id.count('_') >= 2:
                 parts = id.split('_')
                 video_id = parts[-1]
@@ -384,24 +348,27 @@ class Spider(Spider):
             else:
                 video_id = id.split('_')[-1]
                 category_id = ''
-            
+
             self.log(f"视频ID: {video_id}, 分类ID: {category_id}")
-            
+
             # 对于特殊分类，使用直接解析播放页面的方式
             if category_id in self.special_categories:
                 self.log("特殊分类，尝试从详情页提取直接播放链接")
-                # 构造播放页面URL
-                play_page_url = f"{self.host}/index.php/vod/play/id/{video_id}.html"
-                
+                # [修改] 从 id 前缀解析真实域名，不再用 self.host
+                domain = id.split('_')[0]
+                play_page_url = f"https://{domain}/index.php/vod/play/id/{video_id}.html"
+
                 # 请求播放页面
-                rsp = self.fetch(play_page_url, headers=self.headers)
+                play_headers = self.headers.copy()
+                play_headers['Referer'] = f"https://{domain}/"
+                rsp = self.fetch(play_page_url, headers=play_headers)
                 if rsp and rsp.status_code == 200:
                     # 从页面提取视频链接
                     video_url = self._extract_direct_video_url(rsp.text)
                     if video_url:
                         self.log(f"从播放页面提取到视频地址: {video_url}")
                         return {'parse': 0, 'playUrl': '', 'url': video_url}
-                
+
                 # 如果提取失败，回退到API方式
                 self.log("从播放页面提取失败，尝试API方式")
                 return self._get_video_by_api(id, video_id)
@@ -409,13 +376,15 @@ class Spider(Spider):
                 # 其他分类使用API方式
                 self.log("使用API方式获取视频地址")
                 return self._get_video_by_api(id, video_id)
-                
+
         except Exception as e:
             self.log(f"播放链接获取出错: {str(e)}")
-            if '_' in id:
-                domain, play_id = id.split('_')
+            # [修改] 异常回退也从 id 前缀取域名
+            try:
+                domain = id.split('_')[0]
+                play_id = id.split('_')[-1]
                 play_url = f"https://{domain}/html/kkyd.html?m={play_id}"
-            else:
+            except:
                 play_url = f"{self.host}/html/kkyd.html?m={id}"
             return {'parse': 1, 'playUrl': '', 'url': play_url}
 
@@ -424,24 +393,24 @@ class Spider(Spider):
         try:
             api_url = f"{self.api_host}/api/v2/vod/reqplay/{video_id}"
             self.log(f"请求API获取视频地址: {api_url}")
-            
+
             api_headers = self.headers.copy()
             api_headers.update({
                 'Referer': f"{self.host}/",
                 'Origin': self.host,
                 'X-Requested-With': 'XMLHttpRequest'
             })
-            
+
             api_response = self.fetch(api_url, headers=api_headers)
             if api_response and api_response.status_code == 200:
                 data = api_response.json()
                 self.log(f"API响应: {data}")
-                
+
                 if data.get('retcode') == 3:
                     video_url = data.get('data', {}).get('httpurl_preview', '')
                 else:
                     video_url = data.get('data', {}).get('httpurl', '')
-                
+
                 if video_url:
                     video_url = video_url.replace('?300', '')
                     self.log(f"从API获取到视频地址: {video_url}")
@@ -450,21 +419,21 @@ class Spider(Spider):
                     self.log("API响应中没有找到视频地址")
             else:
                 self.log(f"API请求失败，状态码: {api_response.status_code if api_response else '无响应'}")
-                
-            if '_' in id:
-                domain, play_id = id.split('_')
-                play_url = f"https://{domain}/html/kkyd.html?m={play_id}"
-            else:
-                play_url = f"{self.host}/html/kkyd.html?m={id}"
+
+            # [修改] 回退播放页用 id 前缀的真实域名
+            domain = id.split('_')[0]
+            play_id = id.split('_')[-1]
+            play_url = f"https://{domain}/html/kkyd.html?m={play_id}"
             self.log(f"API请求失败，回退到播放页面: {play_url}")
             return {'parse': 1, 'playUrl': '', 'url': play_url}
-            
+
         except Exception as e:
             self.log(f"API方式获取视频出错: {str(e)}")
-            if '_' in id:
-                domain, play_id = id.split('_')
+            try:
+                domain = id.split('_')[0]
+                play_id = id.split('_')[-1]
                 play_url = f"https://{domain}/html/kkyd.html?m={play_id}"
-            else:
+            except:
                 play_url = f"{self.host}/html/kkyd.html?m={id}"
             return {'parse': 1, 'playUrl': '', 'url': play_url}
 
@@ -478,7 +447,7 @@ class Spider(Spider):
                 r'src\s*=\s*["\']([^"\']+\.(?:mp4|m3u8))["\']',
                 r'http[^\s<>"\'?]+\.(?:mp4|m3u8)'
             ]
-            
+
             for pattern in patterns:
                 matches = re.findall(pattern, html_content, re.IGNORECASE)
                 for match in matches:
@@ -486,12 +455,12 @@ class Spider(Spider):
                         match = match[0]
                     extracted_url = match.replace('\\', '')
                     extracted_url = urllib.parse.unquote(extracted_url)
-                    
+
                     if extracted_url.startswith('//'):
                         extracted_url = 'https:' + extracted_url
                     elif extracted_url.startswith('http'):
                         return extracted_url
-            
+
             return None
         except Exception as e:
             self.log(f"提取直接播放URL出错: {str(e)}")
@@ -518,20 +487,23 @@ class Spider(Spider):
             link = element.xpath('./@href')[0]
             if link.startswith('/'):
                 link = self.host + link
-            
+            # [修改] 补全协议相对链接
+            elif link.startswith('//'):
+                link = 'https:' + link
+
             # 检查是否是特殊分区的链接
             is_special_link = '/html/dcdc/' in link
-            
+
             # 对于特殊分区，直接使用链接本身作为ID
             if is_special_link:
                 # 提取链接中的参数
                 parsed_url = urllib.parse.urlparse(link)
                 query_params = urllib.parse.parse_qs(parsed_url.query)
-                
+
                 # 获取视频URL和封面URL
                 video_url = query_params.get('v', [''])[0]
                 pic_url = query_params.get('b', [''])[0]
-                
+
                 if video_url:
                     # 从视频URL中提取ID
                     video_id_match = re.search(r'/([a-f0-9-]+)/video\.m3u8', video_url)
@@ -541,41 +513,25 @@ class Spider(Spider):
                         # 如果没有匹配到，使用MD5哈希值
                         video_id = hashlib.md5(video_url.encode()).hexdigest()[:8]
                 else:
-                    video_id = str(hash(link) % 1000000)
-                
+                    video_id = hashlib.md5(link.encode()).hexdigest()[:8]  # [修改] 用md5替代随机hash
+
                 # 对于特殊分区，保留完整的链接作为vod_id的一部分
                 encoded_link = urllib.parse.quote(link)
                 final_vod_id = f"special_{category_id}_{video_id}_{encoded_link}"
-                
+
                 # 提取加密的标题并解密
-                title_elem = element.xpath('.//p[@class="km-script"]/text()')
-                if not title_elem:
-                    title_elem = element.xpath('.//p[contains(@class, "script")]/text()')
-                    if not title_elem:
-                        title_elem = element.xpath('.//p/text()')
-                        if not title_elem:
-                            title_elem = element.xpath('.//h3/text()')
-                            if not title_elem:
-                                title_elem = element.xpath('.//h4/text()')
-                                if not title_elem:
-                                    self.log(f"未找到标题元素，跳过该视频")
-                                    return None
-                
-                title_encrypted = title_elem[0].strip()
-                title = self._decrypt_title(title_encrypted)
-                
+                title = self._extract_title(element)
+                if title is None:
+                    return None
+
                 # 提取图片
-                pic_elem = element.xpath('.//img/@data-original')
-                if not pic_elem:
-                    pic_elem = element.xpath('.//img/@src')
-                pic = pic_elem[0] if pic_elem else pic_url
-                
+                pic = self._extract_pic(element) or pic_url
                 if pic:
                     if pic.startswith('//'):
                         pic = 'https:' + pic
                     elif pic.startswith('/'):
                         pic = self.host + pic
-                
+
                 return {
                     'vod_id': final_vod_id,
                     'vod_name': title,
@@ -584,44 +540,35 @@ class Spider(Spider):
                     'vod_year': ''
                 }
             else:
-                # 常规处理
-                vod_id = self.regStr(r'm=(\d+)', link)
-                if not vod_id:
-                    vod_id = str(hash(link) % 1000000)
-                
-                final_vod_id = f"618940.xyz_{vod_id}"
+                # ========== [修改] 常规分支重写 ==========
+                # 1) 从链接里解析真实域名（不再硬编码 618940.xyz）
+                parsed = urllib.parse.urlparse(link)
+                domain = parsed.netloc or urllib.parse.urlparse(self.host).netloc
+
+                # 2) 提取真实视频ID：详情页链接 /id/123.html 优先，其次 m=123
+                m = re.search(r'/id/(\d+)\.html', link)
+                if m:
+                    vod_id = m.group(1)
+                else:
+                    m = re.search(r'[?&]m=(\d+)', link)
+                    if m:
+                        vod_id = m.group(1)
+                    else:
+                        # 最后才用 md5（稳定，不像内置 hash 那样每次随机）
+                        vod_id = hashlib.md5(link.encode()).hexdigest()[:10]
+
+                final_vod_id = f"{domain}_{vod_id}"
                 if category_id:
-                    final_vod_id = f"618940.xyz_{category_id}_{vod_id}"
-                
-                # 提取加密的标题并解密
-                title_elem = element.xpath('.//p[@class="km-script"]/text()')
-                if not title_elem:
-                    title_elem = element.xpath('.//p[contains(@class, "script")]/text()')
-                    if not title_elem:
-                        title_elem = element.xpath('.//p/text()')
-                        if not title_elem:
-                            title_elem = element.xpath('.//h3/text()')
-                            if not title_elem:
-                                title_elem = element.xpath('.//h4/text()')
-                                if not title_elem:
-                                    self.log(f"未找到标题元素，跳过该视频")
-                                    return None
-                
-                title_encrypted = title_elem[0].strip()
-                title = self._decrypt_title(title_encrypted)
-                
-                # 提取图片
-                pic_elem = element.xpath('.//img/@data-original')
-                if not pic_elem:
-                    pic_elem = element.xpath('.//img/@src')
-                pic = pic_elem[0] if pic_elem else ''
-                
-                if pic:
-                    if pic.startswith('//'):
-                        pic = 'https:' + pic
-                    elif pic.startswith('/'):
-                        pic = self.host + pic
-                
+                    final_vod_id = f"{domain}_{category_id}_{vod_id}"
+
+                # 3) 提取加密的标题并解密
+                title = self._extract_title(element)
+                if title is None:
+                    return None
+
+                # 4) 提取图片
+                pic = self._extract_pic(element)
+
                 return {
                     'vod_id': final_vod_id,
                     'vod_name': title,
@@ -633,6 +580,35 @@ class Spider(Spider):
             self.log(f"提取影片信息出错: {str(e)}")
             return None
 
+    def _extract_title(self, element):
+        """[新增] 统一提取并解密标题，找不到返回 None"""
+        title_elem = element.xpath('.//p[@class="km-script"]/text()')
+        if not title_elem:
+            title_elem = element.xpath('.//p[contains(@class, "script")]/text()')
+        if not title_elem:
+            title_elem = element.xpath('.//p/text()')
+        if not title_elem:
+            title_elem = element.xpath('.//h3/text()')
+        if not title_elem:
+            title_elem = element.xpath('.//h4/text()')
+        if not title_elem:
+            self.log("未找到标题元素，跳过该视频")
+            return None
+        return self._decrypt_title(title_elem[0].strip())
+
+    def _extract_pic(self, element):
+        """[新增] 统一提取封面图"""
+        pic_elem = element.xpath('.//img/@data-original')
+        if not pic_elem:
+            pic_elem = element.xpath('.//img/@src')
+        pic = pic_elem[0] if pic_elem else ''
+        if pic:
+            if pic.startswith('//'):
+                pic = 'https:' + pic
+            elif pic.startswith('/'):
+                pic = self.host + pic
+        return pic
+
     def _decrypt_title(self, encrypted_text):
         """解密标题 - 使用网站的解密算法 (XOR 128)"""
         try:
@@ -642,7 +618,7 @@ class Spider(Spider):
                 decrypted_code = code_point ^ 128
                 decrypted_char = chr(decrypted_code)
                 decrypted_chars.append(decrypted_char)
-            
+
             decrypted_text = ''.join(decrypted_chars)
             # 清理文本中的特殊字符
             decrypted_text = decrypted_text.replace('&nbsp;', ' ')
@@ -664,7 +640,7 @@ class Spider(Spider):
 
             play_from = []
             play_urls = []
-            
+
             # 使用更灵活的正则匹配来查找播放链接
             player_link_patterns = [
                 re.compile(r'href="(.*?ar\.html.*?)"'),
@@ -672,12 +648,12 @@ class Spider(Spider):
                 re.compile(r'href="(.*?ar-kk\.html.*?)"'),
                 re.compile(r'href="(.*?dcdc/.*?)"')
             ]
-            
+
             player_links = []
             for pattern in player_link_patterns:
                 matches = pattern.findall(html_content)
                 player_links.extend(matches)
-            
+
             if player_links:
                 episodes = []
                 for link in player_links:
@@ -750,4 +726,5 @@ class Spider(Spider):
                 response = requests.post(url, headers=headers, data=data, timeout=timeout, verify=False)
             return response
         except Exception as e:
-            self.log(f"网络请求失败: {url}, 错误: {str(e)}") 
+            self.log(f"网络请求失败: {url}, 错误: {str(e)}")
+            return None
