@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# 聚合平台3 - 影视资源 API 聚合【修复优化版】
-# 修改：移除失效type5站点；首页默认展示SOURCES第一个源更新；搜索防崩溃加固；解析优先前5源；清理废弃代码
+# 聚合平台3 - 影视资源 API 聚合【修复优化版2】
+# 修改：移除type4硬编码假分类；仅SOURCES前5源自动拉取真实二级分类，其余源禁用远程拉取防崩溃
 import json
 import re
 import sys
@@ -32,7 +32,7 @@ class Spider(BaseSpider):
     M3U8_ONLY = True
 
     # type: 0=XML旧版  1=JSON标准(默认)  2=代理源  3=大地feifei2
-    # ==========【字典顺序 = 首页源 + 解析优先前5源，调换条目顺序即可切换】==========
+    # ==========【字典顺序 = 首页源 + 解析优先前5源 + 自动子分类开启的前5源，调换条目顺序即可切换】==========
     SOURCES = {
         's41': {'name': '🌸精品', 'api': 'https://jp98.vip/api.php/provide/vod/at/m3u8'},
         's5': {'name': '🔥麻花', 'api': 'shturl.cc/mGRZKL6N3lr5GZ75rjklTx3AX5nysBSp'},
@@ -392,25 +392,19 @@ class Spider(BaseSpider):
         return vals, first_cate
 
     def homeContent(self, filter):
-        """homeContent 返回源分类列表，APP点分类进入；首页内容交给 homeVideoContent"""
         classes = []
         filters = {}
         self._first_cate = {'s43': '1'}
         default_vals = [{'n': '全部(最新)', 'v': ''}]
+        # 获取前5个源key列表，只有这5个源会远程请求接口自动加载子分类
+        top5_keys = list(self.SOURCES.keys())[:5]
+
         for sk, so in self.SOURCES.items():
             classes.append({'type_id': sk, 'type_name': so['name']})
             st = so.get('type') or 1
-            if st == 4:
-                vals = [
-                    {'n': '全部(连续剧)', 'v': 'tv'},
-                    {'n': '连续剧', 'v': 'tv'},
-                    {'n': '电影', 'v': 'movie'},
-                    {'n': '综艺', 'v': 'variety'},
-                    {'n': '动漫', 'v': 'anime'},
-                ]
-                filters[sk] = [{'key': 'cateId', 'name': '分类', 'value': vals}]
-                self._first_cate[sk] = 'tv'
-            elif sk == 's43':
+
+            # s43大地源保留它自己硬编码分类
+            if sk == 's43':
                 vals = [
                     {'n': '电影', 'v': '1'},
                     {'n': '电视剧', 'v': '2'},
@@ -421,7 +415,18 @@ class Spider(BaseSpider):
                 ]
                 filters[sk] = [{'key': 'cateId', 'name': '分类', 'value': vals}]
                 self._first_cate[sk] = '1'
+            elif sk in top5_keys:
+                # ✅前5个源：远程请求接口自动提取真实分类
+                try:
+                    vals, first_c = self._load_filter(sk, so)
+                    filters[sk] = [{'key': 'cateId', 'name': '分类', 'value': vals}]
+                    if first_c:
+                        self._first_cate[sk] = first_c
+                except Exception:
+                    # 请求失败回退到默认
+                    filters[sk] = [{'key': 'cateId', 'name': '分类', 'value': list(default_vals)}]
             else:
+                # ❗其余源：不请求网络，只保留【全部(最新)】，防止批量并发卡死
                 filters[sk] = [{'key': 'cateId', 'name': '分类', 'value': list(default_vals)}]
         return {'class': classes, 'filters': filters if filter else {}}
 
@@ -478,7 +483,7 @@ class Spider(BaseSpider):
         elif stype in (2, 4):
             params = {'pg': pg}
             if not cate_id:
-                cate_id = self._first_cate.get(tid) or 'tv'
+                cate_id = self._first_cate.get(tid) or ''
             params['t'] = cate_id
             url = self._build_url(source['api'], params)
         else:
@@ -610,8 +615,6 @@ class Spider(BaseSpider):
                     url = self._build_url(so['api'], {'ac': 'videolist', 'wd': key, 'pg': pg})
                 elif stype == 2:
                     url = self._build_url(so['api'], {'wd': key, 'pg': pg})
-                elif stype == 4:
-                    url = self._build_url(so['api'], {'t': 'tv', 'pg': pg, 'wd': key})
                 else:
                     url = self._build_url(so['api'], {'ac': 'detail', 'wd': key, 'pg': pg})
                 html = self._request(url, timeout=SRC_TIMEOUT)
