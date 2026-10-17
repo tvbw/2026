@@ -58,10 +58,9 @@ class Spider(BaseSpider):
         self.name = "51吃瓜"
         # 站点入口候选（自动探测可用域名，对应 /config 的站点入口）
         self._host_candidates = [
-            "https://artist.cnmhljju.cc/",
-            "https://artist.vgwtswi.xyz/",
-            "https://ability.vgwtswi.xyz/",
-            "https://am.vgwtswi.xyz/",
+            'https://badly.muxzxckq.cc/',
+            'https://athlete.muxzxckq.cc/',
+            'https://auto.muxzxckq.cc/',
         ]
         self.host = self._host_candidates[0].rstrip("/")
         # 图片解密代理（站点图片 AES-CBC 加密，TVBox 无法直接显示）
