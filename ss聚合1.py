@@ -88,19 +88,20 @@ class Spider(BaseSpider):
     SOURCES = {
         's41': {'name': '🌸精品', 'api': 'https://jp98.vip/api.php/provide/vod/at/m3u8'},
         's15': {'name': '📺杏吧', 'api': 'https://api.xgbbk8.com/api.php/provide/vod/at/m3u8'},
-        's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vodat/m3u8'},
+        's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vod/at/m3u8'},
         's8': {'name': '⚡极品', 'api': 'https://jipinvip1.com/api.php/provide/vod/at/m3u8'},
         's32': {'name': '🍃百花', 'api': 'https://bhziyuan.com/api.php/provide/vod/at/m3u8'},
         's25': {'name': '🌸仓库', 'api': 'https://hsckzy888.com/api.php/provide/vod/from/hsckm3u8/'},
         's43': {'name': '🐾大地', 'api': 'https://dadiapi.com/feifei2/', 'type': 3},
+        's50': {'name': '🧸动漫', 'api': 'https://api.heiapi.cc/api.php/provide/vod/at/m3u8'},
         's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/at/m3u8'},
-        's21': {'name': '📺小鸡', 'api': 'https://api.xiaojizy.live/provide/vod/at/m3u8'},
+        's21': {'name': '📺小鸡', 'api': 'https://api.xiaojizy.live/provide/vod/'},
         's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/at/m3u8'},
         's27': {'name': '☁️精东', 'api': 'http://chujia.cc/api.php/provide/vod/at/m3u8'},
         's45': {'name': '🐾滴滴', 'api': 'https://api.ddapi.cc/api.php/provide/vod/at/m3u8'},
-        's30': {'name': '⚡JKUN', 'api': 'https://jkunzyapi.com/api.php/provide/vodat/m3u8'},
-        's39': {'name': '🐾CK百货', 'api': 'https://ckbh1.xyz/api.php/provide/vod/at/m3u8'},
-        's42': {'name': '🐾森林', 'api': 'https://slapibf.com/api.php/provide/vod/at/m3u8'},
+        's30': {'name': '⚡JKUN', 'api': 'https://jkunzyapi.com/api.php/provide/vod/at/m3u8'},
+        's39': {'name': '🐾CK百货', 'api': 'https://ckbh1.xyz/api.php/provide/vod/'},
+        's42': {'name': '🐾森林', 'api': 'https://slapibf.com/api.php/provide/vod/'},
         's40': {'name': '🐾番茄', 'api': 'https://fqzy.me/api.php/provide/vod/at/m3u8'},
         's9': {'name': '📺美少女', 'api': 'https://www.msnii.com/api/json.php'},
         's10': {'name': '📺饮水机', 'api': 'https://www.xrbsp.com/api/json.php'},
@@ -111,17 +112,16 @@ class Spider(BaseSpider):
         's4': {'name': '📺鲨鱼', 'api': 'https://shayuzy5.com/api.php/provide/vod/at/m3u8'},
         's22': {'name': '📺大奶', 'api': 'https://apidanaizi.com/api.php/provide/vod/at/m3u8'},
         's24': {'name': '📺黑料', 'api': 'https://heiliaozyapi.com/api.php/provide/vod/at/m3u8'},
-        's26': {'name': '🐮玉兔', 'api': 'https://apiyutu.com/api.php/provide/vodat/m3u8'},
+        's26': {'name': '🐮玉兔', 'api': 'https://apiyutu.com/api.php/provide/vod/at/m3u8'},
         's33': {'name': '🐾老色', 'api': 'https://apilsbzy1.com/api.php/provide/vod/at/m3u8'},
-        's34': {'name': '🐾辣椒', 'api': 'https://apilj.com/api.php/provide/vod/at/m3u8'},
+        's34': {'name': '🐾辣椒', 'api': 'https://apilj.com/api.php/provide/vod/'},
         's19': {'name': '📺91AV', 'api': 'https://91av.cyou/api.php/provide/vod/at/m3u8'},
         's35': {'name': '🐾javbus', 'api': 'https://javbus.sbs/api.php/provide/vod/at/m3u8'},
         's37': {'name': '🐾火速', 'api': 'https://api.huosuapi.cc/api.php/provide/vod/at/m3u8'},
-        's38': {'name': '🐾聚合2', 'api': 'http://150.109.94.44:1112/api.php/provide/vod/at/m3u8'},
+        's38': {'name': '🐾聚合2', 'api': 'http://150.109.94.44:1112/api.php/provide/vod/'},
         's16': {'name': '📺CK资源', 'api': 'https://ckzy.me/api.php/provide/vod/at/m3u8'},
         's6': {'name': '📺搜AV', 'api': 'https://souavzy.net/api.php/provide/vod/at/m3u8'},
-        's50': {'name': '🧸嘿嘿', 'api': 'https://api.heiapi.cc/api.php/provide/vod/at/m3u8'},
-        's49': {'name': '📺湿园', 'api': 'https://xxavs.com/api.php/provide/vodat/m3u8'},
+        's49': {'name': '📺湿园', 'api': 'https://xxavs.com/api.php/provide/vod/at/m3u8'},
     }
 
     def init(self, extend=""):
@@ -880,3 +880,32 @@ class Spider(BaseSpider):
             'parse': 1, 'jx': 1, 'url': play_url,
             'header': {'User-Agent': self.UA},
         }
+# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
+_PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
+
+def _cover_fallback(self, pic_url):
+    import urllib.parse
+    raw = pic_url or ''
+    parent_impl = getattr(super(Spider, self), '_cover_fallback', None)
+    if callable(parent_impl):
+        try:
+            raw = parent_impl(pic_url) or raw
+        except Exception:
+            pass
+    if not raw:
+        return ''
+    url = raw
+    for cdn in _PIC_CDN_POOL:
+        if cdn in raw:
+            url = raw.replace(cdn, _PIC_CDN_POOL[0])
+            break
+    proxy_base = getattr(self, 'proxy_base', None)
+    if proxy_base:
+        url = f'{proxy_base}{urllib.parse.quote(url)}'
+    return url
+
+Spider._cover_fallback = _cover_fallback
+# 注册爬虫
+if __name__ == '__main__':
+    from base.spider import Spider as BaseSpider
+    BaseSpider.register(Spider())
