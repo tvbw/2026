@@ -3,126 +3,8 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "麻豆1",
-      "name": "❤️麻豆1",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/jizhujian/tvbox18/3a9496c8202c1844af997614d451b06e24652592/py/%E9%BA%BB%E8%B1%86.py#L4",
-      "api": "https://raw.githubusercontent.com/jizhujian/tvbox18/3a9496c8202c1844af997614d451b06e24652592/py/%E9%BA%BB%E8%B1%86.py#L4"
-    },
-    {
-      "key": "麻豆2",
-      "name": "❤️麻豆2",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/jsjhshs/zwtvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E7%A6%81%E7%89%87%E5%A4%A9%E5%A0%82%EF%BC%88%E5%88%86%E7%B1%BB%EF%BC%89.py#L17",
-      "api": "https://raw.githubusercontent.com/jsjhshs/zwtvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/%E7%A6%81%E7%89%87%E5%A4%A9%E5%A0%82%EF%BC%88%E5%88%86%E7%B1%BB%EF%BC%89.py#L17"
-    },
-    {
-
-      "key": "禁片天堂（分类）",
-      "name": "❤️禁片天堂（分类）",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/jptt2.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/jptt2.py"
-    },
-    {
-      "key": "麻豆3",
-      "name": "❤️麻豆3",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/jsjhshs/zwtvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/M%E9%BA%BB%E8%B1%86.py#L4",
-      "api": "https://raw.githubusercontent.com/jsjhshs/zwtvbox/afa6eb1c54c13159406d42824da02be2c245f319/py/M%E9%BA%BB%E8%B1%86.py#L4"
-    },
-    {
-      "key": "麻豆社",
-      "name": "❤️麻豆社",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/wliqi495-create/jaychou123/537fc7311c1b3bf6778a1004b37bf4f417a42381/yingshi/py9/%E9%BA%BB%E8%B1%86%E7%A4%BE.py#L4",
-      "api": "https://raw.githubusercontent.com/wliqi495-create/jaychou123/537fc7311c1b3bf6778a1004b37bf4f417a42381/yingshi/py9/%E9%BA%BB%E8%B1%86%E7%A4%BE.py#L4"
-    },
-    {
-      "key": "麻豆区",
-      "name": "❤️麻豆区",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/JavTool/JavScraper/b0bbd27b660e5bc5c85634d698bb05f3e884af74/tools/madou.py#L4",
-      "api": "https://raw.githubusercontent.com/JavTool/JavScraper/b0bbd27b660e5bc5c85634d698bb05f3e884af74/tools/madou.py#L4"
-    },
-    {
 
 
-      "key": "csp_xbpq_禁片天堂（分类）",
-      "name": "❤️禁片天堂（分类）【🔞】",
-      "type": 3,
-      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
-      "playerType": 2,
-      "api": "csp_XBPQ",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/jptt2.json",
-      "style": {
-        "type": "rect",
-        "ratio": 1.65
-      }
-    },
-    {
-
-      "key": "csp_xbpq_禁片天堂",
-      "name": "❤️禁片天堂【🔞】",
-      "type": 3,
-      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
-      "playerType": 2,
-      "api": "csp_XBPQ",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/jptt.json",
-      "style": {
-        "type": "rect",
-        "ratio": 1.65
-      }
-    },
-    {
-      "key": "sweetpornos+详情页翻译",
-      "name": "❤️sweetpornos【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py"
-    },
-    {
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
@@ -145,6 +27,46 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py",
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
+    },
+    {
+      "key": "csp_xbpq_禁片天堂",
+      "name": "❤️禁片天堂【🔞】",
+      "type": 3,
+      "jar": "https://raw.githubusercontent.com/tvbw/2026/main/202610xyqxbpq.jar",
+      "playerType": 2,
+      "api": "csp_XBPQ",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/jptt.json",
+      "style": {
+        "type": "rect",
+        "ratio": 1.65
+      }
+    },
+    {
+      "key": "爆色",
+      "name": "5❤️ss采集聚合｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py"
+    },
+    {
+      "key": "sweetpornos+详情页翻译",
+      "name": "❤️sweetpornos【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py"
     },
     {
       "key": "py_4K_fullhd-fullhd3",
@@ -177,17 +99,7 @@
       "changeable": 1
     },
     {
-      "key": "短剧大全",
-      "name": "5❤️短剧大全【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/duanju202610.js"
-    },
-    {
+
       "key": "csp_xbpq_s直播【🔞】",
       "name": "❤️StripChat直播XB1【🔞】",
       "type": 3,
@@ -323,18 +235,6 @@
       "changeable": 1
     },
     {
-      "key": "爆色",
-      "name": "5❤️ss采集聚合｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 2
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ss%E8%81%9A%E5%90%88.py"
-    },
-    {
       "key": "每日大赛",
       "name": "4❤️每日大赛｜🔞",
       "type": 3,
@@ -459,6 +359,17 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/推特APP.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/推特APP.py"
+    },
+    {
+      "key": "短剧大全",
+      "name": "5❤️短剧大全【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/duanju202610.js"
     },
     {
       "key": "py_2048成人短剧",
