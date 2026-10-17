@@ -33,7 +33,7 @@ class Spider(BaseSpider):
     SOURCES = {
         's41': {'name': '🌸精品', 'api': 'https://jp98.vip/api.php/provide/vod/at/m3u8'},
         's27': {'name': '☁️精东', 'api': 'http://chujia.cc/api.php/provide/vod/at/m3u8'},
-        's24': {'name': '📺黑料', 'api': 'https://heiliaozyapi.com/api.php/provide/vod/at/m3u8'},
+        's55': {'name': '🌸杏吧', 'api': 'https://json.xingba222.com/api.php/provide/vod/at/m3u8'},
         's31': {'name': '👑桃花', 'api': 'https://thzy1.me/api.php/provide/vod/at/m3u8'},
         's45': {'name': '🐾滴滴', 'api': 'https://api.ddapi.cc/api.php/provide/vod/at/m3u8'},
         's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/at/m3u8'},
@@ -43,6 +43,7 @@ class Spider(BaseSpider):
         's50': {'name': '🧸动漫', 'api': 'https://api.heiapi.cc/api.php/provide/vod/at/m3u8'},
         's25': {'name': '🌸仓库', 'api': 'https://hsckzy888.com/api.php/provide/vod/from/hsckm3u8/'},
         's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/at/m3u8'},
+        's24': {'name': '📺黑料', 'api': 'https://heiliaozyapi.com/api.php/provide/vod/at/m3u8'},
         's21': {'name': '📺小鸡', 'api': 'https://api.xjzyapi.com/provide/vod'},
         's43': {'name': '🐾大地', 'api': 'https://dadiapi.com/feifei2/', 'type': 3},
         's8': {'name': '⚡极品', 'api': 'https://jipinvip2.com/api.php/provide/vod/?ac=list'},
