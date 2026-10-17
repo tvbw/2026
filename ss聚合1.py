@@ -90,7 +90,7 @@ class Spider(BaseSpider):
         's50': {'name': '🧸动漫', 'api': 'https://api.heiapi.cc/api.php/provide/vod/at/m3u8'},
         's25': {'name': '🌸仓库', 'api': 'https://hsckzy888.com/api.php/provide/vod/from/hsckm3u8/'},
         's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/at/m3u8'},
-        's21': {'name': '📺小鸡', 'api': 'https://api.xjzyapi.com/provide/vod?at=xml&ac=list' "type":0},
+        's21': {'name': '📺小鸡', 'api': 'https://api.xjzyapi.com/provide/vod?at=xml&ac=list' "type":0'},
         's43': {'name': '🐾大地', 'api': 'https://dadiapi.com/feifei2/', 'type': 3},
         's8': {'name': '⚡极品', 'api': 'https://jipinvip2.com/api.php/provide/vod/?ac=list'},
         's14': {'name': '📺潢AV', 'api': 'https://www.pgxdy.com/api/json.php'},
