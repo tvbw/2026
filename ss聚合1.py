@@ -32,13 +32,13 @@ class Spider(BaseSpider):
     # ==========【字典顺序 = 首页源 + 解析优先前5源 + 自动子分类开启的前5源，调换条目顺序即可切换】==========
     SOURCES = {
         's41': {'name': '🌸精品', 'api': 'https://jp98.vip/api.php/provide/vod/at/m3u8'},
-        's25': {'name': '🌸仓库', 'api': 'https://hsckzy888.com/api.php/provide/vod/from/hsckm3u8/'},
-        's50': {'name': '🧸动漫', 'api': 'https://api.heiapi.cc/api.php/provide/vod/at/m3u8'},
-        's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/at/m3u8'},
-        's15': {'name': '📺杏吧', 'api': 'https://api.xgbbk8.com/api.php/provide/vod/at/m3u8'},
-        's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vod/at/m3u8'},
         's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/at/m3u8'},
         's32': {'name': '🍃百花', 'api': 'https://bhziyuan.com/api.php/provide/vod/at/m3u8'},
+        's15': {'name': '📺杏吧', 'api': 'https://api.xgbbk8.com/api.php/provide/vod/at/m3u8'},
+        's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vod/at/m3u8'},
+        's50': {'name': '🧸动漫', 'api': 'https://api.heiapi.cc/api.php/provide/vod/at/m3u8'},
+        's25': {'name': '🌸仓库', 'api': 'https://hsckzy888.com/api.php/provide/vod/from/hsckm3u8/'},
+        's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/at/m3u8'},
         's21': {'name': '📺小鸡', 'api': 'https://api.xiaojizy.live/provide/vod/?ac=list'},
         's43': {'name': '🐾大地', 'api': 'https://dadiapi.com/feifei2/', 'type': 3},
         's8': {'name': '⚡极品', 'api': 'https://jipinvip2.com/api.php/provide/vod/?ac=list'},
