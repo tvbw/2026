@@ -1,21 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-蝴蝶影视 · 九区全功能稳定版（稳妥优化版）
-==================================================================
-核心：回到原版"HTTP 200 即解析"的判定，只保留零风险的效率优化。
-优化清单：
-  1. 正则全部预编译（_RE_*）
-  2. m3u8 AES key 内存缓存（KEY_CACHE_MAX）
-  3. 域名池同步 TTL（POOL_TTL）
-  4. 错误日志（action("status") 查看）
-  5. _default_host 动态取，不再硬编码
-  6. _base_headers 抽函数
-  7. _detect_mime 模块级
-换域名策略：请求失败时，从当前区域名池随机换一次（与原版一致），
-            且只在解析出内容后才更新 zoneMatrix[slug]["host"]。
-==================================================================
-"""
 
 import re
 import json
@@ -43,6 +27,10 @@ except ImportError:
 # ============ 模块级常量与预编译正则 ============
 _UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 _IMG_KEY_589 = b"2019ysapp7527"
+
+# 数字 -> 中文，供 _ensure_zones 生成“五区/六区...”用
+_CN_NUM = {"1": "一", "2": "二", "3": "三", "4": "四",
+           "5": "五", "6": "六", "7": "七", "8": "八", "9": "九"}
 
 _RE_ITEM = re.compile(
     r'(<div[^>]*class=["\'][^"\']*xowe-thumb-bl[^"\']*["\'][^>]*>[\s\S]*?</div>\s*</div>'
@@ -170,6 +158,7 @@ class Spider(SpiderBase):
                 ]
             }
         }
+
         self._key_cache = {}
         self._errors = []
         self._pool_synced_at = 0
@@ -187,6 +176,7 @@ class Spider(SpiderBase):
     # ============ 生命周期 ============
     def init(self, extend=""):
         self.sync_remote_domain_pools()
+        self._ensure_zones()      # ← 新增：给 zoneMatrix 缺失的区补占位配置
         return True
 
     def getName(self):
@@ -196,6 +186,37 @@ class Spider(SpiderBase):
         self._errors.append(" ".join(str(a) for a in args))
         if len(self._errors) > 20:
             del self._errors[:len(self._errors) - 20]
+
+    # ============ 自动补全区 ============
+    def _ensure_zones(self):
+        """
+        对 zone_order 里存在、但 zoneMatrix 里没定义的区，自动补一份最小配置：
+          - host   : 该区域名池的第一个；池子为空则留空（categoryContent 里直接返回空列表）
+          - mod    : vod
+          - default: "1"
+          - subs   : [{"n":"全部","v":"1"}]
+        如果日后想给某区补完整分类，直接在 zoneMatrix 里写 "z5": {...} 即可，
+        已存在时本方法会自动跳过，不会覆盖。
+        """
+        added = []
+        for idx, zid in enumerate(self.zone_order):
+            if zid in self.zoneMatrix:
+                continue
+            pool = self.domain_pools.get(zid, [])
+            host = pool[0] if pool else ""
+            num = zid[1:] if len(zid) > 1 else str(idx + 1)
+            cn = _CN_NUM.get(num, num)
+            self.zoneMatrix[zid] = {
+                "name": "%s区" % cn,
+                "host": host,
+                "mod": "vod",
+                "default": "1",
+                "subs": [{"n": "全部", "v": "1"}],
+                "_auto": True,
+            }
+            added.append("%s(%s)" % (zid, host or "空池"))
+        if added:
+            self._log_error("auto_zones", ",".join(added))
 
     # ============ 域名池 ============
     def sync_remote_domain_pools(self, force=False):
@@ -220,7 +241,6 @@ class Spider(SpiderBase):
             self._log_error("sync_pool", str(e))
 
     def switch_live_domain(self, zone_slug):
-        """从当前区的池子里随机换一个不等于当前 host 的（与原版一致）"""
         pool = self.domain_pools.get(zone_slug, [])
         if not pool:
             self.sync_remote_domain_pools(force=True)
@@ -229,8 +249,7 @@ class Spider(SpiderBase):
             cur = self.zoneMatrix[zone_slug]["host"]
             candidates = [h for h in pool if h != cur]
             if candidates:
-                new_host = random.choice(candidates)
-                return new_host
+                return random.choice(candidates)
         return self.zoneMatrix[zone_slug]["host"]
 
     # ============ 解密 ============
@@ -273,7 +292,6 @@ class Spider(SpiderBase):
         return h
 
     def _fetch(self, target_url, host="", custom_headers=None, raw_bytes=False):
-        """与原版行为一致：失败重试最多 2 次（451/403/429 专门重试一次）"""
         if not target_url:
             return {"code": 0, "text": "", "bytes": b"", "err": "", "final_url": ""}
         if target_url.startswith("//"):
@@ -441,13 +459,17 @@ class Spider(SpiderBase):
         mod = target_zone.get("mod", "vod")
         default_sub = target_zone["default"]
 
+        # 自动补全区池子为空时，host 为空 -> 直接返回空，不请求、不超时
+        if not host:
+            self._log_error("empty_host", slug)
+            return {"page": 1, "pagecount": 1, "limit": 20, "total": 0, "list": []}
+
         cur_id = str(extend.get("sub", default_sub) or default_sub)
         valid_ids = [str(s["v"]) for s in target_zone["subs"]]
         if cur_id not in valid_ids:
             cur_id = default_sub
         page = int(pg) if pg else 1
 
-        # ---------- 构建 URL 并请求（与原版一致：HTTP 200 就解析，不额外判断页面有效性） ----------
         if page == 1:
             target_url = "%s/index.php/%s/type/id/%s.html" % (host, mod, cur_id)
         else:
@@ -457,26 +479,20 @@ class Spider(SpiderBase):
         html_text = res.get("text", "")
         used_host = host
 
-        # 换域名：仅当请求本身失败（网络/HTTP 错误）或返回空响应时才换，且只换一次
         need_switch = (res.get("code") != 200) or (not html_text.strip())
         if need_switch:
-            old_host = host
             new_host = self.switch_live_domain(slug)
-            if new_host != old_host:
-                new_url = target_url.replace(old_host, new_host)
+            if new_host and new_host != host:
+                new_url = target_url.replace(host, new_host)
                 res2 = self._fetch(new_url, new_host)
                 if res2.get("code") == 200 and res2.get("text", "").strip():
                     used_host = new_host
                     html_text = res2["text"]
 
-        # ---------- 解析（不预设"页面必须有内容"，解析出空就是空） ----------
         vod_list = self.parse_items(html_text, used_host, zone_slug=slug)
-
-        # 只有解析出内容时才记下这个 host 可用，避免误把错误页 host 写回配置
         if vod_list:
             target_zone["host"] = used_host
 
-        # 首页无结果时尝试另一种 URL 格式
         if not vod_list and page == 1:
             fb_url = "%s/index.php/%s/type/id/%s/page/1.html" % (used_host, mod, cur_id)
             fb_res = self._fetch(fb_url, used_host)
@@ -700,6 +716,15 @@ class Spider(SpiderBase):
                 "errors": self._errors[-10:],
                 "pool_loaded": any(self.domain_pools.values()),
                 "pool_synced_at": self._pool_synced_at,
+                "zones": {
+                    zid: {
+                        "name": z.get("name"),
+                        "host": z.get("host"),
+                        "auto": z.get("_auto", False),
+                        "subs_count": len(z.get("subs", []))
+                    }
+                    for zid, z in self.zoneMatrix.items()
+                },
             }
         return {"msg": "运行正常"}
 
