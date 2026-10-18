@@ -24,36 +24,34 @@ except ImportError:
         def setCache(self, key, value): return "fail"
         def delCache(self, key): return "fail"
 
-
+      # ============================只替换这一部分============================
 class Spider(SpiderBase):
     def __init__(self):
-        super(Spider, self).__init__()
-        self.tgGroup = "https://t.me/tvshare23"
-        self.brandActor = "🦋 TG群: @tvshare23"
-        self.brandDirector = "🦋 蝴蝶影视"
-        self._ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        self.img_key_589 = b"2019ysapp7527"
-
-        # =====================================================================
-        # 单区配置：以后做别的区，只改这三处（zone_slug / site.name / site.host / site.mod / site.subs）
-        #   zone_slug 必须用正确的区标识（z1/z2/z3/z4/z9），它决定专属解析逻辑：
-        #     z1 -> 数字 id 走 z1_mk:// 接口取 m3u8
-        #     z4 -> 图片异或 0x5A 解密、m3u8 走 618799 拼路径
-        #     z5/z8/z9 -> m3u8 路径映射、图片 AES 密钥异或解密
-        #   其他区（z2/z3/z6/z7）走通用逻辑
-        # =====================================================================
+        super().__init__()
         self.zone_slug = "z2"
-        self.site = {
-            "name": "二区",
-            "host": "https://618979.xyz",
-            "mod": "vod",
-            "default": "1",
+        self.init_cfg = {
+            "host": "https://618896.xyz",
+            "api_host": "shturl.cc/xWBPKzsafOTR",
             "subs": [
-                    {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"}, {"n": "动漫", "v": "9"},
-                    {"n": "黑料", "v": "31"}, {"n": "无码", "v": "56"}, {"n": "字幕", "v": "7"},
+                    {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"},{"n": "无码", "v": "56"},
+                    {"n": "动漫", "v": "9"},{"n": "热门", "v": "5"}, {"n": "黑料", "v": "31"}, 
                     {"n": "欧美", "v": "8"}, {"n": "传媒", "v": "10"}, {"n": "网黄", "v": "55"},
-                    {"n": "JK", "v": "57"}, {"n": "国产", "v": "54"}, {"n": "热门", "v": "5"}
+                    {"n": "JK", "v": "57"}, {"n": "国产", "v": "54"}, {"n": "字幕", "v": "7"}
             ]
+        }
+        self.remote_pool_js = "https://webimgg.jiekrrj.cn/cf230705/image/2n8/108/18d/2pz/440fca8bd2f8b9b6342e412746428d85.jpg"
+        self.zone_order = ["z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"]
+        self.domain_pools = {zid: [] for zid in self.zone_order}
+        self.host = self.init_cfg["host"]
+        self.api_host = self.init_cfg["api_host"]
+        self.special_categories = ['13', '14', '33', '53', '32', '52', '9', '40', '44']
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'Accept-Encoding': 'gzip, deflate',
+            'Connection': 'keep-alive',
+            'Referer': self.host
         }
         # =====================================================================
 
