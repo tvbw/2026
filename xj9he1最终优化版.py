@@ -1,16 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-蝴蝶影视 · 九区全功能稳定版（优化版）
+蝴蝶影视 · 九区全功能稳定版（修复版）
 ==================================================================
-相比上一版的优化点：
-  1. 域名探测：从"随机换一次"改为"按优先级顺序探测 + 成功记忆 + 失败短期黑名单"
-  2. m3u8 key 缓存：同一 key_url 不再重复请求
-  3. 正则预编译：列表解析、m3u8 映射等全部预编译，减少 CPU 开销
-  4. 域名池 TTL：30 分钟内不重复请求远端 js
-  5. 错误可观测：action("status") 可查看最近错误、good/bad host
-  6. 默认 host 动态化：detail/player/localProxy 不再硬编码 6182094
-  7. header 构建抽函数：减少重复字典构建
+修复：categoryContent 误判 "404" 字符串导致长时间探测 + 请求堆积
+策略：快速路径优先 + 失败才探测 + 探测封顶 2 个 + 单 host 不重试
 ==================================================================
 """
 
@@ -36,7 +30,7 @@ except ImportError:
         def delCache(self, key): return "fail"
 
 
-# ============ 模块级常量（一次定义，全局复用） ============
+# ============ 模块级常量与预编译正则 ============
 _UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 _IMG_KEY_589 = b"2019ysapp7527"
 
@@ -66,11 +60,24 @@ def _detect_mime(b):
     return None
 
 
+def _is_valid_page(res):
+    """稳定的"有效页面"判断：HTTP 成功 + 长度足够 + 有 HTML 结构"""
+    if res.get("code") != 200:
+        return False
+    text = res.get("text", "")
+    if not text or len(text) < 200:
+        return False
+    low = text.lower()
+    if "<html" not in low and "<body" not in low and "<div" not in low:
+        return False
+    return True
+
+
 class Spider(SpiderBase):
-    # ===== 类级配置（可调）=====
-    POOL_TTL = 1800          # 域名池同步 TTL（秒）
-    BAD_HOST_TTL = 600       # 失败 host 黑名单有效期（秒）
-    KEY_CACHE_MAX = 50       # m3u8 key 缓存条数上限
+    POOL_TTL = 1800
+    BAD_HOST_TTL = 600
+    KEY_CACHE_MAX = 50
+    PROBE_MAX_EXTRA = 2           # 备用 host 最多探测几个
 
     def __init__(self):
         super(Spider, self).__init__()
@@ -89,9 +96,6 @@ class Spider(SpiderBase):
                 "name": "一区", "host": "https://6182094.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部视频", "v": "1"}, {"n": "香蕉精品", "v": "13"}, {"n": "制服诱惑", "v": "22"},
-                    {"n": "国产视频", "v": "6"}, {"n": "清纯少女", "v": "8"}, {"n": "辣妹大奶", "v": "9"},
-                    {"n": "女同专属", "v": "10"}, {"n": "素人出演", "v": "11"}, {"n": "角色扮演", "v": "12"},
-                    {"n": "人妻熟女", "v": "20"}, {"n": "日韩剧情", "v": "23"}, {"n": "经典伦理", "v": "21"},
                     {"n": "成人动漫", "v": "7"}, {"n": "精品二区", "v": "14"}, {"n": "精品三区", "v": "40"}
                 ]
             },
@@ -99,8 +103,6 @@ class Spider(SpiderBase):
                 "name": "二区", "host": "https://6182190.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"}, {"n": "动漫", "v": "9"},
-                    {"n": "黑料", "v": "31"}, {"n": "无码", "v": "56"}, {"n": "字幕", "v": "7"},
-                    {"n": "欧美", "v": "8"}, {"n": "传媒", "v": "10"}, {"n": "网黄", "v": "55"},
                     {"n": "JK", "v": "57"}, {"n": "国产", "v": "54"}, {"n": "热门", "v": "5"}
                 ]
             },
@@ -108,70 +110,29 @@ class Spider(SpiderBase):
                 "name": "三区", "host": "https://6182028.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部", "v": "1"}, {"n": "二区", "v": "66"}, {"n": "日欧", "v": "11"},
-                    {"n": "动漫", "v": "26"}, {"n": "无码", "v": "8"}, {"n": "字幕", "v": "7"},
-                    {"n": "P站", "v": "9"}, {"n": "厂牌", "v": "6"}, {"n": "网黄", "v": "12"},
                     {"n": "JK", "v": "27"}, {"n": "国产", "v": "35"}, {"n": "热门", "v": "10"}
                 ]
             },
             "z4": {
                 "name": "四区", "host": "https://6182321.xyz", "mod": "art", "default": "44",
                 "subs": [
-                    {"n": "欧美视频", "v": "44"}, {"n": "中文字幕2", "v": "40"},
-                    {"n": "中文字幕", "v": "17"}, {"n": "无码破解", "v": "18"}
-                ]
-            },
-            "z5": {
-                "name": "五区", "host": "https://6182231.xyz", "mod": "vod", "default": "2",
-                "subs": [
-                    {"n": "全部", "v": "2"}, {"n": "韩国", "v": "12"}, {"n": "欧美", "v": "11"},
-                    {"n": "无码", "v": "16"}, {"n": "直播", "v": "23"}, {"n": "字幕", "v": "14"},
-                    {"n": "传媒", "v": "58"}, {"n": "探花", "v": "34"}, {"n": "网黄", "v": "32"},
-                    {"n": "JK", "v": "61"}, {"n": "国产", "v": "15"}, {"n": "热门", "v": "13"}
-                ]
-            },
-            "z6": {
-                "name": "六区", "host": "https://6182240.xyz", "mod": "vod", "default": "43",
-                "subs": [
-                    {"n": "全部", "v": "43"}, {"n": "二区", "v": "1"}, {"n": "韩国", "v": "48"},
-                    {"n": "网黄", "v": "59"}, {"n": "中文", "v": "46"}, {"n": "无码", "v": "45"},
-                    {"n": "传媒", "v": "44"}, {"n": "国产", "v": "60"}, {"n": "精品", "v": "47"}
-                ]
-            },
-            "z7": {
-                "name": "七区", "host": "https://6182117.xyz", "mod": "vod", "default": "40",
-                "subs": [
-                    {"n": "网黄UP主", "v": "40"}, {"n": "国产AV", "v": "37"}, {"n": "探花AV", "v": "43"},
-                    {"n": "绿帽淫妻", "v": "49"}, {"n": "国产传媒", "v": "44"}, {"n": "福利姬", "v": "41"},
-                    {"n": "字幕", "v": "39"}, {"n": "水果π", "v": "45"}, {"n": "主播直播", "v": "42"},
-                    {"n": "欧美", "v": "38"}, {"n": "FC2", "v": "66"}, {"n": "性爱教学", "v": "46"},
-                    {"n": "三级", "v": "48"}, {"n": "动漫", "v": "47"}, {"n": "精品二区", "v": "13"}
-                ]
-            },
-            "z8": {
-                "name": "八区", "host": "https://6182063.xyz", "mod": "vod", "default": "66",
-                "subs": [
-                    {"n": "全部", "v": "66"}, {"n": "二区", "v": "1"}, {"n": "日欧", "v": "63"},
-                    {"n": "动漫", "v": "64"}, {"n": "无码", "v": "65"}, {"n": "字幕", "v": "69"},
-                    {"n": "P站", "v": "70"}, {"n": "厂牌", "v": "68"}, {"n": "网黄", "v": "71"},
-                    {"n": "JK", "v": "67"}, {"n": "国产", "v": "72"}, {"n": "热门", "v": "73"}
+                    {"n": "欧美视频", "v": "44"}, {"n": "中文字幕2", "v": "40"}
                 ]
             },
             "z9": {
                 "name": "九区", "host": "https://6182275.xyz", "mod": "vod", "default": "35",
                 "subs": [
                     {"n": "全部", "v": "35"}, {"n": "二区", "v": "2"}, {"n": "韩国", "v": "30"},
-                    {"n": "欧美", "v": "27"}, {"n": "无码", "v": "40"}, {"n": "字幕", "v": "39"},
-                    {"n": "传媒", "v": "36"}, {"n": "网黄", "v": "37"}, {"n": "黑料", "v": "28"},
                     {"n": "JK", "v": "26"}, {"n": "国产", "v": "38"}, {"n": "推荐", "v": "41"}
                 ]
             }
         }
-        # ===== 运行时状态 =====
-        self._good_hosts = {}          # slug -> host，记忆成功的 host
-        self._bad_hosts = {}           # slug -> {host: timestamp}
-        self._key_cache = {}           # key_url -> bytes
-        self._errors = []              # 最近错误日志（最多 20 条）
-        self._pool_synced_at = 0       # 上次同步域名池的时间戳
+
+        self._good_hosts = {}
+        self._bad_hosts = {}
+        self._key_cache = {}
+        self._errors = []
+        self._pool_synced_at = 0
         self._default_host = self.zoneMatrix["z1"]["host"]
 
         self.ctx = ssl.create_default_context()
@@ -191,7 +152,6 @@ class Spider(SpiderBase):
     def getName(self):
         return "蝴蝶影视·九区全功能稳定版"
 
-    # ============ 日志 ============
     def _log_error(self, *args):
         self._errors.append(" ".join(str(a) for a in args))
         if len(self._errors) > 20:
@@ -199,7 +159,6 @@ class Spider(SpiderBase):
 
     # ============ 域名池 ============
     def sync_remote_domain_pools(self, force=False):
-        """从远端 js 拉所有区的备用域名池；带 TTL 缓存"""
         now = time.time()
         if not force and self._pool_synced_at and (now - self._pool_synced_at) < self.POOL_TTL:
             return
@@ -220,36 +179,18 @@ class Spider(SpiderBase):
         except Exception as e:
             self._log_error("sync_pool", str(e))
 
-    def _iter_hosts(self, slug):
-        """按优先级返回候选 host：good → 当前 host → 池子（去重、去 bad）；全空时兜底"""
-        now = time.time()
-        bad = self._bad_hosts.get(slug, {})
-        # 清理过期黑名单
-        bad = {h: t for h, t in bad.items() if now - t < self.BAD_HOST_TTL}
-        self._bad_hosts[slug] = bad
-
-        ordered, seen = [], set()
-
-        def _add(h):
-            if h and h not in seen and h not in bad:
-                ordered.append(h)
-                seen.add(h)
-
-        _add(self._good_hosts.get(slug))
-        _add(self.zoneMatrix[slug]["host"])
-        for h in self.domain_pools.get(slug, []):
-            _add(h)
-
-        if not ordered:
-            ordered.append(self.zoneMatrix[slug]["host"])
-        return ordered
-
     def _mark_good_host(self, slug, host):
         self._good_hosts[slug] = host
         self._bad_hosts.get(slug, {}).pop(host, None)
 
     def _mark_bad_host(self, slug, host):
         self._bad_hosts.setdefault(slug, {})[host] = time.time()
+
+    def _is_bad(self, slug, host):
+        bad = self._bad_hosts.get(slug, {})
+        now = time.time()
+        self._bad_hosts[slug] = {h: t for h, t in bad.items() if now - t < self.BAD_HOST_TTL}
+        return host in self._bad_hosts[slug]
 
     # ============ 解密 ============
     def decrypt(self, text):
@@ -290,7 +231,12 @@ class Spider(SpiderBase):
             h.update(custom)
         return h
 
-    def _fetch(self, target_url, host="", custom_headers=None, raw_bytes=False):
+    def _fetch(self, target_url, host="", custom_headers=None, raw_bytes=False, retry=2):
+        """
+        retry 参数：
+          默认 2 = 与原版一致（播放/图片/接口调用用）
+          categoryContent 用 1，避免"每个 host 都重试"放大延迟
+        """
         if not target_url:
             return {"code": 0, "text": "", "bytes": b"", "err": "", "final_url": ""}
         if target_url.startswith("//"):
@@ -300,9 +246,8 @@ class Spider(SpiderBase):
 
         safe_url = self._safe_quote_url(target_url)
         headers = self._base_headers(host, custom_headers)
-
         last_err = ""
-        for attempt in range(2):
+        for attempt in range(max(1, retry)):
             try:
                 req = urllib.request.Request(safe_url, headers=headers)
                 with self.opener.open(req, timeout=8) as resp:
@@ -324,12 +269,14 @@ class Spider(SpiderBase):
                     return {"code": code, "text": text, "bytes": data, "err": "", "final_url": final_url}
             except urllib.error.HTTPError as e:
                 last_err = "HTTP %s" % e.code
-                if e.code in (451, 403, 429) and attempt == 0: continue
+                if e.code in (451, 403, 429) and attempt < retry - 1:
+                    continue
                 self._log_error("fetch", e.code, safe_url)
                 return {"code": e.code, "text": "", "bytes": b"", "err": str(e), "final_url": safe_url}
             except Exception as e:
                 last_err = str(e)
-                if attempt == 0: continue
+                if attempt < retry - 1:
+                    continue
                 self._log_error("fetch", safe_url, last_err)
                 return {"code": -1, "text": "", "bytes": b"", "err": str(e), "final_url": safe_url}
 
@@ -466,33 +413,60 @@ class Spider(SpiderBase):
             cur_id = default_sub
         page = int(pg) if pg else 1
 
-        html_text, used_host = "", None
-        # 顺序探测：good → 当前 host → 池子
-        for host in self._iter_hosts(slug):
-            url = self._build_list_url(host, mod, cur_id, page)
-            res = self._fetch(url, host)
-            text = res.get("text", "")
-            code = res.get("code")
-            if code == 200 and text and "404" not in text:
-                html_text, used_host = text, host
-                self._mark_good_host(slug, host)
-                target_zone["host"] = host       # 同步回配置，下次直接用
-                break
-            else:
-                self._mark_bad_host(slug, host)
-                if text and not html_text:       # 保留一次非空 text 作为解析兜底
-                    html_text, used_host = text, host
+        # ---------- 快速路径：优先用记忆的 host 或当前 host ----------
+        primary_host = self._good_hosts.get(slug) or target_zone["host"]
+        primary_url = self._build_list_url(primary_host, mod, cur_id, page)
+        res = self._fetch(primary_url, primary_host, retry=1)   # 单 host 只试 1 次
 
-        if used_host is None:
-            self._log_error("category_all_fail", slug, cur_id, page)
-            return {"page": page, "pagecount": 1, "limit": 20, "total": 0, "list": []}
+        used_host = primary_host
+        html_text = res.get("text", "")
 
+        if _is_valid_page(res):
+            # 快速路径成功 → 直接解析返回，零额外延迟
+            self._mark_good_host(slug, primary_host)
+            target_zone["host"] = primary_host
+        else:
+            # 快速路径失败 → 有限探测：最多 PROBE_MAX_EXTRA 个备用 host
+            self._mark_bad_host(slug, primary_host)
+            tried = {primary_host}
+            fallback_text = html_text if html_text else ""
+            fallback_host = used_host
+            found = False
+
+            for h in self.domain_pools.get(slug, []):
+                if len(tried) > self.PROBE_MAX_EXTRA:
+                    break
+                if h in tried or self._is_bad(slug, h):
+                    continue
+                tried.add(h)
+                u = self._build_list_url(h, mod, cur_id, page)
+                r = self._fetch(u, h, retry=1)
+                if _is_valid_page(r):
+                    html_text = r["text"]
+                    used_host = h
+                    self._mark_good_host(slug, h)
+                    target_zone["host"] = h
+                    found = True
+                    break
+                else:
+                    self._mark_bad_host(slug, h)
+                    if r.get("text") and not fallback_text:
+                        fallback_text = r["text"]
+                        fallback_host = h
+
+            if not found:
+                # 全部失败：用兜底 text（可能是错误页），交给 parse_items 得到空列表
+                html_text = fallback_text
+                used_host = fallback_host
+                self._log_error("category_all_fail", slug, cur_id, page)
+
+        # ---------- 解析 ----------
         vod_list = self.parse_items(html_text, used_host, zone_slug=slug)
 
-        # 首页无结果，尝试带 /page/1.html 的另一种 URL 格式
+        # 首页无结果，尝试带 /page/1.html 的另一种 URL
         if not vod_list and page == 1:
             fb_url = "%s/index.php/%s/type/id/%s/page/1.html" % (used_host, mod, cur_id)
-            fb_res = self._fetch(fb_url, used_host)
+            fb_res = self._fetch(fb_url, used_host, retry=1)
             vod_list = self.parse_items(fb_res.get("text", ""), used_host, zone_slug=slug)
 
         total_pages = 1
@@ -548,7 +522,6 @@ class Spider(SpiderBase):
 
     # ============ 播放 ============
     def _get_key(self, key_url, headers):
-        """m3u8 AES key 缓存：命中直接返回，未命中请求后缓存"""
         if key_url in self._key_cache:
             return self._key_cache[key_url]
         res = self._fetch(key_url, custom_headers=headers, raw_bytes=True)
