@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-蝴蝶影视 · 九区全功能稳定版（修复版）
+蝴蝶影视 · 九区全功能稳定版（稳妥优化版）
 ==================================================================
-修复：categoryContent 误判 "404" 字符串导致长时间探测 + 请求堆积
-策略：快速路径优先 + 失败才探测 + 探测封顶 2 个 + 单 host 不重试
+核心：回到原版"HTTP 200 即解析"的判定，只保留零风险的效率优化。
+优化清单：
+  1. 正则全部预编译（_RE_*）
+  2. m3u8 AES key 内存缓存（KEY_CACHE_MAX）
+  3. 域名池同步 TTL（POOL_TTL）
+  4. 错误日志（action("status") 查看）
+  5. _default_host 动态取，不再硬编码
+  6. _base_headers 抽函数
+  7. _detect_mime 模块级
+换域名策略：请求失败时，从当前区域名池随机换一次（与原版一致），
+            且只在解析出内容后才更新 zoneMatrix[slug]["host"]。
 ==================================================================
 """
 
@@ -12,6 +21,7 @@ import re
 import json
 import base64
 import time
+import random
 import urllib.request
 import urllib.error
 import urllib.parse
@@ -50,6 +60,7 @@ _RE_TOTAL_PAGES = re.compile(r"totalPages='(\d+)'")
 _RE_M3U8_MAIN = re.compile(r'/(bktappup/.+\.m3u8|v3/.+\.m3u8|cf\d+/.+\.m3u8)')
 _RE_M3U8_FALLBACK = re.compile(r'/(?:api/app/vid/h5/m3u8|m3u8)/([a-zA-Z0-9_\-/]+\.m3u8)')
 _RE_AES_KEY = re.compile(r'#EXT-X-KEY:METHOD=AES-128,URI=["\']([^"\']+)["\']')
+_RE_ZUARR = re.compile(r'const\s+zuArr\s*=\s*(\[\[[\s\S]*?\]\]);')
 
 
 def _detect_mime(b):
@@ -60,24 +71,9 @@ def _detect_mime(b):
     return None
 
 
-def _is_valid_page(res):
-    """稳定的"有效页面"判断：HTTP 成功 + 长度足够 + 有 HTML 结构"""
-    if res.get("code") != 200:
-        return False
-    text = res.get("text", "")
-    if not text or len(text) < 200:
-        return False
-    low = text.lower()
-    if "<html" not in low and "<body" not in low and "<div" not in low:
-        return False
-    return True
-
-
 class Spider(SpiderBase):
     POOL_TTL = 1800
-    BAD_HOST_TTL = 600
     KEY_CACHE_MAX = 50
-    PROBE_MAX_EXTRA = 2           # 备用 host 最多探测几个
 
     def __init__(self):
         super(Spider, self).__init__()
@@ -128,8 +124,6 @@ class Spider(SpiderBase):
             }
         }
 
-        self._good_hosts = {}
-        self._bad_hosts = {}
         self._key_cache = {}
         self._errors = []
         self._pool_synced_at = 0
@@ -167,7 +161,7 @@ class Spider(SpiderBase):
             req = urllib.request.Request(self.remote_pool_js, headers=headers)
             with self.opener.open(req, timeout=6) as resp:
                 text = resp.read().decode("utf-8", errors="ignore")
-            m = re.search(r'const\s+zuArr\s*=\s*(\[\[[\s\S]*?\]\]);', text)
+            m = _RE_ZUARR.search(text)
             if not m:
                 return
             zu_list = json.loads(m.group(1).replace("'", '"'))
@@ -179,18 +173,19 @@ class Spider(SpiderBase):
         except Exception as e:
             self._log_error("sync_pool", str(e))
 
-    def _mark_good_host(self, slug, host):
-        self._good_hosts[slug] = host
-        self._bad_hosts.get(slug, {}).pop(host, None)
-
-    def _mark_bad_host(self, slug, host):
-        self._bad_hosts.setdefault(slug, {})[host] = time.time()
-
-    def _is_bad(self, slug, host):
-        bad = self._bad_hosts.get(slug, {})
-        now = time.time()
-        self._bad_hosts[slug] = {h: t for h, t in bad.items() if now - t < self.BAD_HOST_TTL}
-        return host in self._bad_hosts[slug]
+    def switch_live_domain(self, zone_slug):
+        """从当前区的池子里随机换一个不等于当前 host 的（与原版一致）"""
+        pool = self.domain_pools.get(zone_slug, [])
+        if not pool:
+            self.sync_remote_domain_pools(force=True)
+            pool = self.domain_pools.get(zone_slug, [])
+        if pool:
+            cur = self.zoneMatrix[zone_slug]["host"]
+            candidates = [h for h in pool if h != cur]
+            if candidates:
+                new_host = random.choice(candidates)
+                return new_host
+        return self.zoneMatrix[zone_slug]["host"]
 
     # ============ 解密 ============
     def decrypt(self, text):
@@ -231,12 +226,8 @@ class Spider(SpiderBase):
             h.update(custom)
         return h
 
-    def _fetch(self, target_url, host="", custom_headers=None, raw_bytes=False, retry=2):
-        """
-        retry 参数：
-          默认 2 = 与原版一致（播放/图片/接口调用用）
-          categoryContent 用 1，避免"每个 host 都重试"放大延迟
-        """
+    def _fetch(self, target_url, host="", custom_headers=None, raw_bytes=False):
+        """与原版行为一致：失败重试最多 2 次（451/403/429 专门重试一次）"""
         if not target_url:
             return {"code": 0, "text": "", "bytes": b"", "err": "", "final_url": ""}
         if target_url.startswith("//"):
@@ -247,7 +238,7 @@ class Spider(SpiderBase):
         safe_url = self._safe_quote_url(target_url)
         headers = self._base_headers(host, custom_headers)
         last_err = ""
-        for attempt in range(max(1, retry)):
+        for attempt in range(2):
             try:
                 req = urllib.request.Request(safe_url, headers=headers)
                 with self.opener.open(req, timeout=8) as resp:
@@ -269,13 +260,13 @@ class Spider(SpiderBase):
                     return {"code": code, "text": text, "bytes": data, "err": "", "final_url": final_url}
             except urllib.error.HTTPError as e:
                 last_err = "HTTP %s" % e.code
-                if e.code in (451, 403, 429) and attempt < retry - 1:
+                if e.code in (451, 403, 429) and attempt == 0:
                     continue
                 self._log_error("fetch", e.code, safe_url)
                 return {"code": e.code, "text": "", "bytes": b"", "err": str(e), "final_url": safe_url}
             except Exception as e:
                 last_err = str(e)
-                if attempt < retry - 1:
+                if attempt == 0:
                     continue
                 self._log_error("fetch", safe_url, last_err)
                 return {"code": -1, "text": "", "bytes": b"", "err": str(e), "final_url": safe_url}
@@ -316,11 +307,6 @@ class Spider(SpiderBase):
             target = "https://6180013.xyz" if "bktappup" in sub_path else "https://6180023.xyz"
             return "%s/m3u8/%s" % (target, sub_path)
         return raw_url
-
-    def _build_list_url(self, host, mod, cur_id, page):
-        if page == 1:
-            return "%s/index.php/%s/type/id/%s.html" % (host, mod, cur_id)
-        return "%s/index.php/%s/type/id/%s/page/%s.html" % (host, mod, cur_id, page)
 
     def parse_items(self, html_text, host, zone_slug=""):
         vod_list = []
@@ -404,6 +390,8 @@ class Spider(SpiderBase):
         if slug not in self.zoneMatrix:
             slug = "z1"
         target_zone = self.zoneMatrix[slug]
+
+        host = target_zone["host"]
         mod = target_zone.get("mod", "vod")
         default_sub = target_zone["default"]
 
@@ -413,61 +401,43 @@ class Spider(SpiderBase):
             cur_id = default_sub
         page = int(pg) if pg else 1
 
-        # ---------- 快速路径：优先用记忆的 host 或当前 host ----------
-        primary_host = self._good_hosts.get(slug) or target_zone["host"]
-        primary_url = self._build_list_url(primary_host, mod, cur_id, page)
-        res = self._fetch(primary_url, primary_host, retry=1)   # 单 host 只试 1 次
-
-        used_host = primary_host
-        html_text = res.get("text", "")
-
-        if _is_valid_page(res):
-            # 快速路径成功 → 直接解析返回，零额外延迟
-            self._mark_good_host(slug, primary_host)
-            target_zone["host"] = primary_host
+        # ---------- 构建 URL 并请求（与原版一致：HTTP 200 就解析，不额外判断页面有效性） ----------
+        if page == 1:
+            target_url = "%s/index.php/%s/type/id/%s.html" % (host, mod, cur_id)
         else:
-            # 快速路径失败 → 有限探测：最多 PROBE_MAX_EXTRA 个备用 host
-            self._mark_bad_host(slug, primary_host)
-            tried = {primary_host}
-            fallback_text = html_text if html_text else ""
-            fallback_host = used_host
-            found = False
+            target_url = "%s/index.php/%s/type/id/%s/page/%s.html" % (host, mod, cur_id, page)
 
-            for h in self.domain_pools.get(slug, []):
-                if len(tried) > self.PROBE_MAX_EXTRA:
-                    break
-                if h in tried or self._is_bad(slug, h):
-                    continue
-                tried.add(h)
-                u = self._build_list_url(h, mod, cur_id, page)
-                r = self._fetch(u, h, retry=1)
-                if _is_valid_page(r):
-                    html_text = r["text"]
-                    used_host = h
-                    self._mark_good_host(slug, h)
-                    target_zone["host"] = h
-                    found = True
-                    break
-                else:
-                    self._mark_bad_host(slug, h)
-                    if r.get("text") and not fallback_text:
-                        fallback_text = r["text"]
-                        fallback_host = h
+        res = self._fetch(target_url, host)
+        html_text = res.get("text", "")
+        used_host = host
 
-            if not found:
-                # 全部失败：用兜底 text（可能是错误页），交给 parse_items 得到空列表
-                html_text = fallback_text
-                used_host = fallback_host
-                self._log_error("category_all_fail", slug, cur_id, page)
+        # 换域名：仅当请求本身失败（网络/HTTP 错误）或返回空响应时才换，且只换一次
+        need_switch = (res.get("code") != 200) or (not html_text.strip())
+        if need_switch:
+            old_host = host
+            new_host = self.switch_live_domain(slug)
+            if new_host != old_host:
+                new_url = target_url.replace(old_host, new_host)
+                res2 = self._fetch(new_url, new_host)
+                if res2.get("code") == 200 and res2.get("text", "").strip():
+                    used_host = new_host
+                    html_text = res2["text"]
 
-        # ---------- 解析 ----------
+        # ---------- 解析（不预设"页面必须有内容"，解析出空就是空） ----------
         vod_list = self.parse_items(html_text, used_host, zone_slug=slug)
 
-        # 首页无结果，尝试带 /page/1.html 的另一种 URL
+        # 只有解析出内容时才记下这个 host 可用，避免误把错误页 host 写回配置
+        if vod_list:
+            target_zone["host"] = used_host
+
+        # 首页无结果时尝试另一种 URL 格式
         if not vod_list and page == 1:
             fb_url = "%s/index.php/%s/type/id/%s/page/1.html" % (used_host, mod, cur_id)
-            fb_res = self._fetch(fb_url, used_host, retry=1)
-            vod_list = self.parse_items(fb_res.get("text", ""), used_host, zone_slug=slug)
+            fb_res = self._fetch(fb_url, used_host)
+            fb_list = self.parse_items(fb_res.get("text", ""), used_host, zone_slug=slug)
+            if fb_list:
+                vod_list = fb_list
+                target_zone["host"] = used_host
 
         total_pages = 1
         m = _RE_TOTAL_PAGES.search(html_text)
@@ -682,8 +652,6 @@ class Spider(SpiderBase):
             return {
                 "msg": "运行正常",
                 "errors": self._errors[-10:],
-                "good_hosts": dict(self._good_hosts),
-                "bad_hosts": {k: list(v.keys()) for k, v in self._bad_hosts.items()},
                 "pool_loaded": any(self.domain_pools.values()),
                 "pool_synced_at": self._pool_synced_at,
             }
