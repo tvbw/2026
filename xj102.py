@@ -24,7 +24,7 @@ class Spider(Spider):
         # api_host: 全部区统一
         # subs: 粘贴对应区的分类列表
         # ==============================================================
-        self.zone_slug = "z1"
+        self.zone_slug = "z2"
         self.cfg = {
             "host": "https://6182094.xyz",
             "api_host": "https://h5.xxoo475.org",
