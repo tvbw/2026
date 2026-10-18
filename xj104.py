@@ -38,14 +38,14 @@ class Spider(SpiderBase):
         # 单区配置：以后做别的区，只改这三处（zone_slug / site.name / site.host / site.mod / site.subs）
         #   zone_slug 必须用正确的区标识（z1/z2/z3/z4/z9），它决定专属解析逻辑：
         #     z1 -> 数字 id 走 z1_mk:// 接口取 m3u8
-        #     z4 -> 图片异或 0x5A 解密、m3u8 走 618799 拼路径
+        #     z4 -> 图片异或 0x5A 解密、m3u8 走 618371 拼路径
         #     z5/z8/z9 -> m3u8 路径映射、图片 AES 密钥异或解密
         #   其他区（z2/z3/z6/z7）走通用逻辑
         # =====================================================================
-        self.zone_slug = "z4"
+        self.zone_slug = "z1"
         self.site = {
-            "name": "四区",
-            "host": "https://618385.xyz",
+            "name": "一区",
+            "host": "https://618371.xyz",
             "mod": "vod",
             "default": "1",
             "subs": [
@@ -203,12 +203,12 @@ class Spider(SpiderBase):
         m = re.search(r'/(bktappup/.+\.m3u8|v3/.+\.m3u8|cf\d+/.+\.m3u8)', raw_url)
         if m:
             sub_path = m.group(1)
-            target_media_host = "https://6180013.xyz" if "bktappup" in sub_path else "https://6180023.xyz"
+            target_media_host = "https://618371.xyz" if "bktappup" in sub_path else "https://618371.xyz"
             return "%s/m3u8/%s" % (target_media_host, sub_path)
         m_fallback = re.search(r'/(?:api/app/vid/h5/m3u8|m3u8)/([a-zA-Z0-9_\-/]+\.m3u8)', raw_url)
         if m_fallback:
             sub_path = m_fallback.group(1)
-            target_media_host = "https://6180013.xyz" if "bktappup" in sub_path else "https://6180023.xyz"
+            target_media_host = "https://618371.xyz" if "bktappup" in sub_path else "https://618371.xyz"
             return "%s/m3u8/%s" % (target_media_host, sub_path)
         return raw_url
 
@@ -241,7 +241,7 @@ class Spider(SpiderBase):
 
                 if zone_slug == "z4" and v_url.endswith(".m3u8"):
                     if not v_url.startswith("http"):
-                        v_url = "https://618799.xyz/web" + ("/" if not v_url.startswith("/") else "") + v_url
+                        v_url = "https://618371.xyz/web" + ("/" if not v_url.startswith("/") else "") + v_url
 
                 if zone_slug in ("z5", "z8", "z9"):
                     v_url = self._map_m3u8_url(v_url)
@@ -412,7 +412,7 @@ class Spider(SpiderBase):
                 "User-Agent": self._ua,
                 "Accept": "*/*",
                 "Accept-Language": "zh,en;q=0.9,zh-CN;q=0.8",
-                "Origin": "https://6182117.xyz",
+                "Origin": "https://618371.xyz",
                 "Connection": "keep-alive"
             }
             res_m3u8 = self._fetch(play_url, custom_headers=z7_headers)
@@ -458,7 +458,7 @@ class Spider(SpiderBase):
                             "url": "data:application/vnd.apple.mpegurl;base64," + m3u8_b64
                         }
 
-        origin_val = "https://6182321.xyz" if ("6182321" in origin_host or "618799" in play_url) else "null"
+        origin_val = "https://6182321.xyz" if ("6182321" in origin_host or "618371" in play_url) else "null"
         headers_default = {
             "User-Agent": self._ua,
             "Accept": "*/*",
@@ -502,10 +502,10 @@ class Spider(SpiderBase):
             for i in range(min(16, len(raw))): raw[i] ^= 0x5A
             return [200, detect_mime(raw) or "image/jpeg", bytes(raw)]
 
-        is_decrypt_589 = (zone_flag in ("z5", "z8", "z9")) or any(k in target_url for k in ("6182231", "6182063", "6182275", "lkkwip.cn"))
+        is_decrypt_589 = (zone_flag in ("z5", "z8", "z9")) or any(k in target_url for k in ("618371", "6182063", "6182275", "lkkwip.cn"))
         if is_decrypt_589:
             site_map = {"z8": "https://6182063.xyz", "z9": "https://6182275.xyz"}
-            origin_site = site_map.get(zone_flag, "https://6182231.xyz")
+            origin_site = site_map.get(zone_flag, "https://618371.xyz")
             res = self._fetch(target_url, custom_headers={"Origin": origin_site}, raw_bytes=True)
             raw_bytes = res.get("bytes", b"")
             if not raw_bytes: return [404, "text/plain", "Empty Body"]
