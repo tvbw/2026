@@ -79,7 +79,7 @@ class Spider(SpiderBase):
         # =====================================================================
         self.zoneMatrix = {
             "z1": {
-                "name": "一区", "host": "https://6182094.xyz", "mod": "vod", "default": "1",
+                "name": "一区", "host": "https://618026.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部视频", "v": "1"}, {"n": "香蕉精品", "v": "13"}, {"n": "制服诱惑", "v": "22"},
                     {"n": "国产视频", "v": "6"}, {"n": "清纯少女", "v": "8"}, {"n": "辣妹大奶", "v": "9"},
@@ -89,7 +89,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z2": {
-                "name": "二区", "host": "https://6182190.xyz", "mod": "vod", "default": "1",
+                "name": "二区", "host": "https://618325.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"},{"n": "无码", "v": "56"},
                     {"n": "动漫", "v": "9"},{"n": "热门", "v": "5"}, {"n": "黑料", "v": "31"}, 
@@ -98,7 +98,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z3": {
-                "name": "三区", "host": "https://6182028.xyz", "mod": "vod", "default": "1",
+                "name": "三区", "host": "https://6180141.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部", "v": "1"}, {"n": "二区", "v": "66"}, {"n": "日欧", "v": "11"},
                     {"n": "动漫", "v": "26"}, {"n": "无码", "v": "8"}, {"n": "字幕", "v": "7"},
@@ -107,14 +107,14 @@ class Spider(SpiderBase):
                 ]
             },
             "z4": {
-                "name": "四区", "host": "https://6182321.xyz", "mod": "art", "default": "44",
+                "name": "四区", "host": "https://618170.xyz", "mod": "art", "default": "44",
                 "subs": [
                     {"n": "欧美视频", "v": "44"},{"n": "无码破解", "v": "18"}, 
                     {"n": "中文字幕2", "v": "40"},{"n": "中文字幕", "v": "17"}
                 ]
             },
             "z5": {
-                "name": "五区", "host": "https://6182231.xyz", "mod": "vod", "default": "2",
+                "name": "五区", "host": "https://618401.xyz", "mod": "vod", "default": "2",
                 "subs": [
                     {"n": "全部", "v": "2"}, {"n": "无码", "v": "16"}, {"n": "直播", "v": "23"},
                     {"n": "传媒", "v": "58"}, {"n": "欧美", "v": "11"}, {"n": "JK", "v": "61"}, 
@@ -124,7 +124,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z6": {
-                "name": "六区", "host": "https://6182240.xyz", "mod": "vod", "default": "43",
+                "name": "六区", "host": "https://618243.xyz", "mod": "vod", "default": "43",
                 "subs": [
                     {"n": "全部", "v": "43"}, {"n": "二区", "v": "1"}, {"n": "韩国", "v": "48"},
                     {"n": "网黄", "v": "59"}, {"n": "中文", "v": "46"}, {"n": "无码", "v": "45"},
@@ -132,7 +132,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z7": {
-                "name": "七区", "host": "https://6182117.xyz", "mod": "vod", "default": "40",
+                "name": "七区", "host": "https://618607.xyz", "mod": "vod", "default": "40",
                 "subs": [
                     {"n": "网黄UP主", "v": "40"}, {"n": "国产AV", "v": "37"}, {"n": "探花AV", "v": "43"},
                     {"n": "绿帽淫妻", "v": "49"}, {"n": "国产传媒", "v": "44"}, {"n": "福利姬", "v": "41"},
@@ -142,7 +142,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z8": {
-                "name": "八区", "host": "https://6182063.xyz", "mod": "vod", "default": "66",
+                "name": "八区", "host": "https://618697.xyz", "mod": "vod", "default": "66",
                 "subs": [
                     {"n": "全部", "v": "66"}, {"n": "二区", "v": "1"}, {"n": "日欧", "v": "63"},
                     {"n": "动漫", "v": "64"}, {"n": "无码", "v": "65"}, {"n": "字幕", "v": "69"},
@@ -151,7 +151,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z9": {
-                "name": "九区", "host": "https://6182275.xyz", "mod": "vod", "default": "35",
+                "name": "九区", "host": "https://618743.xyz", "mod": "vod", "default": "35",
                 "subs": [
                     {"n": "全部", "v": "35"}, {"n": "二区", "v": "2"}, {"n": "韩国", "v": "30"},
                     {"n": "欧美", "v": "27"}, {"n": "无码", "v": "40"}, {"n": "字幕", "v": "39"},
