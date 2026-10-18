@@ -268,6 +268,21 @@
       "filterable": 1
     },
     {
+      "key": "香蕉7区",
+      "name": "🔞️香蕉7区【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj107.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj107.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "ss直播3",
       "name": "❤️国货【🔞直播】-3",
       "type": 3,
