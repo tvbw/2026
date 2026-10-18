@@ -34,15 +34,6 @@ class Spider(SpiderBase):
         self._ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         self.img_key_589 = b"2019ysapp7527"
 
-        # =====================================================================
-        # 可选开关：
-        #   compact_mode = False（默认）：一级目录保留一区~九区，进入后在筛选下拉里可切任意区
-        #   compact_mode = True        ：一级目录只留一个“全部”，进筛选下拉再选具体区（界面更精简）
-        # =====================================================================
-        self.compact_mode = False
-        self.compact_name = "全部影视"
-        self.compact_tid = "all"
-
         self.remote_pool_js = "https://webimgg.jiekrrj.cn/cf230705/image/2n8/108/18d/2pz/440fca8bd2f8b9b6342e412746428d85.jpg"
         self.zone_order = ["z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"]
         self.domain_pools = {zid: [] for zid in self.zone_order}
@@ -52,6 +43,9 @@ class Spider(SpiderBase):
                 "name": "一区", "host": "https://6182094.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部视频", "v": "1"}, {"n": "香蕉精品", "v": "13"}, {"n": "制服诱惑", "v": "22"},
+                    {"n": "国产视频", "v": "6"}, {"n": "清纯少女", "v": "8"}, {"n": "辣妹大奶", "v": "9"},
+                    {"n": "女同专属", "v": "10"}, {"n": "素人出演", "v": "11"}, {"n": "角色扮演", "v": "12"},
+                    {"n": "人妻熟女", "v": "20"}, {"n": "日韩剧情", "v": "23"}, {"n": "经典伦理", "v": "21"},
                     {"n": "成人动漫", "v": "7"}, {"n": "精品二区", "v": "14"}, {"n": "精品三区", "v": "40"}
                 ]
             },
@@ -59,6 +53,8 @@ class Spider(SpiderBase):
                 "name": "二区", "host": "https://6182190.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"}, {"n": "动漫", "v": "9"},
+                    {"n": "黑料", "v": "31"}, {"n": "无码", "v": "56"}, {"n": "字幕", "v": "7"},
+                    {"n": "欧美", "v": "8"}, {"n": "传媒", "v": "10"}, {"n": "网黄", "v": "55"},
                     {"n": "JK", "v": "57"}, {"n": "国产", "v": "54"}, {"n": "热门", "v": "5"}
                 ]
             },
@@ -66,24 +62,64 @@ class Spider(SpiderBase):
                 "name": "三区", "host": "https://6182028.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部", "v": "1"}, {"n": "二区", "v": "66"}, {"n": "日欧", "v": "11"},
+                    {"n": "动漫", "v": "26"}, {"n": "无码", "v": "8"}, {"n": "字幕", "v": "7"},
+                    {"n": "P站", "v": "9"}, {"n": "厂牌", "v": "6"}, {"n": "网黄", "v": "12"},
                     {"n": "JK", "v": "27"}, {"n": "国产", "v": "35"}, {"n": "热门", "v": "10"}
                 ]
             },
             "z4": {
                 "name": "四区", "host": "https://6182321.xyz", "mod": "art", "default": "44",
                 "subs": [
-                    {"n": "欧美视频", "v": "44"}, {"n": "中文字幕2", "v": "40"}
+                    {"n": "欧美视频", "v": "44"}, {"n": "中文字幕2", "v": "40"},
+                    {"n": "中文字幕", "v": "17"}, {"n": "无码破解", "v": "18"}
+                ]
+            },
+            "z5": {
+                "name": "五区", "host": "https://6182231.xyz", "mod": "vod", "default": "2",
+                "subs": [
+                    {"n": "全部", "v": "2"}, {"n": "韩国", "v": "12"}, {"n": "欧美", "v": "11"},
+                    {"n": "无码", "v": "16"}, {"n": "直播", "v": "23"}, {"n": "字幕", "v": "14"},
+                    {"n": "传媒", "v": "58"}, {"n": "探花", "v": "34"}, {"n": "网黄", "v": "32"},
+                    {"n": "JK", "v": "61"}, {"n": "国产", "v": "15"}, {"n": "热门", "v": "13"}
+                ]
+            },
+            "z6": {
+                "name": "六区", "host": "https://6182240.xyz", "mod": "vod", "default": "43",
+                "subs": [
+                    {"n": "全部", "v": "43"}, {"n": "二区", "v": "1"}, {"n": "韩国", "v": "48"},
+                    {"n": "网黄", "v": "59"}, {"n": "中文", "v": "46"}, {"n": "无码", "v": "45"},
+                    {"n": "传媒", "v": "44"}, {"n": "国产", "v": "60"}, {"n": "精品", "v": "47"}
+                ]
+            },
+            "z7": {
+                "name": "七区", "host": "https://6182117.xyz", "mod": "vod", "default": "40",
+                "subs": [
+                    {"n": "网黄UP主", "v": "40"}, {"n": "国产AV", "v": "37"}, {"n": "探花AV", "v": "43"},
+                    {"n": "绿帽淫妻", "v": "49"}, {"n": "国产传媒", "v": "44"}, {"n": "福利姬", "v": "41"},
+                    {"n": "字幕", "v": "39"}, {"n": "水果π", "v": "45"}, {"n": "主播直播", "v": "42"},
+                    {"n": "欧美", "v": "38"}, {"n": "FC2", "v": "66"}, {"n": "性爱教学", "v": "46"},
+                    {"n": "三级", "v": "48"}, {"n": "动漫", "v": "47"}, {"n": "精品二区", "v": "13"}
+                ]
+            },
+            "z8": {
+                "name": "八区", "host": "https://6182063.xyz", "mod": "vod", "default": "66",
+                "subs": [
+                    {"n": "全部", "v": "66"}, {"n": "二区", "v": "1"}, {"n": "日欧", "v": "63"},
+                    {"n": "动漫", "v": "64"}, {"n": "无码", "v": "65"}, {"n": "字幕", "v": "69"},
+                    {"n": "P站", "v": "70"}, {"n": "厂牌", "v": "68"}, {"n": "网黄", "v": "71"},
+                    {"n": "JK", "v": "67"}, {"n": "国产", "v": "72"}, {"n": "热门", "v": "73"}
                 ]
             },
             "z9": {
                 "name": "九区", "host": "https://6182275.xyz", "mod": "vod", "default": "35",
                 "subs": [
                     {"n": "全部", "v": "35"}, {"n": "二区", "v": "2"}, {"n": "韩国", "v": "30"},
+                    {"n": "欧美", "v": "27"}, {"n": "无码", "v": "40"}, {"n": "字幕", "v": "39"},
+                    {"n": "传媒", "v": "36"}, {"n": "网黄", "v": "37"}, {"n": "黑料", "v": "28"},
                     {"n": "JK", "v": "26"}, {"n": "国产", "v": "38"}, {"n": "推荐", "v": "41"}
                 ]
             }
         }
-
         self.ctx = ssl.create_default_context()
         self.ctx.check_hostname = False
         self.ctx.verify_mode = ssl.CERT_NONE
@@ -207,42 +243,11 @@ class Spider(SpiderBase):
 
         return {"code": -1, "text": "", "bytes": b"", "err": last_err, "final_url": safe_url}
 
-    # ---------------- 目录：一级保留一区~九区，筛选里可切任意区 ----------------
-
-    def _build_all_subs(self):
-        """把所有区所有子分类拍平成一个大列表，值形如 'z2::57'，显示成 '二区 · JK'"""
-        all_subs = []
-        for zid in self.zone_order:
-            zone = self.zoneMatrix.get(zid)
-            if not zone:
-                continue
-            for sub in zone.get("subs", []):
-                all_subs.append({
-                    "n": "%s · %s" % (zone["name"], sub["n"]),
-                    "v": "%s::%s" % (zid, sub["v"])
-                })
-        return all_subs
+    # =====================================================================
+    # 目录：一级 = 一区~九区；每个区的筛选 = 该区自己的手工分类（无前缀）
+    # =====================================================================
 
     def homeContent(self, filter):
-        all_subs = self._build_all_subs()
-
-        # 精简模式：一级目录只保留一个“全部”，进入后再通过筛选选具体区
-        if self.compact_mode:
-            result = {
-                "class": [{"type_name": self.compact_name, "type_id": self.compact_tid}]
-            }
-            if filter:
-                result["filters"] = {
-                    self.compact_tid: [{
-                        "key": "sub",
-                        "name": "切换分类",
-                        "init": "%s::%s" % ("z1", self.zoneMatrix["z1"]["default"]),
-                        "value": all_subs
-                    }]
-                }
-            return result
-
-        # 默认模式：一级目录保留 一区~九区，每个区进去都能通过筛选切到任意区
         classes = []
         filters = {}
         for zid in self.zone_order:
@@ -250,11 +255,12 @@ class Spider(SpiderBase):
             if not zone:
                 continue
             classes.append({"type_name": zone["name"], "type_id": zid})
+            # 关键：value 只挂本区 subs，不拼任何前缀
             filters[zid] = [{
                 "key": "sub",
-                "name": "切换分类",
-                "init": "%s::%s" % (zid, zone["default"]),
-                "value": all_subs
+                "name": "分类",
+                "init": zone["default"],
+                "value": zone["subs"]
             }]
 
         result = {"class": classes}
@@ -364,30 +370,22 @@ class Spider(SpiderBase):
     def categoryContent(self, tid, pg, filter, extend):
         del filter
         extend = extend if isinstance(extend, dict) else {}
+
+        # 一级目录的 type_id 直接就是区标识，这里只认它
         slug = str(tid).strip("/")
+        if slug not in self.zoneMatrix:
+            slug = "z1"
+        target_zone = self.zoneMatrix[slug]
 
-        # 1) 从筛选值里解析目标区 + 分类 id
-        sub_raw = str(extend.get("sub", "") or "")
-        if "::" in sub_raw:
-            zone_slug, sub_id = sub_raw.split("::", 1)
-        else:
-            zone_slug = slug
-            sub_id = sub_raw
-
-        # 2) 容错：精简模式下 tid 是 "all"，没有具体区就默认 z1
-        if zone_slug == self.compact_tid or zone_slug not in self.zoneMatrix:
-            zone_slug = slug if slug in self.zoneMatrix else "z1"
-
-        target_zone = self.zoneMatrix[zone_slug]
         host = target_zone["host"]
         mod = target_zone.get("mod", "vod")
         default_sub = target_zone["default"]
 
-        # 3) 分类 id 合法性检查：不属于该区就用该区默认，避免请求到 404
+        # 二级只取本区分类；跨区或非法值一律回落到本区默认
+        cur_id = str(extend.get("sub", default_sub) or default_sub)
         valid_ids = [str(s["v"]) for s in target_zone["subs"]]
-        cur_id = str(sub_id or default_sub)
         if cur_id not in valid_ids:
-            cur_id = str(default_sub)
+            cur_id = default_sub
 
         page = int(pg) if pg else 1
 
@@ -401,18 +399,18 @@ class Spider(SpiderBase):
 
         if not html_text or "404" in html_text or res.get("code") != 200:
             old_host = host
-            new_host = self.switch_live_domain(zone_slug)
+            new_host = self.switch_live_domain(slug)
             if new_host != old_host:
                 host = new_host
                 target_url = target_url.replace(old_host, host)
                 res = self._fetch(target_url, host)
                 html_text = res.get("text", "")
 
-        vod_list = self.parse_items(html_text, host, zone_slug=zone_slug)
+        vod_list = self.parse_items(html_text, host, zone_slug=slug)
         if not vod_list and page == 1:
             target_url_fb = "%s/index.php/%s/type/id/%s/page/1.html" % (host, mod, cur_id)
             res_fb = self._fetch(target_url_fb, host)
-            vod_list = self.parse_items(res_fb.get("text", ""), host, zone_slug=zone_slug)
+            vod_list = self.parse_items(res_fb.get("text", ""), host, zone_slug=slug)
 
         total_pages = 1
         m_page = re.search(r"totalPages='(\d+)'", html_text)
