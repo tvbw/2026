@@ -42,8 +42,8 @@ class Spider(SpiderBase):
         self.zone_slug = "z7"          # ← 改成你要做单源的区：z1/z2/z3/z4/z5/z6/z7/z8/z9
         self.site = {
             "name": "七区",
-            "host": "https://618932.xyz",  # ←【初始域名】远端池子正常时会自动替换，池子失效才手动改这里
-            "mod": "vod",                   # z4区务必改成 "art"，其他全部 "vod"
+            "host": "https://618634.xyz",  # ←【初始域名】远端池子正常时会自动替换，池子失效才手动改这里
+            "mod": "art",                   # z4区务必改成 "art"，其他全部 "vod"
             "default": "1",
             "subs": [
                     {"n": "网黄UP主", "v": "40"}, {"n": "国产AV", "v": "37"}, {"n": "探花AV", "v": "43"},
