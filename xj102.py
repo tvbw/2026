@@ -45,7 +45,7 @@ class Spider(SpiderBase):
         self.zone_slug = "z2"
         self.site = {
             "name": "二区",
-            "host": "https://6182190.xyz",
+            "host": "https://618979.xyz",
             "mod": "vod",
             "default": "1",
             "subs": [
