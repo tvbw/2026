@@ -24,11 +24,8 @@ except ImportError:
         def delCache(self, key): return "fail"
 
 
-# ============ 模块级常量与预编译正则 ============
 _UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 _IMG_KEY_589 = b"2019ysapp7527"
-
-# 数字 -> 中文，供 _ensure_zones 生成“五区/六区...”用
 _CN_NUM = {"1": "一", "2": "二", "3": "三", "4": "四",
            "5": "五", "6": "六", "7": "七", "8": "八", "9": "九"}
 
@@ -75,43 +72,94 @@ class Spider(SpiderBase):
         self.zone_order = ["z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"]
         self.domain_pools = {zid: [] for zid in self.zone_order}
 
+        # =====================================================================
+        # 9 个区全部写死，保证一级目录一定显示 9 个。
+        # z5~z8 目前是占位配置（host=""，点进去空列表），你只需把 host 和 subs
+        # 换成真实数据即可，其余代码一行都不用动。
+        # =====================================================================
         self.zoneMatrix = {
             "z1": {
                 "name": "一区", "host": "https://6182094.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部视频", "v": "1"}, {"n": "香蕉精品", "v": "13"}, {"n": "制服诱惑", "v": "22"},
+                    {"n": "国产视频", "v": "6"}, {"n": "清纯少女", "v": "8"}, {"n": "辣妹大奶", "v": "9"},
+                    {"n": "女同专属", "v": "10"}, {"n": "素人出演", "v": "11"}, {"n": "角色扮演", "v": "12"},
+                    {"n": "人妻熟女", "v": "20"}, {"n": "日韩剧情", "v": "23"}, {"n": "经典伦理", "v": "21"},
                     {"n": "成人动漫", "v": "7"}, {"n": "精品二区", "v": "14"}, {"n": "精品三区", "v": "40"}
                 ]
             },
             "z2": {
                 "name": "二区", "host": "https://6182190.xyz", "mod": "vod", "default": "1",
                 "subs": [
-                    {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"}, {"n": "动漫", "v": "9"},
-                    {"n": "JK", "v": "57"}, {"n": "国产", "v": "54"}, {"n": "热门", "v": "5"}
+                    {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"},{"n": "无码", "v": "56"},
+                    {"n": "动漫", "v": "9"},{"n": "热门", "v": "5"}, {"n": "黑料", "v": "31"}, 
+                    {"n": "欧美", "v": "8"}, {"n": "传媒", "v": "10"}, {"n": "网黄", "v": "55"},
+                    {"n": "JK", "v": "57"}, {"n": "国产", "v": "54"}, {"n": "字幕", "v": "7"}
                 ]
             },
             "z3": {
                 "name": "三区", "host": "https://6182028.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部", "v": "1"}, {"n": "二区", "v": "66"}, {"n": "日欧", "v": "11"},
+                    {"n": "动漫", "v": "26"}, {"n": "无码", "v": "8"}, {"n": "字幕", "v": "7"},
+                    {"n": "P站", "v": "9"}, {"n": "厂牌", "v": "6"}, {"n": "网黄", "v": "12"},
                     {"n": "JK", "v": "27"}, {"n": "国产", "v": "35"}, {"n": "热门", "v": "10"}
                 ]
             },
             "z4": {
                 "name": "四区", "host": "https://6182321.xyz", "mod": "art", "default": "44",
                 "subs": [
-                    {"n": "欧美视频", "v": "44"}, {"n": "中文字幕2", "v": "40"}
+                    {"n": "欧美视频", "v": "44"},{"n": "无码破解", "v": "18"}, 
+                    {"n": "中文字幕2", "v": "40"},{"n": "中文字幕", "v": "17"}
+                ]
+            },
+            "z5": {
+                "name": "五区", "host": "https://6182231.xyz", "mod": "vod", "default": "2",
+                "subs": [
+                    {"n": "全部", "v": "2"}, {"n": "无码", "v": "16"}, {"n": "直播", "v": "23"},
+                    {"n": "传媒", "v": "58"}, {"n": "欧美", "v": "11"}, {"n": "JK", "v": "61"}, 
+                    {"n": "国产", "v": "15"}, {"n": "热门", "v": "13"}, {"n": "字幕", "v": "14"}, 
+                    {"n": "探花", "v": "34"}, {"n": "网黄", "v": "32"},{"n": "韩国", "v": "12"}
+                                    
+                ]
+            },
+            "z6": {
+                "name": "六区", "host": "https://6182240.xyz", "mod": "vod", "default": "43",
+                "subs": [
+                    {"n": "全部", "v": "43"}, {"n": "二区", "v": "1"}, {"n": "韩国", "v": "48"},
+                    {"n": "网黄", "v": "59"}, {"n": "中文", "v": "46"}, {"n": "无码", "v": "45"},
+                    {"n": "传媒", "v": "44"}, {"n": "国产", "v": "60"}, {"n": "精品", "v": "47"}
+                ]
+            },
+            "z7": {
+                "name": "七区", "host": "https://6182117.xyz", "mod": "vod", "default": "40",
+                "subs": [
+                    {"n": "网黄UP主", "v": "40"}, {"n": "国产AV", "v": "37"}, {"n": "探花AV", "v": "43"},
+                    {"n": "绿帽淫妻", "v": "49"}, {"n": "国产传媒", "v": "44"}, {"n": "福利姬", "v": "41"},
+                    {"n": "主播直播", "v": "42"}, {"n": "欧美", "v": "38"}, {"n": "FC2", "v": "66"},
+                    {"n": "性爱教学", "v": "46"}, {"n": "字幕", "v": "39"}, {"n": "水果π", "v": "45"}, 
+                    {"n": "三级", "v": "48"}, {"n": "动漫", "v": "47"}, {"n": "精品二区", "v": "13"}
+                ]
+            },
+            "z8": {
+                "name": "八区", "host": "https://6182063.xyz", "mod": "vod", "default": "66",
+                "subs": [
+                    {"n": "全部", "v": "66"}, {"n": "二区", "v": "1"}, {"n": "日欧", "v": "63"},
+                    {"n": "动漫", "v": "64"}, {"n": "无码", "v": "65"}, {"n": "字幕", "v": "69"},
+                    {"n": "P站", "v": "70"}, {"n": "厂牌", "v": "68"}, {"n": "网黄", "v": "71"},
+                    {"n": "JK", "v": "67"}, {"n": "国产", "v": "72"}, {"n": "热门", "v": "73"}
                 ]
             },
             "z9": {
                 "name": "九区", "host": "https://6182275.xyz", "mod": "vod", "default": "35",
                 "subs": [
                     {"n": "全部", "v": "35"}, {"n": "二区", "v": "2"}, {"n": "韩国", "v": "30"},
+                    {"n": "欧美", "v": "27"}, {"n": "无码", "v": "40"}, {"n": "字幕", "v": "39"},
+                    {"n": "传媒", "v": "36"}, {"n": "网黄", "v": "37"}, {"n": "黑料", "v": "28"},
                     {"n": "JK", "v": "26"}, {"n": "国产", "v": "38"}, {"n": "推荐", "v": "41"}
                 ]
             }
         }
-
         self._key_cache = {}
         self._errors = []
         self._pool_synced_at = 0
@@ -126,10 +174,13 @@ class Spider(SpiderBase):
             urllib.request.HTTPSHandler(context=self.ctx)
         )
 
-    # ============ 生命周期 ============
+        # 在 __init__ 末尾就初始化，不依赖框架是否调用 init()
+        self.sync_remote_domain_pools()
+        self._ensure_zones()
+
     def init(self, extend=""):
         self.sync_remote_domain_pools()
-        self._ensure_zones()      # ← 新增：给 zoneMatrix 缺失的区补占位配置
+        self._ensure_zones()
         return True
 
     def getName(self):
@@ -140,18 +191,8 @@ class Spider(SpiderBase):
         if len(self._errors) > 20:
             del self._errors[:len(self._errors) - 20]
 
-    # ============ 自动补全区 ============
     def _ensure_zones(self):
-        """
-        对 zone_order 里存在、但 zoneMatrix 里没定义的区，自动补一份最小配置：
-          - host   : 该区域名池的第一个；池子为空则留空（categoryContent 里直接返回空列表）
-          - mod    : vod
-          - default: "1"
-          - subs   : [{"n":"全部","v":"1"}]
-        如果日后想给某区补完整分类，直接在 zoneMatrix 里写 "z5": {...} 即可，
-        已存在时本方法会自动跳过，不会覆盖。
-        """
-        added = []
+        """给 zone_order 里有但 zoneMatrix 里没有的区，自动补一份最小配置（兜底用）"""
         for idx, zid in enumerate(self.zone_order):
             if zid in self.zoneMatrix:
                 continue
@@ -167,11 +208,8 @@ class Spider(SpiderBase):
                 "subs": [{"n": "全部", "v": "1"}],
                 "_auto": True,
             }
-            added.append("%s(%s)" % (zid, host or "空池"))
-        if added:
-            self._log_error("auto_zones", ",".join(added))
+            self._log_error("auto_zone", zid, host or "空")
 
-    # ============ 域名池 ============
     def sync_remote_domain_pools(self, force=False):
         now = time.time()
         if not force and self._pool_synced_at and (now - self._pool_synced_at) < self.POOL_TTL:
@@ -205,7 +243,6 @@ class Spider(SpiderBase):
                 return random.choice(candidates)
         return self.zoneMatrix[zone_slug]["host"]
 
-    # ============ 解密 ============
     def decrypt(self, text):
         if not text: return ""
         try: return "".join([chr(128 ^ ord(ch)) for ch in text])
@@ -222,7 +259,6 @@ class Spider(SpiderBase):
 
     def manualVideoCheck(self): return False
 
-    # ============ 网络 ============
     def _safe_quote_url(self, url_str):
         if not url_str: return ""
         parts = urlparse(url_str)
@@ -290,12 +326,12 @@ class Spider(SpiderBase):
 
         return {"code": -1, "text": "", "bytes": b"", "err": last_err, "final_url": safe_url}
 
-    # ============ 目录 ============
     def homeContent(self, filter):
         classes, filters = [], {}
         for zid in self.zone_order:
             zone = self.zoneMatrix.get(zid)
             if not zone:
+                self._log_error("missing_zone", zid)
                 continue
             classes.append({"type_name": zone["name"], "type_id": zid})
             filters[zid] = [{
@@ -304,6 +340,8 @@ class Spider(SpiderBase):
                 "init": zone["default"],
                 "value": zone["subs"]
             }]
+        # 诊断：把本次返回的区数写进错误日志（可通过 action("status") 查看）
+        self._log_error("homeContent_classes", len(classes), "zoneMatrix_keys", list(self.zoneMatrix.keys()))
         result = {"class": classes}
         if filter:
             result["filters"] = filters
@@ -412,7 +450,6 @@ class Spider(SpiderBase):
         mod = target_zone.get("mod", "vod")
         default_sub = target_zone["default"]
 
-        # 自动补全区池子为空时，host 为空 -> 直接返回空，不请求、不超时
         if not host:
             self._log_error("empty_host", slug)
             return {"page": 1, "pagecount": 1, "limit": 20, "total": 0, "list": []}
@@ -468,7 +505,6 @@ class Spider(SpiderBase):
             "list": vod_list
         }
 
-    # ============ 详情 ============
     def detailContent(self, ids):
         raw_id = ids[0] if isinstance(ids, (list, tuple)) else str(ids)
         title = "高清正片"
@@ -505,7 +541,6 @@ class Spider(SpiderBase):
             }]
         }
 
-    # ============ 播放 ============
     def _get_key(self, key_url, headers):
         if key_url in self._key_cache:
             return self._key_cache[key_url]
@@ -614,7 +649,6 @@ class Spider(SpiderBase):
             }
         }
 
-    # ============ 图片代理 ============
     def localProxy(self, params):
         if not isinstance(params, dict): return [404, "text/plain", "Invalid Params"]
         target_url = params.get("url", "")
@@ -658,7 +692,6 @@ class Spider(SpiderBase):
 
         return [404, "text/plain", "Proxy Error"]
 
-    # ============ 其他 ============
     def searchContent(self, key, quick, pg="1"):
         return {"page": 1, "pagecount": 1, "limit": 0, "total": 0, "list": []}
 
@@ -667,17 +700,19 @@ class Spider(SpiderBase):
             return {
                 "msg": "运行正常",
                 "errors": self._errors[-10:],
-                "pool_loaded": any(self.domain_pools.values()),
-                "pool_synced_at": self._pool_synced_at,
+                "zone_order": list(self.zone_order),
+                "zoneMatrix_keys": list(self.zoneMatrix.keys()),
+                "zoneMatrix_count": len(self.zoneMatrix),
                 "zones": {
                     zid: {
                         "name": z.get("name"),
-                        "host": z.get("host"),
+                        "host": z.get("host") or "(空)",
+                        "subs_count": len(z.get("subs", [])),
                         "auto": z.get("_auto", False),
-                        "subs_count": len(z.get("subs", []))
                     }
                     for zid, z in self.zoneMatrix.items()
                 },
+                "pool_loaded": any(self.domain_pools.values()),
             }
         return {"msg": "运行正常"}
 
