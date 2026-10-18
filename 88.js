@@ -27,20 +27,20 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-      "key": "香蕉9合1",
-      "name": "❤️香蕉9合1【🔞】",
+      "key": "香蕉9合1最终优化版",
+      "name": "❤️香蕉9合1最终优化版【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1.py",
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1.py"
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版.py",
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版.py"
     },
     {
       "key": "香蕉9合2",
-      "name": "❤️香蕉9合2【🔞】",
+      "name": "❤️香蕉9合1【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -191,21 +191,6 @@
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj102.py",
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj102.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "香蕉3区",
-      "name": "🔞️香蕉3区【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj103.py",
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj103.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
