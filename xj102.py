@@ -487,10 +487,11 @@ class Spider(Spider):
             return None
 
     def _get_videos(self, doc, category_id=None, limit=None):
-        """获取影片列表 - 根据实际网站结构"""
+        """获取影片列表 - 根据实际网站结构【修复多class无法匹配问题，使用contains包含匹配】"""
         try:
             videos = []
-            elements = doc.xpath('//a[@class="vodbox"]')
+            # 修复：contains匹配，允许a标签class同时附带其它class名称，兼容各分区不同页面渲染
+            elements = doc.xpath('//a[contains(@class,"vodbox")]')
             self.log(f"找到 {len(elements)} 个vodbox元素")
             for elem in elements:
                 video = self._extract_video(elem, category_id)
@@ -500,6 +501,7 @@ class Spider(Spider):
         except Exception as e:
             self.log(f"获取影片列表出错: {str(e)}")
             return []
+
 
     def _extract_video(self, element, category_id=None):
         """提取影片信息 - 特别处理特殊分区的链接"""
