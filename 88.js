@@ -27,7 +27,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-      "key": "香蕉9合",
+      "key": "香蕉9合1",
       "name": "❤️香蕉9合1【🔞】",
       "type": 3,
       "playerType": 2,
@@ -37,6 +37,18 @@
       },
       "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1.py",
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1.py"
+    },
+    {
+      "key": "香蕉9合2",
+      "name": "❤️香蕉9合2【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
     },
     {
       "key": "csp_xbpq_禁片天堂",
@@ -77,6 +89,18 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py"
+    },
+    {
+      "key": "18av",
+      "name": "5❤️18av【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "http://pglblb.test.upcdn.net/2026py/18av.py",
+      "api": "http://pglblb.test.upcdn.net/2026py/18av.py"
     },
     {
       "key": "py_4K_fullhd-fullhd3",
@@ -167,6 +191,21 @@
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj102.py",
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj102.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "香蕉3区",
+      "name": "🔞️香蕉3区【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj103.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj103.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
@@ -1154,18 +1193,7 @@
       "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
     },
     {
-      "key": "18av",
-      "name": "5❤️18av【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/18av.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/18av.py"
-    },
-    {
+
       "key": "Jable",
       "name": "5❤️Jable🔞",
       "type": 3,
