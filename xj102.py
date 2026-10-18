@@ -36,14 +36,14 @@ class Spider(SpiderBase):
         # ==============================================================
         self.zone_slug = "z2"
         self.init_cfg = {
-            "host": "https://618302.xyz",
-            "api_host": "https://h5.xxoo475.org",
+            "host": "https://618041.xyz",
+            "api_host": "https://h5.xxoo168.org",
             "mod": "vod",
             "subs": [
-                    {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"},{"n": "无码", "v": "56"},
-                    {"n": "动漫", "v": "9"},{"n": "热门", "v": "5"}, {"n": "黑料", "v": "31"}, 
+                    {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"}, {"n": "动漫", "v": "9"},
+                    {"n": "黑料", "v": "31"}, {"n": "无码", "v": "56"}, {"n": "字幕", "v": "7"},
                     {"n": "欧美", "v": "8"}, {"n": "传媒", "v": "10"}, {"n": "网黄", "v": "55"},
-                    {"n": "JK", "v": "57"}, {"n": "国产", "v": "54"}, {"n": "字幕", "v": "7"}
+                    {"n": "JK", "v": "57"}, {"n": "国产", "v": "54"}, {"n": "热门", "v": "5"}
             ]
         }
         # --------------------------域名池【禁止修改】--------------------------
@@ -80,10 +80,10 @@ class Spider(SpiderBase):
     def sync_remote_domain_pools(self):
         """同步远端域名池，从伪装jpg解析zuArr数组"""
         try:
-            headers = {"User‑Agent": self._ua, "Accept": "*/*"}
+            headers = {"User-Agent": self._ua, "Accept": "*/*"}
             req = urllib.request.Request(self.remote_pool_js, headers=headers)
             with self.opener.open(req, timeout=6) as resp:
-                text = resp.read().decode("utf‑8", errors="ignore")
+                text = resp.read().decode("utf-8", errors="ignore")
                 m = re.search(r'const\s+zuArr\s*=\s*(\[\[[\s\S]*?\]\]);', text)
                 if m:
                     raw_arr_str = m.group(1).replace("'", '"')
@@ -120,7 +120,7 @@ class Spider(SpiderBase):
         return urllib.parse.urlunparse((parts.scheme, parts.netloc, path, parts.params, query, parts.fragment))
 
     def _fetch(self, target_url, host="", custom_headers=None, raw_bytes=False):
-        """urllib底层网络请求，gzip/deflate解压、重试、忽略ssl"""
+        """urllib底层网络请求，gzip/deflate解压、重试、忽略ssl【全部使用英文半角-】"""
         if not target_url:
             return {"code": 0, "text": "", "bytes": b"", "err": "", "final_url": ""}
         if target_url.startswith("//"):
@@ -129,11 +129,11 @@ class Spider(SpiderBase):
             target_url = host + target_url
         safe_url = self._safe_quote_url(target_url)
         headers = {
-            "User‑Agent": self._ua,
+            "User-Agent": self._ua,
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept‑Language": "zh‑CN,zh;q=0.9,en;q=0.8",
-            "Accept‑Encoding": "gzip, deflate",
-            "Connection": "keep‑alive"
+            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+            "Accept-Encoding": "gzip, deflate",
+            "Connection": "keep-alive"
         }
         if host: headers["Referer"] = host + "/"
         if custom_headers: headers.update(custom_headers)
@@ -145,7 +145,7 @@ class Spider(SpiderBase):
                     code = resp.getcode()
                     final_url = resp.geturl()
                     data = resp.read()
-                    enc = resp.headers.get("Content‑Encoding", "")
+                    enc = resp.headers.get("Content-Encoding", "")
                     if data.startswith(b"\x1f\x8b") or enc == "gzip":
                         data = gzip.decompress(data)
                     elif enc == "deflate":
@@ -153,8 +153,8 @@ class Spider(SpiderBase):
                         except Exception: data = zlib.decompress(data, -zlib.MAX_WBITS)
                     if raw_bytes:
                         return {"code": code, "text": "", "bytes": data, "err": "", "final_url": final_url}
-                    try: text = data.decode("utf‑8")
-                    except Exception: text = data.decode("latin‑1", errors="ignore")
+                    try: text = data.decode("utf-8")
+                    except Exception: text = data.decode("latin-1", errors="ignore")
                     return {"code": code, "text": text, "bytes": data, "err": "", "final_url": final_url}
             except urllib.error.HTTPError as e:
                 last_err = f"HTTP {e.code}"
@@ -186,12 +186,12 @@ class Spider(SpiderBase):
             return encrypted_text
 
     def _extract_vodbox_list(self, html):
-        """正则提取全部 class=vodbox 的a块，替代xpath //a[@class="vodbox"]"""
+        """【修复】正则提取完整vodbox a标签块，re.S保证跨行完整捕获内部全部子HTML"""
         pattern = re.compile(r'<a[^>]+class=["\'][^"\']*vodbox[^"\']*["\'][^>]*>([\s\S]*?)</a>', re.I | re.S)
         return pattern.findall(html)
 
     def _extract_video_item(self, block_html, host, category_id=None):
-        """解析单个vodbox块，生成vod对象；保留special_ dcdc直链逻辑"""
+        """解析单个vodbox块；全部正则key使用英文半角减号"""
         href = self.regStr(r'href=["\']([^"\']+)["\']', block_html)
         if not href:
             return None
@@ -199,8 +199,8 @@ class Spider(SpiderBase):
             href = host + href
         is_special_link = "/html/dcdc/" in href
 
-        # 提取图片
-        pic = self.regStr(r'data‑original=["\']([^"\']+)["\']', block_html)
+        # 提取图片【修复：data‑original → data-original 半角】
+        pic = self.regStr(r'data-original=["\']([^"\']+)["\']', block_html)
         if not pic:
             pic = self.regStr(r'src=["\']([^"\']+)["\']', block_html)
         if pic:
@@ -209,8 +209,8 @@ class Spider(SpiderBase):
             elif pic.startswith("/"):
                 pic = host + pic
 
-        # 提取加密标题
-        enc_title = self.regStr(r'<p[^>]+class=["\'][^"\']*km‑script[^"\']*["\']*>([\s\S]*?)</p>', block_html)
+        # 提取加密标题【修复 km‑script → km-script 半角】
+        enc_title = self.regStr(r'<p[^>]+class=["\'][^"\']*km-script[^"\']*["\']*>([\s\S]*?)</p>', block_html)
         if not enc_title:
             enc_title = self.regStr(r'<p>([\s\S]*?)</p>', block_html)
         title = self._decrypt_title(enc_title).strip() if enc_title else "未知影片"
@@ -222,7 +222,7 @@ class Spider(SpiderBase):
             pic_url = qs.get("b", [""])[0]
             if not pic: pic = pic_url
             if video_url:
-                m_vid = re.search(r'/([a‑f0‑9‑]+)/video\.m3u8', video_url)
+                m_vid = re.search(r'/([a-f0-9-]+)/video\.m3u8', video_url)
                 if m_vid:
                     video_id = m_vid.group(1)
                 else:
@@ -390,7 +390,7 @@ class Spider(SpiderBase):
             rsp = self._fetch(detail_url, host=domain)
             html = rsp["text"]
             title = self.regStr(r'<h1[^>]*>([\s\S]*?)</h1>', html).strip() or "影片"
-            pic = self.regStr(r'data‑original=["\']([^"\']+)["\']', html) or self.regStr(r'src=["\']([^"\']+\.(jpg|png|jpeg))["\']', html)
+            pic = self.regStr(r'data-original=["\']([^"\']+)["\']', html) or self.regStr(r'src=["\']([^"\']+\.(jpg|png|jpeg))["\']', html)
             if pic and pic.startswith("/"): pic = domain + pic
             desc = self.regStr(r'<div[^>]+class=["\']yp_context["\'][^>]*>([\s\S]*?)</div>', html)
             play_links = re.findall(r'href=["\']([^"\']+(ar\.html|kkyd\.html|dcdc/[^"\']*))["\']', html)
@@ -430,7 +430,7 @@ class Spider(SpiderBase):
             headers = {
                 "Referer": refer_host + "/",
                 "Origin": refer_host,
-                "X‑Requested‑With": "XMLHttpRequest"
+                "X-Requested-With": "XMLHttpRequest"
             }
             rsp = self._fetch(api_url, custom_headers=headers)
             if rsp["code"] != 200:
