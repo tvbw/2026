@@ -24,7 +24,6 @@ except ImportError:
         def setCache(self, key, value): return "fail"
         def delCache(self, key): return "fail"
 
-
 class Spider(SpiderBase):
     def __init__(self):
         super(Spider, self).__init__()
@@ -33,7 +32,7 @@ class Spider(SpiderBase):
         self.brandDirector = "🦋 蝴蝶影视"
         self._ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         self.img_key_589 = b"2019ysapp7527"
-
+        
         self.remote_pool_js = "https://webimgg.jiekrrj.cn/cf230705/image/2n8/108/18d/2pz/440fca8bd2f8b9b6342e412746428d85.jpg"
         self.zone_order = ["z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"]
         self.domain_pools = {zid: [] for zid in self.zone_order}
@@ -52,10 +51,10 @@ class Spider(SpiderBase):
             "z2": {
                 "name": "二区", "host": "https://6182190.xyz", "mod": "vod", "default": "1",
                 "subs": [
-                    {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"},{"n": "无码", "v": "56"},
-                    {"n": "动漫", "v": "9"},{"n": "热门", "v": "5"}, {"n": "黑料", "v": "31"}, 
+                    {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"}, {"n": "动漫", "v": "9"},
+                    {"n": "黑料", "v": "31"}, {"n": "无码", "v": "56"}, {"n": "字幕", "v": "7"},
                     {"n": "欧美", "v": "8"}, {"n": "传媒", "v": "10"}, {"n": "网黄", "v": "55"},
-                    {"n": "JK", "v": "57"}, {"n": "国产", "v": "54"}, {"n": "字幕", "v": "7"}
+                    {"n": "JK", "v": "57"}, {"n": "国产", "v": "54"}, {"n": "热门", "v": "5"}
                 ]
             },
             "z3": {
@@ -70,18 +69,17 @@ class Spider(SpiderBase):
             "z4": {
                 "name": "四区", "host": "https://6182321.xyz", "mod": "art", "default": "44",
                 "subs": [
-                    {"n": "欧美视频", "v": "44"},{"n": "无码破解", "v": "18"}, 
-                    {"n": "中文字幕2", "v": "40"},{"n": "中文字幕", "v": "17"}
+                    {"n": "欧美视频", "v": "44"}, {"n": "中文字幕2", "v": "40"},
+                    {"n": "中文字幕", "v": "17"}, {"n": "无码破解", "v": "18"}
                 ]
             },
             "z5": {
                 "name": "五区", "host": "https://6182231.xyz", "mod": "vod", "default": "2",
                 "subs": [
-                    {"n": "全部", "v": "2"}, {"n": "无码", "v": "16"}, {"n": "直播", "v": "23"},
-                    {"n": "传媒", "v": "58"}, {"n": "欧美", "v": "11"}, {"n": "JK", "v": "61"}, 
-                    {"n": "国产", "v": "15"}, {"n": "热门", "v": "13"}, {"n": "字幕", "v": "14"}, 
-                    {"n": "探花", "v": "34"}, {"n": "网黄", "v": "32"},{"n": "韩国", "v": "12"}
-                                    
+                    {"n": "全部", "v": "2"}, {"n": "韩国", "v": "12"}, {"n": "欧美", "v": "11"},
+                    {"n": "无码", "v": "16"}, {"n": "直播", "v": "23"}, {"n": "字幕", "v": "14"},
+                    {"n": "传媒", "v": "58"}, {"n": "探花", "v": "34"}, {"n": "网黄", "v": "32"},
+                    {"n": "JK", "v": "61"}, {"n": "国产", "v": "15"}, {"n": "热门", "v": "13"}
                 ]
             },
             "z6": {
@@ -97,8 +95,8 @@ class Spider(SpiderBase):
                 "subs": [
                     {"n": "网黄UP主", "v": "40"}, {"n": "国产AV", "v": "37"}, {"n": "探花AV", "v": "43"},
                     {"n": "绿帽淫妻", "v": "49"}, {"n": "国产传媒", "v": "44"}, {"n": "福利姬", "v": "41"},
-                    {"n": "主播直播", "v": "42"}, {"n": "欧美", "v": "38"}, {"n": "FC2", "v": "66"},
-                    {"n": "性爱教学", "v": "46"}, {"n": "字幕", "v": "39"}, {"n": "水果π", "v": "45"}, 
+                    {"n": "字幕", "v": "39"}, {"n": "水果π", "v": "45"}, {"n": "主播直播", "v": "42"},
+                    {"n": "欧美", "v": "38"}, {"n": "FC2", "v": "66"}, {"n": "性爱教学", "v": "46"},
                     {"n": "三级", "v": "48"}, {"n": "动漫", "v": "47"}, {"n": "精品二区", "v": "13"}
                 ]
             },
@@ -121,6 +119,7 @@ class Spider(SpiderBase):
                 ]
             }
         }
+
         self.ctx = ssl.create_default_context()
         self.ctx.check_hostname = False
         self.ctx.verify_mode = ssl.CERT_NONE
@@ -160,7 +159,7 @@ class Spider(SpiderBase):
         if not pool:
             self.sync_remote_domain_pools()
             pool = self.domain_pools.get(zone_slug, [])
-
+        
         if pool:
             cur_host = self.zoneMatrix[zone_slug]["host"]
             candidates = [h for h in pool if h != cur_host]
@@ -177,7 +176,8 @@ class Spider(SpiderBase):
 
     def smart_decrypt(self, text):
         if not text: return ""
-        if any(32 <= ord(c) < 128 for c in text): return text
+        has_normal_printable = any(32 <= ord(c) < 128 for c in text)
+        if has_normal_printable: return text
         return self.decrypt(text)
 
     def isVideoFormat(self, url):
@@ -226,7 +226,7 @@ class Spider(SpiderBase):
                     elif enc == "deflate":
                         try: data = zlib.decompress(data)
                         except Exception: data = zlib.decompress(data, -zlib.MAX_WBITS)
-
+                    
                     if raw_bytes:
                         return {"code": code, "text": "", "bytes": data, "err": "", "final_url": final_url}
 
@@ -244,29 +244,20 @@ class Spider(SpiderBase):
 
         return {"code": -1, "text": "", "bytes": b"", "err": last_err, "final_url": safe_url}
 
-    # =====================================================================
-    # 目录：一级 = 一区~九区；每个区的筛选 = 该区自己的手工分类（无前缀）
-    # =====================================================================
-
     def homeContent(self, filter):
         classes = []
         filters = {}
         for zid in self.zone_order:
-            zone = self.zoneMatrix.get(zid)
-            if not zone:
-                continue
-            classes.append({"type_name": zone["name"], "type_id": zid})
-            # 关键：value 只挂本区 subs，不拼任何前缀
+            item = self.zoneMatrix[zid]
+            classes.append({"type_name": item["name"], "type_id": zid})
             filters[zid] = [{
                 "key": "sub",
                 "name": "分类",
-                "init": zone["default"],
-                "value": zone["subs"]
+                "init": item["default"],
+                "value": item["subs"]
             }]
-
         result = {"class": classes}
-        if filter:
-            result["filters"] = filters
+        if filter: result["filters"] = filters
         return result
 
     def homeVideoContent(self): return {"list": []}
@@ -371,39 +362,27 @@ class Spider(SpiderBase):
     def categoryContent(self, tid, pg, filter, extend):
         del filter
         extend = extend if isinstance(extend, dict) else {}
-
-        # 一级目录的 type_id 直接就是区标识，这里只认它
         slug = str(tid).strip("/")
-        if slug not in self.zoneMatrix:
-            slug = "z1"
-        target_zone = self.zoneMatrix[slug]
 
+        target_zone = self.zoneMatrix.get(slug, self.zoneMatrix["z1"])
         host = target_zone["host"]
         mod = target_zone.get("mod", "vod")
         default_sub = target_zone["default"]
 
-        # 二级只取本区分类；跨区或非法值一律回落到本区默认
-        cur_id = str(extend.get("sub", default_sub) or default_sub)
-        valid_ids = [str(s["v"]) for s in target_zone["subs"]]
-        if cur_id not in valid_ids:
-            cur_id = default_sub
-
+        cur_id = str(extend.get("sub", default_sub))
         page = int(pg) if pg else 1
 
-        if page == 1:
-            target_url = "%s/index.php/%s/type/id/%s.html" % (host, mod, cur_id)
-        else:
-            target_url = "%s/index.php/%s/type/id/%s/page/%s.html" % (host, mod, cur_id, page)
+        if page == 1: target_url = "%s/index.php/%s/type/id/%s.html" % (host, mod, cur_id)
+        else: target_url = "%s/index.php/%s/type/id/%s/page/%s.html" % (host, mod, cur_id, page)
 
         res = self._fetch(target_url, host)
         html_text = res.get("text", "")
 
         if not html_text or "404" in html_text or res.get("code") != 200:
-            old_host = host
             new_host = self.switch_live_domain(slug)
-            if new_host != old_host:
+            if new_host != host:
                 host = new_host
-                target_url = target_url.replace(old_host, host)
+                target_url = target_url.replace(self.zoneMatrix[slug]["host"], host)
                 res = self._fetch(target_url, host)
                 html_text = res.get("text", "")
 
@@ -515,7 +494,7 @@ class Spider(SpiderBase):
                     if len(key_raw_bytes) > 0:
                         if len(key_raw_bytes) != 16:
                             key_raw_bytes = key_raw_bytes[:16].ljust(16, b'\0')
-
+                        
                         b64_key = base64.b64encode(key_raw_bytes).decode("ascii")
                         data_uri = "data:application/octet-stream;base64," + b64_key
                         new_content = content.replace(key_match.group(1), data_uri)
@@ -530,7 +509,7 @@ class Spider(SpiderBase):
                                     else:
                                         line = "%s/%s" % (base_prefix, l_strip)
                             lines.append(line)
-
+                        
                         full_m3u8_text = "\n".join(lines)
                         m3u8_b64 = base64.b64encode(full_m3u8_text.encode("utf-8")).decode("ascii")
                         return {
@@ -605,9 +584,7 @@ class Spider(SpiderBase):
 
         return [404, "text/plain", "Proxy Error"]
 
-    def searchContent(self, key, quick, pg="1"):
-        return {"page": 1, "pagecount": 1, "limit": 0, "total": 0, "list": []}
-
+    def searchContent(self, key, quick, pg="1"): return {"page": 1, "pagecount": 1, "limit": 0, "total": 0, "list": []}
     def action(self, action): return {"msg": "运行正常"}
     def liveContent(self): return ""
     def destroy(self): pass
