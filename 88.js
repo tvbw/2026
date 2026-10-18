@@ -27,20 +27,32 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-      "key": "香蕉9合1最终优化版",
-      "name": "❤️香蕉9合1最终优化版【🔞】",
+      "key": "香蕉9合1最终优化版目录版",
+      "name": "❤️香蕉9合1最终优化目录版【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 2
       },
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版.py",
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版.py"
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py",
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
+    },
+    {
+      "key": "香蕉9合1最终优化版",
+      "name": "❤️香蕉9合1最终优化版全目录【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 2
+      },
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py",
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
     },
     {
       "key": "香蕉9合2",
-      "name": "❤️香蕉9合1【🔞】",
+      "name": "❤️香蕉9合1原版【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
