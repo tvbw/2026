@@ -354,9 +354,9 @@ class Spider(Spider):
     def get_working_host(self):
         """動態站點測試：若均不可用，直接使用 51cg1.com"""
         dynamic_urls = [
-            'https://artist.vgwtswi.xyz',
-            'https://ability.vgwtswi.xyz', 
-            'https://am.vgwtswi.xyz'
+            'https://board.wnawvihxb.cc/',
+            'https://advise.wnawvihxb.cc/', 
+            'https://beneath.wnawvihxb.cc/'
         ]
         
         # 設定較短的 timeout(3秒)，避免 TV 端因超時卡死
@@ -371,7 +371,7 @@ class Spider(Spider):
                 continue
         
         # 動態站點全部連不上時，回退使用固定主站
-        return "https://51cg1.com"
+        return "https://www.qiwicjxos.cc/"
 
     def getlist(self, data, tid=''):
         videos = []
