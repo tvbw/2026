@@ -208,6 +208,21 @@
       "filterable": 1
     },
     {
+      "key": "香蕉3区",
+      "name": "🔞️香蕉3区【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj103.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj103.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "香蕉4区",
       "name": "🔞️香蕉4区【🔞】",
       "type": 3,
