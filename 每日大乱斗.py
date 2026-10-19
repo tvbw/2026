@@ -1,7 +1,13 @@
+# ============================================================
+# 通用发布页动态域名 Spider 模板
+# 用法：
+#   同主题站 -> 只改 SITE_CONFIG
+#   跨主题   -> 另加/替换 _parse_players / _extract_folder_items / _decode_publish
+# ============================================================
 import json
 import re
 import sys
-import hashlib
+import time
 from base64 import b64decode, b64encode
 from urllib.parse import urlparse
 
@@ -9,383 +15,612 @@ import requests
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from pyquery import PyQuery as pq
+
 sys.path.append('..')
-from base.spider import Spider as BaseSpider
+from base.spider import Spider
 
-img_cache = {}
 
-class Spider(BaseSpider):
+# =================== 极简万能加速头 ===================
+from functools import lru_cache
 
+FAST_CDN = "lib.baomitu.com"
+DEAD_MAP = {
+    "rimg.iomycdn.com": FAST_CDN,
+    "rimg.xiakee.com": FAST_CDN,
+    "play.abcyun.com": FAST_CDN,
+    "video.xyzcdn.com": FAST_CDN,
+}
+
+@lru_cache(maxsize=256)
+def _auto_cdn(url: str) -> str:
+    if not url:
+        return ""
+    for dead, fast in DEAD_MAP.items():
+        url = url.replace(dead, fast)
+    if url.startswith("//"):
+        url = "https:" + url
+    try:
+        r = requests.head(url, allow_redirects=True, timeout=2)
+        url = r.url
+    except Exception:
+        pass
+    return url
+
+_real_get = requests.Session.get
+def _patched_get(self, url, *a, **k):
+    url = _auto_cdn(url)
+    return _real_get(self, url, *a, **k)
+requests.Session.get = _patched_get
+# =================== 加速头结束 ===================
+
+
+# ============================================================
+#  配置区：换同主题站点，改这一个字典即可
+# ============================================================
+SITE_CONFIG = {
+    # ---- 基础信息 ----
+    "name": "51通用模板",
+    "play_from": "51通用",
+    "style": {"type": "rect", "ratio": 1.33},
+
+    # ---- 发布页与可用域名 ----
+    "publish_url": "https://mrdld2.com/",
+    # 发布页编码方式: js_base64 / js_atob / plain / redirect
+    "publish_decode": "js_base64",
+    # 判断“这个域名是不是目标站”的特征选择器
+    "host_check_selector": "#index article a",
+    # 发布页解析失败时的兜底域名
+    "fallback_hosts": [
+        "https://badly.ezqkwgkf.cc/",
+        "https://auto.ezqkwgkf.cc/",
+        "https://athlete.ezqkwgkf.cc/",
+    ],
+
+    # ---- 列表 / 分类 ----
+    "list_selector": "#index article a, #archive article a",
+    "home_list_selector": "#index article a",
+    "category_selectors": [
+        ".category-list ul li",
+        ".nav-menu li",
+        ".menu li",
+        "nav ul li",
+    ],
+    "default_classes": [
+        {"type_name": "首页", "type_id": "/"},
+        {"type_name": "最新", "type_id": "/latest/"},
+        {"type_name": "热门", "type_id": "/hot/"},
+    ],
+    "list_meta_selector": "span[itemprop='datePublished'], .post-meta, .entry-meta, time",
+    "folder_id_marker": "/mrdg",
+
+    # ---- 详情 ----
+    "title_selector": ".post-title",
+    "tag_selector": ".tags .keywords a",
+    "player_selector": ".dplayer",
+    "player_config_attr": "data-config",
+    "player_heading_selector": "h2, h3, h4",
+
+    # ---- 合集 / 文件夹 ----
+    "folder_content_selector": ".post-content[itemprop='articleBody']",
+    "folder_remove_selectors": [".txt-apps", ".line", "blockquote", ".tags", ".content-tabs"],
+    "folder_img_attr": "data-xkrkllgl",
+
+    # ---- 图片 ----
+    "img_regex": r"loadBannerDirect\('([^']+)'",
+    "aes_key": b"f5d965df75336270",
+    "aes_iv": b"97b60394abc2fbe1",
+
+    # ---- 搜索 ----
+    "search_url_tpl": "{host}/search/{key}/",
+    "search_url_tpl_paged": "{host}/search/{key}/{pg}/",
+
+    # ---- 请求头 ----
+    "headers": {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                      "AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/134.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,"
+                  "image/avif,image/webp,image/apng,*/*;q=0.8,"
+                  "application/signed-exchange;v=b3;q=0.7",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "Connection": "keep-alive",
+        "Cache-Control": "no-cache",
+    },
+
+    # ---- 超时 ----
+    "timeout": 15,
+    "probe_timeout": 10,
+}
+# ============================================================
+
+
+class Spider(Spider):
+
+    # ================= 生命周期 =================
     def init(self, extend=""):
         try:
             self.proxies = json.loads(extend)
-        except:
+        except Exception:
             self.proxies = {}
-        self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-            'Accept-Language': 'zh-CN,zh;q=0.9',
-            'Connection': 'keep-alive',
-            'Cache-Control': 'no-cache',
-        }
+
+        self.cfg = SITE_CONFIG
+        self.headers = dict(self.cfg["headers"])
+
         self.host = self.get_working_host()
-        self.headers.update({'Origin': self.host, 'Referer': f"{self.host}/"})
+        self.headers.update({
+            "Origin": self.host,
+            "Referer": f"{self.host}/",
+        })
+        self.log(f"使用站点: {self.host}")
         print(f"使用站点: {self.host}")
 
     def getName(self):
-        return "🌈 每日大乱斗|终极完美版"
+        return self.cfg["name"]
 
     def isVideoFormat(self, url):
-        return any(ext in (url or '') for ext in ['.m3u8', '.mp4', '.ts'])
+        return any(ext in (url or "") for ext in [".m3u8", ".mp4", ".ts"])
 
     def manualVideoCheck(self):
         return False
 
     def destroy(self):
-        global img_cache
-        img_cache.clear()
+        pass
 
-    def get_working_host(self):
-        dynamic_urls = [
-            'https://badly.muxzxckq.cc/',
-            'https://athlete.muxzxckq.cc/',
-            'https://auto.muxzxckq.cc/'
-        ]
-        for url in dynamic_urls:
-            try:
-                response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=10)
-                if response.status_code == 200:
-                    return url
-            except Exception:
-                continue
-        return dynamic_urls[0]
-
+    # ================= 首页 =================
     def homeContent(self, filter):
         try:
-            response = requests.get(self.host, headers=self.headers, proxies=self.proxies, timeout=15)
-            if response.status_code != 200: return {'class': [], 'list': []}
-            data = self.getpq(response.text)
-            
+            r = requests.get(self.host, headers=self.headers,
+                             proxies=self.proxies, timeout=self.cfg["timeout"])
+            if r.status_code != 200:
+                return {"class": [], "list": []}
+
+            doc = self.getpq(r.text)
             classes = []
-            category_selectors = ['.category-list ul li', '.nav-menu li', '.menu li', 'nav ul li']
-            for selector in category_selectors:
-                for k in data(selector).items():
-                    link = k('a')
-                    href = (link.attr('href') or '').strip()
-                    name = (link.text() or '').strip()
-                    if not href or href == '#' or not name: continue
-                    classes.append({'type_name': name, 'type_id': href})
-                if classes: break
-            
+
+            for selector in self.cfg["category_selectors"]:
+                for item in doc(selector).items():
+                    a = item("a")
+                    href = (a.attr("href") or "").strip()
+                    name = (a.text() or "").strip()
+                    if not href or href == "#" or not name:
+                        continue
+                    classes.append({"type_name": name, "type_id": href})
+                if classes:
+                    break
+
             if not classes:
-                classes = [{'type_name': '最新', 'type_id': '/latest/'}, {'type_name': '热门', 'type_id': '/hot/'}]
-            
-            return {'class': classes, 'list': self.getlist(data('#index article, article'))}
+                classes = list(self.cfg["default_classes"])
+
+            return {
+                "class": classes,
+                "list": self.getlist(doc(self.cfg["home_list_selector"])),
+            }
         except Exception as e:
-            return {'class': [], 'list': []}
+            print(f"homeContent error: {e}")
+            return {"class": [], "list": []}
 
     def homeVideoContent(self):
         try:
-            response = requests.get(self.host, headers=self.headers, proxies=self.proxies, timeout=15)
-            if response.status_code != 200: return {'list': []}
-            data = self.getpq(response.text)
-            return {'list': self.getlist(data('#index article, article'))}
+            r = requests.get(self.host, headers=self.headers,
+                             proxies=self.proxies, timeout=self.cfg["timeout"])
+            if r.status_code != 200:
+                return {"list": []}
+            doc = self.getpq(r.text)
+            return {"list": self.getlist(doc(self.cfg["list_selector"]))}
         except Exception as e:
-            return {'list': []}
+            print(f"homeVideoContent error: {e}")
+            return {"list": []}
 
+    # ================= 分类 =================
     def categoryContent(self, tid, pg, filter, extend):
         try:
-            if '@folder' in tid:
-                v = self.getfod(tid.replace('@folder', ''))
-                return {'list': v, 'page': 1, 'pagecount': 1, 'limit': 90, 'total': len(v)}
-            
-            pg = int(pg) if pg else 1
-            
-            if tid.startswith('http'):
-                base_url = tid.rstrip('/')
-            else:
-                path = tid if tid.startswith('/') else f"/{tid}"
-                base_url = f"{self.host}{path}".rstrip('/')
-            
-            if pg == 1:
-                url = f"{base_url}/"
-            else:
-                url = f"{base_url}/{pg}/"
-                
-            response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
-            if response.status_code != 200: return {'list': [], 'page': pg, 'pagecount': 9999, 'limit': 90, 'total': 0}
-                
-            data = self.getpq(response.text)
-            videos = self.getlist(data('#archive article, #index article, article'), tid)
-            
-            return {'list': videos, 'page': pg, 'pagecount': 9999, 'limit': 90, 'total': 999999}
-        except Exception as e:
-            return {'list': [], 'page': pg, 'pagecount': 9999, 'limit': 90, 'total': 0}
+            if "@folder" in tid:
+                folder_id = tid.replace("@folder", "")
+                videos = self.getfod(folder_id)
+                return {
+                    "list": videos, "page": pg, "pagecount": 1,
+                    "limit": 90, "total": len(videos),
+                }
 
+            pg = int(pg)
+            tid = tid.rstrip("/")
+            url = f"{self.host}{tid}/{pg}/" if pg > 1 else f"{self.host}{tid}/"
+
+            r = requests.get(url, headers=self.headers,
+                             proxies=self.proxies, timeout=self.cfg["timeout"])
+            if r.status_code != 200:
+                return {"list": [], "page": pg, "pagecount": 1, "limit": 90, "total": 0}
+
+            doc = self.getpq(r.text)
+            videos = self.getlist(doc(self.cfg["list_selector"]), tid)
+
+            total_pages = 1
+            page_info = doc(".pagination .pages, .page-nav, .pagenavi").text()
+            if "共" in page_info and "页" in page_info:
+                try:
+                    total_pages = int(page_info.split("共")[-1].split("页")[0])
+                except Exception:
+                    pass
+
+            next_url = doc(
+                'a.next, .pagination a.next, .pagenavi .next, a:contains("下一页")'
+            ).attr("href")
+            has_next = bool(next_url)
+
+            return {
+                "list": videos,
+                "page": pg,
+                "pagecount": total_pages if total_pages > 1 else (99999 if has_next else pg),
+                "limit": 90,
+                "total": 999999 if has_next else len(videos),
+            }
+        except Exception as e:
+            print(f"categoryContent error: {e}")
+            return {"list": [], "page": pg, "pagecount": 1, "limit": 90, "total": 0}
+
+    # ================= 详情 =================
     def detailContent(self, ids):
         try:
-            url = ids[0] if ids[0].startswith('http') else f"{self.host}{ids[0]}"
-            response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
-            data = self.getpq(response.text)
-            
-            plist = []
-            used_names = set()
-            if data('.dplayer'):
-                for c, k in enumerate(data('.dplayer').items(), start=1):
-                    try:
-                        config_attr = k.attr('data-config')
-                        if config_attr:
-                            config = json.loads(config_attr)
-                            video_url = config.get('video', {}).get('url', '')
-                            
-                            if video_url:
-                                ep_name = ''
-                                parent = k.parents().eq(0)
-                                for _ in range(4):
-                                    if not parent: break
-                                    heading = parent.find('h2, h3, h4').eq(0).text().strip()
-                                    if heading:
-                                        ep_name = heading
-                                        break
-                                    parent = parent.parents().eq(0)
-                                
-                                base_name = ep_name if ep_name else f"视频{c}"
-                                name = base_name
-                                count = 2
-                                while name in used_names:
-                                    name = f"{base_name} {count}"
-                                    count += 1
-                                used_names.add(name)
-                                
-                                plist.append(f"{name}${video_url}")
-                    except: continue
-            
-            if not plist:
-                content_area = data('.post-content, article')
-                for i, link in enumerate(content_area('a').items(), start=1):
-                    link_text = link.text().strip()
-                    link_href = link.attr('href')
-                    
-                    if link_href and any(kw in link_text for kw in ['点击观看', '观看', '播放', '视频', '第一弹', '第二弹', '第三弹', '第四弹', '第五弹', '第六弹', '第七弹', '第八弹', '第九弹', '第十弹']):
-                        ep_name = link_text.replace('点击观看：', '').replace('点击观看', '').strip()
-                        if not ep_name: ep_name = f"视频{i}"
-                        
-                        if not link_href.startswith('http'):
-                            link_href = f"{self.host}{link_href}" if link_href.startswith('/') else f"{self.host}/{link_href}"
-                        
-                        plist.append(f"{ep_name}${link_href}")
-            
-            play_url = '#'.join(plist) if plist else f"未找到视频源${url}"
-            
-            vod_content = ''
+            raw_id = ids[0] if ids else ""
+            url = raw_id if raw_id.startswith("http") else f"{self.host}{raw_id}"
+
+            r = requests.get(url, headers=self.headers,
+                             proxies=self.proxies, timeout=self.cfg["timeout"])
+            if r.status_code != 200:
+                return {"list": [{
+                    "vod_play_from": self.cfg["play_from"],
+                    "vod_play_url": f"页面加载失败${url}",
+                }]}
+
+            doc = self.getpq(r.text)
+            vod = {"vod_play_from": self.cfg["play_from"]}
+
+            # 简介 / 标签
             try:
-                tags = []
-                seen_names = set()
-                seen_ids = set()
-                
-                tag_links = data('.tags a, .keywords a, .post-tags a')
-                
-                candidates = []
-                for k in tag_links.items():
-                    title = k.text().strip()
-                    href = k.attr('href')
-                    if title and href:
-                        candidates.append({'name': title, 'id': href})
-                
-                candidates.sort(key=lambda x: len(x['name']), reverse=True)
-                
-                for item in candidates:
-                    name = item['name']
-                    id_ = item['id']
-                    
-                    if id_ in seen_ids: continue
-                    
-                    is_duplicate = False
-                    for seen in seen_names:
-                        if name in seen:
-                            is_duplicate = True
-                            break
-                    
-                    if not is_duplicate:
-                        target = json.dumps({'id': id_, 'name': name})
-                        tags.append(f'[a=cr:{target}/]{name}[/a]')
-                        seen_names.add(name)
-                        seen_ids.add(id_)
-                
-                if tags:
-                    vod_content = ' '.join(tags)
-                else:
-                    vod_content = data('.post-title').text()
+                clist = []
+                tag_sel = self.cfg["tag_selector"]
+                if tag_sel and doc(tag_sel):
+                    for k in doc(tag_sel).items():
+                        title = k.text()
+                        href = k.attr("href")
+                        if title and href:
+                            clist.append(
+                                "[a=cr:" + json.dumps({"id": href, "name": title}) + "/]"
+                                + title + "[/a]"
+                            )
+                vod["vod_content"] = (
+                    " ".join(clist) if clist
+                    else doc(self.cfg["title_selector"]).text()
+                )
             except Exception:
-                vod_content = '获取标签失败'
+                vod["vod_content"] = doc(self.cfg["title_selector"]).text() or self.cfg["name"]
 
-            if not vod_content:
-                vod_content = data('h1').text() or '每日大乱斗'
+            # 播放列表
+            try:
+                plist = self._parse_players(doc)
+                if plist:
+                    vod["vod_play_url"] = "#".join(plist)
+                else:
+                    vod["vod_play_url"] = f"未找到视频源${url}"
+            except Exception:
+                vod["vod_play_url"] = f"视频解析失败${url}"
 
-            return {'list': [{'vod_play_from': '每日大乱斗', 'vod_play_url': play_url, 'vod_content': vod_content}]}
-        except:
-            return {'list': [{'vod_play_from': '每日大乱斗', 'vod_play_url': '获取失败'}]}
+            return {"list": [vod]}
+        except Exception as e:
+            print(f"detailContent error: {e}")
+            return {"list": [{
+                "vod_play_from": self.cfg["play_from"],
+                "vod_play_url": f"详情页加载失败${ids[0] if ids else ''}",
+            }]}
 
+    # ================= 搜索 =================
     def searchContent(self, key, quick, pg="1"):
         try:
-            pg = int(pg) if pg else 1
-            
-            if pg == 1:
-                url = f"{self.host}/search/{key}/"
+            if str(pg) != "1":
+                url = self.cfg["search_url_tpl_paged"].format(host=self.host, key=key, pg=pg)
             else:
-                url = f"{self.host}/search/{key}/{pg}/"
-            
-            response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
-            return {'list': self.getlist(self.getpq(response.text)('article')), 'page': pg, 'pagecount': 9999}
-        except:
-            return {'list': [], 'page': pg, 'pagecount': 9999}
+                url = self.cfg["search_url_tpl"].format(host=self.host, key=key)
 
+            r = requests.get(url, headers=self.headers,
+                             proxies=self.proxies, timeout=self.cfg["timeout"])
+            if r.status_code != 200:
+                return {"list": [], "page": pg}
+
+            doc = self.getpq(r.text)
+            videos = self.getlist(doc(self.cfg["list_selector"]))
+            return {"list": videos, "page": pg}
+        except Exception as e:
+            print(f"searchContent error: {e}")
+            return {"list": [], "page": pg}
+
+    # ================= 播放 =================
     def playerContent(self, flag, id, vipFlags):
-        parse = 0 if self.isVideoFormat(id) else 1
-        url = self.proxy(id) if '.m3u8' in id else id
-        return {'parse': parse, 'url': url, 'header': self.headers}
+        url = id
+        p = 1
+        if self.isVideoFormat(url):
+            if ".m3u8" in url:
+                url = self.proxy(url)
+            p = 0
+        self.log(f"播放请求: parse={p}, url={url}")
+        print(f"播放请求: parse={p}, url={url}")
+        return {"parse": p, "url": url, "header": self.headers}
 
     def localProxy(self, param):
-        try:
-            type_ = param.get('type')
-            url = param.get('url')
-            if type_ == 'cache':
-                key = param.get('key')
-                if content := img_cache.get(key):
-                    return [200, 'image/jpeg', content]
-                return [404, 'text/plain', b'Expired']
-            elif type_ == 'img':
-                real_url = self.d64(url) if not url.startswith('http') else url
-                res = requests.get(real_url, headers=self.headers, proxies=self.proxies, timeout=10)
-                content = self.aesimg(res.content)
-                return [200, 'image/jpeg', content]
-            elif type_ == 'm3u8':
-                return self.m3Proxy(url)
-            else:
-                return self.tsProxy(url)
-        except:
-            return [404, 'text/plain', b'']
+        t = param.get("type")
+        if t == "img":
+            res = requests.get(param["url"], headers=self.headers,
+                               proxies=self.proxies, timeout=10)
+            return [200, res.headers.get("Content-Type"), self.aesimg(res.content)]
+        if t == "m3u8":
+            return self.m3Proxy(param["url"])
+        return self.tsProxy(param["url"])
 
-    def proxy(self, data, type='m3u8'):
-        if data and self.proxies: return f"{self.getProxyUrl()}&url={self.e64(data)}&type={type}"
+    def proxy(self, data, type="m3u8"):
+        if data and len(self.proxies):
+            return f"{self.getProxyUrl()}&url={self.e64(data)}&type={type}"
         return data
 
     def m3Proxy(self, url):
         url = self.d64(url)
-        res = requests.get(url, headers=self.headers, proxies=self.proxies)
-        data = res.text
-        base = res.url.rsplit('/', 1)[0]
-        lines = []
-        for line in data.split('\n'):
-            if '#EXT' not in line and line.strip():
-                if not line.startswith('http'):
-                    line = f"{base}/{line}"
-                lines.append(self.proxy(line, 'ts'))
-            else:
-                lines.append(line)
-        return [200, "application/vnd.apple.mpegurl", '\n'.join(lines)]
+        ydata = requests.get(url, headers=self.headers,
+                             proxies=self.proxies, allow_redirects=False)
+        data = ydata.content.decode("utf-8")
+        if ydata.headers.get("Location"):
+            url = ydata.headers["Location"]
+            data = requests.get(url, headers=self.headers,
+                                proxies=self.proxies).content.decode("utf-8")
+
+        lines = data.strip().split("\n")
+        last_r = url[:url.rfind("/")]
+        parsed = urlparse(url)
+        durl = parsed.scheme + "://" + parsed.netloc
+        iskey = True
+
+        for index, string in enumerate(lines):
+            if iskey and "URI" in string:
+                pattern = r'URI="([^"]*)"'
+                m = re.search(pattern, string)
+                if m:
+                    lines[index] = re.sub(
+                        pattern,
+                        f'URI="{self.proxy(m.group(1), "mkey")}"',
+                        string,
+                    )
+                    iskey = False
+                    continue
+            if "#EXT" not in string:
+                if "http" not in string:
+                    domain = last_r if string.count("/") < 2 else durl
+                    string = domain + ("" if string.startswith("/") else "/") + string
+                lines[index] = self.proxy(string, string.split(".")[-1].split("?")[0])
+
+        return [200, "application/vnd.apple.mpegur", "\n".join(lines)]
 
     def tsProxy(self, url):
-        return [200, 'video/mp2t', requests.get(self.d64(url), headers=self.headers, proxies=self.proxies).content]
+        url = self.d64(url)
+        data = requests.get(url, headers=self.headers,
+                            proxies=self.proxies, stream=True)
+        return [200, data.headers["Content-Type"], data.content]
 
+    # ================= Base64 =================
     def e64(self, text):
-        return b64encode(str(text).encode()).decode()
+        try:
+            return b64encode(text.encode("utf-8")).decode("utf-8")
+        except Exception as e:
+            print(f"Base64编码错误: {e}")
+            return ""
 
     def d64(self, text):
-        return b64decode(str(text).encode()).decode()
+        try:
+            return b64decode(text.encode("utf-8")).decode("utf-8")
+        except Exception as e:
+            print(f"Base64解码错误: {e}")
+            return ""
 
-    def aesimg(self, data):
-        if len(data) < 16: return data
-        keys = [(b'f5d965df75336270', b'97b60394abc2fbe1'), (b'75336270f5d965df', b'abc2fbe197b60394')]
-        for k, v in keys:
+    # ================= 发布页 / 动态域名 =================
+    def get_working_host(self):
+        # 1) 发布页动态提取
+        for url in self.extract_domains_from_publish_page():
             try:
-                dec = unpad(AES.new(k, AES.MODE_CBC, v).decrypt(data), 16)
-                if dec.startswith(b'\xff\xd8') or dec.startswith(b'\x89PNG'): return dec
-            except: pass
-            try:
-                dec = unpad(AES.new(k, AES.MODE_ECB).decrypt(data), 16)
-                if dec.startswith(b'\xff\xd8'): return dec
-            except: pass
-        return data
+                r = requests.get(url, headers=self.headers,
+                                 proxies=self.proxies, timeout=self.cfg["probe_timeout"])
+                if r.status_code == 200 and self.getpq(r.text)(self.cfg["host_check_selector"]):
+                    self.log(f"动态解析到可用站点: {url}")
+                    print(f"动态解析到可用站点: {url}")
+                    return url
+            except Exception:
+                continue
 
-    def getlist(self, data, tid=''):
+        # 2) 回退
+        for url in self.cfg["fallback_hosts"]:
+            try:
+                r = requests.get(url, headers=self.headers,
+                                 proxies=self.proxies, timeout=self.cfg["probe_timeout"])
+                if r.status_code == 200 and self.getpq(r.text)(self.cfg["host_check_selector"]):
+                    self.log(f"回退选用可用站点: {url}")
+                    print(f"回退选用可用站点: {url}")
+                    return url
+            except Exception:
+                continue
+
+        fallback = self.cfg["fallback_hosts"][0]
+        self.log(f"未检测到可用站点，回退: {fallback}")
+        print(f"未检测到可用站点，回退: {fallback}")
+        return fallback
+
+    def extract_domains_from_publish_page(self):
+        try:
+            r = requests.get(self.cfg["publish_url"], headers=self.headers,
+                             proxies=self.proxies, timeout=self.cfg["probe_timeout"])
+            if r.status_code != 200:
+                self.log(f"发布页请求失败: HTTP {r.status_code}")
+                return []
+
+            html = self._decode_publish(r.text, self.cfg["publish_decode"])
+            doc = self.getpq(html)
+            domains = self._pick_domains(doc, self.cfg["publish_url"])
+            self.log(f"发布页解析到 {len(domains)} 个候选域名")
+            print(f"发布页解析到 {len(domains)} 个候选域名")
+            return domains
+        except Exception as e:
+            self.log(f"解析发布页失败: {e}")
+            print(f"解析发布页失败: {e}")
+            return []
+
+    def _decode_publish(self, text, mode):
+        """发布页编码策略分发"""
+        if mode == "js_base64":
+            m = re.search(r"Base64\.decode\(['\"]([^'\"]+)['\"]\)", text)
+            if m:
+                try:
+                    return b64decode(m.group(1)).decode("utf-8", "ignore")
+                except Exception:
+                    return text
+            return text
+        if mode == "js_atob":
+            m = re.search(r"atob\(['\"]([^'\"]+)['\"]\)", text)
+            if m:
+                try:
+                    return b64decode(m.group(1)).decode("utf-8", "ignore")
+                except Exception:
+                    return text
+            return text
+        if mode == "plain":
+            return text
+        if mode == "redirect":
+            return ""
+        return text
+
+    def _pick_domains(self, doc, base):
+        seen, out = set(), []
+        for a in doc("a").items():
+            href = (a.attr("href") or "").strip()
+            if not href:
+                continue
+            if href.startswith("//"):
+                href = "https:" + href
+            if href.startswith("/") and base:
+                href = base.rstrip("/") + href
+            if not href.startswith("http") or "." not in href:
+                continue
+            if any(x in href for x in ["javascript:", "mailto:", "#"]):
+                continue
+            if href not in seen:
+                seen.add(href)
+                out.append(href)
+        return out
+
+    # ================= 播放器解析（可按站替换） =================
+    def _parse_players(self, doc):
+        """DPlayer[data-config] 通用解析；换成别的播放器就重写此函数"""
+        plist = []
+        used_names = set()
+        sel = self.cfg["player_selector"]
+        attr = self.cfg["player_config_attr"]
+
+        if not doc(sel):
+            return plist
+
+        for idx, node in enumerate(doc(sel).items(), start=1):
+            raw = node.attr(attr)
+            if not raw:
+                continue
+            try:
+                cfg = json.loads(raw)
+            except Exception:
+                continue
+            video_url = cfg.get("video", {}).get("url", "")
+            if not video_url:
+                continue
+
+            # 尝试从上方标题取集名
+            ep_name = ""
+            try:
+                parent = node.parents().eq(0)
+                for _ in range(3):
+                    if not parent:
+                        break
+                    h = parent.find(self.cfg["player_heading_selector"]).eq(0).text() or ""
+                    h = h.strip()
+                    if h:
+                        ep_name = h
+                        break
+                    parent = parent.parents().eq(0)
+            except Exception:
+                ep_name = ""
+
+            base_name = ep_name or f"视频{idx}"
+            name = base_name
+            c = 2
+            while name in used_names:
+                name = f"{base_name} {c}"
+                c += 1
+            used_names.add(name)
+
+            self.log(f"解析到视频: {name} -> {video_url}")
+            print(f"解析到视频: {name} -> {video_url}")
+            plist.append(f"{name}${video_url}")
+        return plist
+
+    # ================= 列表 =================
+    def getlist(self, data, tid=""):
         videos = []
-        is_folder = '/mrdg' in (tid or '')
+        is_folder = self.cfg["folder_id_marker"] in (tid or "")
+        meta_sel = self.cfg["list_meta_selector"]
         for k in data.items():
-            card_html = k.outer_html() if hasattr(k, 'outer_html') else str(k)
-            a = k if k.is_('a') else k('a').eq(0)
-            href = a.attr('href')
-            title = k('h2').text() or k('.entry-title').text() or k('.post-title').text()
-            if not title and k.is_('a'): title = k.text()
-            
-            if href and title:
-                img = self.getimg(k('script').text(), k, card_html)
+            href = k.attr("href")
+            name = k("h2").text()
+            remark = k(meta_sel).text()
+            if href and name:
                 videos.append({
-                    'vod_id': f"{href}{'@folder' if is_folder else ''}",
-                    'vod_name': title.strip(),
-                    'vod_pic': img,
-                    'vod_remarks': k('time').text() or '',
-                    'vod_tag': 'folder' if is_folder else '',
-                    'style': {"type": "rect", "ratio": 1.33}
+                    "vod_id": f"{href}{'@folder' if is_folder else ''}",
+                    "vod_name": name.replace("\n", " "),
+                    "vod_pic": self.getimg(k("script").text()),
+                    "vod_remarks": remark or "",
+                    "vod_tag": "folder" if is_folder else "",
+                    "style": self.cfg["style"],
                 })
         return videos
 
-    def getfod(self, id):
-        url = f"{self.host}{id}"
-        data = self.getpq(requests.get(url, headers=self.headers, proxies=self.proxies).text)
+    # ================= 合集 / 文件夹 =================
+    def getfod(self, folder_id):
+        url = f"{self.host}{folder_id}"
+        r = requests.get(url, headers=self.headers,
+                         proxies=self.proxies, timeout=self.cfg["timeout"])
+        doc = self.getpq(r.text)
+        vdata = doc(self.cfg["folder_content_selector"])
+
+        for sel in self.cfg["folder_remove_selectors"]:
+            vdata.remove(sel)
+
+        p = vdata("p")
+        img_attr = self.cfg["folder_img_attr"]
         videos = []
-        for i, h2 in enumerate(data('.post-content h2').items()):
-            p_txt = data('.post-content p').eq(i * 2)
-            p_img = data('.post-content p').eq(i * 2 + 1)
-            p_html = p_img.outer_html() if hasattr(p_img, 'outer_html') else str(p_img)
+        for i, x in enumerate(vdata("h2").items()):
+            c = i * 2
             videos.append({
-                'vod_id': p_txt('a').attr('href'),
-                'vod_name': p_txt.text().strip(),
-                'vod_pic': self.getimg('', p_img, p_html),
-                'vod_remarks': h2.text().strip()
+                "vod_id": p.eq(c)("a").attr("href"),
+                "vod_name": p.eq(c).text(),
+                "vod_pic": f"{self.getProxyUrl()}&url={p.eq(c + 1)('img').attr(img_attr)}&type=img",
+                "vod_remarks": x.text(),
             })
         return videos
 
-    def getimg(self, text, elem=None, html_content=None):
-        if m := re.search(r"loadBannerDirect\('([^']+)'", text or ''):
-            return self._proc_url(m.group(1))
-        
-        if html_content is None and elem is not None:
-             html_content = elem.outer_html() if hasattr(elem, 'outer_html') else str(elem)
-        if not html_content: return ''
+    # ================= 图片 / 解密 =================
+    def getimg(self, text):
+        m = re.search(self.cfg["img_regex"], text or "")
+        if m:
+            return f"{self.getProxyUrl()}&url={m.group(1)}&type=img"
+        return ""
 
-        html_content = html_content.replace('&quot;', '"').replace('&apos;', "'").replace('&amp;', '&')
+    def aesimg(self, word):
+        cipher = AES.new(self.cfg["aes_key"], AES.MODE_CBC, self.cfg["aes_iv"])
+        return unpad(cipher.decrypt(word), AES.block_size)
 
-        if 'data:image' in html_content:
-            m = re.search(r'(data:image/[a-zA-Z0-9+/=;,]+)', html_content)
-            if m: return self._proc_url(m.group(1))
-
-        m = re.search(r'(https?://[^"\'\s)]+\.(?:jpg|png|jpeg|webp))', html_content, re.I)
-        if m: return self._proc_url(m.group(1))
-            
-        if 'url(' in html_content:
-            m = re.search(r'url\s*\(\s*[\'"]?([^"\'\)]+)[\'"]?\s*\)', html_content, re.I)
-            if m: return self._proc_url(m.group(1))
-            
-        return ''
-
-    def _proc_url(self, url):
-        if not url: return ''
-        url = url.strip('\'" ')
-        if url.startswith('data:'):
-            try:
-                _, b64_str = url.split(',', 1)
-                raw = b64decode(b64_str)
-                if not (raw.startswith(b'\xff\xd8') or raw.startswith(b'\x89PNG') or raw.startswith(b'GIF8')):
-                    raw = self.aesimg(raw)
-                key = hashlib.md5(raw).hexdigest()
-                img_cache[key] = raw
-                return f"{self.getProxyUrl()}&type=cache&key={key}"
-            except: return ""
-        if not url.startswith('http'):
-            url = f"{self.host}{url}" if url.startswith('/') else f"{self.host}/{url}"
-        return f"{self.getProxyUrl()}&url={self.e64(url)}&type=img"
-
+    # ================= PyQuery 安全包装 =================
     def getpq(self, data):
-        try: return pq(data)
-        except: return pq(data.encode('utf-8'))
+        try:
+            return pq(data)
+        except Exception as e:
+            print(f"{e}")
+            return pq(data.encode("utf-8"))
