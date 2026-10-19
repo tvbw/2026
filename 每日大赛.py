@@ -32,9 +32,9 @@ SITE_CONFIG = {
     "host_check_selector": "#index article a",
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
-        "https://border.qfdnjjthm.cc/",
-        "https://agency.qfdnjjthm.cc/",
-        "https://brown.qfdnjjthm.cc/",
+        "https://center.hdzlnzfq.cc/",
+        "https://8d1hf.tykveiik.cc/",
+        "https://8d1hf.tykveiik.cc/",
     ],
 
     "list_selector": "#index article a, #archive article a",
