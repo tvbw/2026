@@ -4,57 +4,6 @@
 #   同主题站 -> 只改 SITE_CONFIG
 #   跨主题   -> 另加/替换 _parse_players / _extract_folder_items / _decode_publish
 # ============================================================
-import json
-import re
-import sys
-import time
-from base64 import b64decode, b64encode
-from urllib.parse import urlparse
-
-import requests
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import unpad
-from pyquery import PyQuery as pq
-
-sys.path.append('..')
-from base.spider import Spider
-
-
-# =================== 极简万能加速头 ===================
-from functools import lru_cache
-
-FAST_CDN = "lib.baomitu.com"
-DEAD_MAP = {
-    "rimg.iomycdn.com": FAST_CDN,
-    "rimg.xiakee.com": FAST_CDN,
-    "play.abcyun.com": FAST_CDN,
-    "video.xyzcdn.com": FAST_CDN,
-}
-
-@lru_cache(maxsize=256)
-def _auto_cdn(url: str) -> str:
-    if not url:
-        return ""
-    for dead, fast in DEAD_MAP.items():
-        url = url.replace(dead, fast)
-    if url.startswith("//"):
-        url = "https:" + url
-    try:
-        r = requests.head(url, allow_redirects=True, timeout=2)
-        url = r.url
-    except Exception:
-        pass
-    return url
-
-_real_get = requests.Session.get
-def _patched_get(self, url, *a, **k):
-    url = _auto_cdn(url)
-    return _real_get(self, url, *a, **k)
-requests.Session.get = _patched_get
-# =================== 加速头结束 ===================
-
-
-# ============================================================
 #  配置区：换同主题站点，改这一个字典即可
 # ============================================================
 SITE_CONFIG = {
