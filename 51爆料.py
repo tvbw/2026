@@ -24,7 +24,7 @@ from base.spider import Spider
 SITE_CONFIG = {
     # ---- 基础信息 ----
     "name": "51爆料",
-    "play_from": "51吸瓜",
+    "play_from": "51爆料",
     "style": {"type": "rect", "ratio": 1.33},
 
     # ---- 发布页与可用域名 ----
