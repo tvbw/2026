@@ -30,9 +30,9 @@ SITE_CONFIG = {
     "publish_decode": "js_base64",          # js_base64 / js_atob / plain / redirect
     "host_check_selector": "#index article a",
     "fallback_hosts": [
-        "https://boot.tzkkylht.cc/",
-        "https://assert.tzkkylht.cc/",
-        "https://attract.tzkkylht.cc/",
+        "https://another.rmdgddgh.cc/",
+        "https://assume.rmdgddgh.cc/",
+        "https://ceiling.rmdgddgh.cc/",
     ],
 
     "list_selector": "#index article a, #archive article a",
