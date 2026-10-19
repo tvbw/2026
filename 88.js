@@ -35,8 +35,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py",
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
+      "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py",
+      "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
     },
     {
       "key": "香蕉9合1最终优化版",
@@ -47,8 +47,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py",
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
+      "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py",
+      "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
     },
     {
       "key": "香蕉9合2",
@@ -59,8 +59,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
+      "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
+      "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
     },
     {
       "key": "csp_xbpq_禁片天堂",
@@ -72,7 +72,7 @@
       "searchable": 0,
       "quickSearch": 0,
       "filterable": 0,
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/jptt.json",
+      "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/jptt.json",
       "style": {
         "type": "rect",
         "ratio": 1.65
@@ -87,8 +87,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py",
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py"
+      "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py",
+      "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py"
     },
     {
       "key": "sweetpornos+详情页翻译",
@@ -123,8 +123,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -154,7 +154,7 @@
       "searchable": 0,
       "quickSearch": 0,
       "filterable": 0,
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
+      "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
       "style": {
         "type": "rect",
         "ratio": 1.65
