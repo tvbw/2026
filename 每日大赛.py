@@ -23,7 +23,7 @@ from base.spider import Spider
 
 SITE_CONFIG = {
     # ---- 基础信息 ----
-    "name": "每日大赛51吃瓜模板",
+    "name": "每日大赛",
     "play_from": "每日大赛",
     "style": {"type": "rect", "ratio": 1.33},
 
