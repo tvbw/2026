@@ -25,12 +25,12 @@ SITE_CONFIG = {
     "name": "51模板",
     "play_from": "51模板",
     "style": {"type": "rect", "ratio": 1.33},
-    "publish_url": "https://mrdld2.com/",
+    "publish_url": "https://mrdld3.com/",
     "publish_decode": "js_base64",          # js_base64 / js_atob / plain / redirect
     "host_check_selector": "#index article a",
     "fallback_hosts": [
-        "https://badly.ezqkwgkf.cc/",
-        "https://auto.ezqkwgkf.cc/",
+        "https://busy.tiihptkpd.cc/",
+        "https://auto.tiihptkpd.cc/",
         "https://athlete.ezqkwgkf.cc/",
     ],
 
