@@ -26,7 +26,7 @@ SITE_CONFIG = {
     "play_from": "51自维护通用动态模板",
     "style": {"type": "rect", "ratio": 1.33},
 
-    "publish_url": "https://www.hpuqlstn.cc/",
+    "publish_url": "https://51bla20.com",
     "publish_decode": "js_base64",          # js_base64 / js_atob / plain / redirect
     "host_check_selector": "#index article a",
     "fallback_hosts": [
