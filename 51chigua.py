@@ -25,7 +25,7 @@ SITE_CONFIG = {
     "name": "51模板",
     "play_from": "51模板",
     "style": {"type": "rect", "ratio": 1.33},
-    "publish_url": "https://zuzpayj.cc/",
+    "publish_url": "https://51cgf20.com",
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "js_base64",
     # 判断“这个域名是不是目标站”的特征选择器
