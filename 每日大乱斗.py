@@ -22,10 +22,9 @@ sys.path.append('..')
 from base.spider import Spider
 
 SITE_CONFIG = {
-    "name": "51爆料",
-    "play_from": "51吸瓜",
+    "name": "51模板",
+    "play_from": "51模板",
     "style": {"type": "rect", "ratio": 1.33},
-
     "publish_url": "https://mrdld2.com/",
     "publish_decode": "js_base64",          # js_base64 / js_atob / plain / redirect
     "host_check_selector": "#index article a",
@@ -575,6 +574,8 @@ class Spider(Spider):
         except Exception as e:
             print(f"{e}")
             return pq(data.encode("utf-8"))
+
+
 # ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
 _PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
 
