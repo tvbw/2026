@@ -381,8 +381,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/51大赛.py",
-      "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/51大赛.py"
+      "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/51爆料.py",
+      "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/51爆料.py"
     },
     {
       "key": "51吃瓜",
