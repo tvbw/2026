@@ -14,7 +14,6 @@ import threading
 import time
 from base64 import b64decode, b64encode
 from urllib.parse import urlparse
-
 import requests
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
@@ -23,19 +22,25 @@ sys.path.append('..')
 from base.spider import Spider
 
 SITE_CONFIG = {
-    "name": "51自维护通用动态模板",
-    "play_from": "51自维护通用动态模板",
+    # ---- 基础信息 ----
+    "name": "每日大赛51吃瓜模板",
+    "play_from": "每日大赛",
     "style": {"type": "rect", "ratio": 1.33},
 
+    # ---- 发布页与可用域名 ----
     "publish_url": "https://www.mgvvbfmp.cc/",
-    "publish_decode": "js_base64",          # js_base64 / js_atob / plain / redirect
+    # 发布页编码方式: js_base64 / js_atob / plain / redirect
+    "publish_decode": "js_base64",
+    # 判断“这个域名是不是目标站”的特征选择器
     "host_check_selector": "#index article a",
+    # 发布页解析失败时的兜底域名
     "fallback_hosts": [
         "https://border.qfdnjjthm.cc/",
         "https://agency.qfdnjjthm.cc/",
         "https://brown.qfdnjjthm.cc/",
     ],
 
+    # ---- 列表 / 分类 ----
     "list_selector": "#index article a, #archive article a",
     "home_list_selector": "#index article a",
     "category_selectors": [
@@ -49,25 +54,31 @@ SITE_CONFIG = {
         {"type_name": "最新", "type_id": "/latest/"},
         {"type_name": "热门", "type_id": "/hot/"},
     ],
+    "list_meta_selector": "span[itemprop='datePublished'], .post-meta, .entry-meta, time",
     "folder_id_marker": "/mrdg",
 
+    # ---- 详情 ----
     "title_selector": ".post-title",
     "tag_selector": ".tags .keywords a",
     "player_selector": ".dplayer",
     "player_config_attr": "data-config",
     "player_heading_selector": "h2, h3, h4",
 
+    # ---- 合集 / 文件夹 ----
     "folder_content_selector": ".post-content[itemprop='articleBody']",
     "folder_remove_selectors": [".txt-apps", ".line", "blockquote", ".tags", ".content-tabs"],
     "folder_img_attr": "data-xkrkllgl",
 
+    # ---- 图片 ----
     "img_regex": r"loadBannerDirect\('([^']+)'",
     "aes_key": b"f5d965df75336270",
     "aes_iv": b"97b60394abc2fbe1",
 
+    # ---- 搜索 ----
     "search_url_tpl": "{host}/search/{key}/",
     "search_url_tpl_paged": "{host}/search/{key}/{pg}/",
 
+    # ---- 请求头 ----
     "headers": {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                       "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -80,6 +91,7 @@ SITE_CONFIG = {
         "Cache-Control": "no-cache",
     },
 
+    # ---- 超时 ----
     "timeout": 15,
     "probe_timeout": 10,
 }
@@ -88,9 +100,6 @@ SITE_CONFIG = {
 
 class Spider(Spider):
 
-    # ✅ 关键修复：类属性，保证 init 之前 getName 也能访问
-    cfg = SITE_CONFIG
-
     # ================= 生命周期 =================
     def init(self, extend=""):
         try:
@@ -98,7 +107,6 @@ class Spider(Spider):
         except Exception:
             self.proxies = {}
 
-        # 实例级也挂上，便于后续覆盖
         self.cfg = SITE_CONFIG
         self.headers = dict(self.cfg["headers"])
 
@@ -111,8 +119,7 @@ class Spider(Spider):
         print(f"使用站点: {self.host}")
 
     def getName(self):
-        # ✅ 直接引用全局，彻底不依赖实例状态
-        return SITE_CONFIG.get("name", "51爆料")
+        return self.cfg["name"]
 
     def isVideoFormat(self, url):
         return any(ext in (url or "") for ext in [".m3u8", ".mp4", ".ts"])
@@ -232,6 +239,7 @@ class Spider(Spider):
             doc = self.getpq(r.text)
             vod = {"vod_play_from": self.cfg["play_from"]}
 
+            # 简介 / 标签
             try:
                 clist = []
                 tag_sel = self.cfg["tag_selector"]
@@ -251,6 +259,7 @@ class Spider(Spider):
             except Exception:
                 vod["vod_content"] = doc(self.cfg["title_selector"]).text() or self.cfg["name"]
 
+            # 播放列表
             try:
                 plist = self._parse_players(doc)
                 if plist:
@@ -374,6 +383,7 @@ class Spider(Spider):
 
     # ================= 发布页 / 动态域名 =================
     def get_working_host(self):
+        # 1) 发布页动态提取
         for url in self.extract_domains_from_publish_page():
             try:
                 r = requests.get(url, headers=self.headers,
@@ -385,6 +395,7 @@ class Spider(Spider):
             except Exception:
                 continue
 
+        # 2) 回退
         for url in self.cfg["fallback_hosts"]:
             try:
                 r = requests.get(url, headers=self.headers,
@@ -421,6 +432,7 @@ class Spider(Spider):
             return []
 
     def _decode_publish(self, text, mode):
+        """发布页编码策略分发"""
         if mode == "js_base64":
             m = re.search(r"Base64\.decode\(['\"]([^'\"]+)['\"]\)", text)
             if m:
@@ -462,8 +474,9 @@ class Spider(Spider):
                 out.append(href)
         return out
 
-    # ================= 播放器解析 =================
+    # ================= 播放器解析（可按站替换） =================
     def _parse_players(self, doc):
+        """DPlayer[data-config] 通用解析；换成别的播放器就重写此函数"""
         plist = []
         used_names = set()
         sel = self.cfg["player_selector"]
@@ -484,6 +497,7 @@ class Spider(Spider):
             if not video_url:
                 continue
 
+            # 尝试从上方标题取集名
             ep_name = ""
             try:
                 parent = node.parents().eq(0)
@@ -516,13 +530,11 @@ class Spider(Spider):
     def getlist(self, data, tid=""):
         videos = []
         is_folder = self.cfg["folder_id_marker"] in (tid or "")
+        meta_sel = self.cfg["list_meta_selector"]
         for k in data.items():
             href = k.attr("href")
             name = k("h2").text()
-            remark = (
-                k("span[itemprop='datePublished']").text()
-                or k(".post-meta, .entry-meta, time").text()
-            )
+            remark = k(meta_sel).text()
             if href and name:
                 videos.append({
                     "vod_id": f"{href}{'@folder' if is_folder else ''}",
@@ -534,7 +546,7 @@ class Spider(Spider):
                 })
         return videos
 
-    # ================= 合集 =================
+    # ================= 合集 / 文件夹 =================
     def getfod(self, folder_id):
         url = f"{self.host}{folder_id}"
         r = requests.get(url, headers=self.headers,
@@ -558,7 +570,7 @@ class Spider(Spider):
             })
         return videos
 
-    # ================= 图片 =================
+    # ================= 图片 / 解密 =================
     def getimg(self, text):
         m = re.search(self.cfg["img_regex"], text or "")
         if m:
@@ -569,7 +581,7 @@ class Spider(Spider):
         cipher = AES.new(self.cfg["aes_key"], AES.MODE_CBC, self.cfg["aes_iv"])
         return unpad(cipher.decrypt(word), AES.block_size)
 
-    # ================= PyQuery =================
+    # ================= PyQuery 安全包装 =================
     def getpq(self, data):
         try:
             return pq(data)
