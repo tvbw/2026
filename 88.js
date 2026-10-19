@@ -3,229 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-
-      "key": "Cam4直播",
-      "name": "5🍓Cam4直播｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Cam4直播TG群：@tvshare23.py"
-    },
-    {
-      "key": "xn69",
-      "name": "5🍓xn69国外直播聚合｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/xn69.py"
-    },
-    {
-      "key": "原创乱伦",
-      "name": "5🍓原创乱伦｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/原创乱伦.py"
-    },
-    {
-      "key": "暗夜蜜桃",
-      "name": "4🍓暗夜蜜桃｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/暗夜蜜桃.py"
-    },
-    {
-      "key": "xx9已过验证",
-      "name": "3🍓xx9影视｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/xx9已过验证.py"
-    },
-    {
-      "key": "小穴生",
-      "name": "4🍓小穴生｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/小穴生.py"
-    },
-    {
-      "key": "快感研究所",
-      "name": "4🍓快感研究所｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/快感研究所.py"
-    },
-    {
-      "key": "柳州丈母 (2)",
-      "name": "4🍓柳州风情｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/柳州丈母 (2).py"
-    },
-    {
-      "key": "桃花视频",
-      "name": "3🍓桃花视频｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/桃花视频.py"
-    },
-    {
-      "key": "淫花宫TVBox标准爬虫_已修复",
-      "name": "3🍓淫花宫｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/淫花宫TVBox标准爬虫_已修复.py"
-    },
-    {
-
-      "key": "真果鉴(1)",
-      "name": "3🍓真果鉴(1)｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/真果鉴(1).py"
-    },
-    {
-      "key": "精仙阁修复版",
-      "name": "3🍓精仙阁修复版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/精仙阁修复版.py"
-    },
-    {
-      "key": "聚合直播TG群：@tvshare23",
-      "name": "3🍓聚合直播TG群：@tvshare23｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/聚合直播TG群：@tvshare23.py"
-    },
-    {
-      "key": "茄子精品",
-      "name": "3🍓茄子精品｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/茄子精品.py"
-    },
-    {
-      "key": "蜜桃视频",
-      "name": "3🍓蜜桃视频｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/蜜桃视频.py"
-    },
-    {
-      "key": "蝴蝶影院（内置去广告）安卓版本",
-      "name": "3🍓蝴蝶影院（内置去广告）安卓版本｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/蝴蝶影院（内置去广告）安卓版本.py"
-    },
-    {
-      "key": "采集聚合成人TG群：@tvshare23",
-      "name": "3🍓采集聚合成人TG群：@tvshare23｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/采集聚合成人TG群：@tvshare23.py"
-    },
-    {
-      "key": "金典AV",
-      "name": "3🍓金典AV｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/金典AV.py"
-    },
-    {
-      "key": "陌陌一夜情",
-      "name": "3🍓陌陌一夜情｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/陌陌一夜情.py"
-    },
-    {
-      "key": "麻豆影院",
-      "name": "3🍓麻豆影院｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/麻豆影院.py"
-    },
-    {
-
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
@@ -382,6 +159,28 @@
         "type": "rect",
         "ratio": 1.65
       }
+    },
+    {
+      "key": "Cam4直播",
+      "name": "5🍓Cam4直播｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Cam4直播TG群：@tvshare23.py"
+    },
+    {
+      "key": "xn69",
+      "name": "5🍓xn69国外聚合直播｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/xn69.py"
     },
     {
       "key": "csp_xbpq_StripChat",
@@ -990,6 +789,72 @@
       }
     },
     {
+      "key": "原创乱伦",
+      "name": "5🍓原创乱伦｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/原创乱伦.py"
+    },
+    {
+      "key": "暗夜蜜桃",
+      "name": "4🍓暗夜蜜桃｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/暗夜蜜桃.py"
+    },
+    {
+      "key": "xx9已过验证",
+      "name": "3🍓xx9影视｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/xx9已过验证.py"
+    },
+    {
+      "key": "小穴生",
+      "name": "4🍓小穴生｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/小穴生.py"
+    },
+    {
+      "key": "快感研究所",
+      "name": "4🍓快感研究所｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/快感研究所.py"
+    },
+    {
+      "key": "柳州丈母 (2)",
+      "name": "4🍓柳州风情｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/柳州丈母 (2).py"
+    },
+    {
       "key": "夜色.py",
       "name": "4❤️夜色【🔞】",
       "type": 3,
@@ -1182,6 +1047,39 @@
         "type": "rect",
         "ratio": 1.6
       }
+    },
+    {
+      "key": "桃花视频",
+      "name": "3🍓桃花视频｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/桃花视频.py"
+    },
+    {
+      "key": "淫花宫TVBox标准爬虫_已修复",
+      "name": "3🍓淫花宫｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/淫花宫TVBox标准爬虫_已修复.py"
+    },
+    {
+      "key": "麻豆影院",
+      "name": "3🍓麻豆影院｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/麻豆影院.py"
     },
     {
       "key": "影视大全",
