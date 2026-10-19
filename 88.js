@@ -3,13 +3,553 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "91porna",
+      "name": "🍓91porna",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/91porna.py"
+    },
+    {
+      "key": "Cam4直播TG群：@tvshare23",
+      "name": "🍓Cam4直播TG群：@tvshare23",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Cam4直播TG群：@tvshare23.py"
+    },
+    {
+      "key": "HW",
+      "name": "🍓HW",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/HW.py"
+    },
+    {
+      "key": "HW",
+      "name": "🍓HW",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/HW.py"
+    },
+    {
+      "key": "Javday",
+      "name": "🍓Javday",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Javday.py"
+    },
+    {
+      "key": "VPorn",
+      "name": "🍓VPorn",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/VPorn.py"
+    },
+    {
+      "key": "XChina",
+      "name": "🍓XChina",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/XChina.py"
+    },
+    {
+      "key": "[直]直播平台",
+      "name": "🍓[直]直播平台",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/[直]直播平台.py"
+    },
+    {
+      "key": "[直]聚合直播",
+      "name": "🍓[直]聚合直播",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/[直]聚合直播.py"
+    },
+    {
+      "key": "avjoy",
+      "name": "🍓avjoy",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/avjoy.py"
+    },
+    {
+      "key": "babestation",
+      "name": "🍓babestation",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/babestation.py"
+    },
+    {
+      "key": "badnews",
+      "name": "🍓badnews",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/badnews.py"
+    },
+    {
+      "key": "eporner大站",
+      "name": "🍓eporner大站",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/eporner大站.py"
+    },
+    {
+      "key": "gaokaomoni",
+      "name": "🍓gaokaomoni",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/gaokaomoni.py"
+    },
+    {
+      "key": "getav",
+      "name": "🍓getav",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/getav.py"
+    },
+    {
+      "key": "hqporner",
+      "name": "🍓hqporner",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/hqporner.py"
+    },
+    {
+      "key": "jiujiu",
+      "name": "🍓jiujiu",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/jiujiu.py"
+    },
+    {
+      "key": "ko4",
+      "name": "🍓ko4",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/ko4.py"
+    },
+    {
+      "key": "music_lx",
+      "name": "🍓music_lx",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/music_lx.py"
+    },
+    {
+      "key": "pornav",
+      "name": "🍓pornav",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/pornav.py"
+    },
+    {
+      "key": "rb",
+      "name": "🍓rb",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/rb.py"
+    },
+    {
+      "key": "stripchat-live",
+      "name": "🍓stripchat-live",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/stripchat-live.py"
+    },
+    {
+      "key": "xn69",
+      "name": "🍓xn69",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/xn69.py"
+    },
+    {
+      "key": "xx9已过验证",
+      "name": "🍓xx9已过验证",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/xx9已过验证.py"
+    },
+    {
+      "key": "Ⓜ️官方聚合",
+      "name": "🍓Ⓜ️官方聚合",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Ⓜ️官方聚合.py"
+    },
+    {
+      "key": "久久网",
+      "name": "🍓久久网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/久久网.py"
+    },
+    {
+      "key": "九合一",
+      "name": "🍓九合一",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/九合一.py"
+    },
+    {
+      "key": "午夜影视",
+      "name": "🍓午夜影视",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/午夜影视.py"
+    },
+    {
+      "key": "原创乱伦",
+      "name": "🍓原创乱伦",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/原创乱伦.py"
+    },
+    {
+      "key": "可可",
+      "name": "🍓可可",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/可可.py"
+    },
+    {
+      "key": "夜勾心事",
+      "name": "🍓夜勾心事",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/夜勾心事.py"
+    },
+    {
+      "key": "小淫虫",
+      "name": "🍓小淫虫",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/小淫虫.py"
+    },
+    {
+      "key": "小穴生",
+      "name": "🍓小穴生",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/小穴生.py"
+    },
+    {
+      "key": "少女破处",
+      "name": "🍓少女破处",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/少女破处.py"
+    },
+    {
+      "key": "快感研究所",
+      "name": "🍓快感研究所",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/快感研究所.py"
+    },
+    {
+      "key": "成人B站",
+      "name": "🍓成人B站",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/成人B站.py"
+    },
+    {
+      "key": "我秀直播",
+      "name": "🍓我秀直播",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/我秀直播.py"
+    },
+    {
+      "key": "暗夜蜜桃",
+      "name": "🍓暗夜蜜桃",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/暗夜蜜桃.py"
+    },
+    {
+      "key": "暗网禁地-TVBox爬虫",
+      "name": "🍓暗网禁地-TVBox爬虫",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/暗网禁地-TVBox爬虫.py"
+    },
+    {
+      "key": "暗黑蜜桃🔞",
+      "name": "🍓暗黑蜜桃🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/暗黑蜜桃🔞.py"
+    },
+    {
+      "key": "柳州丈母 (2)",
+      "name": "🍓柳州丈母 (2)",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/柳州丈母 (2).py"
+    },
+    {
+      "key": "柳州丈母",
+      "name": "🍓柳州丈母",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/柳州丈母.py"
+    },
+    {
+      "key": "桃花视频",
+      "name": "🍓桃花视频",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/桃花视频.py"
+    },
+    {
+      "key": "海角情-修复",
+      "name": "🍓海角情-修复",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/海角情-修复.py"
+    },
+    {
+      "key": "海角情",
+      "name": "🍓海角情",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/海角情.py"
+    },
+    {
+      "key": "淫花宫TVBox标准爬虫_已修复",
+      "name": "🍓淫花宫TVBox标准爬虫_已修复",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/淫花宫TVBox标准爬虫_已修复.py"
+    },
+    {
+      "key": "深夜电影",
+      "name": "🍓深夜电影",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/深夜电影.py"
+    },
+    {
+      "key": "深夜短剧",
+      "name": "🍓深夜短剧",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/深夜短剧.py"
+    },
+    {
+      "key": "玩物社区_T3v1.5",
+      "name": "❤️玩物社区_T3v1.5",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/玩物社区_T3v1.5.py"
+    },
+    {
+
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 2
+        "ratio": 1.66
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
@@ -33,7 +573,7 @@
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 2
+        "ratio": 1.66
       },
       "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py",
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
@@ -45,7 +585,7 @@
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 2
+        "ratio": 1.66
       },
       "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py",
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
@@ -57,7 +597,7 @@
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 2
+        "ratio": 1.66
       },
       "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
@@ -85,7 +625,7 @@
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 2
+        "ratio": 1.66
       },
       "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py",
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py"
@@ -97,7 +637,7 @@
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 2
+        "ratio": 1.66
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py"
@@ -289,7 +829,7 @@
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 2
+        "ratio": 1.66
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
@@ -393,7 +933,7 @@
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 2
+        "ratio": 1.66
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/叔叔和侄女.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/叔叔和侄女.py"
@@ -600,7 +1140,7 @@
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 2
+        "ratio": 1.66
       },
       "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/白嫖之王-封面修复第二版.py",
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/白嫖之王-封面修复第二版.py"
@@ -612,7 +1152,7 @@
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 2
+        "ratio": 1.66
       },
       "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18jspa.py",
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18jspa.py"
@@ -681,7 +1221,7 @@
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 2
+        "ratio": 1.66
       },
       "ext": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py",
       "api": "http://pglblb.test.upcdn.net/2026py/0920/%E7%88%86%E8%89%B2.py"
@@ -716,7 +1256,7 @@
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 2
+        "ratio": 1.66
       },
       "ext": "http://pglblb.test.upcdn.net/2026py/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.py",
       "api": "http://pglblb.test.upcdn.net/2026py/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.py"
@@ -1188,17 +1728,6 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/欲望之眼🔞.py"
-    },
-    {
-      "key": "午夜影视",
-      "name": "❤️午夜影视",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/午夜影视.py"
     },
     {
       "key": "百花资源库",
