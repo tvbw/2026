@@ -25,10 +25,12 @@ SITE_CONFIG = {
     "name": "51模板",
     "play_from": "51模板",
     "style": {"type": "rect", "ratio": 1.33},
-
     "publish_url": "https://zuzpayj.cc/",
-    "publish_decode": "js_base64",          # js_base64 / js_atob / plain / redirect
+    # 发布页编码方式: js_base64 / js_atob / plain / redirect
+    "publish_decode": "js_base64",
+    # 判断“这个域名是不是目标站”的特征选择器
     "host_check_selector": "#index article a",
+    # 发布页解析失败时的兜底域名
     "fallback_hosts": [
         "https://bit.sxhdythfc.cc/",
         "https://agent.sxhdythfc.cc/",
