@@ -26,7 +26,7 @@ SITE_CONFIG = {
     "play_from": "51模板",
     "style": {"type": "rect", "ratio": 1.33},
 
-    "publish_url": "https://www.vdnplsov.cc/",
+    "publish_url": "https://zuzpayj.cc/",
     "publish_decode": "js_base64",          # js_base64 / js_atob / plain / redirect
     "host_check_selector": "#index article a",
     "fallback_hosts": [
