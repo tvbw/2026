@@ -1,43 +1,85 @@
 # ============================================================
-# 通用发布页动态域名 Spider 模板（修复 init 前调用 getName 崩溃）
-# 用法：
-#   同主题站 -> 只改 SITE_CONFIG
-#   跨主题   -> 另加/替换 _parse_players / _extract_folder_items / _decode_publish
-# ============================================================
-#  配置区：换同主题站点，改这一个字典即可
+# 通用发布页动态域名 Spider 模板（支持跳转型发布页）
 # ============================================================
 import json
-import random
 import re
 import sys
-import threading
 import time
 from base64 import b64decode, b64encode
 from urllib.parse import urlparse
+
 import requests
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from pyquery import PyQuery as pq
+
 sys.path.append('..')
 from base.spider import Spider
 
+
+# =================== 极简万能加速头 ===================
+from functools import lru_cache
+
+FAST_CDN = "lib.baomitu.com"
+DEAD_MAP = {
+    "rimg.iomycdn.com": FAST_CDN,
+    "rimg.xiakee.com": FAST_CDN,
+    "play.abcyun.com": FAST_CDN,
+    "video.xyzcdn.com": FAST_CDN,
+}
+
+@lru_cache(maxsize=256)
+def _auto_cdn(url: str) -> str:
+    if not url:
+        return ""
+    for dead, fast in DEAD_MAP.items():
+        url = url.replace(dead, fast)
+    if url.startswith("//"):
+        url = "https:" + url
+    try:
+        r = requests.head(url, allow_redirects=True, timeout=2)
+        url = r.url
+    except Exception:
+        pass
+    return url
+
+_real_get = requests.Session.get
+def _patched_get(self, url, *a, **k):
+    url = _auto_cdn(url)
+    return _real_get(self, url, *a, **k)
+requests.Session.get = _patched_get
+# =================== 加速头结束 ===================
+
+
+# ============================================================
+#  配置区
+# ============================================================
 SITE_CONFIG = {
-    "name": "51通用模板",
-    "play_from": "51通用模板",
+    "name": "51模板",
+    "play_from": "51模板",
     "style": {"type": "rect", "ratio": 1.33},
-    "publish_url": "https://www.mgvvbfmp.cc/",
-    "publish_decode": "plain",
+
+    # ---- 发布页：支持多入口，逐个尝试 ----
+    "publish_urls": [
+        "https://mrdld3.com/",
+        "https://mrdld6.com/",
+    ],
+    # 兼容旧字段（单入口时用）
+    "publish_url": "https://mrdld3.com/",
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
-    "publish_decode": "js_base64",
-    # 判断“这个域名是不是目标站”的特征选择器
+    "publish_decode": "plain",
+
+    # ---- 判定“这个域名是不是目标站”的特征 ----
     "host_check_selector": "#index article a",
-    # 发布页解析失败时的兜底域名
+
+    # ---- 兜底域名 ----
     "fallback_hosts": [
-        "https://actual.tykveiik.cc/",
-        "https://8d1hf.tykveiik.cc/",
-        "https://8d1hf.tykveiik.cc/",
+        "https://busy.tiihptkpd.cc/",
+        "https://auto.tiihptkpd.cc/",
+        "https://athlete.ezqkwgkf.cc/",
     ],
 
+    # ---- 列表 / 分类 ----
     "list_selector": "#index article a, #archive article a",
     "home_list_selector": "#index article a",
     "category_selectors": [
@@ -53,23 +95,28 @@ SITE_CONFIG = {
     ],
     "folder_id_marker": "/mrdg",
 
+    # ---- 详情 ----
     "title_selector": ".post-title",
     "tag_selector": ".tags .keywords a",
     "player_selector": ".dplayer",
     "player_config_attr": "data-config",
     "player_heading_selector": "h2, h3, h4",
 
+    # ---- 合集 ----
     "folder_content_selector": ".post-content[itemprop='articleBody']",
     "folder_remove_selectors": [".txt-apps", ".line", "blockquote", ".tags", ".content-tabs"],
     "folder_img_attr": "data-xkrkllgl",
 
+    # ---- 图片 ----
     "img_regex": r"loadBannerDirect\('([^']+)'",
     "aes_key": b"f5d965df75336270",
     "aes_iv": b"97b60394abc2fbe1",
 
+    # ---- 搜索 ----
     "search_url_tpl": "{host}/search/{key}/",
     "search_url_tpl_paged": "{host}/search/{key}/{pg}/",
 
+    # ---- 请求头 ----
     "headers": {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                       "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -82,15 +129,15 @@ SITE_CONFIG = {
         "Cache-Control": "no-cache",
     },
 
-    "timeout":  15,
-    "probe_timeout": 10,
+    "timeout": 15,
+    "probe_timeout": 8,
 }
 # ============================================================
 
 
 class Spider(Spider):
 
-    # ✅ 关键修复：类属性，保证 init 之前 getName 也能访问
+    # ✅ 类属性兜底，init 之前也能访问
     cfg = SITE_CONFIG
 
     # ================= 生命周期 =================
@@ -100,7 +147,6 @@ class Spider(Spider):
         except Exception:
             self.proxies = {}
 
-        # 实例级也挂上，便于后续覆盖
         self.cfg = SITE_CONFIG
         self.headers = dict(self.cfg["headers"])
 
@@ -113,8 +159,7 @@ class Spider(Spider):
         print(f"使用站点: {self.host}")
 
     def getName(self):
-        # ✅ 直接引用全局，彻底不依赖实例状态
-        return SITE_CONFIG.get("name", "51爆料")
+        return SITE_CONFIG.get("name", "51模板")
 
     def isVideoFormat(self, url):
         return any(ext in (url or "") for ext in [".m3u8", ".mp4", ".ts"])
@@ -135,7 +180,6 @@ class Spider(Spider):
 
             doc = self.getpq(r.text)
             classes = []
-
             for selector in self.cfg["category_selectors"]:
                 for item in doc(selector).items():
                     a = item("a")
@@ -146,7 +190,6 @@ class Spider(Spider):
                     classes.append({"type_name": name, "type_id": href})
                 if classes:
                     break
-
             if not classes:
                 classes = list(self.cfg["default_classes"])
 
@@ -255,10 +298,7 @@ class Spider(Spider):
 
             try:
                 plist = self._parse_players(doc)
-                if plist:
-                    vod["vod_play_url"] = "#".join(plist)
-                else:
-                    vod["vod_play_url"] = f"未找到视频源${url}"
+                vod["vod_play_url"] = "#".join(plist) if plist else f"未找到视频源${url}"
             except Exception:
                 vod["vod_play_url"] = f"视频解析失败${url}"
 
@@ -376,7 +416,11 @@ class Spider(Spider):
 
     # ================= 发布页 / 动态域名 =================
     def get_working_host(self):
-        for url in self.extract_domains_from_publish_page():
+        # 1) 从发布页提取候选
+        candidates = self.extract_domains_from_publish_page()
+
+        # 2) 逐条测活
+        for url in candidates:
             try:
                 r = requests.get(url, headers=self.headers,
                                  proxies=self.proxies, timeout=self.cfg["probe_timeout"])
@@ -387,6 +431,7 @@ class Spider(Spider):
             except Exception:
                 continue
 
+        # 3) 发布页失败，兜底测活
         for url in self.cfg["fallback_hosts"]:
             try:
                 r = requests.get(url, headers=self.headers,
@@ -398,29 +443,153 @@ class Spider(Spider):
             except Exception:
                 continue
 
-        fallback = self.cfg["fallback_hosts"][0]
-        self.log(f"未检测到可用站点，回退: {fallback}")
-        print(f"未检测到可用站点，回退: {fallback}")
-        return fallback
+        # 4) 全都失败，返回首个兜底
+        fb = self.cfg["fallback_hosts"][0]
+        self.log(f"未检测到可用站点，回退: {fb}")
+        print(f"未检测到可用站点，回退: {fb}")
+        return fb
 
     def extract_domains_from_publish_page(self):
-        try:
-            r = requests.get(self.cfg["publish_url"], headers=self.headers,
-                             proxies=self.proxies, timeout=self.cfg["probe_timeout"])
-            if r.status_code != 200:
-                self.log(f"发布页请求失败: HTTP {r.status_code}")
-                return []
+        """多入口发布页 + 跳转处理 + 线路提取"""
+        cfg = self.cfg
+        entries = cfg.get("publish_urls") or [cfg.get("publish_url", "")]
+        entries = [e for e in entries if e]
 
-            html = self._decode_publish(r.text, self.cfg["publish_decode"])
-            doc = self.getpq(html)
-            domains = self._pick_domains(doc, self.cfg["publish_url"])
-            self.log(f"发布页解析到 {len(domains)} 个候选域名")
-            print(f"发布页解析到 {len(domains)} 个候选域名")
-            return domains
+        for entry in entries:
+            try:
+                r = requests.get(entry, headers=self.headers,
+                                 proxies=self.proxies,
+                                 timeout=cfg["probe_timeout"],
+                                 allow_redirects=True)
+                if r.status_code != 200:
+                    continue
+
+                # 1) 页面本身提取
+                domains = self._extract_from_html(r.text, r.url)
+                if domains:
+                    return domains
+
+                # 2) meta refresh 跳转
+                target = self._find_meta_refresh(r.text)
+                if target:
+                    domains = self._fetch_and_extract(target, base=entry)
+                    if domains:
+                        return domains
+
+                # 3) JS location 跳转
+                target = self._find_js_location(r.text)
+                if target:
+                    domains = self._fetch_and_extract(target, base=entry)
+                    if domains:
+                        return domains
+
+            except Exception as e:
+                self.log(f"发布页入口失败 [{entry}]: {e}")
+                print(f"发布页入口失败 [{entry}]: {e}")
+                continue
+
+        self.log("所有发布页入口均未提取到候选域名")
+        print("所有发布页入口均未提取到候选域名")
+        return []
+
+    def _extract_from_html(self, text, base_url):
+        """从 HTML 里提取线路链接"""
+        try:
+            html = self._decode_publish(text, self.cfg["publish_decode"])
+        except Exception:
+            html = text
+
+        doc = self.getpq(html)
+
+        # 优先线路卡片
+        domains = []
+        for a in doc("a.route, a[data-line4], .routes a").items():
+            href = (a.attr("href") or "").strip()
+            if href:
+                domains.append(href)
+
+        # 兜底：所有 http 链接
+        if not domains:
+            domains = self._pick_domains(doc, base_url)
+
+        # 规范化 + 去重
+        seen, uniq = set(), []
+        for u in domains:
+            u = self._normalize_url(u, base_url)
+            if not u:
+                continue
+            if u not in seen:
+                seen.add(u)
+                uniq.append(u)
+
+        if uniq:
+            self.log(f"发布页解析到 {len(uniq)} 个候选域名: {uniq[:6]}")
+            print(f"发布页解析到 {len(uniq)} 个候选域名: {uniq[:6]}")
+        return uniq
+
+    def _fetch_and_extract(self, target_url, base):
+        """跳转目标页再提一次"""
+        try:
+            target_url = self._normalize_url(target_url, base)
+            if not target_url:
+                return []
+            self.log(f"发布页跳转目标: {target_url}")
+            print(f"发布页跳转目标: {target_url}")
+
+            r = requests.get(target_url, headers=self.headers,
+                             proxies=self.proxies,
+                             timeout=self.cfg["probe_timeout"],
+                             allow_redirects=True)
+            if r.status_code != 200:
+                return []
+            return self._extract_from_html(r.text, r.url)
         except Exception as e:
-            self.log(f"解析发布页失败: {e}")
-            print(f"解析发布页失败: {e}")
+            self.log(f"请求跳转目标失败: {e}")
+            print(f"请求跳转目标失败: {e}")
             return []
+
+    def _find_meta_refresh(self, html):
+        m = re.search(
+            r'<meta[^>]+http-equiv=["\']?refresh["\']?[^>]+'
+            r'content=["\'][^"\']*url=([^"\'>\s]+)',
+            html or "", re.I,
+        )
+        return m.group(1).strip("'\"") if m else ""
+
+    def _find_js_location(self, html):
+        if not html:
+            return ""
+        patterns = [
+            r'window\.location(?:\.href)?\s*=\s*["\']([^"\']+)["\']',
+            r'document\.location(?:\.href)?\s*=\s*["\']([^"\']+)["\']',
+            r'location\.replace\(\s*["\']([^"\']+)["\']',
+            r'location\.assign\(\s*["\']([^"\']+)["\']',
+        ]
+        for p in patterns:
+            m = re.search(p, html)
+            if m:
+                return m.group(1)
+        return ""
+
+    def _normalize_url(self, u, base):
+        if not u:
+            return ""
+        u = u.strip()
+        if u.startswith("//"):
+            u = "https:" + u
+        if u.startswith("/") and base:
+            try:
+                p = urlparse(base)
+                u = f"{p.scheme}://{p.netloc}{u}"
+            except Exception:
+                pass
+        if not u.startswith("http"):
+            return ""
+        if "." not in u:
+            return ""
+        if any(x in u for x in ["javascript:", "mailto:", "#"]):
+            return ""
+        return u
 
     def _decode_publish(self, text, mode):
         if mode == "js_base64":
@@ -449,19 +618,12 @@ class Spider(Spider):
         seen, out = set(), []
         for a in doc("a").items():
             href = (a.attr("href") or "").strip()
-            if not href:
+            u = self._normalize_url(href, base)
+            if not u:
                 continue
-            if href.startswith("//"):
-                href = "https:" + href
-            if href.startswith("/") and base:
-                href = base.rstrip("/") + href
-            if not href.startswith("http") or "." not in href:
-                continue
-            if any(x in href for x in ["javascript:", "mailto:", "#"]):
-                continue
-            if href not in seen:
-                seen.add(href)
-                out.append(href)
+            if u not in seen:
+                seen.add(u)
+                out.append(u)
         return out
 
     # ================= 播放器解析 =================
@@ -472,6 +634,17 @@ class Spider(Spider):
         attr = self.cfg["player_config_attr"]
 
         if not doc(sel):
+            # 兼容 video / iframe 直链
+            for idx, node in enumerate(doc("video[src]").items(), start=1):
+                src = (node.attr("src") or "").strip()
+                if src:
+                    plist.append(f"视频{idx}${src}")
+            if plist:
+                return plist
+            for idx, node in enumerate(doc("iframe[src]").items(), start=1):
+                src = (node.attr("src") or "").strip()
+                if src:
+                    plist.append(f"视频{idx}${src}")
             return plist
 
         for idx, node in enumerate(doc(sel).items(), start=1):
@@ -578,34 +751,3 @@ class Spider(Spider):
         except Exception as e:
             print(f"{e}")
             return pq(data.encode("utf-8"))
-
-
-# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
-_PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
-
-def _cover_fallback(self, pic_url):
-    import urllib.parse
-    raw = pic_url or ''
-    parent_impl = getattr(super(Spider, self), '_cover_fallback', None)
-    if callable(parent_impl):
-        try:
-            raw = parent_impl(pic_url) or raw
-        except Exception:
-            pass
-    if not raw:
-        return ''
-    url = raw
-    for cdn in _PIC_CDN_POOL:
-        if cdn in raw:
-            url = raw.replace(cdn, _PIC_CDN_POOL[0])
-            break
-    proxy_base = getattr(self, 'proxy_base', None)
-    if proxy_base:
-        url = f'{proxy_base}{urllib.parse.quote(url)}'
-    return url
-
-Spider._cover_fallback = _cover_fallback
-# 注册爬虫
-if __name__ == '__main__':
-    from base.spider import Spider as BaseSpider
-    BaseSpider.register(Spider())
