@@ -27,6 +27,30 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
+      "key": "香蕉9合1最终优化版目录版",
+      "name": "❤️香蕉9合1最终优化目录版【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
+    },
+    {
+      "key": "香蕉9合1最终优化版",
+      "name": "❤️香蕉9合1最终优化版全目录【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
+    },
+    {
       "key": "mrdld",
       "name": "4❤️每日大乱斗🔞",
       "type": 3,
@@ -37,6 +61,20 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
+    },
+    {
+      "key": "每日大赛",
+      "name": "4❤️每日大赛🔞",
+      "type": 3,
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/每日大赛.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大赛.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "changeable": 1
     },
     {
       "key": "51dc",
@@ -63,28 +101,16 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51爆料.py"
     },
     {
-      "key": "香蕉9合1最终优化版目录版",
-      "name": "❤️香蕉9合1最终优化目录版【🔞】",
+      "key": "51吃瓜",
+      "name": "❤️51吃瓜｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
-    },
-    {
-      "key": "香蕉9合1最终优化版",
-      "name": "❤️香蕉9合1最终优化版全目录【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py"
     },
     {
       "key": "香蕉9合2",
@@ -115,7 +141,6 @@
       }
     },
     {
-
       "key": "18av",
       "name": "5❤️18av【🔞】",
       "type": 3,
@@ -382,33 +407,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
-    },
-    {
-      "key": "每日大赛",
-      "name": "4❤️每日大赛🔞",
-      "type": 3,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/每日大赛.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大赛.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "changeable": 1
-    },
-    {
-
-      "key": "51吃瓜",
-      "name": "❤️51吃瓜｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py"
     },
     {
       "key": "AVBeBe",
@@ -1003,7 +1001,6 @@
       "api": "http://pglblb.test.upcdn.net/2026py/10hd/人妖影视-TVBox爬虫.py"
     },
     {
-
       "key": "[成人]骚女汇🔞",
       "name": "3❤️骚女汇【🔞】",
       "type": 3,
@@ -1402,7 +1399,6 @@
       "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
     },
     {
-
       "key": "Jable",
       "name": "5❤️Jable🔞",
       "type": 3,
