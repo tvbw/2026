@@ -348,7 +348,7 @@
     },
     {
       "key": "每日大赛",
-      "name": "4❤️每日大赛｜🔞",
+      "name": "4❤️每日大赛🔞",
       "type": 3,
       "ext": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/每日大赛.py",
       "api": "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/每日大赛.py",
@@ -362,7 +362,7 @@
     },
     {
       "key": "mrdld",
-      "name": "4❤️每日大乱斗｜🔞",
+      "name": "4❤️每日大乱斗🔞",
       "type": 3,
       "playerType": 2,
       "style": {
