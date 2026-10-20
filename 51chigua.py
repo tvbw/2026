@@ -81,8 +81,8 @@ SITE_CONFIG = {
         "Connection": "keep-alive",
         "Cache-Control": "no-cache",
     },
-    "timeout":10,
-    "probe_timeout":4,
+    "timeout":  15,
+    "probe_timeout": 10,
     }
 # ============================================================
 
