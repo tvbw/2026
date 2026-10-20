@@ -215,6 +215,30 @@
       }
     },
     {
+      "key": "爆色",
+      "name": "5❤️ss采集聚合1｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py"
+    },
+    {
+      "key": "sweetpornos+详情页翻译",
+      "name": "❤️sweetpornos【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py"
+    },
+    {
       "key": "香蕉1区",
       "name": "5❤️香蕉1区【🔞】",
       "type": 3,
@@ -319,30 +343,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
-    },
-    {
-      "key": "爆色",
-      "name": "5❤️ss采集聚合1｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py"
-    },
-    {
-      "key": "sweetpornos+详情页翻译",
-      "name": "❤️sweetpornos【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py"
     },
     {
       "key": "Cam4直播",
