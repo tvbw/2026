@@ -25,7 +25,7 @@ SITE_CONFIG = {
     "name": "51通用模板",
     "play_from": "51通用模板",
     "style": {"type": "rect", "ratio": 1.33},
-    "publish_url": "https://www.vdnplsov.cc/",
+    "publish_url": "https://51bla20.com",
     "publish_decode": "plain",
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "js_base64",
@@ -33,7 +33,7 @@ SITE_CONFIG = {
     "host_check_selector": "#index article a",
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
-        "https://cast.brupxwsya.cc/",
+        "https://cast.jifjmpodk.cc/",
         "https://bus.jifjmpodk.cc/",
         "https://adult.jifjmpodk.cc/",
     ],
