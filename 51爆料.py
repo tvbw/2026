@@ -19,41 +19,6 @@ from pyquery import PyQuery as pq
 sys.path.append('..')
 from base.spider import Spider
 
-
-# =================== 极简万能加速头 ===================
-from functools import lru_cache
-
-FAST_CDN = "lib.baomitu.com"
-DEAD_MAP = {
-    "rimg.iomycdn.com": FAST_CDN,
-    "rimg.xiakee.com": FAST_CDN,
-    "play.abcyun.com": FAST_CDN,
-    "video.xyzcdn.com": FAST_CDN,
-}
-
-@lru_cache(maxsize=256)
-def _auto_cdn(url: str) -> str:
-    if not url:
-        return ""
-    for dead, fast in DEAD_MAP.items():
-        url = url.replace(dead, fast)
-    if url.startswith("//"):
-        url = "https:" + url
-    try:
-        r = requests.head(url, allow_redirects=True, timeout=2)
-        url = r.url
-    except Exception:
-        pass
-    return url
-
-_real_get = requests.Session.get
-def _patched_get(self, url, *a, **k):
-    url = _auto_cdn(url)
-    return _real_get(self, url, *a, **k)
-requests.Session.get = _patched_get
-# =================== 加速头结束 ===================
-
-
 # ============================================================
 # 本地 host 缓存（48 小时），失败自动降级
 # ============================================================
@@ -121,11 +86,10 @@ SITE_CONFIG = {
     "style": {"type": "rect", "ratio": 1.33},
 # -------- 网址发布页 ------------
     "publish_urls": [
-        "https://www.wyjqzhrf.cc/",
-        "https://51bla20.com/",
+    "publish_url": "https://www.vdnplsov.cc/",
     ],
 # ---- 发布页：支持多入口，逐个尝试 ----
-    "publish_url": "https://www.wyjqzhrf.cc/",
+    "publish_url": "https://www.vdnplsov.cc/",
     "publish_decode": "plain",
 
 # ---- 判定“这个域名是不是目标站”的特征 ----
@@ -133,9 +97,9 @@ SITE_CONFIG = {
 
 # -------- 兜底域名 --------------------
     "fallback_hosts": [
-        "https://cast.jifjmpodk.cc/",
-        "https://bus.jifjmpodk.cc/",
-        "https://adult.jifjmpodk.cc/",
+        "https://21bn7.ocqxkylwn.cc/",
+        "https://angle.ocqxkylwn.cc/",
+        "https://alive.ocqxkylwn.cc/",
     ],
 
     "list_selector": "#index article a, #archive article a",
