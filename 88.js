@@ -85,8 +85,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51大赛.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51大赛.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py"
     },
     {
       "key": "51dc",
@@ -97,8 +97,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51爆料.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51爆料.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
     },
     {
       "key": "51吃瓜",
@@ -109,8 +109,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51chigua.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51cg.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg.py"
     },
     {
       "key": "香蕉9合2",
