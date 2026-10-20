@@ -3,6 +3,31 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "人妖影视-TVBox爬虫",
+      "name": "❤️人妖影视",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "http://pglblb.test.upcdn.net/2026py/10hd/人妖影视-TVBox爬虫.py",
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/人妖影视-TVBox爬虫.py"
+    },
+    {
+      "key": "重口味影院-TVBox爬虫",
+      "name": "❤️重口味影院",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "http://pglblb.test.upcdn.net/2026py/10hd/重口味影院-TVBox爬虫.py",
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/重口味影院-TVBox爬虫.py"
+    },
+    {
+
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
