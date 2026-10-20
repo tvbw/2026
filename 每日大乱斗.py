@@ -25,15 +25,23 @@ SITE_CONFIG = {
     "name": "51模板",
     "play_from": "51模板",
     "style": {"type": "rect", "ratio": 1.33},
+
+    # ---- 发布页：mrdld3.com 是明文 HTML，用 plain ----
     "publish_url": "https://mrdld3.com/",
-    "publish_decode": "js_base64",          # js_base64 / js_atob / plain / redirect
+    "publish_decode": "plain",              # js_base64 / js_atob / plain / redirect
+
+    # ---- 判定“这个域名是不是目标站”的特征 ----
+    # ⚠️ 若主站主题已换，此处需按实测结果调整
     "host_check_selector": "#index article a",
+
+    # ---- 兜底域名 ----
     "fallback_hosts": [
         "https://busy.tiihptkpd.cc/",
         "https://auto.tiihptkpd.cc/",
         "https://athlete.ezqkwgkf.cc/",
     ],
 
+    # ---- 列表 / 分类（以下沿用原值，需实测确认） ----
     "list_selector": "#index article a, #archive article a",
     "home_list_selector": "#index article a",
     "category_selectors": [
@@ -49,23 +57,28 @@ SITE_CONFIG = {
     ],
     "folder_id_marker": "/mrdg",
 
+    # ---- 详情 ----
     "title_selector": ".post-title",
     "tag_selector": ".tags .keywords a",
     "player_selector": ".dplayer",
     "player_config_attr": "data-config",
     "player_heading_selector": "h2, h3, h4",
 
+    # ---- 合集 ----
     "folder_content_selector": ".post-content[itemprop='articleBody']",
     "folder_remove_selectors": [".txt-apps", ".line", "blockquote", ".tags", ".content-tabs"],
     "folder_img_attr": "data-xkrkllgl",
 
+    # ---- 图片 ----
     "img_regex": r"loadBannerDirect\('([^']+)'",
     "aes_key": b"f5d965df75336270",
     "aes_iv": b"97b60394abc2fbe1",
 
+    # ---- 搜索 ----
     "search_url_tpl": "{host}/search/{key}/",
     "search_url_tpl_paged": "{host}/search/{key}/{pg}/",
 
+    # ---- 请求头 ----
     "headers": {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                       "AppleWebKit/537.36 (KHTML, like Gecko) "
