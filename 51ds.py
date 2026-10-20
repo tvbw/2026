@@ -85,7 +85,6 @@ SITE_CONFIG = {
     "style": {"type": "rect", "ratio": 1.33},
 
     "publish_urls": [
-        "https://51ds88.com/",
         "https://51dsa18.com/",
         "https://51dsa25.com",
         "https://51dsa20.com/",
@@ -93,9 +92,7 @@ SITE_CONFIG = {
     ],
     "publish_url": "https://51ds88.com/",
     "publish_decode": "plain",
-
     "host_check_selector": "#index article a",
-
     "fallback_hosts": [
         "https://51ds88.com/",
     ],
