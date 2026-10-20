@@ -1,5 +1,5 @@
 # ============================================================
-# 通用发布页动态域名 Spider 模板（并发测活 + host 缓存版）
+# 通用发布页动态域名 Spider 模板（支持跳转型发布页）
 # ============================================================
 import json
 import re
@@ -7,7 +7,6 @@ import sys
 import time
 from base64 import b64decode, b64encode
 from urllib.parse import urlparse
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 from Crypto.Cipher import AES
@@ -51,10 +50,7 @@ def _patched_get(self, url, *a, **k):
 requests.Session.get = _patched_get
 # =================== 加速头结束 ===================
 
-
-# ============================================================
-#  配置区
-# ============================================================
+# ====================配置区开始===================
 SITE_CONFIG = {
     "name": "51模板",
     "play_from": "51模板",
@@ -62,10 +58,12 @@ SITE_CONFIG = {
 
     # ---- 发布页：支持多入口，逐个尝试 ----
     "publish_urls": [
-        "https://mrdld3.com/",
-        "https://mrdld6.com/",
+        "https://mrdsy6.com/",
+        "https://mrdsy3.com/",
     ],
-    "publish_url": "https://mrdld3.com/",
+    # 兼容旧字段（单入口时用）
+    "publish_url": "https://mrdsy3.com/",
+    # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "plain",
 
     # ---- 判定“这个域名是不是目标站”的特征 ----
@@ -73,11 +71,10 @@ SITE_CONFIG = {
 
     # ---- 兜底域名 ----
     "fallback_hosts": [
-        "https://ago.skkkykuv.cc/",
-        "https://auto.tiihptkpd.cc/",
-        "https://athlete.ezqkwgkf.cc/",
+        "https://cell.tiihptkpd.cc/",
+        "https://chair.tiihptkpd.cc/",
+        "https://access.tiihptkpd.cc/",
     ],
-
     # ---- 列表 / 分类 ----
     "list_selector": "#index article a, #archive article a",
     "home_list_selector": "#index article a",
@@ -129,19 +126,13 @@ SITE_CONFIG = {
     },
 
     "timeout": 15,
-    "probe_timeout": 5,     # 并发测活时每条的超时
-    "fast_timeout": 3,      # 缓存 host 快速验证超时
-    "probe_workers": 6,     # 并发测活线程数
+    "probe_timeout": 8,
 }
-# ============================================================
-
+# ====================配置区结束===================
 
 class Spider(Spider):
-
-    # ✅ 类属性兜底
+    # ✅ 类属性兜底，init 之前也能访问
     cfg = SITE_CONFIG
-    # ✅ 进程内缓存上次成功的 host
-    _cached_host = ""
 
     # ================= 生命周期 =================
     def init(self, extend=""):
@@ -417,92 +408,40 @@ class Spider(Spider):
             print(f"Base64解码错误: {e}")
             return ""
 
-    # ================= 发布页 / 动态域名（并发 + 缓存） =================
+    # ================= 发布页 / 动态域名 =================
     def get_working_host(self):
-        # 1) 缓存 host 快速验证
-        if Spider._cached_host:
-            if self._probe_one(Spider._cached_host, self.cfg["fast_timeout"]):
-                self.log(f"命中缓存站点: {Spider._cached_host}")
-                print(f"命中缓存站点: {Spider._cached_host}")
-                return Spider._cached_host
-            Spider._cached_host = ""
-
-        # 2) 发布页候选 + 兜底合并，去重保序
+        # 1) 从发布页提取候选
         candidates = self.extract_domains_from_publish_page()
-        all_hosts = []
-        seen = set()
-        for u in list(candidates) + list(self.cfg["fallback_hosts"]):
-            if u and u not in seen:
-                seen.add(u)
-                all_hosts.append(u)
 
-        if not all_hosts:
-            all_hosts = list(self.cfg["fallback_hosts"])
+        # 2) 逐条测活
+        for url in candidates:
+            try:
+                r = requests.get(url, headers=self.headers,
+                                 proxies=self.proxies, timeout=self.cfg["probe_timeout"])
+                if r.status_code == 200 and self.getpq(r.text)(self.cfg["host_check_selector"]):
+                    self.log(f"动态解析到可用站点: {url}")
+                    print(f"动态解析到可用站点: {url}")
+                    return url
+            except Exception:
+                continue
 
-        # 3) 并发测活，按原始优先级返回第一个成功者
-        host = self._probe_concurrent(all_hosts, self.cfg["probe_timeout"])
-        if host:
-            Spider._cached_host = host
-            if host in candidates:
-                self.log(f"动态解析到可用站点: {host}")
-                print(f"动态解析到可用站点: {host}")
-            else:
-                self.log(f"回退选用可用站点: {host}")
-                print(f"回退选用可用站点: {host}")
-            return host
+        # 3) 发布页失败，兜底测活
+        for url in self.cfg["fallback_hosts"]:
+            try:
+                r = requests.get(url, headers=self.headers,
+                                 proxies=self.proxies, timeout=self.cfg["probe_timeout"])
+                if r.status_code == 200 and self.getpq(r.text)(self.cfg["host_check_selector"]):
+                    self.log(f"回退选用可用站点: {url}")
+                    print(f"回退选用可用站点: {url}")
+                    return url
+            except Exception:
+                continue
 
+        # 4) 全都失败，返回首个兜底
         fb = self.cfg["fallback_hosts"][0]
         self.log(f"未检测到可用站点，回退: {fb}")
         print(f"未检测到可用站点，回退: {fb}")
         return fb
-
-    def _probe_one(self, url, timeout):
-        """单条测活，返回 True/False"""
-        try:
-            r = requests.get(url, headers=self.headers,
-                             proxies=self.proxies, timeout=timeout)
-            if r.status_code != 200:
-                return False
-            return bool(self.getpq(r.text)(self.cfg["host_check_selector"]))
-        except Exception:
-            return False
-
-    def _probe_concurrent(self, urls, timeout):
-        """并发测活，返回原始顺序中第一个成功的 url"""
-        if not urls:
-            return ""
-        if len(urls) == 1:
-            return urls[0] if self._probe_one(urls[0], timeout) else ""
-
-        results = {}
-        workers = min(self.cfg.get("probe_workers", 6), len(urls))
-        with ThreadPoolExecutor(max_workers=workers) as ex:
-            future_map = {
-                ex.submit(self._probe_one, u, timeout): u for u in urls
-            }
-            try:
-                for fut in as_completed(future_map, timeout=timeout + 2):
-                    u = future_map[fut]
-                    try:
-                        results[u] = fut.result(timeout=0)
-                    except Exception:
-                        results[u] = False
-                    # 如果已经拿到结果，且当前已完成的覆盖了所有更高优先级的，可提前返回
-                    if results.get(u):
-                        # 检查是否有更高优先级的尚未有结果
-                        idx = urls.index(u)
-                        if all(urls[i] in results for i in range(idx)):
-                            for i in range(idx + 1):
-                                if results.get(urls[i]):
-                                    return urls[i]
-            except Exception:
-                pass
-
-        # 兜底：按原顺序挑第一个成功
-        for u in urls:
-            if results.get(u):
-                return u
-        return ""
 
     def extract_domains_from_publish_page(self):
         """多入口发布页 + 跳转处理 + 线路提取"""
@@ -519,16 +458,19 @@ class Spider(Spider):
                 if r.status_code != 200:
                     continue
 
+                # 1) 页面本身提取
                 domains = self._extract_from_html(r.text, r.url)
                 if domains:
                     return domains
 
+                # 2) meta refresh 跳转
                 target = self._find_meta_refresh(r.text)
                 if target:
                     domains = self._fetch_and_extract(target, base=entry)
                     if domains:
                         return domains
 
+                # 3) JS location 跳转
                 target = self._find_js_location(r.text)
                 if target:
                     domains = self._fetch_and_extract(target, base=entry)
@@ -545,6 +487,7 @@ class Spider(Spider):
         return []
 
     def _extract_from_html(self, text, base_url):
+        """从 HTML 里提取线路链接"""
         try:
             html = self._decode_publish(text, self.cfg["publish_decode"])
         except Exception:
@@ -552,15 +495,18 @@ class Spider(Spider):
 
         doc = self.getpq(html)
 
+        # 优先线路卡片
         domains = []
         for a in doc("a.route, a[data-line4], .routes a").items():
             href = (a.attr("href") or "").strip()
             if href:
                 domains.append(href)
 
+        # 兜底：所有 http 链接
         if not domains:
             domains = self._pick_domains(doc, base_url)
 
+        # 规范化 + 去重
         seen, uniq = set(), []
         for u in domains:
             u = self._normalize_url(u, base_url)
@@ -576,6 +522,7 @@ class Spider(Spider):
         return uniq
 
     def _fetch_and_extract(self, target_url, base):
+        """跳转目标页再提一次"""
         try:
             target_url = self._normalize_url(target_url, base)
             if not target_url:
@@ -681,6 +628,7 @@ class Spider(Spider):
         attr = self.cfg["player_config_attr"]
 
         if not doc(sel):
+            # 兼容 video / iframe 直链
             for idx, node in enumerate(doc("video[src]").items(), start=1):
                 src = (node.attr("src") or "").strip()
                 if src:
