@@ -33,7 +33,12 @@ SITE_CONFIG = {
 
     # ===== ① 发布页入口域名（长期不变，唯一需要手工维护的锚点） =====
     # 例如：https://51cgf21.com、https://mrdld3.com、https://www.mgvvbfmp.cc
-    "publish_url": "https://51cgf21.com",
+"publish_urls": ["https://www.mgvvbfmp.cc/"],
+"fallback_hosts": [
+    "https://border.qfdnjjthm.cc/",
+    "https://agency.qfdnjjthm.cc/",
+    "https://brown.qfdnjjthm.cc/",
+],
     # 可选：多个入口域名，逐个尝试；非空时优先于 publish_url
     "publish_urls": [],
     # 发布页编码方式：auto / js_base64 / js_atob / plain / redirect
