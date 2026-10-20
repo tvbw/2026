@@ -62,7 +62,7 @@ SITE_CONFIG = {
         "https://mrdsy3.com/",
     ],
     # 兼容旧字段（单入口时用）
-    "publish_url": "https://mrdsy3.com/",
+    "publish_url": "https://mrdsy6.com/",
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "plain",
 
