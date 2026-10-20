@@ -27,6 +27,42 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
+      "key": "mrdld",
+      "name": "4❤️每日大乱斗🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
+    },
+    {
+      "key": "51dc",
+      "name": "4❤️51大赛｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51大赛.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51大赛.py"
+    },
+    {
+      "key": "51dc",
+      "name": "4❤️51爆料｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51爆料.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51爆料.py"
+    },
+    {
       "key": "香蕉9合1最终优化版目录版",
       "name": "❤️香蕉9合1最终优化目录版【🔞】",
       "type": 3,
@@ -79,30 +115,7 @@
       }
     },
     {
-      "key": "爆色",
-      "name": "5❤️ss采集聚合1｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py"
-    },
-    {
-      "key": "sweetpornos+详情页翻译",
-      "name": "❤️sweetpornos【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py"
-    },
-    {
+
       "key": "18av",
       "name": "5❤️18av【🔞】",
       "type": 3,
@@ -159,28 +172,6 @@
         "type": "rect",
         "ratio": 1.65
       }
-    },
-    {
-      "key": "Cam4直播",
-      "name": "5🍓Cam4直播｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Cam4直播TG群：@tvshare23.py"
-    },
-    {
-      "key": "xn69",
-      "name": "5🍓xn69国外聚合直播｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/xn69.py"
     },
     {
       "key": "csp_xbpq_StripChat",
@@ -305,6 +296,52 @@
       "filterable": 1
     },
     {
+      "key": "爆色",
+      "name": "5❤️ss采集聚合1｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ss聚合1.py"
+    },
+    {
+      "key": "sweetpornos+详情页翻译",
+      "name": "❤️sweetpornos【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py"
+    },
+    {
+      "key": "Cam4直播",
+      "name": "5🍓Cam4直播｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Cam4直播TG群：@tvshare23.py"
+    },
+    {
+      "key": "xn69",
+      "name": "5🍓xn69国外聚合直播｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/xn69.py"
+    },
+    {
       "key": "ss直播3",
       "name": "❤️国货【🔞直播】-3",
       "type": 3,
@@ -361,30 +398,7 @@
       "changeable": 1
     },
     {
-      "key": "mrdld",
-      "name": "4❤️每日大乱斗🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
-    },
-    {
-      "key": "51dc",
-      "name": "4❤️51爆料｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51爆料.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51爆料.py"
-    },
-    {
+
       "key": "51吃瓜",
       "name": "❤️51吃瓜｜🔞",
       "type": 3,
