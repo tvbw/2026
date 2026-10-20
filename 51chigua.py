@@ -1,9 +1,13 @@
 # ============================================================
-# 通用发布页动态域名 Spider 模板（102 + 跳转识别 · 无缓存 · 多入口候选合并去重版）
+# 通用发布页动态域名 Spider 模板（102 + 跳转识别 · 无缓存版）
 # 三层结构模型：
-#   ① 发布页入口域名（长期不变）    -> publish_urls 可填多个
-#   ② 入口跳转到的发布页域名（随机）-> 自动跟随 302 / meta refresh / JS location
-#   ③ 发布页公布的网站主页域名（随机）-> 多入口候选合并去重后逐条测活
+#   ① 发布页入口域名（长期不变，唯一锚点） -> publish_url
+#   ② 入口跳转到的发布页域名（随机会变）   -> 自动跟随 302 / meta refresh / JS location
+#   ③ 发布页公布的网站主页域名（随机会变） -> 逐条测活选出可用
+#
+# 用法：
+#   同主题站 -> 只改 SITE_CONFIG
+#   跨主题   -> 另加/替换 _parse_players / getfod / _decode_publish
 # ============================================================
 import json
 import random
@@ -28,22 +32,19 @@ SITE_CONFIG = {
     "style": {"type": "rect", "ratio": 1.33},
 
     # ===== ① 发布页入口域名（长期不变，唯一需要手工维护的锚点） =====
-    # 推荐填 publish_urls 列表；运行时按顺序遍历，候选合并去重
-    "publish_urls": [
-        "https://51cgf18.com",
-        "https://51cgf20.com",
-        "https://51cgf21.com",
-        # "https://51cgf22.com",
-    ],
-    # 兼容单入口（publish_urls 为空时才生效）
-    "publish_url": "",
+    # 例如：https://51cgf21.com、https://mrdld3.com、https://www.mgvvbfmp.cc
+    "publish_url": "https://51cgf21.com",
+    # 可选：多个入口域名，逐个尝试；非空时优先于 publish_url
+    "publish_urls": [],
     # 发布页编码方式：auto / js_base64 / js_atob / plain / redirect
+    #   auto：先尝试 Base64.decode / atob，都没命中按 plain 处理
     "publish_decode": "auto",
 
     # ===== ② 判断“这个域名是不是目标站”的特征 =====
     "host_check_selector": "#index article a",
 
     # ===== ③ 兜底域名（发布页全挂时最后尝试，本身也会过期） =====
+    # 留空也可以，全部失败时返回空串，不会崩溃
     "fallback_hosts": [],
 
     # ---- 列表 / 分类 ----
@@ -182,7 +183,7 @@ class Spider(Spider):
             print(f"homeVideoContent error: {e}")
             return {"list": []}
 
-    # ================= 分类（保持 102 原样） =================
+    # ================= 分类（保持 102 原样，翻页逻辑不变） =================
     def categoryContent(self, tid, pg, filter, extend):
         try:
             if "@folder" in tid:
@@ -386,9 +387,9 @@ class Spider(Spider):
             print(f"Base64解码错误: {e}")
             return ""
 
-    # ================= 发布页 / 动态域名（无缓存 · 跳转识别 · 多入口合并去重） =================
+    # ================= 发布页 / 动态域名（无缓存 · 带跳转识别） =================
     def get_working_host(self):
-        # 1) 发布页动态解析（已合并去重）
+        # 1) 发布页动态解析
         for url in self.extract_domains_from_publish_page():
             try:
                 r = requests.get(url, headers=self.headers,
@@ -412,7 +413,7 @@ class Spider(Spider):
             except Exception:
                 continue
 
-        # 3) 全部失败
+        # 3) 全部失败：无兜底时返回空串，避免 IndexError 崩溃
         fb_list = self.cfg.get("fallback_hosts") or []
         fallback = fb_list[0] if fb_list else ""
         if fallback:
@@ -424,22 +425,15 @@ class Spider(Spider):
         return fallback
 
     def extract_domains_from_publish_page(self):
-        """
-        多入口候选合并去重版：
-        遍历 publish_urls 所有入口，每个入口独立走
-        “页面本身 → meta refresh → JS location”三条路径，
-        所有候选按入口顺序合并、去重后返回。
-        """
+        """从固定入口出发，自动跟随 302 / meta refresh / JS location，直到拿到线路列表"""
         cfg = self.cfg
 
+        # 入口：publish_urls 优先，其次 publish_url
         entries = [e for e in (cfg.get("publish_urls") or []) if e]
         if not entries:
             single = cfg.get("publish_url", "")
             if single:
                 entries = [single]
-
-        merged = []
-        seen = set()
 
         for entry in entries:
             try:
@@ -449,51 +443,43 @@ class Spider(Spider):
                                  allow_redirects=True)
                 if r.status_code != 200:
                     self.log(f"入口请求失败 [{entry}] HTTP {r.status_code}")
-                    print(f"入口请求失败 [{entry}] HTTP {r.status_code}")
                     continue
 
-                # 当前入口的候选
+                # requests 已跟随 302，r.url 是最终 URL；r.text 是最终页面
+                # 1) 页面本身是不是发布页
                 domains = self._extract_from_html(r.text, r.url)
-
-                # 如果页面本身不是发布页，尝试 meta refresh
-                if not domains:
-                    target = self._find_meta_refresh(r.text)
-                    if target:
-                        self.log(f"发现 meta refresh 跳转: {target}")
-                        print(f"发现 meta refresh 跳转: {target}")
-                        domains = self._fetch_and_extract(target, base=entry)
-
-                # 再尝试 JS location
-                if not domains:
-                    target = self._find_js_location(r.text)
-                    if target:
-                        self.log(f"发现 JS location 跳转: {target}")
-                        print(f"发现 JS location 跳转: {target}")
-                        domains = self._fetch_and_extract(target, base=entry)
-
-                # 合并去重
                 if domains:
-                    for u in domains:
-                        if u not in seen:
-                            seen.add(u)
-                            merged.append(u)
-                    self.log(f"入口 [{entry}] 贡献 {len(domains)} 个候选")
-                    print(f"入口 [{entry}] 贡献 {len(domains)} 个候选")
+                    return domains
+
+                # 2) 页面是 meta refresh
+                target = self._find_meta_refresh(r.text)
+                if target:
+                    self.log(f"发现 meta refresh 跳转: {target}")
+                    print(f"发现 meta refresh 跳转: {target}")
+                    domains = self._fetch_and_extract(target, base=entry)
+                    if domains:
+                        return domains
+
+                # 3) 页面是 JS location 跳转
+                target = self._find_js_location(r.text)
+                if target:
+                    self.log(f"发现 JS location 跳转: {target}")
+                    print(f"发现 JS location 跳转: {target}")
+                    domains = self._fetch_and_extract(target, base=entry)
+                    if domains:
+                        return domains
 
             except Exception as e:
                 self.log(f"发布页入口失败 [{entry}]: {e}")
                 print(f"发布页入口失败 [{entry}]: {e}")
                 continue
 
-        if merged:
-            self.log(f"多入口合并后共 {len(merged)} 个候选域名: {merged[:10]}")
-            print(f"多入口合并后共 {len(merged)} 个候选域名: {merged[:10]}")
-        else:
-            self.log("所有发布页入口均未提取到候选域名")
-            print("所有发布页入口均未提取到候选域名")
-        return merged
+        self.log("所有发布页入口均未提取到候选域名")
+        print("所有发布页入口均未提取到候选域名")
+        return []
 
     def _extract_from_html(self, text, base_url):
+        """先解码，再优先提取线路卡片，其次提取所有 http 链接"""
         try:
             html = self._decode_publish(text, self.cfg["publish_decode"])
         except Exception:
@@ -525,6 +511,7 @@ class Spider(Spider):
         return uniq
 
     def _fetch_and_extract(self, target_url, base):
+        """跳转目标页再解码 + 提取"""
         try:
             target_url = self._normalize_url(target_url, base)
             if not target_url:
@@ -545,6 +532,7 @@ class Spider(Spider):
             return []
 
     def _find_meta_refresh(self, html):
+        """识别 <meta http-equiv="refresh" content="0;url=...">"""
         m = re.search(
             r'<meta[^>]+http-equiv=["\']?refresh["\']?[^>]+'
             r'content=["\'][^"\']*url=([^"\'>\s]+)',
@@ -553,6 +541,7 @@ class Spider(Spider):
         return m.group(1).strip("'\"") if m else ""
 
     def _find_js_location(self, html):
+        """识别常见 JS 跳转写法"""
         if not html:
             return ""
         patterns = [
@@ -588,6 +577,7 @@ class Spider(Spider):
         return u
 
     def _decode_publish(self, text, mode):
+        # auto：先试 Base64.decode，再试 atob，都不命中按 plain
         if mode in ("js_base64", "auto"):
             m = re.search(r"Base64\.decode\(['\"]([^'\"]+)['\"]\)", text)
             if m:
@@ -763,6 +753,5 @@ def _cover_fallback(self, pic_url):
 Spider._cover_fallback = _cover_fallback
 # 注册爬虫
 if __name__ == '__main__':
-    from base.spider import SpiderBaseSpider
-
-    BaseSpider.register(Spider)
+    from base.spider import Spider as BaseSpider
+    BaseSpider.register(Spider())
