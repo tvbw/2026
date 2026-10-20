@@ -85,18 +85,20 @@ SITE_CONFIG = {
     "style": {"type": "rect", "ratio": 1.33},
 
     "publish_urls": [
-        "https://www.wyjqzhrf.cc/",
+        "https://51bla18.com/",
+        "https://51bla19.com/",
         "https://51bla20.com/",
+     # "https://51bla21.com/",
     ],
-    "publish_url": "https://mrdld3.com/",
+    "publish_url": "https://51bla20.com/",
     "publish_decode": "plain",
 
     "host_check_selector": "#index article a",
 
     "fallback_hosts": [
-        "https://cast.jifjmpodk.cc/",
-        "https://bus.jifjmpodk.cc/",
-        "https://adult.jifjmpodk.cc/",
+        "https://blind.luwhogpx.cc/",
+        "https://and.luwhogpx.cc/",
+        "https://but.luwhogpx.cc/",
     ],
 
     "list_selector": "#index article a, #archive article a",
