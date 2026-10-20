@@ -73,7 +73,7 @@ SITE_CONFIG = {
 
     # ---- 兜底域名 ----
     "fallback_hosts": [
-        "https://busy.tiihptkpd.cc/",
+        "https://ago.skkkykuv.cc/",
         "https://auto.tiihptkpd.cc/",
         "https://athlete.ezqkwgkf.cc/",
     ],
