@@ -1,36 +1,98 @@
 # ============================================================
-# 通用发布页动态域名 Spider 模板（修复 init 前调用 getName 崩溃）
-# 用法：
-#   同主题站 -> 只改 SITE_CONFIG
-#   跨主题   -> 另加/替换 _parse_players / _extract_folder_items / _decode_publish
-# ============================================================
-#  配置区：换同主题站点，改这一个字典即可
+# 通用发布页动态域名 Spider 模板（并发测活 + 本地 48h 缓存版）
 # ============================================================
 import json
-import random
+import os
 import re
 import sys
-import threading
+import tempfile
 import time
 from base64 import b64decode, b64encode
 from urllib.parse import urlparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 import requests
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from pyquery import PyQuery as pq
+
 sys.path.append('..')
 from base.spider import Spider
 
+# ============================================================
+# 本地 host 缓存（48 小时），失败自动降级
+# ============================================================
+CACHE_FILE_NAME = "spider_host_cache.json"
+CACHE_TTL = 48 * 3600
+
+def _cache_file_candidates():
+    paths = []
+    try:
+        paths.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), CACHE_FILE_NAME))
+    except Exception:
+        pass
+    try:
+        paths.append(os.path.join(os.getcwd(), CACHE_FILE_NAME))
+    except Exception:
+        pass
+    try:
+        paths.append(os.path.join(tempfile.gettempdir(), CACHE_FILE_NAME))
+    except Exception:
+        pass
+    paths.append("/data/local/tmp/" + CACHE_FILE_NAME)
+    return paths
+
+
+def _read_host_cache():
+    for p in _cache_file_candidates():
+        try:
+            if os.path.exists(p):
+                with open(p, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                host = data.get("host", "")
+                ts = float(data.get("ts", 0))
+                if host and time.time() - ts < CACHE_TTL:
+                    return host, p
+        except Exception:
+            continue
+    return "", ""
+
+
+def _write_host_cache(host):
+    payload = json.dumps({"host": host, "ts": time.time()}, ensure_ascii=False)
+    for p in _cache_file_candidates():
+        try:
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(payload)
+            return True
+        except Exception:
+            continue
+    return False
+
+
+def _clear_host_cache():
+    for p in _cache_file_candidates():
+        try:
+            if os.path.exists(p):
+                os.remove(p)
+        except Exception:
+            continue
+
+# ====================配置区开始===================
 SITE_CONFIG = {
     "name": "51模板",
     "play_from": "51模板",
     "style": {"type": "rect", "ratio": 1.33},
-    "publish_url": "https://51cgf18.com/",
-    # 发布页编码方式: js_base64 / js_atob / plain / redirect
-    "publish_decode": "js_base64",
-    # 判断“这个域名是不是目标站”的特征选择器
+
+    "publish_urls": [
+        "https://51cgf18.com/",
+        "https://51cgf20.com/",
+    ],
+    "publish_url": "https://mrdld3.com/",
+    "publish_decode": "plain",
+
     "host_check_selector": "#index article a",
-    # 发布页解析失败时的兜底域名
+
     "fallback_hosts": [
         "https://21bn7.ocqxkylwn.cc/",
         "https://angle.ocqxkylwn.cc/",
@@ -82,15 +144,15 @@ SITE_CONFIG = {
     },
 
     "timeout": 15,
-    "probe_timeout": 10,
+    "probe_timeout": 5,
+    "fast_timeout": 3,
+    "probe_workers": 6,
 }
-# ============================================================
-
+# ====================配置区结束===================
 
 class Spider(Spider):
-
-    # ✅ 关键修复：类属性，保证 init 之前 getName 也能访问
     cfg = SITE_CONFIG
+    _cached_host = ""
 
     # ================= 生命周期 =================
     def init(self, extend=""):
@@ -99,7 +161,6 @@ class Spider(Spider):
         except Exception:
             self.proxies = {}
 
-        # 实例级也挂上，便于后续覆盖
         self.cfg = SITE_CONFIG
         self.headers = dict(self.cfg["headers"])
 
@@ -112,8 +173,7 @@ class Spider(Spider):
         print(f"使用站点: {self.host}")
 
     def getName(self):
-        # ✅ 直接引用全局，彻底不依赖实例状态
-        return SITE_CONFIG.get("name", "51爆料")
+        return SITE_CONFIG.get("name", "51模板")
 
     def isVideoFormat(self, url):
         return any(ext in (url or "") for ext in [".m3u8", ".mp4", ".ts"])
@@ -134,7 +194,6 @@ class Spider(Spider):
 
             doc = self.getpq(r.text)
             classes = []
-
             for selector in self.cfg["category_selectors"]:
                 for item in doc(selector).items():
                     a = item("a")
@@ -145,7 +204,6 @@ class Spider(Spider):
                     classes.append({"type_name": name, "type_id": href})
                 if classes:
                     break
-
             if not classes:
                 classes = list(self.cfg["default_classes"])
 
@@ -254,10 +312,7 @@ class Spider(Spider):
 
             try:
                 plist = self._parse_players(doc)
-                if plist:
-                    vod["vod_play_url"] = "#".join(plist)
-                else:
-                    vod["vod_play_url"] = f"未找到视频源${url}"
+                vod["vod_play_url"] = "#".join(plist) if plist else f"未找到视频源${url}"
             except Exception:
                 vod["vod_play_url"] = f"视频解析失败${url}"
 
@@ -373,53 +428,234 @@ class Spider(Spider):
             print(f"Base64解码错误: {e}")
             return ""
 
-    # ================= 发布页 / 动态域名 =================
+    # ================= 发布页 / 动态域名（缓存 + 并发） =================
     def get_working_host(self):
-        for url in self.extract_domains_from_publish_page():
-            try:
-                r = requests.get(url, headers=self.headers,
-                                 proxies=self.proxies, timeout=self.cfg["probe_timeout"])
-                if r.status_code == 200 and self.getpq(r.text)(self.cfg["host_check_selector"]):
-                    self.log(f"动态解析到可用站点: {url}")
-                    print(f"动态解析到可用站点: {url}")
-                    return url
-            except Exception:
-                continue
+        # 1) 先看缓存（类内存 -> 文件 48h）
+        cached = ""
+        if Spider._cached_host:
+            cached = Spider._cached_host
+        else:
+            cached, cache_path = _read_host_cache()
+            if cached:
+                print(f"命中本地缓存文件: {cache_path}")
 
-        for url in self.cfg["fallback_hosts"]:
-            try:
-                r = requests.get(url, headers=self.headers,
-                                 proxies=self.proxies, timeout=self.cfg["probe_timeout"])
-                if r.status_code == 200 and self.getpq(r.text)(self.cfg["host_check_selector"]):
-                    self.log(f"回退选用可用站点: {url}")
-                    print(f"回退选用可用站点: {url}")
-                    return url
-            except Exception:
-                continue
+        if cached:
+            if self._probe_one(cached, self.cfg["fast_timeout"]):
+                self.log(f"命中缓存站点: {cached}")
+                print(f"命中缓存站点: {cached}")
+                Spider._cached_host = cached
+                return cached
+            else:
+                self.log(f"缓存站点失效，重新探测: {cached}")
+                print(f"缓存站点失效，重新探测: {cached}")
+                Spider._cached_host = ""
+                _clear_host_cache()
 
-        fallback = self.cfg["fallback_hosts"][0]
-        self.log(f"未检测到可用站点，回退: {fallback}")
-        print(f"未检测到可用站点，回退: {fallback}")
-        return fallback
+        # 2) 发布页 + 兜底
+        candidates = self.extract_domains_from_publish_page()
+        all_hosts = []
+        seen = set()
+        for u in list(candidates) + list(self.cfg["fallback_hosts"]):
+            if u and u not in seen:
+                seen.add(u)
+                all_hosts.append(u)
+
+        if not all_hosts:
+            all_hosts = list(self.cfg["fallback_hosts"])
+
+        # 3) 并发测活
+        host = self._probe_concurrent(all_hosts, self.cfg["probe_timeout"])
+        if host:
+            Spider._cached_host = host
+            _write_host_cache(host)
+            if host in candidates:
+                self.log(f"动态解析到可用站点: {host}")
+                print(f"动态解析到可用站点: {host}")
+            else:
+                self.log(f"回退选用可用站点: {host}")
+                print(f"回退选用可用站点: {host}")
+            return host
+
+        fb = self.cfg["fallback_hosts"][0]
+        self.log(f"未检测到可用站点，回退: {fb}")
+        print(f"未检测到可用站点，回退: {fb}")
+        return fb
+
+    def _probe_one(self, url, timeout):
+        try:
+            r = requests.get(url, headers=self.headers,
+                             proxies=self.proxies, timeout=timeout)
+            if r.status_code != 200:
+                return False
+            return bool(self.getpq(r.text)(self.cfg["host_check_selector"]))
+        except Exception:
+            return False
+
+    def _probe_concurrent(self, urls, timeout):
+        if not urls:
+            return ""
+        if len(urls) == 1:
+            return urls[0] if self._probe_one(urls[0], timeout) else ""
+
+        results = {}
+        workers = min(self.cfg.get("probe_workers", 6), len(urls))
+        with ThreadPoolExecutor(max_workers=workers) as ex:
+            future_map = {
+                ex.submit(self._probe_one, u, timeout): u for u in urls
+            }
+            try:
+                for fut in as_completed(future_map, timeout=timeout + 2):
+                    u = future_map[fut]
+                    try:
+                        results[u] = fut.result(timeout=0)
+                    except Exception:
+                        results[u] = False
+                    if results.get(u):
+                        idx = urls.index(u)
+                        if all(urls[i] in results for i in range(idx)):
+                            for i in range(idx + 1):
+                                if results.get(urls[i]):
+                                    return urls[i]
+            except Exception:
+                pass
+
+        for u in urls:
+            if results.get(u):
+                return u
+        return ""
 
     def extract_domains_from_publish_page(self):
-        try:
-            r = requests.get(self.cfg["publish_url"], headers=self.headers,
-                             proxies=self.proxies, timeout=self.cfg["probe_timeout"])
-            if r.status_code != 200:
-                self.log(f"发布页请求失败: HTTP {r.status_code}")
-                return []
+        cfg = self.cfg
+        entries = cfg.get("publish_urls") or [cfg.get("publish_url", "")]
+        entries = [e for e in entries if e]
 
-            html = self._decode_publish(r.text, self.cfg["publish_decode"])
-            doc = self.getpq(html)
-            domains = self._pick_domains(doc, self.cfg["publish_url"])
-            self.log(f"发布页解析到 {len(domains)} 个候选域名")
-            print(f"发布页解析到 {len(domains)} 个候选域名")
-            return domains
+        for entry in entries:
+            try:
+                r = requests.get(entry, headers=self.headers,
+                                 proxies=self.proxies,
+                                 timeout=cfg["probe_timeout"],
+                                 allow_redirects=True)
+                if r.status_code != 200:
+                    continue
+
+                domains = self._extract_from_html(r.text, r.url)
+                if domains:
+                    return domains
+
+                target = self._find_meta_refresh(r.text)
+                if target:
+                    domains = self._fetch_and_extract(target, base=entry)
+                    if domains:
+                        return domains
+
+                target = self._find_js_location(r.text)
+                if target:
+                    domains = self._fetch_and_extract(target, base=entry)
+                    if domains:
+                        return domains
+
+            except Exception as e:
+                self.log(f"发布页入口失败 [{entry}]: {e}")
+                print(f"发布页入口失败 [{entry}]: {e}")
+                continue
+
+        self.log("所有发布页入口均未提取到候选域名")
+        print("所有发布页入口均未提取到候选域名")
+        return []
+
+    def _extract_from_html(self, text, base_url):
+        try:
+            html = self._decode_publish(text, self.cfg["publish_decode"])
+        except Exception:
+            html = text
+
+        doc = self.getpq(html)
+
+        domains = []
+        for a in doc("a.route, a[data-line4], .routes a").items():
+            href = (a.attr("href") or "").strip()
+            if href:
+                domains.append(href)
+
+        if not domains:
+            domains = self._pick_domains(doc, base_url)
+
+        seen, uniq = set(), []
+        for u in domains:
+            u = self._normalize_url(u, base_url)
+            if not u:
+                continue
+            if u not in seen:
+                seen.add(u)
+                uniq.append(u)
+
+        if uniq:
+            self.log(f"发布页解析到 {len(uniq)} 个候选域名: {uniq[:6]}")
+            print(f"发布页解析到 {len(uniq)} 个候选域名: {uniq[:6]}")
+        return uniq
+
+    def _fetch_and_extract(self, target_url, base):
+        try:
+            target_url = self._normalize_url(target_url, base)
+            if not target_url:
+                return []
+            self.log(f"发布页跳转目标: {target_url}")
+            print(f"发布页跳转目标: {target_url}")
+
+            r = requests.get(target_url, headers=self.headers,
+                             proxies=self.proxies,
+                             timeout=self.cfg["probe_timeout"],
+                             allow_redirects=True)
+            if r.status_code != 200:
+                return []
+            return self._extract_from_html(r.text, r.url)
         except Exception as e:
-            self.log(f"解析发布页失败: {e}")
-            print(f"解析发布页失败: {e}")
+            self.log(f"请求跳转目标失败: {e}")
+            print(f"请求跳转目标失败: {e}")
             return []
+
+    def _find_meta_refresh(self, html):
+        m = re.search(
+            r'<meta[^>]+http-equiv=["\']?refresh["\']?[^>]+'
+            r'content=["\'][^"\']*url=([^"\'>\s]+)',
+            html or "", re.I,
+        )
+        return m.group(1).strip("'\"") if m else ""
+
+    def _find_js_location(self, html):
+        if not html:
+            return ""
+        patterns = [
+            r'window\.location(?:\.href)?\s*=\s*["\']([^"\']+)["\']',
+            r'document\.location(?:\.href)?\s*=\s*["\']([^"\']+)["\']',
+            r'location\.replace\(\s*["\']([^"\']+)["\']',
+            r'location\.assign\(\s*["\']([^"\']+)["\']',
+        ]
+        for p in patterns:
+            m = re.search(p, html)
+            if m:
+                return m.group(1)
+        return ""
+
+    def _normalize_url(self, u, base):
+        if not u:
+            return ""
+        u = u.strip()
+        if u.startswith("//"):
+            u = "https:" + u
+        if u.startswith("/") and base:
+            try:
+                p = urlparse(base)
+                u = f"{p.scheme}://{p.netloc}{u}"
+            except Exception:
+                pass
+        if not u.startswith("http"):
+            return ""
+        if "." not in u:
+            return ""
+        if any(x in u for x in ["javascript:", "mailto:", "#"]):
+            return ""
+        return u
 
     def _decode_publish(self, text, mode):
         if mode == "js_base64":
@@ -448,19 +684,12 @@ class Spider(Spider):
         seen, out = set(), []
         for a in doc("a").items():
             href = (a.attr("href") or "").strip()
-            if not href:
+            u = self._normalize_url(href, base)
+            if not u:
                 continue
-            if href.startswith("//"):
-                href = "https:" + href
-            if href.startswith("/") and base:
-                href = base.rstrip("/") + href
-            if not href.startswith("http") or "." not in href:
-                continue
-            if any(x in href for x in ["javascript:", "mailto:", "#"]):
-                continue
-            if href not in seen:
-                seen.add(href)
-                out.append(href)
+            if u not in seen:
+                seen.add(u)
+                out.append(u)
         return out
 
     # ================= 播放器解析 =================
@@ -471,6 +700,16 @@ class Spider(Spider):
         attr = self.cfg["player_config_attr"]
 
         if not doc(sel):
+            for idx, node in enumerate(doc("video[src]").items(), start=1):
+                src = (node.attr("src") or "").strip()
+                if src:
+                    plist.append(f"视频{idx}${src}")
+            if plist:
+                return plist
+            for idx, node in enumerate(doc("iframe[src]").items(), start=1):
+                src = (node.attr("src") or "").strip()
+                if src:
+                    plist.append(f"视频{idx}${src}")
             return plist
 
         for idx, node in enumerate(doc(sel).items(), start=1):
@@ -577,7 +816,6 @@ class Spider(Spider):
         except Exception as e:
             print(f"{e}")
             return pq(data.encode("utf-8"))
-
 
 # ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
 _PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
