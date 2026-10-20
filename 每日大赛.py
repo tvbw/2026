@@ -121,11 +121,12 @@ SITE_CONFIG = {
     "style": {"type": "rect", "ratio": 1.33},
 # -------- 网址发布页 ------------
     "publish_urls": [
+        "https://mrdsv2.com/",
         "https://mrdsy6.com/",
-        "https://mrdsy3.com/",
+
     ],
 # ---- 发布页：支持多入口，逐个尝试 ----
-    "publish_url": "https://mrdsy6.com/",
+    "publish_url": "https://mrdsv2.com/",
     "publish_decode": "plain",
 
 # ---- 判定“这个域名是不是目标站”的特征 ----
@@ -133,9 +134,9 @@ SITE_CONFIG = {
 
 # -------- 兜底域名 --------------------
     "fallback_hosts": [
-        "https://cell.tiihptkpd.cc/",
-        "https://chair.tiihptkpd.cc/",
-        "https://access.tiihptkpd.cc/",
+        "https://as.llmdpxsaq.cc",
+        "https://brown.llmdpxsaq.cc",
+        "https://actor.llmdpxsaq.cc",
     ],
 
     "list_selector": "#index article a, #archive article a",
