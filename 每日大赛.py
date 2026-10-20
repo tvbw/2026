@@ -33,7 +33,7 @@ SITE_CONFIG = {
     "host_check_selector": "#index article a",
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
-        "https://center.hdzlnzfq.cc/",
+        "https://actual.tykveiik.cc/",
         "https://8d1hf.tykveiik.cc/",
         "https://8d1hf.tykveiik.cc/",
     ],
