@@ -31,9 +31,6 @@ SITE_CONFIG = {
     # 推荐填 publish_urls 列表；运行时按顺序遍历，候选合并去重
     "publish_urls": [
         "https://51cgf18.com",
-        "https://51cgf20.com",
-        "https://51cgf21.com",
-        # "https://51cgf22.com",
     ],
     # 兼容单入口（publish_urls 为空时才生效）
     "publish_url": "",
