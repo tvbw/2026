@@ -121,11 +121,11 @@ SITE_CONFIG = {
     "style": {"type": "rect", "ratio": 1.33},
 # -------- 网址发布页 ------------
     "publish_urls": [
-        "https://51bla10.com/",
+        "https://www.wyjqzhrf.cc/",
         "https://51bla20.com/",
     ],
 # ---- 发布页：支持多入口，逐个尝试 ----
-    "publish_url": "https://51bla20.com/",
+    "publish_url": "https://www.wyjqzhrf.cc/",
     "publish_decode": "plain",
 
 # ---- 判定“这个域名是不是目标站”的特征 ----
