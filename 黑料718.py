@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-黑料718 TVBox 爬虫 - 图片开关版
+黑料718 TVBox 爬虫 - 修复版
 =========================================================
-核心说明：
-  经完整诊断，pass.saxinx.cn 的 Cloudflare 对 Python requests
-  做了 TLS 指纹级别拦截（非请求头问题）。TVBox py 源环境无法绕过。
-
-  ENABLE_IMG = False  → 不返回图片URL，列表只显示标题（推荐）
-  ENABLE_IMG = True   → 保留原有图片尝试逻辑（可能显示空白）
-
-  其他所有功能（首页、分类、翻页、搜索、详情、播放）不受影响。
+基于原版结构做以下修复：
+  1. 封面：相对路径 hl718/... 正确拼 host；走本地代理带 Referer 绕过 Cloudflare 防盗链
+  2. 分类翻页：改用 path 式 /category/slug/N/，与真实 HTML 一致
+  3. 页码：优先读 .page-info "5/55" 或 #pageNum[max]，精确取总页数
+  4. 加速：requests.Session 复用连接 + 首页 5 分钟缓存 + 重试 sleep 从 1.5s 降至 0.3s
+  5. 播放：明确 parse=0，让 TVBox 直接拉 m3u8
+  6. 列表解析：改用 PyQuery（比逐条正则快且稳）
 """
 
-import base64
-import json
 import re
+import json
 import sys
-import threading
 import time
 import urllib.parse
 
@@ -30,21 +27,19 @@ except Exception:
     _BaseSpider = object
 
 
-# ============================ 配置 ============================
+# ============================ 基础配置 ============================
 SITE = "https://clash.windowheiliao.com"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-      "(KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36")
+      "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
 
-# ★★★ 图片总开关 ★★★
-# False = 不显示图片（避免放大镜/空白框），列表只显示标题
-# True  = 保留图片尝试（当前环境会失败，为将来环境升级预留）
-ENABLE_IMG = True
-
-IMG_BASE = "https://pass.saxinx.cn/"
-
-_TRANSPARENT_PNG = base64.b64decode(
-    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-)
+# ===== 图片 =====
+# True: 走本地代理带 Referer（推荐，绕过 Cloudflare 防盗链）
+# False: 直连原图 URL（能显示就更快）
+IMG_PROXY = True
+# 图片是否需要 AES 解密：黑料718=False; 51bl=True
+IMG_AES = False
+AES_KEY = b"f5d965df75336270"
+AES_IV = b"97b60394abc2fbe1"
 
 CATEGORIES = [
     ("每日黑料", "daily-gossip"),
@@ -76,14 +71,17 @@ def _from_pyquery(html):
         return None
 
 
+# ============================ Spider 类 ============================
 class Spider(_BaseSpider):
 
     def __init__(self):
         self.name = "黑料718"
         self.host = SITE
+        self.ua = UA
         self.timeout = 15
         self.categories = [{"type_id": slug, "type_name": name} for name, slug in CATEGORIES]
 
+        # Session 复用连接（加速关键）
         self.session = requests.Session()
         self.session.headers.update({
             "User-Agent": UA,
@@ -93,25 +91,17 @@ class Spider(_BaseSpider):
             "Connection": "keep-alive",
         })
         self.session.verify = False
-        try:
-            import urllib3
-            urllib3.disable_warnings()
-        except Exception:
-            pass
 
-        self.proxies = {}
+        # 首页缓存
         self._home_html = ""
         self._home_ts = 0
 
-    def init(self, extend=""):
-        try:
-            self.proxies = json.loads(extend) if extend else {}
-        except Exception:
-            self.proxies = {}
-        print(f"[init] ENABLE_IMG={ENABLE_IMG}, 代理={'有' if self.proxies else '无'}")
-
+    # ---------------- 元信息 / 生命周期 ----------------
     def getName(self):
         return "黑料718"
+
+    def init(self, extend=""):
+        return None
 
     def destroy(self):
         try:
@@ -123,17 +113,17 @@ class Spider(_BaseSpider):
         return []
 
     def isVideoFormat(self, url):
-        return any(ext in (url or "") for ext in [".m3u8", ".mp4", ".ts"])
+        u = url or ""
+        return ".m3u8" in u or ".mp4" in u
 
     def manualVideoCheck(self):
         return False
 
-    # ---------------- GET 加速 ----------------
+    # ---------------- 加速：缓存 GET ----------------
     def _fetch(self, url, retries=2):
         for i in range(retries):
             try:
-                r = self.session.get(url, timeout=self.timeout,
-                                     proxies=self.proxies or None)
+                r = self.session.get(url, timeout=self.timeout)
                 if r.status_code == 200:
                     return r.text
             except Exception:
@@ -149,12 +139,15 @@ class Spider(_BaseSpider):
         self._home_ts = now
         return self._home_html
 
-    # ---------------- 图片 URL 规范化 ----------------
+    # ---------------- 图片 URL 规范化 + 代理 ----------------
     def _normalize_img(self, url):
-        # ★★★ 图片开关：关闭时返回空字符串 ★★★
-        if not ENABLE_IMG:
-            return ""
-
+        """
+        - 'hl718/xxx/cover.webp'  -> host 拼接
+        - '/xxx'                  -> host 拼接
+        - '//xxx'                 -> https 前缀
+        - 'http(s)://xxx'         -> 原样
+        最终按 IMG_PROXY 决定是否走本地代理
+        """
         url = (url or "").strip()
         if not url or "${" in url:
             return ""
@@ -162,15 +155,18 @@ class Spider(_BaseSpider):
             url = "https:" + url
         elif url.startswith("http"):
             pass
-        elif url.startswith("/hl718/") or url.startswith("hl718/"):
-            url = IMG_BASE.rstrip("/") + "/" + url.lstrip("/")
         elif url.startswith("/"):
             url = self.host.rstrip("/") + url
         else:
-            url = IMG_BASE.rstrip("/") + "/" + url
-        return f"{self.getProxyUrl()}&url={self.e64(url)}&type=img"
+            # 关键修复：纯相对路径 hl718/... 需要补 "/"
+            url = self.host.rstrip("/") + "/" + url
 
-    # ---------------- 列表解析 ----------------
+        if IMG_PROXY:
+            # 走本地代理，服务端带 Referer 请求
+            return f"{self.getProxyUrl()}&url={self.e64(url)}&type=img"
+        return url
+
+    # ---------------- 列表解析（PyQuery 加速） ----------------
     def _parse_list(self, html):
         vods = []
         seen = set()
@@ -187,12 +183,15 @@ class Spider(_BaseSpider):
                 continue
             if 'rel="sponsored' in art_html:
                 continue
+
             mid = re.search(r"/archives/(\d+)", art_html)
             if not mid:
                 continue
             aid = mid.group(1)
             if aid in seen:
                 continue
+
+            # 标题
             h2 = art("h2.post-card-title").eq(0)
             if not h2 or not h2.text():
                 h2 = art("h2").eq(0)
@@ -202,21 +201,21 @@ class Spider(_BaseSpider):
             if not name:
                 continue
 
+            # 封面：meta itemprop=image > [data-pic] > img
             pic = ""
-            if ENABLE_IMG:
-                for sel, attr in (
-                    ('meta[itemprop="image"]', 'content'),
-                    ('[data-pic]', 'data-pic'),
-                    ('img[data-src]', 'data-src'),
-                    ('img[src]', 'src'),
-                ):
-                    el = art(sel).eq(0)
-                    if not el:
-                        continue
-                    v = (el.attr(attr) or "").strip()
-                    if v and "${" not in v and not v.startswith("data:"):
-                        pic = self._normalize_img(v)
-                        break
+            for sel, attr in (
+                ('meta[itemprop="image"]', 'content'),
+                ('[data-pic]', 'data-pic'),
+                ('img[data-src]', 'data-src'),
+                ('img[src]', 'src'),
+            ):
+                el = art(sel).eq(0)
+                if not el:
+                    continue
+                v = (el.attr(attr) or "").strip()
+                if v and "${" not in v and not v.startswith("data:"):
+                    pic = self._normalize_img(v)
+                    break
 
             seen.add(aid)
             vods.append({
@@ -227,7 +226,7 @@ class Spider(_BaseSpider):
             })
         return vods
 
-    # ---------------- TVBox 接口 ----------------
+    # ---------------- TVBox 五大接口 ----------------
     def homeContent(self, filter=True):
         try:
             html = self._get_home()
@@ -249,9 +248,12 @@ class Spider(_BaseSpider):
             pg = int(pg)
         except Exception:
             pg = 1
+
+        # 首页 / 分类 URL
         if not tid or tid == "home":
             url = SITE + ("/page/%d/" % pg if pg > 1 else "/")
         else:
+            # path 式，与 HTML 一致
             url = SITE + ("/category/%s/" % tid if pg == 1
                           else "/category/%s/%d/" % (tid, pg))
 
@@ -263,6 +265,7 @@ class Spider(_BaseSpider):
             print(f"categoryContent error: {e}")
             vods = []
 
+        # 精确页码：.page-info "5/55" 优先，其次 #pageNum[max]
         total_pages = 999
         if html:
             doc = _from_pyquery(html)
@@ -294,6 +297,7 @@ class Spider(_BaseSpider):
             html = self._fetch(SITE + "/archives/%s" % aid)
         except Exception:
             pass
+
         if not html:
             return {"list": [{
                 "vod_id": aid, "vod_name": "详情获取失败", "vod_pic": "",
@@ -301,20 +305,22 @@ class Spider(_BaseSpider):
                 "vod_remarks": "详情页无法访问",
             }]}
 
+        # 标题
         title = ""
         tm = re.search(r"<title>([^<]+)</title>", html)
         if tm:
             title = _clean(tm.group(1)).split(" - ")[0]
 
+        # 封面
         pic = ""
-        if ENABLE_IMG:
-            for pat in (r'itemprop="image" content="([^"]+)"',
-                        r'data-pic=["\']([^"\']+)["\']'):
-                im = re.search(pat, html)
-                if im and "${" not in im.group(1):
-                    pic = self._normalize_img(im.group(1))
-                    break
+        for pat in (r'itemprop="image" content="([^"]+)"',
+                    r'data-pic=["\']([^"\']+)["\']'):
+            im = re.search(pat, html)
+            if im and "${" not in im.group(1):
+                pic = self._normalize_img(im.group(1))
+                break
 
+        # 视频源
         sources = []
         for cfg in re.findall(r"data-config='(\{.*?\})'", html, re.S):
             try:
@@ -357,57 +363,43 @@ class Spider(_BaseSpider):
         return {"list": vods, "page": pg, "pagecount": 50, "total": 50 * 30, "limit": 30}
 
     def playerContent(self, flag, id, vipFlags=None):
+        # 关键修复：明确 parse=0 直接播放
         return {
             "parse": 0,
             "url": id,
-            "header": {"User-Agent": UA, "Referer": SITE + "/"},
+            "header": {
+                "User-Agent": UA,
+                "Referer": SITE + "/",
+            },
         }
 
-    # ==================== 图片代理（保留，仅 ENABLE_IMG=True 时使用） ====================
+    # ---------------- 本地代理（图片/视频流） ----------------
     def localProxy(self, param):
         t = param.get("type")
         if t == "img":
-            return self._img_proxy(param)
+            try:
+                # 关键：带 Referer 请求原图，绕过防盗链
+                res = self.session.get(param["url"], timeout=10)
+                content = res.content
+                if IMG_AES:
+                    try:
+                        content = self.aesimg(content)
+                    except Exception:
+                        pass
+                ct = res.headers.get("Content-Type", "image/jpeg")
+                return [200, ct, content]
+            except Exception as e:
+                print(f"img proxy error: {e}")
+                return [404, "text/plain", b""]
         if t == "m3u8":
             return self.m3Proxy(param["url"])
         return self.tsProxy(param["url"])
 
-    def _img_proxy(self, param):
-        real_url = param.get("url") or ""
-        if not real_url.startswith("http"):
-            try:
-                real_url = self.d64(real_url) or real_url
-            except Exception:
-                pass
-        if not real_url.startswith("http"):
-            return [200, "image/webp", _TRANSPARENT_PNG]
-
-        try:
-            headers = {
-                "User-Agent": UA,
-                "Referer": SITE + "/",
-                "Accept": "image/webp,image/*,*/*;q=0.8",
-            }
-            r = requests.get(real_url, headers=headers,
-                             proxies=self.proxies or None,
-                             timeout=12, verify=False)
-            print(f"[img] status={r.status_code} len={len(r.content)} "
-                  f"head={r.content[:8]!r}")
-            if r.status_code == 200:
-                c = r.content
-                if ((c[:4] == b'RIFF' and c[8:12] == b'WEBP')
-                        or c[:8] == b'\x89PNG\r\n\x1a\n'
-                        or c[:3] == b'\xff\xd8\xff'):
-                    return [200, "image/webp", c]
-        except Exception as e:
-            print(f"[img] 异常: {type(e).__name__}: {str(e)[:60]}")
-
-        return [200, "image/webp", _TRANSPARENT_PNG]
-
-    # ==================== M3U8 / TS ====================
     def proxy(self, data, type="m3u8"):
+        # 图片无条件走代理
         if type == "img":
             return f"{self.getProxyUrl()}&url={self.e64(data)}&type=img"
+        # m3u8/ts 仅在用户配了代理时走
         if data and len(getattr(self, "proxies", {})) > 0:
             return f"{self.getProxyUrl()}&url={self.e64(data)}&type={type}"
         return data
@@ -415,13 +407,11 @@ class Spider(_BaseSpider):
     def m3Proxy(self, url):
         url = self.d64(url)
         try:
-            ydata = self.session.get(url, allow_redirects=False, timeout=15,
-                                     proxies=self.proxies or None)
+            ydata = self.session.get(url, allow_redirects=False, timeout=15)
             data = ydata.content.decode("utf-8", "ignore")
             if ydata.headers.get("Location"):
                 url = ydata.headers["Location"]
-                data = self.session.get(url, timeout=15,
-                                        proxies=self.proxies or None).content.decode("utf-8", "ignore")
+                data = self.session.get(url, timeout=15).content.decode("utf-8", "ignore")
         except Exception:
             return [500, "text/plain", b""]
 
@@ -449,20 +439,43 @@ class Spider(_BaseSpider):
     def tsProxy(self, url):
         url = self.d64(url)
         try:
-            r = self.session.get(url, timeout=15, proxies=self.proxies or None)
+            r = self.session.get(url, timeout=15)
             return [200, r.headers.get("Content-Type", "video/mp2t"), r.content]
         except Exception:
             return [500, "text/plain", b""]
 
-    # ==================== Base64 ====================
+    # ---------------- Base64 ----------------
     def e64(self, text):
+        from base64 import b64encode
         try:
-            return base64.b64encode(text.encode("utf-8")).decode("utf-8")
+            return b64encode(text.encode("utf-8")).decode("utf-8")
         except Exception:
             return ""
 
     def d64(self, text):
+        from base64 import b64decode
         try:
-            return base64.b64decode(text.encode("utf-8")).decode("utf-8")
+            return b64decode(text.encode("utf-8")).decode("utf-8")
         except Exception:
             return ""
+
+    def aesimg(self, word):
+        from Crypto.Cipher import AES
+        from Crypto.Util.Padding import unpad
+        cipher = AES.new(AES_KEY, AES.MODE_CBC, AES_IV)
+        return unpad(cipher.decrypt(word), AES.block_size)
+
+
+if __name__ == "__main__":
+    _sp = Spider()
+    print("== getName:", _sp.getName())
+    _h = _sp.homeContent()
+    print("   分类数:", len(_h.get("class", [])), " 推荐数:", len(_h.get("list", [])))
+    if _h.get("list"):
+        print("   第一张封面代理URL:", _h["list"][0]["vod_pic"][:120])
+    print("== categoryContent(internet-celebrities, 5) ==")
+    _c = _sp.categoryContent("internet-celebrities", 5)
+    print("   数量:", len(_c.get("list", [])), " page:", _c.get("page"),
+          " pagecount:", _c.get("pagecount"))
+    if _c.get("list"):
+        print("   第一张封面代理URL:", _c["list"][0]["vod_pic"][:120])
