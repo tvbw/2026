@@ -1,8 +1,9 @@
 # ============================================================
-# 102 版本 + 跳转识别最小补丁
-# 改动仅在 extract_domains_from_publish_page 增加 fallback 分支
-# 新增 _find_meta_refresh / _find_js_location / _fetch_and_extract
-# 其余所有方法保持 102 原样
+# 102 版本 + 跳转识别最小补丁 + 翻页修复（ul.page-navigator）
+# 改动：
+#   1. extract_domains_from_publish_page 增加 fallback 分支
+#   2. 新增 _find_meta_refresh / _find_js_location / _fetch_and_extract
+#   3. categoryContent 翻页判定改为兼容 ul.page-navigator 结构
 # ============================================================
 import json
 import random
@@ -25,12 +26,12 @@ SITE_CONFIG = {
     "style": {"type": "rect", "ratio": 1.33},
     # ===== 保持 102 原配置（已验证可用） =====
     "publish_url": "https://51bla20.com/",
-    
+
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "js_base64",
     # 判断“这个域名是不是目标站”的特征选择器
     "host_check_selector": "#index article a",
-    
+
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
         "https://blind.luwhogpx.cc/",
@@ -166,7 +167,7 @@ class Spider(Spider):
             print(f"homeVideoContent error: {e}")
             return {"list": []}
 
-    # ================= 分类（102 原样，翻页逻辑不动） =================
+    # ================= 分类（翻页判定修复） =================
     def categoryContent(self, tid, pg, filter, extend):
         try:
             if '@folder' in tid:
@@ -175,7 +176,7 @@ class Spider(Spider):
                 return {'list': videos, 'page': pg, 'pagecount': 1, 'limit': 90, 'total': len(videos)}
 
             pg = int(pg)
-            tid = tid.rstrip('/')                       # ← 就加这一行
+            tid = tid.rstrip('/')                       # 去掉尾部斜杠
             url = f"{self.host}{tid}/{pg}/" if pg > 1 else f"{self.host}{tid}/"
 
             rsp = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
@@ -185,21 +186,62 @@ class Spider(Spider):
             doc = self.getpq(rsp.text)
             videos = self.getlist(doc('#archive article a, #index article a'), tid)
 
-            # 总页数 & 下一页
+            # ================= 总页数 & 下一页（修复 ul.page-navigator 结构） =================
             total_pages = 1
-            page_info = doc('.pagination .pages, .page-nav, .pagenavi').text()
-            if '共' in page_info and '页' in page_info:
-                total_pages = int(page_info.split('共')[-1].split('页')[0])
-            next_url = doc('a.next, .pagination a.next, .pagenavi .next, a:contains("下一页")').attr('href')
-            has_next = bool(next_url)
+            has_next = False
+
+            # 1) 优先按本站结构 ul.page-navigator 解析
+            pagenav = doc('ul.page-navigator')
+            if pagenav:
+                # 数字链接里最大值就是总页数（比如当前 50，最大 171）
+                max_page = 0
+                for a in pagenav('li a').items():
+                    t = (a.text() or '').strip()
+                    if t.isdigit():
+                        max_page = max(max_page, int(t))
+                if max_page > 0:
+                    total_pages = max_page
+
+                # next 在 li 上，不在 a 上，要 li.next a
+                if pagenav('li.next a').attr('href'):
+                    has_next = True
+
+            # 2) 兼容 Wordpress 的“共 N 页”文本（保留原逻辑）
+            if total_pages <= 1:
+                page_info = doc('.pagination .pages, .page-nav, .pagenavi').text() or ''
+                if '共' in page_info and '页' in page_info:
+                    try:
+                        total_pages = int(page_info.split('共')[-1].split('页')[0])
+                    except Exception:
+                        pass
+
+            # 3) 通用 next 兜底（老站/其它结构）
+            if not has_next:
+                nxt = doc(
+                    'ul.page-navigator li.next a, '
+                    '.pagination a.next, .pagenavi a.next, '
+                    'li.next a, a.next, a:contains("下一页")'
+                ).attr('href')
+                has_next = bool(nxt)
+
+            # 4) 组装 pagecount：有总页数用总页数；只知道还有下一页就用 pg+1
+            if total_pages > 1:
+                pagecount = total_pages
+            elif has_next:
+                pagecount = pg + 1
+            else:
+                pagecount = pg
+
+            total_count = (pagecount * 90) if pagecount > 1 else len(videos)
 
             return {
                 'list': videos,
                 'page': pg,
-                'pagecount': total_pages if total_pages > 1 else 99999 if has_next else pg,
+                'pagecount': pagecount,
                 'limit': 90,
-                'total': 999999 if has_next else len(videos)
+                'total': total_count
             }
+            # ================================================================================
         except Exception as e:
             print(f"categoryContent error: {e}")
             return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 90, 'total': 0}
