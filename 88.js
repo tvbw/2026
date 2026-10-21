@@ -3,16 +3,28 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "51test",
-      "name": "❤️51test",
+      "key": "香蕉9合1最终优化版目录版",
+      "name": "❤️香蕉9合1最终优化目录版【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51test.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51test.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
+    },
+    {
+      "key": "51爆料",
+      "name": "4❤️51爆料｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
     },
     {
       "key": "正宗聚合",
@@ -39,18 +51,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-      "key": "香蕉9合1最终优化版目录版",
-      "name": "❤️香蕉9合1最终优化目录版【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
-    },
-    {
+
       "key": "香蕉9合1最终优化版",
       "name": "❤️香蕉9合1最终优化版全目录【🔞】",
       "type": 3,
@@ -99,18 +100,6 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py"
-    },
-    {
-      "key": "51爆料",
-      "name": "4❤️51爆料｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
     },
     {
       "key": "51吃瓜",
