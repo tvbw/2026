@@ -1,41 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-黑料718 TVBox 爬虫 - AES 解密最终版
+黑料718 TVBox 爬虫 - 图片开关版
 =========================================================
-关键修复：
-  pass.saxinx.cn/hl718/.../cover.webp 返回的是 AES 加密数据，
-  浏览器直接打开显示放大镜；XPic.js 用 crypto-js 解密后转 blob 显示。
-  TVBox 里必须：请求 → AES 解密 → 返回解密后的 WebP。
+核心说明：
+  经完整诊断，pass.saxinx.cn 的 Cloudflare 对 Python requests
+  做了 TLS 指纹级别拦截（非请求头问题）。TVBox py 源环境无法绕过。
 
-AES key/iv 沿用 51bl 验证值（同为 Mirages+XPic 主题）：
-  key = b"f5d965df75336270"
-  iv  = b"97b60394abc2fbe1"
+  ENABLE_IMG = False  → 不返回图片URL，列表只显示标题（推荐）
+  ENABLE_IMG = True   → 保留原有图片尝试逻辑（可能显示空白）
 
-解密方式依次尝试：
-  1. 原样（若未加密）
-  2. AES-128-CBC + 无 padding
-  3. AES-128-CBC + PKCS7 padding
-  4. AES-128-ECB + 无 padding
-  5. AES-128-ECB + PKCS7 padding
-每个结果用 WebP/PNG/JPEG 文件头校验，命中即返回。
+  其他所有功能（首页、分类、翻页、搜索、详情、播放）不受影响。
 """
 
 import base64
 import json
 import re
 import sys
+import threading
 import time
 import urllib.parse
 
 import requests
-
-try:
-    from Crypto.Cipher import AES
-    from Crypto.Util.Padding import unpad
-    HAS_CRYPTO = True
-except Exception as e:
-    print(f"[init] Crypto 不可用: {e}")
-    HAS_CRYPTO = False
 
 try:
     if '..' not in sys.path:
@@ -50,9 +35,16 @@ SITE = "https://clash.windowheiliao.com"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36")
 
+# ★★★ 图片总开关 ★★★
+# False = 不显示图片（避免放大镜/空白框），列表只显示标题
+# True  = 保留图片尝试（当前环境会失败，为将来环境升级预留）
+ENABLE_IMG = False
+
 IMG_BASE = "https://pass.saxinx.cn/"
-AES_KEY = b"f5d965df75336270"
-AES_IV = b"97b60394abc2fbe1"
+
+_TRANSPARENT_PNG = base64.b64decode(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+)
 
 CATEGORIES = [
     ("每日黑料", "daily-gossip"),
@@ -110,14 +102,13 @@ class Spider(_BaseSpider):
         self.proxies = {}
         self._home_html = ""
         self._home_ts = 0
-        self._img_base_cache = ""
 
     def init(self, extend=""):
         try:
             self.proxies = json.loads(extend) if extend else {}
         except Exception:
             self.proxies = {}
-        print(f"[init] 配置代理: {self.proxies or '无'}  Crypto: {HAS_CRYPTO}")
+        print(f"[init] ENABLE_IMG={ENABLE_IMG}, 代理={'有' if self.proxies else '无'}")
 
     def getName(self):
         return "黑料718"
@@ -137,7 +128,7 @@ class Spider(_BaseSpider):
     def manualVideoCheck(self):
         return False
 
-    # ==================== 加速 ====================
+    # ---------------- GET 加速 ----------------
     def _fetch(self, url, retries=2):
         for i in range(retries):
             try:
@@ -158,30 +149,28 @@ class Spider(_BaseSpider):
         self._home_ts = now
         return self._home_html
 
-    def _img_base(self):
-        if self._img_base_cache:
-            return self._img_base_cache
-        self._img_base_cache = IMG_BASE
-        return self._img_base_cache
-
-    # ==================== 图片 URL 规范化 ====================
+    # ---------------- 图片 URL 规范化 ----------------
     def _normalize_img(self, url):
+        # ★★★ 图片开关：关闭时返回空字符串 ★★★
+        if not ENABLE_IMG:
+            return ""
+
         url = (url or "").strip()
         if not url or "${" in url:
             return ""
         if url.startswith("//"):
             url = "https:" + url
-        if url.startswith("http"):
+        elif url.startswith("http"):
             pass
         elif url.startswith("/hl718/") or url.startswith("hl718/"):
-            url = self._img_base().rstrip("/") + "/" + url.lstrip("/")
+            url = IMG_BASE.rstrip("/") + "/" + url.lstrip("/")
         elif url.startswith("/"):
             url = self.host.rstrip("/") + url
         else:
-            url = self._img_base().rstrip("/") + "/" + url
+            url = IMG_BASE.rstrip("/") + "/" + url
         return f"{self.getProxyUrl()}&url={self.e64(url)}&type=img"
 
-    # ==================== 列表解析 ====================
+    # ---------------- 列表解析 ----------------
     def _parse_list(self, html):
         vods = []
         seen = set()
@@ -214,19 +203,20 @@ class Spider(_BaseSpider):
                 continue
 
             pic = ""
-            for sel, attr in (
-                ('meta[itemprop="image"]', 'content'),
-                ('[data-pic]', 'data-pic'),
-                ('img[data-src]', 'data-src'),
-                ('img[src]', 'src'),
-            ):
-                el = art(sel).eq(0)
-                if not el:
-                    continue
-                v = (el.attr(attr) or "").strip()
-                if v and "${" not in v and not v.startswith("data:"):
-                    pic = self._normalize_img(v)
-                    break
+            if ENABLE_IMG:
+                for sel, attr in (
+                    ('meta[itemprop="image"]', 'content'),
+                    ('[data-pic]', 'data-pic'),
+                    ('img[data-src]', 'data-src'),
+                    ('img[src]', 'src'),
+                ):
+                    el = art(sel).eq(0)
+                    if not el:
+                        continue
+                    v = (el.attr(attr) or "").strip()
+                    if v and "${" not in v and not v.startswith("data:"):
+                        pic = self._normalize_img(v)
+                        break
 
             seen.add(aid)
             vods.append({
@@ -237,7 +227,7 @@ class Spider(_BaseSpider):
             })
         return vods
 
-    # ==================== TVBox 接口 ====================
+    # ---------------- TVBox 接口 ----------------
     def homeContent(self, filter=True):
         try:
             html = self._get_home()
@@ -317,12 +307,13 @@ class Spider(_BaseSpider):
             title = _clean(tm.group(1)).split(" - ")[0]
 
         pic = ""
-        for pat in (r'itemprop="image" content="([^"]+)"',
-                    r'data-pic=["\']([^"\']+)["\']'):
-            im = re.search(pat, html)
-            if im and "${" not in im.group(1):
-                pic = self._normalize_img(im.group(1))
-                break
+        if ENABLE_IMG:
+            for pat in (r'itemprop="image" content="([^"]+)"',
+                        r'data-pic=["\']([^"\']+)["\']'):
+                im = re.search(pat, html)
+                if im and "${" not in im.group(1):
+                    pic = self._normalize_img(im.group(1))
+                    break
 
         sources = []
         for cfg in re.findall(r"data-config='(\{.*?\})'", html, re.S):
@@ -372,7 +363,7 @@ class Spider(_BaseSpider):
             "header": {"User-Agent": UA, "Referer": SITE + "/"},
         }
 
-    # ==================== 图片代理（AES 解密核心） ====================
+    # ==================== 图片代理（保留，仅 ENABLE_IMG=True 时使用） ====================
     def localProxy(self, param):
         t = param.get("type")
         if t == "img":
@@ -382,7 +373,6 @@ class Spider(_BaseSpider):
         return self.tsProxy(param["url"])
 
     def _img_proxy(self, param):
-        # 解码真实 URL
         real_url = param.get("url") or ""
         if not real_url.startswith("http"):
             try:
@@ -390,10 +380,8 @@ class Spider(_BaseSpider):
             except Exception:
                 pass
         if not real_url.startswith("http"):
-            print(f"[img] 无效URL: {real_url[:80]}")
-            return [200, "image/webp", self._get_placeholder()]
+            return [200, "image/webp", _TRANSPARENT_PNG]
 
-        # 请求
         try:
             headers = {
                 "User-Agent": UA,
@@ -403,102 +391,18 @@ class Spider(_BaseSpider):
             r = requests.get(real_url, headers=headers,
                              proxies=self.proxies or None,
                              timeout=12, verify=False)
+            print(f"[img] status={r.status_code} len={len(r.content)} "
+                  f"head={r.content[:8]!r}")
+            if r.status_code == 200:
+                c = r.content
+                if ((c[:4] == b'RIFF' and c[8:12] == b'WEBP')
+                        or c[:8] == b'\x89PNG\r\n\x1a\n'
+                        or c[:3] == b'\xff\xd8\xff'):
+                    return [200, "image/webp", c]
         except Exception as e:
-            print(f"[img] 请求异常: {type(e).__name__}: {str(e)[:60]}")
-            return [200, "image/webp", self._get_placeholder()]
+            print(f"[img] 异常: {type(e).__name__}: {str(e)[:60]}")
 
-        if r.status_code != 200:
-            print(f"[img] HTTP {r.status_code} {real_url[:60]}")
-            return [200, "image/webp", self._get_placeholder()]
-
-        raw = r.content
-        print(f"[img] 原始 len={len(raw)} 前12字节={raw[:12]!r}")
-
-        # 试解密
-        content, method = self._try_decrypt(raw)
-        if content:
-            if method != "raw":
-                print(f"[img] ✅ 解密成功 {method} -> len={len(content)}")
-            return [200, "image/webp", content]
-
-        # 完全失败
-        print(f"[img] ❌ 无法得到有效图片，返回占位")
-        return [200, "image/webp", self._get_placeholder()]
-
-    def _try_decrypt(self, raw):
-        """依次尝试多种解密方式，返回 (content, method)"""
-        if not raw:
-            return None, None
-
-        # 1. 原样
-        if self._is_image(raw):
-            return raw, "raw"
-
-        if not HAS_CRYPTO:
-            return None, None
-
-        # 2. AES-CBC + 无 padding
-        try:
-            if len(raw) % 16 == 0:
-                c = AES.new(AES_KEY, AES.MODE_CBC, AES_IV)
-                dec = c.decrypt(raw)
-                if self._is_image(dec):
-                    return dec, "aes-cbc-nopad"
-        except Exception as e:
-            print(f"[decrypt] cbc-nopad: {e}")
-
-        # 3. AES-CBC + PKCS7
-        try:
-            if len(raw) % 16 == 0:
-                c = AES.new(AES_KEY, AES.MODE_CBC, AES_IV)
-                dec = unpad(c.decrypt(raw), AES.block_size)
-                if self._is_image(dec):
-                    return dec, "aes-cbc-pkcs7"
-        except Exception:
-            pass
-
-        # 4. AES-ECB + 无 padding
-        try:
-            if len(raw) % 16 == 0:
-                c = AES.new(AES_KEY, AES.MODE_ECB)
-                dec = c.decrypt(raw)
-                if self._is_image(dec):
-                    return dec, "aes-ecb-nopad"
-        except Exception:
-            pass
-
-        # 5. AES-ECB + PKCS7
-        try:
-            if len(raw) % 16 == 0:
-                c = AES.new(AES_KEY, AES.MODE_ECB)
-                dec = unpad(c.decrypt(raw), AES.block_size)
-                if self._is_image(dec):
-                    return dec, "aes-ecb-pkcs7"
-        except Exception:
-            pass
-
-        return None, None
-
-    def _is_image(self, content):
-        if not content or len(content) < 100:
-            return False
-        if content[:4] == b'RIFF' and content[8:12] == b'WEBP':
-            return True
-        if content[:8] == b'\x89PNG\r\n\x1a\n':
-            return True
-        if content[:3] == b'\xff\xd8\xff':
-            return True
-        if content[:6] in (b'GIF87a', b'GIF89a'):
-            return True
-        if content[:4] == b'<svg' or content[:5] == b'<?xml':
-            return True
-        return False
-
-    def _get_placeholder(self):
-        # 1x1 透明 WebP
-        return base64.b64decode(
-            "UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAwA0JaQAA3AA/vuUAAA="
-        )
+        return [200, "image/webp", _TRANSPARENT_PNG]
 
     # ==================== M3U8 / TS ====================
     def proxy(self, data, type="m3u8"):
