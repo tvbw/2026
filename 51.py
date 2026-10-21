@@ -24,7 +24,7 @@ SITE_CONFIG = {
     "play_from": "51通用最终版",
     "style": {"type": "rect", "ratio": 1.33},
     # ===== 保持 102 原配置（已验证可用） =====
-    "publish_url": "http://51dsa25.com/",
+    "publish_url": "51dsa25.com/",
     
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "js_base64",
@@ -85,10 +85,13 @@ SITE_CONFIG = {
     "timeout": 15,
     "probe_timeout": 10,
 }
-# ==============================================
+# ============================================================
+
 
 class Spider(Spider):
+
     cfg = SITE_CONFIG
+
     # ================= 生命周期 =================
     def init(self, extend=""):
         try:
@@ -150,17 +153,16 @@ class Spider(Spider):
             print(f"homeContent error: {e}")
             return {"class": [], "list": []}
 
-    def homeVideoContent(self):
+ def homeVideoContent(self):
         try:
-            r = requests.get(self.host, headers=self.headers,
-                             proxies=self.proxies, timeout=self.cfg["timeout"])
-            if r.status_code != 200:
-                return {"list": []}
-            doc = self.getpq(r.text)
-            return {"list": self.getlist(doc(self.cfg["list_selector"]))}
+            response = requests.get(self.host, headers=self.headers, proxies=self.proxies, timeout=15)
+            if response.status_code != 200:
+                return {'list': []}
+            data = self.getpq(response.text)
+            return {'list': self.getlist(data('#index article a, #archive article a'))}
         except Exception as e:
             print(f"homeVideoContent error: {e}")
-            return {"list": []}
+            return {'list': []}
 
     # ================= 分类（102 原样，翻页逻辑不动） =================
     def categoryContent(self, tid, pg, filter, extend):
@@ -632,4 +634,34 @@ class Spider(Spider):
         except Exception as e:
             print(f"{e}")
             return pq(data.encode("utf-8"))
+
+
+# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
+_PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
+
+def _cover_fallback(self, pic_url):
+    import urllib.parse
+    raw = pic_url or ''
+    parent_impl = getattr(super(Spider, self), '_cover_fallback', None)
+    if callable(parent_impl):
+        try:
+            raw = parent_impl(pic_url) or raw
+        except Exception:
+            pass
+    if not raw:
+        return ''
+    url = raw
+    for cdn in _PIC_CDN_POOL:
+        if cdn in raw:
+            url = raw.replace(cdn, _PIC_CDN_POOL[0])
+            break
+    proxy_base = getattr(self, 'proxy_base', None)
+    if proxy_base:
+        url = f'{proxy_base}{urllib.parse.quote(url)}'
+    return url
+
+Spider._cover_fallback = _cover_fallback
+# 注册爬虫
+if __name__ == '__main__':
+    from base.spider import Spider as BaseSpider
     BaseSpider.register(Spider)
