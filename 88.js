@@ -26,39 +26,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-      "key": "黄色仓库动态版",
-      "name": "黄仓动态版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/hsck.py"
-    },
-    {
-      "key": "黄色仓库动态版1",
-      "name": "黄仓动态版1｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/hsck1.py"
-    },
-    {
-      "key": "黄色仓库动态版2",
-      "name": "黄仓动态版2｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/hsck2.py"
-    },
-    {
+
       "key": "香蕉9合1最终优化版目录版",
       "name": "❤️香蕉9合1最终优化目录版【🔞】",
       "type": 3,
@@ -79,6 +47,17 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/hsck-Deep.py"
+    },
+    {
+      "key": "黄色仓库动态版1",
+      "name": "黄仓动态版1｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hsck.py"
     },
     {
       "key": "18av",
