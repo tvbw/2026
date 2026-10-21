@@ -23,8 +23,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51.py"
     },
     {
       "key": "51爆料",
