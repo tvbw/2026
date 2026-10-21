@@ -3,40 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "香蕉9合1最终优化版目录版",
-      "name": "❤️香蕉9合1最终优化目录版【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
-    },
-    {
-      "key": "51吃瓜1",
-      "name": "4❤️51吃瓜｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cg.py"
-    },
-    {
-      "key": "51爆料",
-      "name": "4❤️51爆料｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
-    },
-    {
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
@@ -61,7 +27,51 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-
+      "key": "香蕉9合1最终优化版目录版",
+      "name": "❤️香蕉9合1最终优化目录版【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
+    },
+    {
+      "key": "51吃瓜1",
+      "name": "4❤️51吃瓜｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cg.py"
+    },
+    {
+      "key": "51大赛",
+      "name": "4❤️51大赛｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py"
+    },
+    {
+      "key": "51爆料",
+      "name": "4❤️51爆料｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
+    },
+    {
       "key": "香蕉9合1最终优化版",
       "name": "❤️香蕉9合1最终优化版全目录【🔞】",
       "type": 3,
@@ -70,7 +80,6 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
     },
     {
@@ -82,7 +91,6 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
     },
     {
@@ -100,18 +108,7 @@
       "changeable": 1
     },
     {
-      "key": "51大赛",
-      "name": "4❤️51大赛｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py"
-    },
-    {
+
       "key": "csp_xbpq_禁片天堂",
       "name": "❤️禁片天堂【🔞】",
       "type": 3,
