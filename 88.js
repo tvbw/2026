@@ -35,7 +35,6 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
     },
     {
@@ -47,8 +46,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py",
-      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hsck-Deep.py"
     },
     {
       "key": "18av",
