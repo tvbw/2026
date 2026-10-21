@@ -24,7 +24,7 @@ SITE_CONFIG = {
     "play_from": "51通用最终版",
     "style": {"type": "rect", "ratio": 1.33},
     # ===== 保持 102 原配置（已验证可用） =====
-    "publish_url": "51dsa25.com/",
+    "publish_url": "https:/51dsa20.com/",
     
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "js_base64",
@@ -168,49 +168,40 @@ class Spider(Spider):
     # ================= 分类（102 原样，翻页逻辑不动） =================
     def categoryContent(self, tid, pg, filter, extend):
         try:
-            if "@folder" in tid:
-                folder_id = tid.replace("@folder", "")
-                videos = self.getfod(folder_id)
-                return {
-                    "list": videos, "page": pg, "pagecount": 1,
-                    "limit": 90, "total": len(videos),
-                }
+            if '@folder' in tid:
+                id = tid.replace('@folder', '')
+                videos = self.getfod(id)
+                return {'list': videos, 'page': pg, 'pagecount': 1, 'limit': 90, 'total': len(videos)}
 
             pg = int(pg)
-            tid = tid.rstrip("/")
+            tid = tid.rstrip('/')                       # ← 就加这一行
             url = f"{self.host}{tid}/{pg}/" if pg > 1 else f"{self.host}{tid}/"
 
-            r = requests.get(url, headers=self.headers,
-                             proxies=self.proxies, timeout=self.cfg["timeout"])
-            if r.status_code != 200:
-                return {"list": [], "page": pg, "pagecount": 1, "limit": 90, "total": 0}
+            rsp = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
+            if rsp.status_code != 200:
+                return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 90, 'total': 0}
 
-            doc = self.getpq(r.text)
-            videos = self.getlist(doc(self.cfg["list_selector"]), tid)
+            doc = self.getpq(rsp.text)
+            videos = self.getlist(doc('#archive article a, #index article a'), tid)
 
+            # 总页数 & 下一页
             total_pages = 1
-            page_info = doc(".pagination .pages, .page-nav, .pagenavi").text()
-            if "共" in page_info and "页" in page_info:
-                try:
-                    total_pages = int(page_info.split("共")[-1].split("页")[0])
-                except Exception:
-                    pass
-
-            next_url = doc(
-                'a.next, .pagination a.next, .pagenavi .next, a:contains("下一页")'
-            ).attr("href")
+            page_info = doc('.pagination .pages, .page-nav, .pagenavi').text()
+            if '共' in page_info and '页' in page_info:
+                total_pages = int(page_info.split('共')[-1].split('页')[0])
+            next_url = doc('a.next, .pagination a.next, .pagenavi .next, a:contains("下一页")').attr('href')
             has_next = bool(next_url)
 
             return {
-                "list": videos,
-                "page": pg,
-                "pagecount": total_pages if total_pages > 1 else (99999 if has_next else pg),
-                "limit": 90,
-                "total": 999999 if has_next else len(videos),
+                'list': videos,
+                'page': pg,
+                'pagecount': total_pages if total_pages > 1 else 99999 if has_next else pg,
+                'limit': 90,
+                'total': 999999 if has_next else len(videos)
             }
         except Exception as e:
             print(f"categoryContent error: {e}")
-            return {"list": [], "page": pg, "pagecount": 1, "limit": 90, "total": 0}
+            return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 90, 'total': 0}
 
     # ================= 详情（102 原样） =================
     def detailContent(self, ids):
