@@ -117,7 +117,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
     },
     {
       "key": "香蕉9合1最终优化版",
