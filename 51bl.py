@@ -34,8 +34,8 @@ SITE_CONFIG = {
 
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
-        "https://www.jujlpzjc.cc/",
-        "https://block.pprzefvp.cc/",
+        "https://bird.pprzefvp.cc/",
+        "https://brand.pprzefvp.cc/",
      # "https://able.htinjysz.cc/",
     ],
 
