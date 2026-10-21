@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-黑料718 TVBox 爬虫 - 海报修复版
+黑料718 TVBox 爬虫 - 海报最终修复版
 =========================================================
-在加速版基础上修复封面：
-  - 封面真实 CDN: https://pass.saxinx.cn/  (不是主站域名)
-  - 相对路径 hl718/... 拼到 CDN，而不是主站
-  - 支持自动探测 CDN 域名（HTML 里出现 *.saxinx.cn 时自动切换）
-  - 图片服务器有 CORS *，IMG_PROXY=False 直连即可；留 True 亦可
+关键修复：
+  - 网站用 blob URL 显示封面，blob 无法外部访问
+  - 真实图片源是 https://pass.saxinx.cn/hl718/.../cover.webp
+  - 该 CDN 校验 Origin/Referer，必须走本地代理带完整浏览器头
+  - 图片失效时返回 1x1 透明 PNG，避免显示"放大镜"
 """
 
 import re
 import json
 import sys
 import time
+import base64
 import urllib.parse
 
 import requests
@@ -30,15 +31,18 @@ SITE = "https://clash.windowheiliao.com"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
 
-# ===== 图片 CDN（关键修复）=====
-# 从抓包确认真实图片域名是 pass.saxinx.cn
+# ===== 图片配置 =====
+# 图片真实 CDN（从抓包确认）
 IMG_BASE = "https://pass.saxinx.cn/"
-# True: 走本地代理带 Referer；False: 直连原图（该 CDN 有 CORS *，直连通常可行）
-IMG_PROXY = False
-# 图片是否 AES 加密：黑料718=False; 51bl=True
+# 是否 AES 解密（51bl=True; 黑料718=False）
 IMG_AES = False
 AES_KEY = b"f5d965df75336270"
 AES_IV = b"97b60394abc2fbe1"
+
+# 1x1 透明 PNG：图片失效时返回它，避免"放大镜"
+_TRANSPARENT_PNG = base64.b64decode(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+)
 
 CATEGORIES = [
     ("每日黑料", "daily-gossip"),
@@ -94,7 +98,7 @@ class Spider(_BaseSpider):
         self._home_ts = 0
         self._img_base_cache = ""
 
-    # ---------------- 元信息 / 生命周期 ----------------
+    # ---------------- 元信息 ----------------
     def getName(self):
         return "黑料718"
 
@@ -139,53 +143,45 @@ class Spider(_BaseSpider):
 
     # ---------------- 图片 CDN 探测 ----------------
     def _img_base(self):
-        """优先配置 IMG_BASE，若首页 HTML 里出现其它 CDN 域名则自动切换"""
         if self._img_base_cache:
             return self._img_base_cache
         html = self._home_html or ""
-        # 1) saxinx 系 CDN
+        # 从首页 HTML 里找 saxinx 系 CDN
         m = re.search(r'https?://([a-z0-9.-]+\.saxinx\.cn)', html, re.I)
         if m:
             self._img_base_cache = "https://" + m.group(1) + "/"
             return self._img_base_cache
-        # 2) 任意出现 /hl718/ 前缀的图片域名
+        # 或任意带 /hl718/ 前缀的图片域名
         m = re.search(r'https?://([a-z0-9.-]+)/hl718/', html, re.I)
         if m:
             self._img_base_cache = "https://" + m.group(1) + "/"
             return self._img_base_cache
-        # 3) 配置兜底
         self._img_base_cache = IMG_BASE
         return self._img_base_cache
 
-    # ---------------- 图片 URL 规范化 ----------------
+    # ---------------- 图片 URL 规范化（一律走代理） ----------------
     def _normalize_img(self, url):
         """
-        关键修复：
-        - 'hl718/xxx/cover.webp'  -> 拼到图片 CDN (pass.saxinx.cn)
-        - '/hl718/xxx'            -> 同上
-        - '/其它路径'              -> 拼到主站
-        - '//xxx'                 -> https 前缀
-        - 'http(s)://xxx'         -> 原样
+        无论相对还是绝对，最终都返回本地代理 URL。
+        原因：图片 CDN 校验 Origin/Referer，直连会被拦。
         """
         url = (url or "").strip()
         if not url or "${" in url:
             return ""
+
         if url.startswith("//"):
             url = "https:" + url
         elif url.startswith("http"):
             pass
         elif url.startswith("/hl718/") or url.startswith("hl718/"):
-            rel = url.lstrip("/")
-            url = self._img_base().rstrip("/") + "/" + rel
+            url = self._img_base().rstrip("/") + "/" + url.lstrip("/")
         elif url.startswith("/"):
             url = self.host.rstrip("/") + url
         else:
-            # 纯相对路径，默认按图片 CDN 处理
             url = self._img_base().rstrip("/") + "/" + url
 
-        if IMG_PROXY:
-            return f"{self.getProxyUrl()}&url={self.e64(url)}&type=img"
-        return url
+        # 强制走代理（关键：绕过 Cloudflare 拦截）
+        return f"{self.getProxyUrl()}&url={self.e64(url)}&type=img"
 
     # ---------------- 列表解析 ----------------
     def _parse_list(self, html):
@@ -197,8 +193,7 @@ class Spider(_BaseSpider):
         if doc is None:
             return vods
 
-        # 触发 CDN 探测
-        self._img_base()
+        self._img_base()   # 触发 CDN 探测
 
         for art in doc("article").items():
             try:
@@ -389,29 +384,56 @@ class Spider(_BaseSpider):
             },
         }
 
-    # ---------------- 本地代理 ----------------
+    # ---------------- 图片代理（关键） ----------------
+    def _fetch_img(self, url, retries=2):
+        """
+        带完整浏览器头请求图片。
+        模拟网页 JS 的 fetch：Origin/Referer/Sec-Fetch-* 全都要，
+        否则 Cloudflare 会拦截返回错误页。
+        """
+        for i in range(retries):
+            try:
+                headers = {
+                    "User-Agent": UA,
+                    "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+                    "Accept-Language": "zh-CN,zh;q=0.9",
+                    "Referer": SITE + "/",
+                    "Origin": SITE,
+                    "Sec-Fetch-Dest": "image",
+                    "Sec-Fetch-Mode": "no-cors",
+                    "Sec-Fetch-Site": "cross-site",
+                }
+                r = requests.get(url, headers=headers, timeout=10, verify=False)
+                if r.status_code == 200:
+                    ct = (r.headers.get("Content-Type") or "").lower()
+                    # 返回 HTML 说明被拦截，视为失败
+                    if "html" in ct:
+                        print(f"img blocked (html): {url[:80]}")
+                        return None
+                    if len(r.content) < 100:
+                        return None
+                    return r.content
+                else:
+                    print(f"img http {r.status_code}: {url[:80]}")
+            except Exception as e:
+                print(f"fetch img err: {e}")
+            if i < retries - 1:
+                time.sleep(0.2)
+        return None
+
     def localProxy(self, param):
         t = param.get("type")
         if t == "img":
-            try:
-                # 图片请求：带主站 Referer，兼容防盗链
-                headers = {
-                    "User-Agent": UA,
-                    "Referer": SITE + "/",
-                    "Accept": "image/webp,image/apng,image/*,*/*;q=0.8",
-                }
-                res = requests.get(param["url"], headers=headers, timeout=10, verify=False)
-                content = res.content
+            content = self._fetch_img(param["url"])
+            if content is not None:
                 if IMG_AES:
                     try:
                         content = self.aesimg(content)
                     except Exception:
                         pass
-                ct = res.headers.get("Content-Type", "image/webp")
-                return [200, ct, content]
-            except Exception as e:
-                print(f"img proxy error: {e}")
-                return [404, "text/plain", b""]
+                return [200, "image/webp", content]
+            # 失败返回 1x1 透明 PNG，避免"放大镜"
+            return [200, "image/png", _TRANSPARENT_PNG]
         if t == "m3u8":
             return self.m3Proxy(param["url"])
         return self.tsProxy(param["url"])
@@ -491,10 +513,16 @@ if __name__ == "__main__":
     _h = _sp.homeContent()
     print("   分类数:", len(_h.get("class", [])), " 推荐数:", len(_h.get("list", [])))
     if _h.get("list"):
-        print("   第一张封面:", _h["list"][0]["vod_pic"])
-    print("== categoryContent(internet-celebrities, 5) ==")
-    _c = _sp.categoryContent("internet-celebrities", 5)
-    print("   数量:", len(_c.get("list", [])), " page:", _c.get("page"),
-          " pagecount:", _c.get("pagecount"))
-    if _c.get("list"):
-        print("   第一张封面:", _c["list"][0]["vod_pic"])
+        print("   第一张封面代理URL:", _h["list"][0]["vod_pic"][:120])
+        # 直接测试代理拿图
+        from base64 import b64decode
+        import re as _re
+        m = _re.search(r'url=([A-Za-z0-9+/=]+)', _h["list"][0]["vod_pic"])
+        if m:
+            real_url = b64decode(m.group(1)).decode("utf-8")
+            print("   真实图片URL:", real_url)
+            content = _sp._fetch_img(real_url)
+            if content:
+                print(f"   ✅ 代理拿图成功: {len(content)} bytes")
+            else:
+                print(f"   ❌ 代理拿图失败（返回占位图）")
