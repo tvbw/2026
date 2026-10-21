@@ -113,18 +113,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg.py"
     },
     {
-      "key": "香蕉9合2",
-      "name": "❤️香蕉9合1原版【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
-    },
-    {
+
       "key": "csp_xbpq_禁片天堂",
       "name": "❤️禁片天堂【🔞】",
       "type": 3,
@@ -237,6 +226,18 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py"
+    },
+    {
+      "key": "香蕉9合2",
+      "name": "❤️香蕉9合1原版【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
     },
     {
       "key": "香蕉1区",
