@@ -32,8 +32,6 @@ SITE_CONFIG = {
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
         "https://51ds88.com/",
-        "https://51dsa25.com",
-        "https://51dsa20.com/",
      # "https://51bla21.com/",
     ],
 
