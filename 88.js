@@ -16,14 +16,14 @@
     },
     {
       "key": "51吃瓜1",
-      "name": "4❤️51吃瓜",
+      "name": "4❤️51吃瓜｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cg.py"
     },
     {
       "key": "51爆料",
@@ -34,7 +34,6 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
     },
     {
@@ -113,19 +112,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py"
     },
     {
-      "key": "51吃瓜",
-      "name": "❤️51吃瓜｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51cg.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg.py"
-    },
-    {
-
       "key": "csp_xbpq_禁片天堂",
       "name": "❤️禁片天堂【🔞】",
       "type": 3,
