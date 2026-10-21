@@ -50,6 +50,17 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cg.py"
     },
     {
+      "key": "黑料718",
+      "name": "4❤️黑料718｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/黑料718.py"
+    },
+    {
       "key": "51大赛",
       "name": "4❤️51大赛｜🔞",
       "type": 3,
