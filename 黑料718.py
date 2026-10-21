@@ -38,7 +38,7 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 # ★★★ 图片总开关 ★★★
 # False = 不显示图片（避免放大镜/空白框），列表只显示标题
 # True  = 保留图片尝试（当前环境会失败，为将来环境升级预留）
-ENABLE_IMG = False
+ENABLE_IMG = True
 
 IMG_BASE = "https://pass.saxinx.cn/"
 
