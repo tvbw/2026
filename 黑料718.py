@@ -1,24 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-黑料718 TVBox 爬虫 - 图片全自动诊断版
+黑料718 TVBox 爬虫 - 图片开关版
 =========================================================
-图片加载全自动策略：
-  1. init 时探测本地常见代理端口（7890 / 7897 / 1080 等）
-  2. 首次请求图片时，依次尝试：3 种请求头 × 3 种代理组合
-  3. 找到第一个能返回有效图片的组合后固化，后续图片直接用
-  4. 全部失败 → weserv.nl 第三方图片代理兜底
-  5. 仍失败 → 1x1 透明 PNG（不显示放大镜）
+核心说明：
+  经完整诊断，pass.saxinx.cn 的 Cloudflare 对 Python requests
+  做了 TLS 指纹级别拦截（非请求头问题）。TVBox py 源环境无法绕过。
 
-【看日志找答案】
-  TVBox 里看 py 输出，会有类似：
-    [init] 配置代理: 无
-    [init] 自动探测到本地代理: {'http':'http://127.0.0.1:7890','https':...}
-    [detect] image-cors+direct: HTTP 200 ct=image/webp len=72950 valid=True
-    [detect] ✅ 有效策略: image-cors+direct
-    [img] ✅ 使用 image-cors+direct -> len=72950
+  ENABLE_IMG = False  → 不返回图片URL，列表只显示标题（推荐）
+  ENABLE_IMG = True   → 保留原有图片尝试逻辑（可能显示空白）
 
-  如果全部打印 ❌，说明盒子网络彻底访问不了 pass.saxinx.cn，
-  需要给盒子配代理或者接受 weserv 中转。
+  其他所有功能（首页、分类、翻页、搜索、详情、播放）不受影响。
 """
 
 import base64
@@ -39,14 +30,18 @@ except Exception:
     _BaseSpider = object
 
 
-# ============================ 基础配置 ============================
+# ============================ 配置 ============================
 SITE = "https://clash.windowheiliao.com"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36")
 
+# ★★★ 图片总开关 ★★★
+# False = 不显示图片（避免放大镜/空白框），列表只显示标题
+# True  = 保留图片尝试（当前环境会失败，为将来环境升级预留）
+ENABLE_IMG = True
+
 IMG_BASE = "https://pass.saxinx.cn/"
 
-# 1x1 透明 PNG
 _TRANSPARENT_PNG = base64.b64decode(
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
 )
@@ -81,7 +76,6 @@ def _from_pyquery(html):
         return None
 
 
-# ============================ Spider 类 ============================
 class Spider(_BaseSpider):
 
     def __init__(self):
@@ -108,28 +102,13 @@ class Spider(_BaseSpider):
         self.proxies = {}
         self._home_html = ""
         self._home_ts = 0
-        self._img_base_cache = ""
 
-        # 图片策略缓存
-        self._img_strategy = None
-        self._img_lock = threading.Lock()
-
-    # ---------------- 生命周期 ----------------
     def init(self, extend=""):
         try:
             self.proxies = json.loads(extend) if extend else {}
         except Exception:
             self.proxies = {}
-        print(f"[init] 配置代理: {self.proxies or '无'}")
-
-        # 未配置代理时自动探测本地常见端口
-        if not self.proxies:
-            detected = self._detect_local_proxy()
-            if detected:
-                self.proxies = detected
-                print(f"[init] 自动探测到本地代理: {detected}")
-            else:
-                print(f"[init] 未探测到本地代理，将直连")
+        print(f"[init] ENABLE_IMG={ENABLE_IMG}, 代理={'有' if self.proxies else '无'}")
 
     def getName(self):
         return "黑料718"
@@ -149,25 +128,7 @@ class Spider(_BaseSpider):
     def manualVideoCheck(self):
         return False
 
-    # ==================== 本地代理探测 ====================
-    def _detect_local_proxy(self):
-        """尝试常见的本地代理端口"""
-        test_url = "https://pass.saxinx.cn/usr/themes/Mirages/images/logo.webp"
-        ports = [7890, 7897, 1080, 10808, 1087, 8889, 8080, 8118, 8081]
-        for port in ports:
-            p = f"http://127.0.0.1:{port}"
-            try:
-                r = requests.get(test_url,
-                                 proxies={"http": p, "https": p},
-                                 timeout=2, verify=False)
-                if r.status_code == 200 and len(r.content) > 100:
-                    print(f"[init] 端口 {port} 有效（返回 {len(r.content)} 字节）")
-                    return {"http": p, "https": p}
-            except Exception:
-                pass
-        return None
-
-    # ==================== 加速：GET ====================
+    # ---------------- GET 加速 ----------------
     def _fetch(self, url, retries=2):
         for i in range(retries):
             try:
@@ -188,24 +149,12 @@ class Spider(_BaseSpider):
         self._home_ts = now
         return self._home_html
 
-    # ==================== 图片 CDN 探测 ====================
-    def _img_base(self):
-        if self._img_base_cache:
-            return self._img_base_cache
-        html = self._home_html or ""
-        m = re.search(r'https?://([a-z0-9.-]+\.saxinx\.cn)', html, re.I)
-        if m:
-            self._img_base_cache = "https://" + m.group(1) + "/"
-            return self._img_base_cache
-        m = re.search(r'https?://([a-z0-9.-]+)/hl718/', html, re.I)
-        if m:
-            self._img_base_cache = "https://" + m.group(1) + "/"
-            return self._img_base_cache
-        self._img_base_cache = IMG_BASE
-        return self._img_base_cache
-
-    # ==================== 图片 URL 规范化 ====================
+    # ---------------- 图片 URL 规范化 ----------------
     def _normalize_img(self, url):
+        # ★★★ 图片开关：关闭时返回空字符串 ★★★
+        if not ENABLE_IMG:
+            return ""
+
         url = (url or "").strip()
         if not url or "${" in url:
             return ""
@@ -214,15 +163,14 @@ class Spider(_BaseSpider):
         elif url.startswith("http"):
             pass
         elif url.startswith("/hl718/") or url.startswith("hl718/"):
-            url = self._img_base().rstrip("/") + "/" + url.lstrip("/")
+            url = IMG_BASE.rstrip("/") + "/" + url.lstrip("/")
         elif url.startswith("/"):
             url = self.host.rstrip("/") + url
         else:
-            url = self._img_base().rstrip("/") + "/" + url
-        # 一律走本地代理
+            url = IMG_BASE.rstrip("/") + "/" + url
         return f"{self.getProxyUrl()}&url={self.e64(url)}&type=img"
 
-    # ==================== 列表解析 ====================
+    # ---------------- 列表解析 ----------------
     def _parse_list(self, html):
         vods = []
         seen = set()
@@ -231,7 +179,6 @@ class Spider(_BaseSpider):
         doc = _from_pyquery(html)
         if doc is None:
             return vods
-        self._img_base()
 
         for art in doc("article").items():
             try:
@@ -256,19 +203,20 @@ class Spider(_BaseSpider):
                 continue
 
             pic = ""
-            for sel, attr in (
-                ('meta[itemprop="image"]', 'content'),
-                ('[data-pic]', 'data-pic'),
-                ('img[data-src]', 'data-src'),
-                ('img[src]', 'src'),
-            ):
-                el = art(sel).eq(0)
-                if not el:
-                    continue
-                v = (el.attr(attr) or "").strip()
-                if v and "${" not in v and not v.startswith("data:"):
-                    pic = self._normalize_img(v)
-                    break
+            if ENABLE_IMG:
+                for sel, attr in (
+                    ('meta[itemprop="image"]', 'content'),
+                    ('[data-pic]', 'data-pic'),
+                    ('img[data-src]', 'data-src'),
+                    ('img[src]', 'src'),
+                ):
+                    el = art(sel).eq(0)
+                    if not el:
+                        continue
+                    v = (el.attr(attr) or "").strip()
+                    if v and "${" not in v and not v.startswith("data:"):
+                        pic = self._normalize_img(v)
+                        break
 
             seen.add(aid)
             vods.append({
@@ -279,7 +227,7 @@ class Spider(_BaseSpider):
             })
         return vods
 
-    # ==================== TVBox 接口 ====================
+    # ---------------- TVBox 接口 ----------------
     def homeContent(self, filter=True):
         try:
             html = self._get_home()
@@ -301,7 +249,6 @@ class Spider(_BaseSpider):
             pg = int(pg)
         except Exception:
             pg = 1
-
         if not tid or tid == "home":
             url = SITE + ("/page/%d/" % pg if pg > 1 else "/")
         else:
@@ -347,7 +294,6 @@ class Spider(_BaseSpider):
             html = self._fetch(SITE + "/archives/%s" % aid)
         except Exception:
             pass
-
         if not html:
             return {"list": [{
                 "vod_id": aid, "vod_name": "详情获取失败", "vod_pic": "",
@@ -361,12 +307,13 @@ class Spider(_BaseSpider):
             title = _clean(tm.group(1)).split(" - ")[0]
 
         pic = ""
-        for pat in (r'itemprop="image" content="([^"]+)"',
-                    r'data-pic=["\']([^"\']+)["\']'):
-            im = re.search(pat, html)
-            if im and "${" not in im.group(1):
-                pic = self._normalize_img(im.group(1))
-                break
+        if ENABLE_IMG:
+            for pat in (r'itemprop="image" content="([^"]+)"',
+                        r'data-pic=["\']([^"\']+)["\']'):
+                im = re.search(pat, html)
+                if im and "${" not in im.group(1):
+                    pic = self._normalize_img(im.group(1))
+                    break
 
         sources = []
         for cfg in re.findall(r"data-config='(\{.*?\})'", html, re.S):
@@ -413,13 +360,10 @@ class Spider(_BaseSpider):
         return {
             "parse": 0,
             "url": id,
-            "header": {
-                "User-Agent": UA,
-                "Referer": SITE + "/",
-            },
+            "header": {"User-Agent": UA, "Referer": SITE + "/"},
         }
 
-    # ==================== 图片代理（全自动探测） ====================
+    # ==================== 图片代理（保留，仅 ENABLE_IMG=True 时使用） ====================
     def localProxy(self, param):
         t = param.get("type")
         if t == "img":
@@ -429,7 +373,6 @@ class Spider(_BaseSpider):
         return self.tsProxy(param["url"])
 
     def _img_proxy(self, param):
-        # 1. 解码真实 URL
         real_url = param.get("url") or ""
         if not real_url.startswith("http"):
             try:
@@ -437,151 +380,31 @@ class Spider(_BaseSpider):
             except Exception:
                 pass
         if not real_url.startswith("http"):
-            print(f"[img] 无效URL: {real_url[:80]}")
-            return [200, "image/png", _TRANSPARENT_PNG]
+            return [200, "image/webp", _TRANSPARENT_PNG]
 
-        # 2. 用已缓存的策略
-        with self._img_lock:
-            strategy = self._img_strategy
-
-        if strategy:
-            content = self._fetch_with_strategy(real_url, strategy)
-            if content:
-                print(f"[img] ✅ 使用 {strategy['label']} -> len={len(content)}")
-                return [200, "image/webp", content]
-            print(f"[img] 缓存策略 {strategy['label']} 失效，重新探测")
-            with self._img_lock:
-                self._img_strategy = None
-
-        # 3. 首次或策略失效，全策略探测
-        content, strategy = self._detect_strategy(real_url)
-        if content:
-            with self._img_lock:
-                self._img_strategy = strategy
-            print(f"[img] ✅ 新策略 {strategy['label']} -> len={len(content)}")
-            return [200, "image/webp", content]
-
-        # 4. 全部失败
-        print(f"[img] ❌ 全部策略失败，返回透明占位")
-        return [200, "image/png", _TRANSPARENT_PNG]
-
-    def _detect_strategy(self, url):
-        """依次尝试 3 种请求头 × 多种代理组合 + weserv 兜底"""
-        header_sets = [
-            ("img-cors", self._h_img_cors()),
-            ("fetch-cors", self._h_fetch_cors()),
-            ("minimal", self._h_minimal()),
-        ]
-        # 代理组合去重
-        proxy_candidates = [("direct", None)]
-        if self.proxies:
-            proxy_candidates.append(("configured", self.proxies))
-        proxy_candidates.append(
-            ("local7890", {"http": "http://127.0.0.1:7890",
-                           "https": "http://127.0.0.1:7890"})
-        )
-        seen = set()
-        proxy_sets = []
-        for name, p in proxy_candidates:
-            key = str(p) if p else "None"
-            if key in seen:
-                continue
-            seen.add(key)
-            proxy_sets.append((name, p))
-
-        for hname, headers in header_sets:
-            for pname, proxies in proxy_sets:
-                label = f"{hname}+{pname}"
-                try:
-                    r = requests.get(url, headers=headers, proxies=proxies,
-                                     timeout=8, verify=False)
-                    ct = r.headers.get("content-type", "")
-                    size = len(r.content)
-                    valid = self._is_image(r.content)
-                    print(f"[detect] {label}: HTTP {r.status_code} ct={ct} "
-                          f"len={size} valid={valid}")
-                    if r.status_code == 200 and valid:
-                        print(f"[detect] ✅ 有效策略: {label}")
-                        return r.content, {"headers": headers,
-                                           "proxies": proxies, "label": label}
-                except Exception as e:
-                    print(f"[detect] {label}: {type(e).__name__}: {str(e)[:60]}")
-
-        # weserv 兜底
         try:
-            wurl = f"https://images.weserv.nl/?url={urllib.parse.quote(url, safe='')}"
-            print(f"[detect] weserv: 尝试 {wurl[:100]}")
-            r = requests.get(wurl, timeout=15, verify=False,
-                             proxies=self.proxies or None)
-            if r.status_code == 200 and self._is_image(r.content):
-                print(f"[detect] ✅ weserv 成功: len={len(r.content)}")
-                return r.content, {"is_weserv": True, "label": "weserv"}
+            headers = {
+                "User-Agent": UA,
+                "Referer": SITE + "/",
+                "Accept": "image/webp,image/*,*/*;q=0.8",
+            }
+            r = requests.get(real_url, headers=headers,
+                             proxies=self.proxies or None,
+                             timeout=12, verify=False)
+            print(f"[img] status={r.status_code} len={len(r.content)} "
+                  f"head={r.content[:8]!r}")
+            if r.status_code == 200:
+                c = r.content
+                if ((c[:4] == b'RIFF' and c[8:12] == b'WEBP')
+                        or c[:8] == b'\x89PNG\r\n\x1a\n'
+                        or c[:3] == b'\xff\xd8\xff'):
+                    return [200, "image/webp", c]
         except Exception as e:
-            print(f"[detect] weserv: {type(e).__name__}: {str(e)[:60]}")
+            print(f"[img] 异常: {type(e).__name__}: {str(e)[:60]}")
 
-        return None, None
+        return [200, "image/webp", _TRANSPARENT_PNG]
 
-    def _fetch_with_strategy(self, url, strategy):
-        try:
-            if strategy.get("is_weserv"):
-                wurl = f"https://images.weserv.nl/?url={urllib.parse.quote(url, safe='')}"
-                r = requests.get(wurl, timeout=15, verify=False,
-                                 proxies=self.proxies or None)
-            else:
-                r = requests.get(url,
-                                 headers=strategy["headers"],
-                                 proxies=strategy["proxies"],
-                                 timeout=10, verify=False)
-            if r.status_code == 200 and self._is_image(r.content):
-                return r.content
-        except Exception as e:
-            print(f"[img] 策略异常: {type(e).__name__}: {str(e)[:60]}")
-        return None
-
-    def _is_image(self, content):
-        if not content or len(content) < 100:
-            return False
-        if content[:4] == b'RIFF' and content[8:12] == b'WEBP':
-            return True
-        if content[:8] == b'\x89PNG\r\n\x1a\n':
-            return True
-        if content[:3] == b'\xff\xd8\xff':
-            return True
-        if content[:6] in (b'GIF87a', b'GIF89a'):
-            return True
-        return False
-
-    def _h_img_cors(self):
-        return {
-            "User-Agent": UA,
-            "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-            "Accept-Language": "zh-CN,zh;q=0.9",
-            "Origin": SITE,
-            "Referer": SITE + "/",
-            "Sec-Fetch-Dest": "image",
-            "Sec-Fetch-Mode": "no-cors",
-            "Sec-Fetch-Site": "cross-site",
-        }
-
-    def _h_fetch_cors(self):
-        return {
-            "User-Agent": UA,
-            "Accept": "*/*",
-            "Accept-Language": "zh-CN,zh;q=0.9",
-            "Origin": SITE,
-            "Referer": SITE + "/",
-            "Sec-Fetch-Dest": "empty",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Site": "cross-site",
-        }
-
-    def _h_minimal(self):
-        return {
-            "User-Agent": UA,
-            "Referer": SITE + "/",
-        }
-
-    # ==================== M3U8/TS 代理 ====================
+    # ==================== M3U8 / TS ====================
     def proxy(self, data, type="m3u8"):
         if type == "img":
             return f"{self.getProxyUrl()}&url={self.e64(data)}&type=img"
@@ -643,20 +466,3 @@ class Spider(_BaseSpider):
             return base64.b64decode(text.encode("utf-8")).decode("utf-8")
         except Exception:
             return ""
-
-
-if __name__ == "__main__":
-    _sp = Spider()
-    _sp.init()
-    print("== homeContent ==")
-    _h = _sp.homeContent()
-    print(f"   分类: {len(_h.get('class', []))}  推荐: {len(_h.get('list', []))}")
-    if _h.get("list"):
-        v = _h["list"][0]
-        print(f"   封面代理URL: {v['vod_pic'][:120]}")
-        m = re.search(r'url=([A-Za-z0-9+/=]+)', v["vod_pic"])
-        if m:
-            real = _sp.d64(m.group(1))
-            print(f"   真实URL: {real}")
-            r = _sp.localProxy({"url": real, "type": "img"})
-            print(f"   代理返回: ct={r[1]}, len={len(r[2])}")
