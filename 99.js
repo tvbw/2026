@@ -23,10 +23,10 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py",
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
+
       "key": "香蕉9合1最终优化版目录版",
       "name": "❤️香蕉9合1最终优化目录版【🔞】",
       "type": 3,
@@ -35,8 +35,56 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
+    },
+    {
+      "key": "黄色仓库动态版",
+      "name": "黄色仓库动态版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hsck-Deep.py"
+    },
+    {
+      "key": "黄色仓库动态版1",
+      "name": "黄仓动态版1｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hsck.py"
+    },
+    {
+      "key": "18av",
+      "name": "5❤️18av【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "http://pglblb.test.upcdn.net/2026py/18av.py",
+      "api": "http://pglblb.test.upcdn.net/2026py/18av.py"
+    },
+    {
+      "key": "py_4K_fullhd-fullhd3",
+      "name": "❤️FHD老僧世界【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
     },
     {
       "key": "51吃瓜1",
@@ -125,33 +173,7 @@
       }
     },
     {
-      "key": "18av",
-      "name": "5❤️18av【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/18av.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/18av.py"
-    },
-    {
-      "key": "py_4K_fullhd-fullhd3",
-      "name": "❤️FHD老僧世界【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
+
       "key": "py_4K_fullhd-fullhd2",
       "name": "❤️FHD书生中国【🔞】",
       "type": 3,
@@ -221,6 +243,17 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py"
+    },
+    {
+      "key": "Missav(2)",
+      "name": "❤️Missav",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
     },
     {
       "key": "香蕉9合2",
@@ -1190,16 +1223,48 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/蜜桃源.py"
     },
     {
-      "key": "黄色仓库动态版",
-      "name": "黄色仓库动态版｜🔞",
+      "key": "X红颜.py)",
+      "name": "❤️X红颜.py",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py",
-      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py"
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/X%E7%BA%A2%E9%A2%9C.py"
+    },
+    {
+      "key": "xx9已过验证.py",
+      "name": "❤️xx9已过验证.py",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/xx9已过验证.py"
+    },
+    {
+      "key": "乱伦淫窝.py",
+      "name": "❤️乱伦淫窝.py",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/乱伦淫窝.py"
+    },
+    {
+      "key": "蘑菇视频.py",
+      "name": "❤️蘑菇视频.py",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/蘑菇视频.py"
     },
     {
       "key": "smvm",
@@ -1212,6 +1277,17 @@
       },
       "ext": "http://pglblb.test.upcdn.net/2026py/%E7%A5%9E%E7%A7%98%E7%94%B5%E5%BD%B1.py",
       "api": "http://pglblb.test.upcdn.net/2026py/%E7%A5%9E%E7%A7%98%E7%94%B5%E5%BD%B1.py"
+    },
+    {
+      "key": "黑料718",
+      "name": "4❤️黑料718｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/黑料718.py"
     },
     {
       "key": "VF四级老片",
