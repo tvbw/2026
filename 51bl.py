@@ -85,12 +85,13 @@ SITE_CONFIG = {
     "style": {"type": "rect", "ratio": 1.33},
 
     "publish_urls": [
+        "https://51blk1.com",
         "https://51bla18.com/",
         "https://51bla19.com/",
         "https://51bla20.com/",
      # "https://51bla21.com/",
     ],
-    "publish_url": "https://51bla20.com/",
+    "publish_url": "https://51bla18.com/",
     "publish_decode": "plain",
 
     "host_check_selector": "#index article a",
