@@ -24,7 +24,7 @@ SITE_CONFIG = {
     "play_from": "51通用最终版",
     "style": {"type": "rect", "ratio": 1.33},
     # ===== 保持 102 原配置（已验证可用） =====
-    "publish_url": "https://51cgf18.com",
+    "publish_url": "51dsa25.com/",
     
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "js_base64",
@@ -33,9 +33,9 @@ SITE_CONFIG = {
     
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
-        "https://21bn7.ocqxkylwn.cc/",
-        "https://angle.ocqxkylwn.cc/",
-     # "https://51bla21.com/",
+        "https://actual.htinjysz.cc/",
+        "https://asleep.htinjysz.cc/",
+     # "https://able.htinjysz.cc/",
     ],
 
     "list_selector": "#index article a, #archive article a",
