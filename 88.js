@@ -3,6 +3,18 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "51test",
+      "name": "❤️51test",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/51test.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51test.py"
+    },
+    {
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
