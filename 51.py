@@ -166,7 +166,7 @@ class Spider(Spider):
             return {"list": []}
 
     # ================= 分类（102 原样，翻页逻辑不动） =================
- def categoryContent(self, tid, pg, filter, extend):
+    def categoryContent(self, tid, pg, filter, extend):
         try:
             if '@folder' in tid:
                 id = tid.replace('@folder', '')
