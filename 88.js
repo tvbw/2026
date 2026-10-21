@@ -3,108 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "Missav(2)",
-      "name": "❤️Missav(2)",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
-    },
-    {
-      "key": "X红颜.py)",
-      "name": "❤️X红颜.py",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/X%E7%BA%A2%E9%A2%9C.py"
-    },
-    {
-      "key": "xx9已过验证.py",
-      "name": "❤️xx9已过验证.py",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/xx9已过验证.py"
-    },
-    {
-      "key": "久久网.py",
-      "name": "❤️久久网.py",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/久久网.py"
-    },
-    {
-      "key": "乱伦淫窝.py",
-      "name": "❤️乱伦淫窝.py",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/乱伦淫窝.py"
-    },
-    {
-
-      "key": "美不胜收（免翻）.py",
-      "name": "❤️美不胜收（免翻）.py",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/美不胜收（免翻）.py"
-    },
-    {
-
-      "key": "蘑菇视频.py",
-      "name": "❤️蘑菇视频.py",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/蘑菇视频.py"
-    },
-    {
-
-      "key": "小淫虫.py",
-      "name": "❤️小淫虫.py",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/小淫虫.py"
-    },
-    {
-      "key": "黄色仓库动态版",
-      "name": "黄色仓库动态版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/hsck.txt"
-    },
-    {
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
@@ -126,6 +24,17 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
+    },
+    {
+      "key": "黄色仓库动态版",
+      "name": "黄仓动态版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/hsck.py"
     },
     {
       "key": "香蕉9合1最终优化版目录版",
@@ -333,6 +242,17 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py"
+    },
+    {
+      "key": "Missav(2)",
+      "name": "❤️Missav",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
     },
     {
       "key": "香蕉9合2",
@@ -1302,7 +1222,50 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/蜜桃源.py"
     },
     {
-
+      "key": "X红颜.py)",
+      "name": "❤️X红颜.py",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/X%E7%BA%A2%E9%A2%9C.py"
+    },
+    {
+      "key": "xx9已过验证.py",
+      "name": "❤️xx9已过验证.py",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/xx9已过验证.py"
+    },
+    {
+      "key": "乱伦淫窝.py",
+      "name": "❤️乱伦淫窝.py",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/乱伦淫窝.py"
+    },
+    {
+      "key": "蘑菇视频.py",
+      "name": "❤️蘑菇视频.py",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/蘑菇视频.py"
+    },
+    {
       "key": "smvm",
       "name": "神秘电影｜🔞",
       "type": 3,
