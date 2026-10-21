@@ -37,6 +37,28 @@
       "api": "http://pglblb.test.upcdn.net/2026py/10hd/hsck.py"
     },
     {
+      "key": "黄色仓库动态版1",
+      "name": "黄仓动态版1｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/hsck1.py"
+    },
+    {
+      "key": "黄色仓库动态版2",
+      "name": "黄仓动态版2｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/hsck2.py"
+    },
+    {
       "key": "香蕉9合1最终优化版目录版",
       "name": "❤️香蕉9合1最终优化目录版【🔞】",
       "type": 3,
