@@ -39,6 +39,45 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
     },
     {
+      "key": "黄色仓库动态版",
+      "name": "黄色仓库动态版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py",
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py"
+    },
+    {
+      "key": "18av",
+      "name": "5❤️18av【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "http://pglblb.test.upcdn.net/2026py/18av.py",
+      "api": "http://pglblb.test.upcdn.net/2026py/18av.py"
+    },
+    {
+      "key": "py_4K_fullhd-fullhd3",
+      "name": "❤️FHD老僧世界【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
       "key": "51吃瓜1",
       "name": "4❤️51吃瓜｜🔞",
       "type": 3,
@@ -48,17 +87,6 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cg.py"
-    },
-    {
-      "key": "黑料718",
-      "name": "4❤️黑料718｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/黑料718.py"
     },
     {
       "key": "51大赛",
@@ -136,33 +164,7 @@
       }
     },
     {
-      "key": "18av",
-      "name": "5❤️18av【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/18av.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/18av.py"
-    },
-    {
-      "key": "py_4K_fullhd-fullhd3",
-      "name": "❤️FHD老僧世界【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
+
       "key": "py_4K_fullhd-fullhd2",
       "name": "❤️FHD书生中国【🔞】",
       "type": 3,
@@ -1201,18 +1203,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/蜜桃源.py"
     },
     {
-      "key": "黄色仓库动态版",
-      "name": "黄色仓库动态版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py",
-      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/黄色仓库动态版.py"
-    },
-    {
+
       "key": "smvm",
       "name": "神秘电影｜🔞",
       "type": 3,
@@ -1223,6 +1214,17 @@
       },
       "ext": "http://pglblb.test.upcdn.net/2026py/%E7%A5%9E%E7%A7%98%E7%94%B5%E5%BD%B1.py",
       "api": "http://pglblb.test.upcdn.net/2026py/%E7%A5%9E%E7%A7%98%E7%94%B5%E5%BD%B1.py"
+    },
+    {
+      "key": "黑料718",
+      "name": "4❤️黑料718｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/黑料718.py"
     },
     {
       "key": "VF四级老片",
