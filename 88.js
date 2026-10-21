@@ -89,7 +89,7 @@
       "changeable": 1
     },
     {
-      "key": "51dc",
+      "key": "51大赛",
       "name": "4❤️51大赛｜🔞",
       "type": 3,
       "playerType": 2,
@@ -101,7 +101,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py"
     },
     {
-      "key": "51dc",
+      "key": "51爆料",
       "name": "4❤️51爆料｜🔞",
       "type": 3,
       "playerType": 2,
