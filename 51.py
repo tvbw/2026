@@ -1,8 +1,10 @@
 # ============================================================
-# 102 版本 + 跳转识别最小补丁
-# 改动仅在 extract_domains_from_publish_page 增加 fallback 分支
-# 新增 _find_meta_refresh / _find_js_location / _fetch_and_extract
-# 其余所有方法保持 102 原样
+# 通用发布页动态域名 Spider 模板（修复 init 前调用 getName 崩溃）
+# 用法：
+#   同主题站 -> 只改 SITE_CONFIG
+#   跨主题   -> 另加/替换 _parse_players / _extract_folder_items / _decode_publish
+# ============================================================
+#  配置区：换同主题站点，改这一个字典即可
 # ============================================================
 import json
 import random
@@ -20,22 +22,20 @@ sys.path.append('..')
 from base.spider import Spider
 
 SITE_CONFIG = {
-    "name": "51通用最终版",
-    "play_from": "51通用最终版",
+    "name": "51通用模板",
+    "play_from": "51通用模板",
     "style": {"type": "rect", "ratio": 1.33},
-    # ===== 保持 102 原配置（已验证可用） =====
-    "publish_url": "51dsa25.com/",
-    
+    "publish_url": "https://mrdsy6.com/",
+    "publish_decode": "plain",
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "js_base64",
     # 判断“这个域名是不是目标站”的特征选择器
     "host_check_selector": "#index article a",
-    
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
-        "https://actual.htinjysz.cc/",
-        "https://asleep.htinjysz.cc/",
-     # "https://able.htinjysz.cc/",
+        "https://as.llmdpxsaq.cc",
+        "https://brown.llmdpxsaq.cc",
+        "https://actor.llmdpxsaq.cc",
     ],
 
     "list_selector": "#index article a, #archive article a",
@@ -81,15 +81,15 @@ SITE_CONFIG = {
         "Connection": "keep-alive",
         "Cache-Control": "no-cache",
     },
-
-    "timeout": 15,
+    "timeout":  15,
     "probe_timeout": 10,
-}
+    }
 # ============================================================
 
 
 class Spider(Spider):
 
+    # ✅ 关键修复：类属性，保证 init 之前 getName 也能访问
     cfg = SITE_CONFIG
 
     # ================= 生命周期 =================
@@ -99,6 +99,7 @@ class Spider(Spider):
         except Exception:
             self.proxies = {}
 
+        # 实例级也挂上，便于后续覆盖
         self.cfg = SITE_CONFIG
         self.headers = dict(self.cfg["headers"])
 
@@ -111,6 +112,7 @@ class Spider(Spider):
         print(f"使用站点: {self.host}")
 
     def getName(self):
+        # ✅ 直接引用全局，彻底不依赖实例状态
         return SITE_CONFIG.get("name", "51爆料")
 
     def isVideoFormat(self, url):
@@ -122,7 +124,7 @@ class Spider(Spider):
     def destroy(self):
         pass
 
-    # ================= 首页（102 原样） =================
+    # ================= 首页 =================
     def homeContent(self, filter):
         try:
             r = requests.get(self.host, headers=self.headers,
@@ -132,6 +134,7 @@ class Spider(Spider):
 
             doc = self.getpq(r.text)
             classes = []
+
             for selector in self.cfg["category_selectors"]:
                 for item in doc(selector).items():
                     a = item("a")
@@ -142,6 +145,7 @@ class Spider(Spider):
                     classes.append({"type_name": name, "type_id": href})
                 if classes:
                     break
+
             if not classes:
                 classes = list(self.cfg["default_classes"])
 
@@ -153,19 +157,20 @@ class Spider(Spider):
             print(f"homeContent error: {e}")
             return {"class": [], "list": []}
 
- def homeVideoContent(self):
+    def homeVideoContent(self):
         try:
-            response = requests.get(self.host, headers=self.headers, proxies=self.proxies, timeout=15)
-            if response.status_code != 200:
-                return {'list': []}
-            data = self.getpq(response.text)
-            return {'list': self.getlist(data('#index article a, #archive article a'))}
+            r = requests.get(self.host, headers=self.headers,
+                             proxies=self.proxies, timeout=self.cfg["timeout"])
+            if r.status_code != 200:
+                return {"list": []}
+            doc = self.getpq(r.text)
+            return {"list": self.getlist(doc(self.cfg["list_selector"]))}
         except Exception as e:
             print(f"homeVideoContent error: {e}")
-            return {'list': []}
+            return {"list": []}
 
-    # ================= 分类（102 原样，翻页逻辑不动） =================
-    def categoryContent(self, tid, pg, filter, extend):
+    # ================= 分类 =================
+ def categoryContent(self, tid, pg, filter, extend):
         try:
             if '@folder' in tid:
                 id = tid.replace('@folder', '')
@@ -202,7 +207,7 @@ class Spider(Spider):
             print(f"categoryContent error: {e}")
             return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 90, 'total': 0}
 
-    # ================= 详情（102 原样） =================
+    # ================= 详情 =================
     def detailContent(self, ids):
         try:
             raw_id = ids[0] if ids else ""
@@ -255,7 +260,7 @@ class Spider(Spider):
                 "vod_play_url": f"详情页加载失败${ids[0] if ids else ''}",
             }]}
 
-    # ================= 搜索（102 原样） =================
+    # ================= 搜索 =================
     def searchContent(self, key, quick, pg="1"):
         try:
             if str(pg) != "1":
@@ -275,7 +280,7 @@ class Spider(Spider):
             print(f"searchContent error: {e}")
             return {"list": [], "page": pg}
 
-    # ================= 播放（102 原样） =================
+    # ================= 播放 =================
     def playerContent(self, flag, id, vipFlags):
         url = id
         p = 1
@@ -344,7 +349,7 @@ class Spider(Spider):
                             proxies=self.proxies, stream=True)
         return [200, data.headers["Content-Type"], data.content]
 
-    # ================= Base64（102 原样） =================
+    # ================= Base64 =================
     def e64(self, text):
         try:
             return b64encode(text.encode("utf-8")).decode("utf-8")
@@ -359,7 +364,7 @@ class Spider(Spider):
             print(f"Base64解码错误: {e}")
             return ""
 
-    # ================= 发布页 / 动态域名（102 原样 + 跳转 fallback） =================
+    # ================= 发布页 / 动态域名 =================
     def get_working_host(self):
         for url in self.extract_domains_from_publish_page():
             try:
@@ -389,11 +394,9 @@ class Spider(Spider):
         return fallback
 
     def extract_domains_from_publish_page(self):
-        """102 原逻辑 + 拿不到候选时尝试 meta refresh / JS location 跳转"""
         try:
             r = requests.get(self.cfg["publish_url"], headers=self.headers,
-                             proxies=self.proxies, timeout=self.cfg["probe_timeout"],
-                             allow_redirects=True)
+                             proxies=self.proxies, timeout=self.cfg["probe_timeout"])
             if r.status_code != 200:
                 self.log(f"发布页请求失败: HTTP {r.status_code}")
                 return []
@@ -401,23 +404,6 @@ class Spider(Spider):
             html = self._decode_publish(r.text, self.cfg["publish_decode"])
             doc = self.getpq(html)
             domains = self._pick_domains(doc, self.cfg["publish_url"])
-
-            # ===== 新增：102 原逻辑拿不到候选时，尝试跳转识别 =====
-            if not domains:
-                target = self._find_meta_refresh(r.text)
-                if target:
-                    self.log(f"发现 meta refresh 跳转: {target}")
-                    print(f"发现 meta refresh 跳转: {target}")
-                    domains = self._fetch_and_extract(target, self.cfg["publish_url"])
-
-            if not domains:
-                target = self._find_js_location(r.text)
-                if target:
-                    self.log(f"发现 JS location 跳转: {target}")
-                    print(f"发现 JS location 跳转: {target}")
-                    domains = self._fetch_and_extract(target, self.cfg["publish_url"])
-            # ====================================================
-
             self.log(f"发布页解析到 {len(domains)} 个候选域名")
             print(f"发布页解析到 {len(domains)} 个候选域名")
             return domains
@@ -425,58 +411,6 @@ class Spider(Spider):
             self.log(f"解析发布页失败: {e}")
             print(f"解析发布页失败: {e}")
             return []
-
-    # ============ 新增：三个跳转辅助方法 ============
-    def _find_meta_refresh(self, html):
-        m = re.search(
-            r'<meta[^>]+http-equiv=["\']?refresh["\']?[^>]+'
-            r'content=["\'][^"\']*url=([^"\'>\s]+)',
-            html or "", re.I,
-        )
-        return m.group(1).strip("'\"") if m else ""
-
-    def _find_js_location(self, html):
-        if not html:
-            return ""
-        patterns = [
-            r'window\.location(?:\.href)?\s*=\s*["\']([^"\']+)["\']',
-            r'document\.location(?:\.href)?\s*=\s*["\']([^"\']+)["\']',
-            r'location\.replace\(\s*["\']([^"\']+)["\']',
-            r'location\.assign\(\s*["\']([^"\']+)["\']',
-        ]
-        for p in patterns:
-            m = re.search(p, html)
-            if m:
-                return m.group(1)
-        return ""
-
-    def _fetch_and_extract(self, target_url, base):
-        try:
-            if target_url.startswith("//"):
-                target_url = "https:" + target_url
-            elif target_url.startswith("/"):
-                target_url = base.rstrip("/") + target_url
-            elif not target_url.startswith("http"):
-                return []
-
-            self.log(f"请求跳转目标: {target_url}")
-            print(f"请求跳转目标: {target_url}")
-
-            r = requests.get(target_url, headers=self.headers,
-                             proxies=self.proxies,
-                             timeout=self.cfg["probe_timeout"],
-                             allow_redirects=True)
-            if r.status_code != 200:
-                return []
-
-            html = self._decode_publish(r.text, self.cfg["publish_decode"])
-            doc = self.getpq(html)
-            return self._pick_domains(doc, target_url)
-        except Exception as e:
-            self.log(f"请求跳转目标失败: {e}")
-            print(f"请求跳转目标失败: {e}")
-            return []
-    # =================================================
 
     def _decode_publish(self, text, mode):
         if mode == "js_base64":
@@ -520,7 +454,7 @@ class Spider(Spider):
                 out.append(href)
         return out
 
-    # ================= 播放器解析（102 原样） =================
+    # ================= 播放器解析 =================
     def _parse_players(self, doc):
         plist = []
         used_names = set()
@@ -570,7 +504,7 @@ class Spider(Spider):
             plist.append(f"{name}${video_url}")
         return plist
 
-    # ================= 列表（102 原样） =================
+    # ================= 列表 =================
     def getlist(self, data, tid=""):
         videos = []
         is_folder = self.cfg["folder_id_marker"] in (tid or "")
@@ -592,7 +526,7 @@ class Spider(Spider):
                 })
         return videos
 
-    # ================= 合集（102 原样） =================
+    # ================= 合集 =================
     def getfod(self, folder_id):
         url = f"{self.host}{folder_id}"
         r = requests.get(url, headers=self.headers,
@@ -616,7 +550,7 @@ class Spider(Spider):
             })
         return videos
 
-    # ================= 图片（102 原样） =================
+    # ================= 图片 =================
     def getimg(self, text):
         m = re.search(self.cfg["img_regex"], text or "")
         if m:
@@ -627,41 +561,10 @@ class Spider(Spider):
         cipher = AES.new(self.cfg["aes_key"], AES.MODE_CBC, self.cfg["aes_iv"])
         return unpad(cipher.decrypt(word), AES.block_size)
 
-    # ================= PyQuery（102 原样） =================
+    # ================= PyQuery =================
     def getpq(self, data):
         try:
             return pq(data)
         except Exception as e:
             print(f"{e}")
             return pq(data.encode("utf-8"))
-
-
-# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
-_PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
-
-def _cover_fallback(self, pic_url):
-    import urllib.parse
-    raw = pic_url or ''
-    parent_impl = getattr(super(Spider, self), '_cover_fallback', None)
-    if callable(parent_impl):
-        try:
-            raw = parent_impl(pic_url) or raw
-        except Exception:
-            pass
-    if not raw:
-        return ''
-    url = raw
-    for cdn in _PIC_CDN_POOL:
-        if cdn in raw:
-            url = raw.replace(cdn, _PIC_CDN_POOL[0])
-            break
-    proxy_base = getattr(self, 'proxy_base', None)
-    if proxy_base:
-        url = f'{proxy_base}{urllib.parse.quote(url)}'
-    return url
-
-Spider._cover_fallback = _cover_fallback
-# 注册爬虫
-if __name__ == '__main__':
-    from base.spider import Spider as BaseSpider
-    BaseSpider.register(Spider)
