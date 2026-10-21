@@ -25,7 +25,7 @@ SITE_CONFIG = {
     "play_from": "51通用最终版",
     "style": {"type": "rect", "ratio": 1.33},
     # ===== 保持 102 原配置（已验证可用） =====
-    "publish_url": "https://me.pgucdm.com",
+    "publish_url": "https://www.hl718men.com/",
     
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "js_base64",
@@ -34,7 +34,7 @@ SITE_CONFIG = {
     
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
-        "https://tiger.51henduoliuliang.com/",
+        "https://hover.jisouheiliao.com/",
         "https://flock.51henduoliuliang.com/",
      # "https://able.htinjysz.cc/",
     ],
