@@ -19,47 +19,11 @@ from pyquery import PyQuery as pq
 sys.path.append('..')
 from base.spider import Spider
 
-
-# =================== 极简万能加速头 ===================
-from functools import lru_cache
-
-FAST_CDN = "lib.baomitu.com"
-DEAD_MAP = {
-    "rimg.iomycdn.com": FAST_CDN,
-    "rimg.xiakee.com": FAST_CDN,
-    "play.abcyun.com": FAST_CDN,
-    "video.xyzcdn.com": FAST_CDN,
-}
-
-@lru_cache(maxsize=256)
-def _auto_cdn(url: str) -> str:
-    if not url:
-        return ""
-    for dead, fast in DEAD_MAP.items():
-        url = url.replace(dead, fast)
-    if url.startswith("//"):
-        url = "https:" + url
-    try:
-        r = requests.head(url, allow_redirects=True, timeout=2)
-        url = r.url
-    except Exception:
-        pass
-    return url
-
-_real_get = requests.Session.get
-def _patched_get(self, url, *a, **k):
-    url = _auto_cdn(url)
-    return _real_get(self, url, *a, **k)
-requests.Session.get = _patched_get
-# =================== 加速头结束 ===================
-
-
 # ============================================================
 # 本地 host 缓存（48 小时），失败自动降级
 # ============================================================
 CACHE_FILE_NAME = "spider_host_cache.json"
 CACHE_TTL = 48 * 3600
-
 
 def _cache_file_candidates():
     paths = []
@@ -116,26 +80,26 @@ def _clear_host_cache():
 
 # ====================配置区开始===================
 SITE_CONFIG = {
-    "name": "51模板",
-    "play_from": "51模板",
+    "name": "51通用合一缓存版",
+    "play_from": "51通用合一缓存板",
     "style": {"type": "rect", "ratio": 1.33},
-# -------- 网址发布页 ------------
+
     "publish_urls": [
-        "https://www.wyjqzhrf.cc/",
+        "https://51blk1.com",
+        "https://51bla18.com/",
+        "https://51bla19.com/",
         "https://51bla20.com/",
+     # "https://51bla21.com/",
     ],
-# ---- 发布页：支持多入口，逐个尝试 ----
-    "publish_url": "https://www.wyjqzhrf.cc/",
+    "publish_url": "https://51bla18.com/",
     "publish_decode": "plain",
 
-# ---- 判定“这个域名是不是目标站”的特征 ----
     "host_check_selector": "#index article a",
 
-# -------- 兜底域名 --------------------
     "fallback_hosts": [
-        "https://cast.jifjmpodk.cc/",
-        "https://bus.jifjmpodk.cc/",
-        "https://adult.jifjmpodk.cc/",
+        "https://blind.luwhogpx.cc/",
+        "https://and.luwhogpx.cc/",
+        "https://but.luwhogpx.cc/",
     ],
 
     "list_selector": "#index article a, #archive article a",
@@ -269,40 +233,49 @@ class Spider(Spider):
     # ================= 分类 =================
     def categoryContent(self, tid, pg, filter, extend):
         try:
-            if '@folder' in tid:
-                id = tid.replace('@folder', '')
-                videos = self.getfod(id)
-                return {'list': videos, 'page': pg, 'pagecount': 1, 'limit': 90, 'total': len(videos)}
+            if "@folder" in tid:
+                folder_id = tid.replace("@folder", "")
+                videos = self.getfod(folder_id)
+                return {
+                    "list": videos, "page": pg, "pagecount": 1,
+                    "limit": 90, "total": len(videos),
+                }
 
             pg = int(pg)
-            tid = tid.rstrip('/')                       # ← 就加这一行
+            tid = tid.rstrip("/")
             url = f"{self.host}{tid}/{pg}/" if pg > 1 else f"{self.host}{tid}/"
 
-            rsp = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
-            if rsp.status_code != 200:
-                return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 90, 'total': 0}
+            r = requests.get(url, headers=self.headers,
+                             proxies=self.proxies, timeout=self.cfg["timeout"])
+            if r.status_code != 200:
+                return {"list": [], "page": pg, "pagecount": 1, "limit": 90, "total": 0}
 
-            doc = self.getpq(rsp.text)
-            videos = self.getlist(doc('#archive article a, #index article a'), tid)
+            doc = self.getpq(r.text)
+            videos = self.getlist(doc(self.cfg["list_selector"]), tid)
 
-            # 总页数 & 下一页
             total_pages = 1
-            page_info = doc('.pagination .pages, .page-nav, .pagenavi').text()
-            if '共' in page_info and '页' in page_info:
-                total_pages = int(page_info.split('共')[-1].split('页')[0])
-            next_url = doc('a.next, .pagination a.next, .pagenavi .next, a:contains("下一页")').attr('href')
+            page_info = doc(".pagination .pages, .page-nav, .pagenavi").text()
+            if "共" in page_info and "页" in page_info:
+                try:
+                    total_pages = int(page_info.split("共")[-1].split("页")[0])
+                except Exception:
+                    pass
+
+            next_url = doc(
+                'a.next, .pagination a.next, .pagenavi .next, a:contains("下一页")'
+            ).attr("href")
             has_next = bool(next_url)
 
             return {
-                'list': videos,
-                'page': pg,
-                'pagecount': total_pages if total_pages > 1 else 99999 if has_next else pg,
-                'limit': 90,
-                'total': 999999 if has_next else len(videos)
+                "list": videos,
+                "page": pg,
+                "pagecount": total_pages if total_pages > 1 else (99999 if has_next else pg),
+                "limit": 90,
+                "total": 999999 if has_next else len(videos),
             }
         except Exception as e:
             print(f"categoryContent error: {e}")
-            return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 90, 'total': 0}
+            return {"list": [], "page": pg, "pagecount": 1, "limit": 90, "total": 0}
 
     # ================= 详情 =================
     def detailContent(self, ids):
@@ -846,3 +819,4 @@ class Spider(Spider):
         except Exception as e:
             print(f"{e}")
             return pq(data.encode("utf-8"))
+    BaseSpider.register(Spider())
