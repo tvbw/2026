@@ -1,7 +1,7 @@
 {
     "作者": "飞鱼",
     "站名": "StripChat",
-    "发布页": "https://zh.stripchatgirls.com",
+    "发布页": "https://zh.stripchatgirls.com/",
     "主页url": "https://zh.stripchatgirls.com",
     "首页": "",
     "分类url": "{{主页url}}/api/front/models?improveTs=false&removeShows=false&limit=60&offset={catePg}&primaryTag={cateId}&sortBy=stripRanking&rcmGrp=A&rbCnGr=true&prxCnGr=false&nic=false&filterGroupTags=[[\"{class}\"]]&sortBy=stripRanking&parentTag={class}",
