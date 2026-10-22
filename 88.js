@@ -38,6 +38,17 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
     },
     {
+      "key": "黄色仓库动态版1",
+      "name": "黄仓黄金动态版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/连播黄色仓库动态版.py"
+    },
+    {
       "key": "黄色仓库动态版",
       "name": "黄色仓库DEEP版｜🔞",
       "type": 3,
@@ -49,17 +60,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/hsck-Deep.py"
     },
     {
-      "key": "黄色仓库动态版1",
-      "name": "黄仓动态版1｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/连播黄色仓库动态版.py"
-    },
-    {
+
       "key": "18av",
       "name": "5❤️18av【🔞】",
       "type": 3,
@@ -109,17 +110,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py"
     },
     {
-      "key": "51爆料",
-      "name": "4❤️51爆料｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
-    },
-    {
       "key": "香蕉9合1最终优化版",
       "name": "❤️香蕉9合1最终优化版全目录【🔞】",
       "type": 3,
@@ -156,7 +146,17 @@
       "changeable": 1
     },
     {
-
+      "key": "51爆料",
+      "name": "4❤️51爆料｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
+    },
+    {
       "key": "csp_xbpq_禁片天堂",
       "name": "❤️禁片天堂【🔞】",
       "type": 3,
