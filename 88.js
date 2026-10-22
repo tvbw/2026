@@ -3,51 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "hanime1",
-      "name": "❤️hanime1",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/wliqi495-create/jaychou123/537fc7311c1b3bf6778a1004b37bf4f417a42381/yingshi/py9/hanime.py#L4"
-    },
-    {
-
-      "key": "hanime2",
-      "name": "❤️hanime2",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/sd-fys/Tieba-Manager/e40128ad0c0a474101ed7d6dd9367941fbf82383/cloud_review_hanime.py#L4"
-    },
-    {
-      "key": "hanime3",
-      "name": "❤️hanime3",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/DodgeZhang/tvbox/3de1ddf4271cf9167636e40a608d9ed43617033f/hudie/lib/Hanime.py#L4"
-    },
-    {
-      "key": "hanime4",
-      "name": "❤️hanime4",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/moepoi/HanimeTV/86d3b019a3408c9c675c233a96eb09291afef9a2/HTV/hanime.py#L4"
-    },
-    {
 
       "key": "正宗聚合",
       "name": "❤️影视聚合",
@@ -84,7 +39,17 @@
       "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/91JAV最终版.py"
     },
     {
-
+      "key": "hanime1",
+      "name": "❤️hanime动画",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hanime.py"
+    },
+    {
       "key": "连播18AV",
       "name": "❤️连播18AV",
       "type": 3,
