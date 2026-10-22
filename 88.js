@@ -570,9 +570,22 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Cam4直播TG群：@tvshare23.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Cam4.py"
     },
     {
+
+      "key": "myfreecams直播",
+      "name": "5🍓myfreecams直播｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/%E8%BF%9E%E6%92%ADmyfreecams%E7%9B%B4%E6%92%AD.py"
+    },
+    {
+
       "key": "xn69",
       "name": "5🍓xn69国外聚合直播｜🔞",
       "type": 3,
