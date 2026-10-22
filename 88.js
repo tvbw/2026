@@ -3,6 +3,240 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+
+      "key": "51暗网",
+      "name": "❤️51暗网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py/51暗网.py"
+    },
+    {
+      "key": "萝莉岛APP",
+      "name": "❤️萝莉岛APP",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py/萝莉岛APP.py"
+    },
+    {
+      "key": "玩物社区",
+      "name": "❤️玩物社区",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py/玩物社区.py"
+    },
+    {
+      "key": "818黑料网",
+      "name": "❤️818黑料网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py/818黑料网.py"
+    },
+    {
+      "key": "91黑料网",
+      "name": "❤️91黑料网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py/91黑料网.py"
+    },
+    {
+      "key": "91JAV最终版",
+      "name": "❤️91JAV最终版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/91JAV最终版.py"
+    },
+    {
+      "key": "pinporn续播流",
+      "name": "❤️pinporn续播流",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/pinporn续播流.py"
+    },
+    {
+      "key": "一线黑料",
+      "name": "❤️一线黑料",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/一线黑料.py"
+    },
+    {
+      "key": "连播.tiktokpy",
+      "name": "❤️连播.tiktokpy",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播.tiktokpy.py"
+    },
+    {
+      "key": "连播818黑料网",
+      "name": "❤️连播818黑料网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播818黑料网.py"
+    },
+    {
+      "key": "连播911爆料",
+      "name": "❤️连播911爆料",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播911爆料.py"
+    },
+    {
+      "key": "连播91大赛",
+      "name": "❤️连播91大赛",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播91大赛.py"
+    },
+    {
+      "key": "连播玩物社区",
+      "name": "❤️连播玩物社区",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播玩物社区.py"
+    },
+    {
+      "key": "连播18AV",
+      "name": "❤️连播18AV",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播18AV.py"
+    },
+    {
+      "key": "连播51爆料",
+      "name": "❤️连播51爆料",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播51爆料.py"
+    },
+    {
+      "key": "连播91吃瓜中心",
+      "name": "❤️连播91吃瓜中心",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播91吃瓜中心.py"
+    },
+    {
+      "key": "连播FullHD",
+      "name": "❤️连播FullHD",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播FullHD.py"
+    },
+    {
+      "key": "连播myfreecams直播",
+      "name": "❤️连播myfreecams直播",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播myfreecams直播.py"
+    },
+    {
+      "key": "连播小红薯APP",
+      "name": "❤️连播小红薯APP",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播小红薯APP.py"
+    },
+    {
+      "key": "连播草榴社区",
+      "name": "❤️连播草榴社区",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播草榴社区.py"
+    },
+    {
+      "key": "连播黑料网",
+      "name": "❤️连播黑料网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播黑料网.py"
+    },
+    {
+
+
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
