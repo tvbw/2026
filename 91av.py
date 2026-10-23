@@ -18,8 +18,8 @@ class Spider(Spider):
         return "91JAV"
     def init(self, extend=""):
         self.name = "91JAV"
-        self.host =  ["https://cabin.zbywlcc.com", "https://91jav18.cc", "https://91jav19.cc"]
-        self.backup_hosts = ["https://born.zbywlcc.com", "https://d1nqsse6ono4lc.cloudfront.net"]
+        self.host = "https://cabin.zbywlcc.com"
+        self.backup_hosts = ["https://born.zbywlcc.com", "https://alcohol.kzjdba.cc", "https://d1nqsse6ono4lc.cloudfront.net"]
         self.shield = []
         self.readmes = ["https://gitlab.com/91JAV2/dz/-/raw/main/README.md", "https://gitlab.com/91jav1/dz/-/raw/main/README.md"]
         self._readme_done = False
