@@ -67,7 +67,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/91JAV最终版.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91av.py"
     },
     {
       "key": "hanime1",
