@@ -3,7 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
@@ -115,7 +114,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播玩物社区.py"
     },
     {
-
       "key": "18av",
       "name": "5❤️18av【🔞】",
       "type": 3,
@@ -198,7 +196,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
     },
     {
       "key": "连播91吃瓜中心",
@@ -465,7 +463,6 @@
       "filterable": 1
     },
     {
-
       "key": "missav666",
       "name": "5❤️missav666【🔞】",
       "type": 3,
