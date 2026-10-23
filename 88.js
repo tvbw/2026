@@ -67,7 +67,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91av.py"
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/91av.py"
     },
     {
       "key": "hanime1",
