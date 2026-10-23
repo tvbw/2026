@@ -211,17 +211,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
     },
     {
-      "key": "连播91吃瓜中心",
-      "name": "❤️连播91吃瓜中心",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播91吃瓜中心.py"
-    },
-    {
       "key": "csp_xbpq_禁片天堂",
       "name": "❤️禁片天堂【🔞】",
       "type": 3,
