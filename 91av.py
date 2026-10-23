@@ -7,18 +7,7 @@ import json
 import re
 import requests
 from urllib.parse import quote, urljoin
-
-# ===== 新增 1：兼容本地测试（TVBox 里还是从 base.spider 导入） =====
-try:
-    from base.spider import Spider
-    _TVBOX = True
-except ImportError:
-    class Spider(object):
-        def getProxyUrl(self):
-            return "http://127.0.0.1:9978/proxy"
-        def log(self, msg):
-            pass
-    _TVBOX = False
+from base.spider import Spider
 
 try:
     from Crypto.Cipher import AES
@@ -27,15 +16,13 @@ try:
 except Exception:
     _HAS_CRYPTO = False
 
-
 class Spider(Spider):
     def getName(self):
         return "91JAV"
-
     def init(self, extend=""):
         self.name = "91JAV"
         self.host = "https://91jav18.cc"
-        self.backup_hosts = ["https://91jav19.cc", "https://d1nqsse6ono4lc.cloudfront.net"]
+        self.backup_hosts = ["https://91jav19.cc/", "https://adult.vfqju.cc/"]
         self.shield = []
         self.readmes = ["https://gitlab.com/91JAV2/dz/-/raw/main/README.md", "https://gitlab.com/91jav1/dz/-/raw/main/README.md"]
         self._readme_done = False
@@ -78,108 +65,6 @@ class Spider(Spider):
         for tid, _ in self.themes:
             self.tids["/theme/detail/%s/update" % tid] = "/theme/detail/%s/update" % tid
             self.tids["/theme/detail/%s/hot" % tid] = "/theme/detail/%s/hot" % tid
-
-        # ========== 新增 2：从发布页发现最新线路，覆盖失效的 host ==========
-        self._discover_from_publish()
-
-    # ========== 新增 3：以下两个方法负责发布页解析与线路探测 ==========
-    def _discover_from_publish(self):
-        """
-        从 91jav18.cc / 91jav19.cc 发布页抓取最新线路：
-          - 发布页是明文 HTML，线路直接写在 <a href="https://xxx">
-          - 排除非线路链接：mailto / t.me / x.com / gitlab / APP 下载
-          - 探测前 3 个候选，第一个通过即设为 host
-          - 其余线路插到 backup_hosts 最前面
-        """
-        publish_urls = ["https://91jav18.cc", "https://91jav19.cc"]
-        excludes = ("mailto:", "t.me/", "x.com", "gitlab.com",
-                    "peach-av.com", "admire.snbbqdli", "pm.me",
-                    "javascript:", "#")
-        probe_headers = {
-            "User-Agent": self.headers.get("User-Agent", "Mozilla/5.0"),
-            "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
-        }
-
-        all_links = []
-        seen = set()
-
-        for pu in publish_urls:
-            try:
-                r = requests.get(pu, headers=probe_headers, timeout=6,
-                                 verify=False, allow_redirects=True)
-            except Exception as e:
-                print("[publish] %s 请求异常: %s" % (pu, e))
-                continue
-
-            if r.status_code != 200:
-                print("[publish] %s -> HTTP %d" % (pu, r.status_code))
-                continue
-
-            page_links = []
-            for m in re.finditer(r'<a[^>]+href=["\']([^"\']+)["\']',
-                                 r.text or "", re.I):
-                href = m.group(1).strip()
-                if href.startswith("//"):
-                    href = "https:" + href
-                if not href.startswith("http") or "." not in href:
-                    continue
-                if any(x in href for x in excludes):
-                    continue
-                href = href.rstrip("/")
-                if href in seen:
-                    continue
-                seen.add(href)
-                page_links.append(href)
-                all_links.append(href)
-
-            print("[publish] %s -> 提取 %d 个线路: %s"
-                  % (pu, len(page_links), page_links))
-
-        if not all_links:
-            print("[publish] 警告: 未提取到任何线路，保留原 host: %s" % self.host)
-            return
-
-        # 探测前 3 个线路（防止 init 拖太久）
-        chosen = None
-        for link in all_links[:3]:
-            print("[publish] 探测 %s ..." % link)
-            if self._probe_publish_host(link):
-                chosen = link
-                break
-
-        if chosen:
-            self._set_host(chosen)
-            print("[publish] 已切换 host -> %s" % chosen)
-        else:
-            print("[publish] 警告: 探测的线路都不可用，保留原 host: %s" % self.host)
-
-        # 所有新线路插到 backup_hosts 最前面，避免和现有重复
-        new_backups = [l for l in all_links
-                       if l != self.host and l not in self.backup_hosts]
-        if new_backups:
-            self.backup_hosts = new_backups + self.backup_hosts
-            print("[publish] backup_hosts 已更新: %s" % self.backup_hosts)
-
-    def _probe_publish_host(self, url):
-        """探测某个域名是否为 91JAV 正站（看页面里是否有 91 站特征）"""
-        try:
-            probe_url = url.rstrip("/") + "/theme/detail/3/update/"
-            r = requests.get(
-                probe_url,
-                headers={"User-Agent": self.headers.get("User-Agent", "Mozilla/5.0")},
-                timeout=6, verify=False, allow_redirects=True,
-            )
-            if r.status_code != 200:
-                return False
-            text = r.text or ""
-            return ("bind_video_img" in text
-                    or "/videos/" in text
-                    or "91JAV" in text)
-        except Exception:
-            return False
-
-    # ====================== 以下方法全部原样保留 ======================
-
     def _set_host(self, h):
         self.host = h.rstrip("/")
         self.headers["Referer"] = self.host + "/"
@@ -579,4 +464,3 @@ class Spider(Spider):
             except Exception:
                 continue
         return {"parse": 0 if last.startswith("http") else 1, "url": last, "header": hd}
-
