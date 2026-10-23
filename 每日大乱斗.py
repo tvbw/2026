@@ -34,6 +34,8 @@ SITE_CONFIG = {
     
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
+        "https://mrdld3.com/",
+        "https://mrdld1.com/",
      # "https://able.htinjysz.cc/",
     ],
 
