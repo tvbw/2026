@@ -284,22 +284,6 @@
       "changeable": 1
     },
     {
-      "key": "csp_xbpq_StripChat",
-      "name": "❤️StripChat直播2【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
-      "api": "csp_XBPQ",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/stripchatgirls.json",
-      "style": {
-        "type": "rect",
-        "ratio": 1.65
-      }
-    },
-    {
       "key": "爆色",
       "name": "5❤️ss采集聚合1｜🔞",
       "type": 3,
@@ -444,21 +428,6 @@
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj106.py",
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj106.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "香蕉7区",
-      "name": "🔞️香蕉7区【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj107.py",
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj107.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
