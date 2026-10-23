@@ -1,4 +1,7 @@
 #!/usr/bin/python
+#91jav最新地址： https://91jav8.cc   https://t.me/jav91_b
+#91jav永久入口： https://www.91jav1.com
+#91jav官方邮箱：91Jav@pm.me
 import base64
 import json
 import re
@@ -19,7 +22,7 @@ class Spider(Spider):
     def init(self, extend=""):
         self.name = "91JAV"
         self.host = "https://cabin.zbywlcc.com"
-        self.backup_hosts = ["https://born.zbywlcc.com", "https://alcohol.kzjdba.cc", "https://d1nqsse6ono4lc.cloudfront.net"]
+        self.backup_hosts = ["https://born.zbywlcc.com", "https://alcohol.kzjdba.cc/"]
         self.shield = []
         self.readmes = ["https://gitlab.com/91JAV2/dz/-/raw/main/README.md", "https://gitlab.com/91jav1/dz/-/raw/main/README.md"]
         self._readme_done = False
@@ -43,16 +46,23 @@ class Spider(Spider):
         self.session.headers.update(self.headers)
         self.themes = [("2", "角色剧情"), ("3", "中文字幕"), ("4", "制服诱惑"), ("5", "直接开啪"), ("6", "丝袜美腿"), ("7", "捆绑调教"), ("8", "多P群交"), ("10", "羞辱强暴"), ("11", "无码高清"), ("14", "乱伦伦理"), ("15", "人妻诱惑"), ("17", "网黄精选")]
         self.theme_sorts = [{"n": "近期最佳", "v": "hot"}, {"n": "今日更新", "v": "update"}, {"n": "最多观看", "v": "watch"}, {"n": "最高收藏", "v": "favorite"}]
-        self.categories = [{"type_id": "/new", "type_name": "最新更新"}, {"type_id": "/theme/detail/3/update", "type_name": "中文字幕"}, {"type_id": "/theme/detail/11/hot", "type_name": "无码高清"}, {"type_id": "/theme", "type_name": "专题合集"}, {"type_id": "/actress/hot", "type_name": "热门女优"}]
+        self.categories = [
+            {"type_id": "/new", "type_name": "最新更新"},
+            {"type_id": "/theme/detail/3/update", "type_name": "中文字幕"},
+            {"type_id": "/theme/detail/11/hot", "type_name": "无码高清"},
+            {"type_id": "/heiliao", "type_name": "黑料吃瓜"},
+            {"type_id": "/theme", "type_name": "专题合集"},
+            {"type_id": "/actress/hot", "type_name": "热门女优"},
+        ]
         self.filters = {
             "/theme/detail/3/update": [{"key": "sort", "name": "排序", "value": self.theme_sorts}],
             "/theme/detail/11/hot": [{"key": "sort", "name": "排序", "value": self.theme_sorts}],
             "/theme": [{"key": "sort", "name": "排序", "value": [{"n": "预设排序", "v": "sort"}, {"n": "热度优先", "v": "check_num"}, {"n": "最多影片", "v": "count"}]}],
             "/actress/hot": [{"key": "sort", "name": "排序", "value": [{"n": "热度优先", "v": "hot"}, {"n": "最多影片", "v": "count"}]}],
         }
-        self.tids = {"/new": "/new", "/theme": "/theme", "/actress/hot": "/actress/hot"}
+        self.tids = {"/new": "/new", "/theme": "/theme", "/actress/hot": "/actress/hot", "/heiliao": "/heiliao"}
         self._filters_actress = []
-        for tid, name in self.themes:
+        for tid, _ in self.themes:
             self.tids["/theme/detail/%s/update" % tid] = "/theme/detail/%s/update" % tid
             self.tids["/theme/detail/%s/hot" % tid] = "/theme/detail/%s/hot" % tid
     def _set_host(self, h):
@@ -178,13 +188,13 @@ class Spider(Spider):
         return {}
     def _pagecount(self, html, pg):
         nums = []
-        for m in re.finditer(r'<a[^>]*class="[^"]*page-link[^"]*"[^>]*href="([^"]*)"', html):
-            mm = re.search(r"/(\d+)(?:[;?]|$)", m.group(1))
+        for m in re.finditer(r'<a[^>]*class="[^"]*page-link[^"]*"[^>]*href="([^"]*)"', html or ""):
+            mm = re.search(r"/(\d+)(?:[;?/]|$)", m.group(1))
             if mm:
                 nums.append(int(mm.group(1)))
-        for m in re.finditer(r'<a[^>]*class="[^"]*page-link[^"]*"[^>]*>\s*(\d+)\s*</a>', html):
+        for m in re.finditer(r'<a[^>]*class="[^"]*page-link[^"]*"[^>]*>\s*(\d+)\s*</a>', html or ""):
             nums.append(int(m.group(1)))
-        nxt = re.search(r'<a[^>]*rel="next"[^>]*>', html) or ("下一页" in html)
+        nxt = re.search(r'<a[^>]*rel="next"[^>]*>', html or "") or ("下一页" in (html or ""))
         return max(nums + [pg + 1 if nxt else pg])
     def _list(self, html):
         out = []
@@ -213,6 +223,30 @@ class Spider(Spider):
                 remarks = rm.group(1) if rm else ""
                 if "广告" in remarks:
                     remarks = ""
+                out.append({"vod_id": href, "vod_name": name, "vod_pic": pic, "vod_remarks": remarks})
+            except Exception:
+                continue
+        if out:
+            return out
+        return self._heiliao_list(html)
+    def _heiliao_list(self, html):
+        out, seen = [], set()
+        for m in re.finditer(r'<a class="heiliao-card" href="([^"]+)"(.*?)</a>', html or "", re.S):
+            try:
+                href = self._fix(m.group(1))
+                if href in seen:
+                    continue
+                seen.add(href)
+                seg = m.group(2)
+                im = re.search(r'z-image-loader-url="([^"]*)"', seg) or re.search(r'(?:data-src|src)="([^"]*)"', seg)
+                pic = self._pic(im.group(1)) if im else ""
+                nm = re.search(r'heiliao-card-title">([^<]+)', seg)
+                name = re.sub(r"\s+", " ", nm.group(1)).strip() if nm else ""
+                if not name:
+                    am = re.search(r'alt="([^"]*)"', seg)
+                    name = am.group(1) if am else href.rsplit("/", 1)[-1]
+                rm = re.search(r'heiliao-date">([^<]+)', seg)
+                remarks = (rm.group(1) or "").strip() if rm else ""
                 out.append({"vod_id": href, "vod_name": name, "vod_pic": pic, "vod_remarks": remarks})
             except Exception:
                 continue
@@ -259,7 +293,7 @@ class Spider(Spider):
         return out
     def homeContent(self, filter):
         fl = dict(self.filters)
-        for t, n in self.themes:
+        for t, _ in self.themes:
             fl["theme$" + t] = [{"key": "sort", "name": "排序", "value": self.theme_sorts}]
         for t in self._filters_actress:
             fl["actress$" + t] = [{"key": "sort", "name": "排序", "value": [{"n": "近期最佳", "v": "hot"}, {"n": "今日更新", "v": "latest"}, {"n": "最多观看", "v": "watch"}, {"n": "最高收藏", "v": "favorite"}]}]
@@ -301,7 +335,20 @@ class Spider(Spider):
         url = self.host + base + (("/" + str(pg)) if pg > 1 else "/")
         ht = self._get(url)
         items = self._list(ht)
-        return {"page": pg, "pagecount": self._pagecount(ht, pg), "limit": len(items) or 24, "total": 0, "list": items}
+        pc = self._pagecount(ht, pg)
+        if 0 < len(items) < 20 and pc > pg:
+            seen = {it.get("vod_id") for it in items}
+            for sp in range(pg + 1, pc + 1):
+                extra = self._list(self._get(self.host + str(base).rstrip("/") + "/" + str(sp) + "/"))
+                if not extra:
+                    break
+                for it in extra:
+                    vid = it.get("vod_id")
+                    if vid and vid not in seen:
+                        seen.add(vid)
+                        items.append(it)
+            pc = pg
+        return {"page": pg, "pagecount": pc, "limit": len(items) or 24, "total": 0, "list": items}
     def detailContent(self, ids):
         out = []
         for vid in ids if isinstance(ids, list) else [ids]:
@@ -316,6 +363,22 @@ class Spider(Spider):
                 desc = ""
                 tags = ""
                 dur = ""
+                if "/heiliao/post/" in url:
+                    hm = re.search(r'heiliao-detail-title[^>]*>([^<]+)', html) or re.search(r'<h1[^>]*>(.*?)</h1>', html, re.S)
+                    if hm:
+                        title = re.sub(r"<[^>]+>", "", hm.group(1)).strip()
+                    pm = re.search(r'z-image-loader-url="([^"]+)"', html)
+                    if pm:
+                        pic = pm.group(1)
+                    dm = re.search(r'<div class="heiliao-detail-content">\s*<p>(.*?)</p>', html, re.S)
+                    if dm:
+                        desc = re.sub(r"<[^>]+>", "", dm.group(1)).strip()
+                    play = self._m3u8(html) or url
+                    if not title:
+                        title = sv
+                    desc = (desc or "")[:500]
+                    out.append({"vod_id": sv, "vod_name": title, "vod_pic": self._pic(pic), "vod_content": desc, "vod_remarks": "m3u8" if ".m3u8" in play else "", "vod_play_from": "91JAV", "vod_play_url": "正片$" + play})
+                    continue
                 v = re.search(r'<video[^>]*id="player"[^>]*>', html) or re.search(r'<video[^>]*class="[^"]*dplayer[^"]*"[^>]*>', html)
                 if v:
                     tag = v.group(0)
@@ -371,47 +434,33 @@ class Spider(Spider):
         except Exception:
             return {"list": [], "page": int(pg)}
     def _m3u8(self, body):
-        m = re.search(r'var\s+hlsUrl\s*=\s*["\']([^"\']+)', body)
+        m = re.search(r'var\s+hlsUrl\s*=\s*["\']([^"\']+)', body or "")
         if m:
             return m.group(1).replace("&amp;", "&")
-        ms = re.findall(r'https?://[^"\'\s<>]+\.(?:m3u8|mp4)[^"\'\s<>]*', body, re.I)
+        m = re.search(r'<video[^>]+src=["\'](https?://[^"\']+\.(?:m3u8|mp4)[^"\']*)', body or "", re.I)
+        if m:
+            return m.group(1).replace("&amp;", "&")
+        ms = re.findall(r'https?://[^"\'\s<>]+\.(?:m3u8|mp4)[^"\'\s<>]*', body or "", re.I)
         if ms:
             return ms[0].replace("&amp;", "&")
         return ""
-    def _probe(self, url):
-        try:
-            r = self.session.get(url, headers={**self.headers, "Range": "bytes=0-4096"}, timeout=20, verify=False, stream=True, proxies=self.session.proxies or None)
-            data = next(r.iter_content(4096), b"")
-            if r.ok and b"#EXTM3U" in data:
-                return r.url
-            if r.ok and ("video/" in r.headers.get("Content-Type", "").lower() or data[4:12].find(b"ftyp") >= 0):
-                return r.url
-        except Exception:
-            pass
-        return ""
     def playerContent(self, flag, id, vipFlags):
-        last = ""
         hd = dict(self.headers)
+        u = str(id or "")
+        if u.endswith(".m3u8") or ".m3u8?" in u or u.endswith(".mp4"):
+            if not u.startswith("http"):
+                u = self._fix(u)
+            return {"parse": 0, "url": u, "header": hd}
+        last = ""
         for h in self._hosts():
             try:
-                u = id if str(id).startswith("http") else h + str(id)
-                if str(u).endswith(".m3u8") or ".m3u8?" in str(u) or str(u).endswith(".mp4"):
-                    ok = self._probe(u)
-                    if ok:
-                        return {"parse": 0, "url": ok, "header": hd}
-                    last = u
-                    continue
-                for attempt in range(2):
-                    body = self._get(u)
-                    url = self._m3u8(body)
-                    if url:
-                        url = url if url.startswith("http") else h + url
-                        ok = self._probe(url)
-                        if ok:
-                            return {"parse": 0, "url": ok, "header": hd}
-                        last = url
-                    else:
-                        break
+                target = u if u.startswith("http") else h + u
+                body = self._get(target)
+                url = self._m3u8(body)
+                if url:
+                    url = url if url.startswith("http") else h + url
+                    return {"parse": 0, "url": url, "header": hd}
+                last = target
             except Exception:
                 continue
         return {"parse": 0 if last.startswith("http") else 1, "url": last, "header": hd}
