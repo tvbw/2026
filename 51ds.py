@@ -34,8 +34,8 @@ SITE_CONFIG = {
     
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
-        "https://actual.htinjysz.cc/",
-        "https://asleep.htinjysz.cc/",
+        "https:/51dsa18.com/",
+        "https:/51dsa19.com/",
      # "https://able.htinjysz.cc/",
     ],
 
