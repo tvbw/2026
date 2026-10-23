@@ -2,7 +2,7 @@
     "作者": "飞鱼",
     "站名": "StripChat",
     "发布页": "https://zh.stripchat.global/",
-    "主页url": "https://go.mavrtracktor.com/",
+    "主页url": "https://zh.stripchat.global/",
     "首页": "",
     "分类url": "{{主页url}}/api/front/models?improveTs=false&removeShows=false&limit=60&offset={catePg}&primaryTag={cateId}&sortBy=stripRanking&rcmGrp=A&rbCnGr=true&prxCnGr=false&nic=false&filterGroupTags=[[\"{class}\"]]&sortBy=stripRanking&parentTag={class}",
     "二次截取": "",
