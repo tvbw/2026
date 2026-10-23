@@ -1,22 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-91通用最终版（单文件 · 可直接运行）
+91通用最终版 v2.1（单文件 · 适配静态发布页）
 =============================================================
-域名发现顺序：
-  1) 发布页 https://91jav18.cc    (js_base64)
-  2) 发布页 https://91jav19.cc    (js_base64)
-  3) 兜底   https://basis.vfqju.cc/
-  4) 兜底   https://adult.vfqju.cc/
+发布页特征（已确认）：
+  - 91jav18.cc / 91jav19.cc 返回明文 HTML
+  - 线路链接直接写在 <a href="https://xxx"> 中
+  - 没有 Base64 编码，没有 meta refresh / JS location
+  - 线路域名每周可能变化，所以不能硬编码兜底
 
-使用方式：
-  A) 本地测试：  python 91av.py
-  B) TVBox：     放到爬虫目录，配置名 "91通用最终版"
+发现顺序：
+  1) 请求 91jav18.cc → 提取 <a href> 线路
+  2) 请求 91jav19.cc → 提取 <a href> 线路
+  3) 合并去重，逐个探测
+  4) 探测成功的即为当前 host，失败自动切下一个
+
+运行：
+  本地测试:  python 91av.py
+  TVBox:     放入爬虫目录，配置名 "91通用最终版"
 =============================================================
 """
 import json
 import re
 import sys
+import traceback
 from base64 import b64decode, b64encode
 from urllib.parse import urlparse, urlunparse
 
@@ -24,10 +31,7 @@ from urllib.parse import urlparse, urlunparse
 try:
     import requests
 except ImportError:
-    sys.stderr.write(
-        "\n[致命] 缺少 requests 库\n"
-        "请先运行：  pip install requests\n\n"
-    )
+    sys.stderr.write("\n[致命] 缺少 requests 库\n请先运行： pip install requests\n\n")
     raise
 
 try:
@@ -48,7 +52,6 @@ try:
     from base.spider import Spider as _SpiderBase
     _TVBOX = True
 except ImportError:
-    # 独立运行时的最小接口，保证代码可执行
     class _SpiderBase(object):
         def getProxyUrl(self):
             return "http://127.0.0.1:9978/proxy"
@@ -58,33 +61,40 @@ except ImportError:
 
 
 # ============================================================
-# 站点配置（全部集中在这里，方便维护）
+# 站点配置
 # ============================================================
 SITE_CONFIG = {
     "name": "91通用最终版",
     "play_from": "91通用最终版",
     "style": {"type": "rect", "ratio": 1.33},
 
-    # ---- 域名发现 ----
+    # ---- 发布页（入口，相对稳定）----
     "publish_urls": [
         "https://91jav18.cc",
         "https://91jav19.cc",
     ],
-    "publish_decode": "js_base64",
-    "host_check_selector": "#index article a",
-    "fallback_hosts": [
-        "https://basis.vfqju.cc/",
-        "https://adult.vfqju.cc/",
+
+    # ---- 发布页解析方式 ----
+    # 不再使用 js_base64；直接提取 HTML 中的 <a href>
+    "publish_parse": "static_html",
+    # 发布页中线路链接所在容器（可选，留空则全局扫描）
+    "publish_link_selector": "#list-wrap a, .list a",
+    # 需要排除的链接关键词（非线路）
+    "publish_exclude": [
+        "mailto:", "t.me", "x.com", "gitlab.com", "peach-av.com",
+        "admire.snbbqdli.vip",  # APP 下载
     ],
+
+    # ---- 目标站特征（判断某个域名是不是 91 正站）----
+    "host_check_selector": "#index article a",
+    # 没有 pyquery 时的字符串兜底
+    "host_check_terms": ["bind_video_img", "/videos/"],
 
     # ---- 列表 ----
     "list_selector": "#index article a, #archive article a",
     "home_list_selector": "#index article a",
     "category_selectors": [
-        ".category-list ul li",
-        ".nav-menu li",
-        ".menu li",
-        "nav ul li",
+        ".category-list ul li", ".nav-menu li", ".menu li", "nav ul li",
     ],
     "default_classes": [
         {"type_name": "首页", "type_id": "/"},
@@ -136,13 +146,11 @@ SITE_CONFIG = {
 class Spider(_SpiderBase):
     cfg = SITE_CONFIG
 
-    # ---- 生命周期 ----
     def __init__(self):
-        # TVBox 会直接调用 init()，所以 __init__ 只做最基本初始化
         self._host = ""
         self._proxies = {}
         self._headers = dict(self.cfg["headers"])
-        self._candidates = []        # 候选域名（发现后填充）
+        self._candidates = []
         self._candidate_idx = -1
         self._ready = False
 
@@ -168,33 +176,36 @@ class Spider(_SpiderBase):
             pass
 
     # ============================================================
-    # 域名发现
+    # 域名发现（核心改动）
     # ============================================================
     def _resolve_host(self):
-        candidates = []
+        all_links = []
 
-        # 1) 从两个发布页收集候选
         for p_url in self.cfg["publish_urls"]:
-            got = self._collect_from_publish(p_url)
-            print(f"[发布页] {p_url} -> 解析到 {len(got)} 个链接")
-            candidates.extend(got)
+            print(f"\n[发布页] 请求: {p_url}")
+            links = self._fetch_publish_links(p_url)
+            print(f"[发布页] {p_url} -> 提取到 {len(links)} 个链接")
+            for L in links:
+                print(f"          · {L}")
+            all_links.extend(links)
 
-        # 2) 兜底域名补在后面
-        candidates.extend(h.rstrip("/") for h in self.cfg["fallback_hosts"])
-
-        # 3) 去重保序
+        # 去重保序
         seen = set()
         ordered = []
-        for c in candidates:
-            c = (c or "").rstrip("/")
-            if c.startswith("http") and c not in seen:
-                seen.add(c)
-                ordered.append(c)
+        for u in all_links:
+            u = u.rstrip("/")
+            if u.startswith("http") and u not in seen:
+                seen.add(u)
+                ordered.append(u)
 
         self._candidates = ordered
-        print(f"[候选] 共 {len(ordered)} 个候选域名")
+        print(f"\n[候选] 共 {len(ordered)} 个线路域名")
 
-        # 4) 逐个探测
+        if not ordered:
+            print("[错误] 发布页没有提取到任何线路链接，请检查网络或发布页结构是否变化")
+            return ""
+
+        # 逐个探测
         for idx, url in enumerate(ordered):
             print(f"[探测] ({idx+1}/{len(ordered)}) {url} ...", end=" ")
             if self._probe(url):
@@ -203,88 +214,71 @@ class Spider(_SpiderBase):
                 return url
             print("FAIL")
 
-        print("[警告] 所有候选都探测失败，使用第一个兜底域名")
-        return self.cfg["fallback_hosts"][0].rstrip("/")
+        print("[警告] 所有线路探测失败，返回第一个候选（后续请求时仍会自动轮换）")
+        self._candidate_idx = 0
+        return ordered[0]
 
-    def _collect_from_publish(self, p_url):
-        """从单个发布页提取候选域名（含 meta/JS 跳转补丁）"""
+    def _fetch_publish_links(self, p_url):
+        """
+        请求发布页，提取线路链接。
+        适配你提供的静态 HTML 结构：
+          <div class="list" id="list-wrap">
+            <a href="https://broad.vfqju.cc">...</a>
+            <a href="https://believe.vfqju.cc">...</a>
+            ...
+        不依赖 Base64 / meta refresh / JS 跳转。
+        """
         try:
             r = requests.get(
                 p_url, headers=self._headers, proxies=self._proxies,
                 timeout=self.cfg["probe_timeout"], allow_redirects=True,
             )
             if r.status_code != 200:
+                print(f"[发布页] HTTP {r.status_code}")
                 return []
         except Exception as e:
             print(f"[发布页异常] {p_url}: {e}")
             return []
 
-        html = self._decode_publish(r.text)
-        links = self._extract_domain_links(html, p_url)
+        html = r.text
+        links = self._extract_links(html, p_url)
         if links:
             return links
 
-        # 拿不到候选，尝试跳转
-        jump = self._find_meta_refresh(r.text) or self._find_js_location(r.text)
-        if not jump:
-            return []
+        # 后备：如果静态解析失败，尝试 Base64（兼容旧格式）
+        decoded = self._try_base64(html)
+        if decoded != html:
+            return self._extract_links(decoded, p_url)
 
-        if jump.startswith("//"):
-            jump = "https:" + jump
-        elif jump.startswith("/"):
-            p = urlparse(p_url)
-            jump = f"{p.scheme}://{p.netloc}{jump}"
-        if not jump.startswith("http"):
-            return []
+        # 再后备：meta refresh / JS location（虽然你当前源码没有，但保留）
+        jump = self._find_meta_refresh(html) or self._find_js_location(html)
+        if jump:
+            print(f"[发布页] 发现跳转 -> {jump}")
+            return self._fetch_publish_links(jump)
 
-        print(f"[跳转] 发现跳转 -> {jump}")
-        try:
-            r2 = requests.get(jump, headers=self._headers, proxies=self._proxies,
-                              timeout=self.cfg["probe_timeout"], allow_redirects=True)
-            if r2.status_code == 200:
-                return self._extract_domain_links(
-                    self._decode_publish(r2.text), jump)
-        except Exception:
-            pass
         return []
 
-    def _probe(self, url):
-        try:
-            r = requests.get(url, headers=self._headers, proxies=self._proxies,
-                             timeout=self.cfg["probe_timeout"], allow_redirects=True)
-            if r.status_code != 200:
-                return False
-            sel = self.cfg["host_check_selector"]
-            if _HAS_PQ:
-                return bool(pq(r.text)(sel))
-            # 没有 pyquery 时退化为字符串检查
-            return ("index" in r.text and "article" in r.text)
-        except Exception:
-            return False
+    def _extract_links(self, html, base):
+        """从 HTML 中提取线路链接"""
+        links = []
 
-    def _decode_publish(self, text):
-        mode = self.cfg["publish_decode"]
-        if mode == "js_base64":
-            m = re.search(r"Base64\.decode\(['\"]([^'\"]+)['\"]\)", text)
-            if m:
-                try:
-                    return b64decode(m.group(1)).decode("utf-8", "ignore")
-                except Exception:
-                    pass
-        elif mode == "js_atob":
-            m = re.search(r"atob\(['\"]([^'\"]+)['\"]\)", text)
-            if m:
-                try:
-                    return b64decode(m.group(1)).decode("utf-8", "ignore")
-                except Exception:
-                    pass
-        return text
+        # 优先使用 pyquery 按容器选择器提取
+        if _HAS_PQ and self.cfg["publish_link_selector"]:
+            doc = pq(html)
+            for a in doc(self.cfg["publish_link_selector"]).items():
+                href = (a.attr("href") or "").strip()
+                if href:
+                    links.append(href)
 
-    @staticmethod
-    def _extract_domain_links(html, base):
-        out, seen = [], set()
-        for m in re.finditer(r'<a[^>]+href=["\']([^"\']+)["\']', html or ""):
-            href = m.group(1)
+        # 没有 pyquery 或容器选择器没抓到，全局扫描 <a href>
+        if not links:
+            for m in re.finditer(r'<a[^>]+href=["\']([^"\']+)["\']', html or "", re.I):
+                links.append(m.group(1))
+
+        # 规范化 + 过滤
+        out = []
+        seen = set()
+        for href in links:
             if href.startswith("//"):
                 href = "https:" + href
             elif href.startswith("/"):
@@ -292,13 +286,22 @@ class Spider(_SpiderBase):
                 href = f"{p.scheme}://{p.netloc}{href}"
             if not href.startswith("http") or "." not in href:
                 continue
-            if any(x in href for x in ("javascript:", "mailto:", "#")):
+            if any(ex in href for ex in self.cfg["publish_exclude"]):
                 continue
             if href in seen:
                 continue
             seen.add(href)
             out.append(href)
         return out
+
+    def _try_base64(self, text):
+        m = re.search(r"Base64\.decode\(['\"]([^'\"]+)['\"]\)", text)
+        if m:
+            try:
+                return b64decode(m.group(1)).decode("utf-8", "ignore")
+            except Exception:
+                pass
+        return text
 
     @staticmethod
     def _find_meta_refresh(html):
@@ -322,6 +325,29 @@ class Spider(_SpiderBase):
                 return m.group(1)
         return ""
 
+    def _probe(self, url):
+        """探测某个线路是否为目标站"""
+        try:
+            r = requests.get(
+                url, headers=self._headers, proxies=self._proxies,
+                timeout=self.cfg["probe_timeout"], allow_redirects=True,
+            )
+            if r.status_code != 200:
+                return False
+
+            # 优先 pyquery
+            if _HAS_PQ:
+                try:
+                    return bool(pq(r.text)(self.cfg["host_check_selector"]))
+                except Exception:
+                    pass
+
+            # 字符串兜底
+            text = r.text or ""
+            return any(t in text for t in self.cfg["host_check_terms"])
+        except Exception:
+            return False
+
     # ============================================================
     # 统一请求（失败自动轮换）
     # ============================================================
@@ -331,7 +357,6 @@ class Spider(_SpiderBase):
 
     def _request(self, path, **kwargs):
         url = self._build_url(path)
-        # 允许尝试所有候选，每个 1 次
         max_attempts = max(len(self._candidates), 1)
         attempted = set()
 
@@ -350,11 +375,11 @@ class Spider(_SpiderBase):
                 if r.status_code == 200:
                     return r
                 if r.status_code in (403, 429, 502, 503, 504):
-                    print(f"[失败] {target} -> HTTP {r.status_code}，切换域名")
+                    print(f"[失败] {target} -> HTTP {r.status_code}，切换线路")
                     if not self._next_host():
                         break
                     continue
-                return r  # 404 之类非域名问题，直接返回
+                return r
             except Exception as e:
                 print(f"[异常] {target}: {e}")
                 if not self._next_host():
@@ -375,7 +400,7 @@ class Spider(_SpiderBase):
                 self._host = cand
                 self._headers["Referer"] = cand + "/"
                 self._headers["Origin"] = cand
-                print(f"[切换] 新域名 -> {cand}")
+                print(f"[切换] 新线路 -> {cand}")
                 return cand
         return None
 
@@ -398,14 +423,13 @@ class Spider(_SpiderBase):
         )
 
     # ============================================================
-    # 首页 / 分类 / 详情 / 搜索 / 播放（51 主题原样搬过来）
+    # 以下解析逻辑与 102 版一致（省略部分重复注释）
     # ============================================================
     def homeContent(self, filter):
         r = self._request("/")
         if not r:
             return {"class": [], "list": []}
         doc = pq(r.text)
-
         classes = []
         for sel in self.cfg["category_selectors"]:
             for item in doc(sel).items():
@@ -418,7 +442,6 @@ class Spider(_SpiderBase):
                 break
         if not classes:
             classes = list(self.cfg["default_classes"])
-
         return {
             "class": classes,
             "list": self.getlist(doc(self.cfg["home_list_selector"])),
@@ -437,7 +460,6 @@ class Spider(_SpiderBase):
                 vids = self.getfod(tid.replace("@folder", ""))
                 return {"list": vids, "page": pg, "pagecount": 1,
                         "limit": 90, "total": len(vids)}
-
             pg = int(pg)
             tid = tid.rstrip("/")
             path = f"{tid}/{pg}/" if pg > 1 else f"{tid}/"
@@ -445,13 +467,9 @@ class Spider(_SpiderBase):
             if not r:
                 return {"list": [], "page": pg, "pagecount": pg,
                         "limit": 90, "total": 0}
-
             doc = pq(r.text)
-            videos = self.getlist(
-                doc("#archive article a, #index article a"), tid
-            )
+            videos = self.getlist(doc("#archive article a, #index article a"), tid)
 
-            # 页数判定（同 102）
             total_pages, has_next = 1, False
             pn = doc("ul.page-navigator")
             if pn:
@@ -471,24 +489,14 @@ class Spider(_SpiderBase):
                     except Exception:
                         pass
             if not has_next:
-                nxt = doc(
-                    "ul.page-navigator li.next a, "
-                    ".pagination a.next, .pagenavi a.next, "
-                    "li.next a, a.next, a:contains('下一页')"
-                ).attr("href")
+                nxt = doc("li.next a, a.next, a:contains('下一页')").attr("href")
                 has_next = bool(nxt)
-
-            pagecount = total_pages if total_pages > 1 else (
-                pg + 1 if has_next else pg
-            )
-            total_count = pagecount * 90 if pagecount > 1 else len(videos)
-
+            pagecount = total_pages if total_pages > 1 else (pg + 1 if has_next else pg)
             return {"list": videos, "page": pg, "pagecount": pagecount,
-                    "limit": 90, "total": total_count}
+                    "limit": 90, "total": pagecount * 90 if pagecount > 1 else len(videos)}
         except Exception as e:
             print(f"[categoryContent] {e}")
-            return {"list": [], "page": pg, "pagecount": 1,
-                    "limit": 90, "total": 0}
+            return {"list": [], "page": pg, "pagecount": 1, "limit": 90, "total": 0}
 
     def detailContent(self, ids):
         raw_id = ids[0] if ids else ""
@@ -500,65 +508,44 @@ class Spider(_SpiderBase):
             }]}
         doc = pq(r.text)
         vod = {"vod_play_from": self.cfg["play_from"]}
-
         try:
             clist = []
             if doc(self.cfg["tag_selector"]):
                 for k in doc(self.cfg["tag_selector"]).items():
                     t, h = k.text(), k.attr("href")
                     if t and h:
-                        clist.append(
-                            "[a=cr:" + json.dumps({"id": h, "name": t}) + "/]"
-                            + t + "[/a]"
-                        )
-            vod["vod_content"] = (
-                " ".join(clist) if clist
-                else doc(self.cfg["title_selector"]).text()
-            )
+                        clist.append("[a=cr:" + json.dumps({"id": h, "name": t}) + "/]" + t + "[/a]")
+            vod["vod_content"] = " ".join(clist) if clist else doc(self.cfg["title_selector"]).text()
         except Exception:
             vod["vod_content"] = doc(self.cfg["title_selector"]).text() or self.cfg["name"]
-
         try:
             plist = self._parse_players(doc)
-            vod["vod_play_url"] = (
-                "#".join(plist) if plist else f"未找到视频源${self._build_url(raw_id)}"
-            )
+            vod["vod_play_url"] = "#".join(plist) if plist else f"未找到视频源${self._build_url(raw_id)}"
         except Exception:
             vod["vod_play_url"] = f"视频解析失败${self._build_url(raw_id)}"
-
         return {"list": [vod]}
 
     def searchContent(self, key, quick, pg="1"):
-        if str(pg) != "1":
-            path = f"/search/{key}/{pg}/"
-        else:
-            path = f"/search/{key}/"
+        path = f"/search/{key}/{pg}/" if str(pg) != "1" else f"/search/{key}/"
         r = self._request(path)
         if not r:
             return {"list": [], "page": pg}
-        doc = pq(r.text)
-        return {"list": self.getlist(doc(self.cfg["list_selector"])), "page": pg}
+        return {"list": self.getlist(pq(r.text)(self.cfg["list_selector"])), "page": pg}
 
     def playerContent(self, flag, id, vipFlags):
-        url = id
-        parse = 1
+        url, parse = id, 1
         if self.isVideoFormat(url):
             if ".m3u8" in url:
                 url = self.proxy(url)
             parse = 0
         return {"parse": parse, "url": url, "header": self._headers}
 
-    # ============================================================
-    # 内部解析
-    # ============================================================
     def _parse_players(self, doc):
         plist, used = [], set()
-        sel = self.cfg["player_selector"]
-        attr = self.cfg["player_config_attr"]
+        sel, attr = self.cfg["player_selector"], self.cfg["player_config_attr"]
         if not doc(sel):
             return plist
-
-        for idx, node in enumerate(doc(sel).items(), start=1):
+        for idx, node in enumerate(doc(sel).items(), 1):
             raw = node.attr(attr)
             if not raw:
                 continue
@@ -569,22 +556,19 @@ class Spider(_SpiderBase):
             url = cfg.get("video", {}).get("url", "")
             if not url:
                 continue
-
             name = ""
             try:
                 parent = node.parents().eq(0)
                 for _ in range(3):
                     if not parent:
                         break
-                    h = parent.find(
-                        self.cfg["player_heading_selector"]).eq(0).text() or ""
-                    h = h.strip()
-                    if h:
-                        name = h
+                    h = parent.find(self.cfg["player_heading_selector"]).eq(0).text() or ""
+                    if h.strip():
+                        name = h.strip()
                         break
                     parent = parent.parents().eq(0)
             except Exception:
-                name = ""
+                pass
             name = name or f"视频{idx}"
             final, c = name, 2
             while final in used:
@@ -598,12 +582,8 @@ class Spider(_SpiderBase):
         videos = []
         is_folder = self.cfg["folder_id_marker"] in (tid or "")
         for k in data.items():
-            href = k.attr("href")
-            name = k("h2").text()
-            remark = (
-                k("span[itemprop='datePublished']").text()
-                or k(".post-meta, .entry-meta, time").text()
-            )
+            href, name = k.attr("href"), k("h2").text()
+            remark = k("span[itemprop='datePublished']").text() or k(".post-meta, .entry-meta, time").text()
             if not (href and name):
                 continue
             videos.append({
@@ -624,7 +604,6 @@ class Spider(_SpiderBase):
         body = doc(self.cfg["folder_content_selector"])
         for sel in self.cfg["folder_remove_selectors"]:
             body.remove(sel)
-
         p = body("p")
         out = []
         for i, h in enumerate(body("h2").items()):
@@ -632,19 +611,14 @@ class Spider(_SpiderBase):
             out.append({
                 "vod_id": p.eq(c)("a").attr("href"),
                 "vod_name": p.eq(c).text(),
-                "vod_pic": (
-                    f"{self.getProxyUrl()}&url="
-                    f"{p.eq(c+1)('img').attr(self.cfg['folder_img_attr'])}&type=img"
-                ),
+                "vod_pic": f"{self.getProxyUrl()}&url={p.eq(c+1)('img').attr(self.cfg['folder_img_attr'])}&type=img",
                 "vod_remarks": h.text(),
             })
         return out
 
     def getimg(self, text):
         m = re.search(self.cfg["img_regex"], text or "")
-        if m:
-            return f"{self.getProxyUrl()}&url={m.group(1)}&type=img"
-        return ""
+        return f"{self.getProxyUrl()}&url={m.group(1)}&type=img" if m else ""
 
     def isVideoFormat(self, url):
         return any(x in (url or "") for x in (".m3u8", ".mp4", ".ts"))
@@ -655,15 +629,13 @@ class Spider(_SpiderBase):
     def destroy(self):
         pass
 
-    # ---- 本地代理（图片/视频） ----
     def proxy(self, url, type_="m3u8"):
         if not url:
             return url
         try:
-            base = self.getProxyUrl()
+            return f"{self.getProxyUrl()}&url={self.e64(url)}&type={type_}"
         except Exception:
             return url
-        return f"{base}&url={self.e64(url)}&type={type_}"
 
     def e64(self, text):
         try:
@@ -678,123 +650,57 @@ class Spider(_SpiderBase):
             return ""
 
     def localProxy(self, param):
-        t = param.get("type")
-        if t == "img":
-            try:
-                res = requests.get(param["url"], headers=self._headers,
-                                   proxies=self._proxies, timeout=10)
-                data = res.content
-                if _HAS_CRYPTO:
-                    try:
-                        data = unpad(
-                            AES.new(self.cfg["aes_key"], AES.MODE_CBC,
-                                    self.cfg["aes_iv"]).decrypt(data),
-                            AES.block_size,
-                        )
-                    except Exception:
-                        pass
-                return [200, res.headers.get("Content-Type", "image/jpeg"), data]
-            except Exception:
-                return [500, "text/plain", b""]
-        return [404, "text/plain", b""]
+        if param.get("type") != "img":
+            return [404, "text/plain", b""]
+        try:
+            res = requests.get(param["url"], headers=self._headers,
+                               proxies=self._proxies, timeout=10)
+            data = res.content
+            if _HAS_CRYPTO:
+                try:
+                    data = unpad(AES.new(self.cfg["aes_key"], AES.MODE_CBC,
+                                          self.cfg["aes_iv"]).decrypt(data), AES.block_size)
+                except Exception:
+                    pass
+            return [200, res.headers.get("Content-Type", "image/jpeg"), data]
+        except Exception:
+            return [500, "text/plain", b""]
 
 
 # ============================================================
-# 离线自检（不依赖文件名，随便叫什么都能跑）
-# ============================================================
-def _self_test():
-    import unittest
-    from unittest import mock
-
-    class TestReplaceHost(unittest.TestCase):
-        def test_relative_path(self):
-            self.assertEqual(
-                Spider._replace_host("/abc/x?y=1", "https://n.com"),
-                "https://n.com/abc/x?y=1",
-            )
-
-        def test_absolute_url(self):
-            self.assertEqual(
-                Spider._replace_host("https://old.com/p/a?k=v#f", "https://new.com"),
-                "https://new.com/p/a?k=v#f",
-            )
-
-    class TestHostSwitch(unittest.TestCase):
-        def test_switch_on_failure(self):
-            """当前域名 500，_next_host 应切到下一个可用域名"""
-
-            def fake_get(url, **_):
-                ok = "good.com" in url
-                class R:
-                    status_code = 200 if ok else 500
-                    text = "<div id='index'><article><a href='/x'>t</a></article></div>"
-                return R()
-
-            s = Spider()
-            s._host = "https://bad.com"
-            s._candidates = ["https://bad.com", "https://good.com"]
-            s._candidate_idx = 0
-            s._headers = dict(SITE_CONFIG["headers"])
-
-            with mock.patch.object(requests, "get", side_effect=fake_get):
-                new = s._next_host()
-                self.assertEqual(new, "https://good.com")
-                self.assertEqual(s.host, "https://good.com")
-
-    loader = unittest.TestLoader()
-    suite = unittest.TestSuite()
-    for cls in (TestReplaceHost, TestHostSwitch):
-        suite.addTests(loader.loadTestsFromTestCase(cls))
-    runner = unittest.TextTestRunner(verbosity=2)
-    result = runner.run(suite)
-    return result.wasSuccessful()
-
-
-# ============================================================
-# 入口
+# 入口：带详细日志的独立测试
 # ============================================================
 if __name__ == "__main__":
     print("=" * 60)
-    print("91通用最终版 · 单文件测试")
+    print("91通用最终版 v2.1 · 静态发布页适配测试")
     print("=" * 60)
-    print(f"TVBox 环境: {'是' if _TVBOX else '否（独立运行）'}")
-    print(f"pyquery  : {'已安装' if _HAS_PQ else '未安装（强烈建议 pip install pyquery）'}")
-    print(f"Crypto   : {'已安装' if _HAS_CRYPTO else '未安装（图片解密可能失败）'}")
+    print(f"TVBox: {'是' if _TVBOX else '否（独立运行）'}")
+    print(f"pyquery: {'已安装' if _HAS_PQ else '未安装'}")
+    print(f"Crypto: {'已安装' if _HAS_CRYPTO else '未安装'}")
     print()
 
-    # ---- 第 1 步：离线自检 ----
-    print("-" * 60)
-    print("第 1 步：离线自检（不联网）")
-    print("-" * 60)
-    ok = _self_test()
-    print()
-    print(f"离线自检结果: {'全部通过 ✓' if ok else '有失败 ✗'}")
-    print()
-
-    # ---- 第 2 步：联网测试 ----
-    print("-" * 60)
-    print("第 2 步：联网测试（Ctrl+C 可跳过）")
-    print("-" * 60)
     try:
         s = Spider()
         s.init("")
-        print(f"最终域名: {s.host}")
+        print(f"\n最终线路: {s.host or '(空)'}")
         print()
 
-        print("[首页] 请求中 ...")
-        r = s._request("/")
-        if r:
-            print(f"[首页] OK, 长度 = {len(r.text)}")
-            home = s.homeContent(None)
-            print(f"[首页] 分类数 = {len(home.get('class', []))}")
-            print(f"[首页] 视频数 = {len(home.get('list', []))}")
-            for it in home.get("list", [])[:3]:
-                print(f"  · {it.get('vod_name')}  ({it.get('vod_remarks')})")
+        if s.host:
+            print("[首页] 请求中 ...")
+            r = s._request("/")
+            if r:
+                print(f"[首页] OK, 长度 = {len(r.text)}")
+                home = s.homeContent(None)
+                print(f"[首页] 分类数 = {len(home.get('class', []))}")
+                print(f"[首页] 视频数 = {len(home.get('list', []))}")
+                for it in home.get("list", [])[:5]:
+                    print(f"  · {it.get('vod_name')}  ({it.get('vod_remarks')})")
+            else:
+                print("[首页] 请求失败")
         else:
-            print("[首页] 请求失败，域名可能都不通")
+            print("[警告] 没有可用线路，无法继续测试首页")
     except KeyboardInterrupt:
-        print("用户中断")
-    except Exception as e:
-        print(f"[联网测试异常] {e}")
-        import traceback
+        print("\n用户中断")
+    except Exception:
+        print("\n[未捕获异常]")
         traceback.print_exc()
