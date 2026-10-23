@@ -89,7 +89,7 @@ SITE_CONFIG = {
         "https://mrdsv3.com/",
         "https://mrdsv6.com/",
     ],
-    "publish_url": "https://51bla18.com/",
+    "publish_url": "https://mrdsv3.com/",
     "publish_decode": "plain",
 
     "host_check_selector": "#index article a",
