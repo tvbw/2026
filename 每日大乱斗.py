@@ -34,8 +34,6 @@ SITE_CONFIG = {
     
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
-        "https://cell.ipwlcnmg.cc/",
-        "https://chair.ipwlcnmg.cc/",
      # "https://able.htinjysz.cc/",
     ],
 
