@@ -25,7 +25,7 @@ SITE_CONFIG = {
     "play_from": "51通用最终版",
     "style": {"type": "rect", "ratio": 1.33},
     # ===== 保持 102 原配置（已验证可用） =====
-    "publish_url": "https://adopt.bkyevbef.cc/",
+    "publish_url": "https://mrdsv1.com",
 
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "js_base64",
@@ -34,8 +34,8 @@ SITE_CONFIG = {
 
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
-        "https://anymore.bkyevbef.cc/",
-        "https://h4j2z6.bkyevbef.cc/",
+        "https://mrdsv2.com/",
+        "https://mrdsv3.com/",
         "https://absorb.bkyevbef.cc/",
     ],
 
