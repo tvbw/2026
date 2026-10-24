@@ -34,9 +34,10 @@ SITE_CONFIG = {
 
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
+        "https://www.ovbfagcl.cc/",
+        "https://beat.kuusvgto.cc/",
         "https://mrdsv2.com/",
         "https://mrdsv3.com/",
-        "https://absorb.bkyevbef.cc/",
     ],
 
     "list_selector": "#index article a, #archive article a",
