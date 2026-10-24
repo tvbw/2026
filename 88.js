@@ -152,8 +152,8 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
     },
     {
-      "key": "51吃瓜1",
-      "name": "❤️51吃瓜1｜🔞",
+      "key": "51吃瓜2",
+      "name": "❤️51吃瓜2｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
