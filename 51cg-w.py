@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ============================================================
-# 51 模板 · 多域名跳转 + 易维护种子 改造版
+# 51 模板 · 多域名跳转 + 易维护种子 + 兜底 改造版
 # 改动点：
 #   1. 新增 MultiDomainResolver：BFS 多域名探测
 #      - seed_hosts      用户手动维护的长期固定域名（最优先）
@@ -66,7 +66,7 @@ SITE_CONFIG = {
         "https://black.hhhepogu.cc/",
         # "https://able.htinjysz.cc/",
     ],
-
+    
     # ④ 缓存
     "host_cache_key": "51_host",
     "host_cache_ttl": 6 * 3600,          # 秒；0 表示永不过期
