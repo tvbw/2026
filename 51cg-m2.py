@@ -57,7 +57,7 @@ SITE_CONFIG = {
     "publish_urls": [
         "https://51cgf18.com/",
     ],
-    "publish_url":  "https://51bla20.com/",   # 兼容原字段名
+    "publish_url":  "https://51cgf20.com/",   # 兼容原字段名
 
     # ③ 兜底域名（放 BFS 最后，做最终保底）
     "fallback_hosts": [
