@@ -69,8 +69,9 @@ class Spider(BaseSpider):
     HOSTS = ('https://hscangku.com',)
 
     DEFAULT_CATEGORIES = [
-        {'type_id': '15', 'type_name': '国产视频'},
-        {'type_id': '22', 'type_name': '动漫剧情'},
+        {'type_id':'15','type_name':'国产视频'},{'type_id':'8','type_name':'无码中文字幕'},{'type_id':'26','type_name':'骑兵破解'},
+        {'type_id':'10','type_name':'日本无码'},{'type_id':'7','type_name':'日本有码'},{'type_id':'1','type_name':'日韩AV'},
+        {'type_id':'9','type_name':'有码中文字幕'},{'type_id':'21','type_name':'欧美高清'},{'type_id':'22','type_name':'动漫剧情'}
     ]
 
     def __init__(self):
