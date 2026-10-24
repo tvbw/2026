@@ -21,7 +21,7 @@ class Spider(Spider):
         return "91JAV"
     def init(self, extend=""):
         self.name = "91JAV"
-        self.host = "https://cash.racnwryf.cc/"
+        self.host = "https://mrdsv1.com"
         self.backup_hosts = ["https://ago.bkyevbef.cc/", "https://cash.racnwryf.cc/"]
         self.shield = []
         self.readmes = ["https://gitlab.com/91JAV2/dz/-/raw/main/README.md", "https://gitlab.com/91jav1/dz/-/raw/main/README.md"]
