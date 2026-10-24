@@ -46,9 +46,7 @@ class Spider(BaseSpider):
     session = requests.Session()
     HOSTS = [
         'https://hscangku.com',
-        'http://hsck.net',
-        'https://456260.xyz',
-        'http://6590ck.cc',
+        'https://222.ahyck.cc/'
     ]
     DEFAULT_CATEGORIES = [
         {'type_id':'1','type_name':'日韩AV'},{'type_id':'2','type_name':'国产系列'},
