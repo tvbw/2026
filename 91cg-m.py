@@ -51,21 +51,19 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- ① 种子域名（长期固定主域名，稳定性高的排前）----
     SEED_HOSTS = [
-        "https://mrdld2.com/",
-        "https://mrdld1.com/",
-        "https://mrdld3.com/",
+        "https://91cgb20.com/",
+        "https://91cgb18.com/",
+        "https://91cgb19.com/",
     ]
 
     # ---- ② 发布页（可选；每日系列一般没有，留空即可）----
-    PUBLISH_URLS = []
-    PUBLISH_URL   = ""
+    PUBLISH_URL = "https://91cgb18.com/"
 
     # ---- ③ 兜底域名（★ 必填：填当前活跃的二级域名）----
     # 用户手动填入 1-3 个当前可访问的二级域名，提高稳定性
     # 一旦探测全部失败（含种子/发布页/缓存），按顺序尝试
     FALLBACK_HOSTS = [
-           "https://athlete.zvxzbbwf.cc/",
-           "https://auto.zvxzbbwf.cc/",
+        "https://add.flfwplxz.cc/",
     ]
 
     # ---- 兼容旧字段（单值兜底，一般不用）----
