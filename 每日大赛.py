@@ -34,6 +34,7 @@ SITE_CONFIG = {
     
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
+        "https://www.ovbfagcl.cc/",
         "https://mrdsy2.com/",
         "https://mrdsy3.com/",
         "https://mrdsy4.com/",
