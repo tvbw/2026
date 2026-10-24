@@ -134,7 +134,7 @@ class Spider(BaseSpider):
                 if h not in seen:
                     seen.add(h)
                     queue.append(h)
-        return cached or 'https://www.ajuokwof.cc/'
+        return cached or 'https://cell.hxoqyvfuy.cc/'
 
     def homeContent(self, filter):
         try:
