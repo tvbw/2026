@@ -26,7 +26,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-
       "key": "香蕉9合1最终优化版目录版",
       "name": "❤️香蕉9合1最终优化目录版【🔞】",
       "type": 3,
@@ -38,26 +37,59 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
     },
     {
-      "key": "黄色仓库动态版",
-      "name": "黄色仓库动态版｜🔞",
+      "key": "91JAV最终版",
+      "name": "❤️91JAV最终版",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hsck-Deep.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91av.py"
     },
     {
-      "key": "黄色仓库动态版1",
-      "name": "黄仓动态版1｜🔞",
+      "key": "hanime1",
+      "name": "❤️hanime动画",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hsck.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hanime.py"
+    },
+    {
+      "key": "连播18AV",
+      "name": "❤️连播18AV",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播18AV.py"
+    },
+    {
+      "key": "连播草榴社区",
+      "name": "❤️连播草榴社区",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播草榴社区.py"
+    },
+    {
+      "key": "连播玩物社区",
+      "name": "❤️连播玩物社区",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播玩物社区.py"
     },
     {
       "key": "18av",
@@ -87,8 +119,19 @@
       "changeable": 1
     },
     {
-      "key": "51吃瓜1",
-      "name": "4❤️51吃瓜｜🔞",
+      "key": "91吃瓜",
+      "name": "❤️91吃瓜",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
+    },
+    {
+      "key": "51吃瓜",
+      "name": "❤️51吃瓜｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -99,7 +142,7 @@
     },
     {
       "key": "51大赛",
-      "name": "4❤️51大赛｜🔞",
+      "name": "❤️51大赛｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -109,30 +152,8 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py"
     },
     {
-      "key": "51爆料",
-      "name": "4❤️51爆料｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
-    },
-    {
-      "key": "香蕉9合1最终优化版",
-      "name": "❤️香蕉9合1最终优化版全目录【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
-    },
-    {
       "key": "mrdld",
-      "name": "4❤️每日大乱斗🔞",
+      "name": "❤️每日大乱斗🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -143,7 +164,7 @@
     },
     {
       "key": "每日大赛",
-      "name": "4❤️每日大赛🔞",
+      "name": "❤️每日大赛🔞",
       "type": 3,
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/每日大赛.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大赛.py",
@@ -156,7 +177,6 @@
       "changeable": 1
     },
     {
-
       "key": "csp_xbpq_禁片天堂",
       "name": "❤️禁片天堂【🔞】",
       "type": 3,
@@ -173,7 +193,6 @@
       }
     },
     {
-
       "key": "py_4K_fullhd-fullhd2",
       "name": "❤️FHD书生中国【🔞】",
       "type": 3,
@@ -205,20 +224,30 @@
       }
     },
     {
-      "key": "csp_xbpq_StripChat",
-      "name": "❤️StripChat直播2【🔞】",
+      "key": "Cam4直播",
+      "name": "5🍓Cam4直播｜🔞",
       "type": 3,
       "playerType": 2,
-      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
-      "api": "csp_XBPQ",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/stripchatgirls.json",
       "style": {
         "type": "rect",
-        "ratio": 1.65
-      }
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Cam4.py"
+    },
+    {
+      "key": "ss直播3",
+      "name": "❤️国货【🔞直播】-3",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
     },
     {
       "key": "爆色",
@@ -266,6 +295,17 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
+    },
+    {
+      "key": "香蕉9合1最终优化版",
+      "name": "❤️香蕉9合1最终优化版全目录【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
     },
     {
       "key": "香蕉1区",
@@ -357,58 +397,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
-    },
-    {
-      "key": "香蕉7区",
-      "name": "🔞️香蕉7区【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj107.py",
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj107.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "Cam4直播",
-      "name": "5🍓Cam4直播｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Cam4直播TG群：@tvshare23.py"
-    },
-    {
-      "key": "xn69",
-      "name": "5🍓xn69国外聚合直播｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/xn69.py"
-    },
-    {
-      "key": "ss直播3",
-      "name": "❤️国货【🔞直播】-3",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
     },
     {
       "key": "missav666",
@@ -760,6 +748,17 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/%E9%87%87%E8%8A%B1%E5%A4%A7%E7%9B%97.py",
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/%E9%87%87%E8%8A%B1%E5%A4%A7%E7%9B%97.py"
+    },
+    {
+      "key": "xn69",
+      "name": "5🍓xn69｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/xn69.py"
     },
     {
       "key": "色播",
