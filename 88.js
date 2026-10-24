@@ -16,7 +16,6 @@
       "changeable": 1
     },
     {
-
       "key": "每日大乱斗2",
       "name": "❤️每日大乱斗2🔞",
       "type": 3,
@@ -30,7 +29,7 @@
       "changeable": 1
     },
     {
-❇️      "key": "每日大乱斗3",
+      "key": "每日大乱斗3",
       "name": "❤️每日大乱斗3🔞",
       "type": 3,
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld1.py",
