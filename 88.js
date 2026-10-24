@@ -6,7 +6,7 @@
       "key": "每日大赛标准模板1",
       "name": "❤️每日大赛【每日模板】",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds1.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds-m.py",
       "searchable": 1,
       "quickSearch": 1,
       "style": {
