@@ -25,7 +25,7 @@ SITE_CONFIG = {
     "play_from": "51通用最终版",
     "style": {"type": "rect", "ratio": 1.33},
     # ===== 保持 102 原配置（已验证可用） =====
-    "publish_url": "https://mrdlv2.com/",
+    "publish_url": "https://mrdsy1.com/",
     
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "js_base64",
@@ -34,8 +34,11 @@ SITE_CONFIG = {
     
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
-        "https://mrdlv3.com/",
-        "https://mrdlv1.com/",
+        "https://mrdsy2.com/",
+        "https://mrdsy3.com/",
+        "https://mrdsy4.com/",
+        "https://mrdsy5.com/",
+        "https://mrdsy7.com/",
      # "https://able.htinjysz.cc/",
     ],
 
