@@ -166,8 +166,7 @@
       "key": "每日大赛",
       "name": "❤️每日大赛🔞",
       "type": 3,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/每日大赛.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大赛.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds.py",
       "searchable": 1,
       "quickSearch": 1,
       "style": {
