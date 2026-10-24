@@ -4,7 +4,7 @@
   "sites": [
     {
       "key": "每日大赛1",
-      "name": "❤️每日大赛1🔞",
+      "name": "❤️每日大赛标准模板1🔞",
       "type": 3,
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds1.py",
       "searchable": 1,
@@ -17,7 +17,7 @@
     },
     {
       "key": "每日大乱斗2",
-      "name": "❤️每日大乱斗2🔞",
+      "name": "❤️每日大乱斗标准模板2🔞",
       "type": 3,
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld11.py",
       "searchable": 1,
@@ -29,17 +29,26 @@
       "changeable": 1
     },
     {
-      "key": "每日大乱斗3",
-      "name": "❤️每日大乱斗3🔞",
+      "key": "每日标准模板",
+      "name": "❤️91吃瓜1【模板】",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld1.py",
-      "searchable": 1,
-      "quickSearch": 1,
+      "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "changeable": 1
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg1.py"
+    },
+    {
+      "key": "每日标准模板2",
+      "name": "❤️51吃瓜1【模板】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg-m2.py"
     },
     {
       "key": "正宗聚合",
@@ -50,7 +59,6 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
     },
     {
