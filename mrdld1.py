@@ -51,8 +51,8 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 种子域名（长期固定域名，稳定性高的排前）----
     SEED_HOSTS = [
-        "https://mrdld1.com/",
         "https://mrdld2.com/",
+        "https://mrdld1.com/",
         "https://mrdld3.com/",
     ]
     FALLBACK_HOST  = None            # 设为 None 表示探测失败不兜底
