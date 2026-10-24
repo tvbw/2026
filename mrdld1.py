@@ -68,7 +68,7 @@ class SiteConfig:
     PROBE_MIN_ARTICLE    = 3
 
     # ---- 站点特征 ----
-    SITE_KEYWORDS    = ["每日大赛"]
+    SITE_KEYWORDS    = ["每日大乱斗"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article"]
     PUB_PAGE_MARKERS = ["发布页", "最新地址", "备用地址", "永久地址", "网址发布"]
 
@@ -98,7 +98,7 @@ class SiteConfig:
     SEL_TITLE        = ".post-title, h1"
 
     LINK_KEYWORDS    = ("点击观看", "观看", "播放", "视频", "第一弹")
-    DEFAULT_CATEGORY = {"type_name": "每日大赛", "type_id": "/category/mrds/"}
+    DEFAULT_CATEGORY = {"type_name": "每日大乱斗", "type_id": "/category/mrds/"}
 
     # ---- 图片 AES 解密候选 (key, iv)；iv=None 表示 ECB ----
     IMG_AES_KEYS = [
@@ -609,7 +609,7 @@ class BaseMultiDomainSpider(BaseSpider):
         if tags:
             summary = (data(self.CONFIG.SEL_SUMMARY).text() or "")[:150]
             return " ".join(tags) + "\n\n" + summary
-        return data(self.CONFIG.SEL_TITLE).text() or "每日大赛"
+        return data(self.CONFIG.SEL_TITLE).text() or "每日大乱斗"
 
     # ---- 图片 ----
     def _parse_pic(self, k):
@@ -741,7 +741,7 @@ class Spider(BaseMultiDomainSpider):
     CONFIG = SiteConfig
 
     def getName(self):
-        return "🌈 每日大赛|终极完美版"
+        return "❇️ 每日大乱斗终极完美版"
 
 
 # ==================================================================
