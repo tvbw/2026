@@ -12,7 +12,7 @@ try:
 except ImportError:
     class BaseSpider: pass
 
-# ===== 图片代理（原样） =====
+# ===== 图片代理（不变） =====
 _proxy_port = 0; _proxy_started = False
 _proxy_session = requests.Session()
 _proxy_session.verify = False
@@ -21,15 +21,13 @@ class _ProxyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             real_url = unquote(self.path[1:])
-            if not real_url or not real_url.startswith('http'):
-                self.send_response(404); self.end_headers(); return
+            if not real_url or not real_url.startswith('http'): self.send_response(404); self.end_headers(); return
             r = _proxy_session.get(real_url, headers={'User-Agent':'Mozilla/5.0','Referer':'http://hsck.tv/'}, timeout=20, verify=False)
             ct = r.headers.get('Content-Type','image/jpeg')
             self.send_response(200); self.send_header('Content-Type',ct)
             self.send_header('Content-Length',len(r.content)); self.send_header('Access-Control-Allow-Origin','*')
             self.end_headers(); self.wfile.write(r.content)
-        except:
-            self.send_response(404); self.end_headers()
+        except: self.send_response(404); self.end_headers()
     def log_message(self, format, *args): pass
 def _start_proxy():
     global _proxy_port, _proxy_started
@@ -41,7 +39,7 @@ def _start_proxy():
     threading.Thread(target=server.serve_forever, daemon=True).start()
     _proxy_started = True
 
-
+# ===== Spider =====
 class Spider(BaseSpider):
     session = requests.Session()
     HOSTS = [
@@ -61,12 +59,6 @@ class Spider(BaseSpider):
         super().__init__()
         self._debug = True
         self._categories_cache = list(self.DEFAULT_CATEGORIES)
-        # 【修复1】先给临时 host 占位，再设置请求头，最后探测
-        # 原来直接探测时 session.headers 是空的，探测请求用的是 python-requests 默认 UA
-        # 很多站会对裸 UA 返回壳站页或跳转页，导致选错 host —— 这就是"时好时坏"的根源之一
-        self.host = self.HOSTS[0]
-        self.session.verify = False
-        self.session.headers.update(self._get_headers())
         self.host = self._detect_working_host()
         self._log(f'当前域名: {self.host}')
 
@@ -77,12 +69,14 @@ class Spider(BaseSpider):
         """探测可用域名，优先找能正常访问内页（不跨域301）的站点"""
         for host in self.HOSTS:
             try:
-                # 此时 session.headers 已带 UA，探测请求不再被识别为爬虫
+                # 先测首页
                 r = self.session.get(host, timeout=8, verify=False, allow_redirects=True)
                 if r.status_code == 200 and len(r.text) > 2000:
                     final_host = r.url.rstrip('/')
+                    # 再测一个内页，看是否会被重定向到首页（壳站特征）
                     test_url = f'{final_host}/vodtype/1-1.html'
                     r2 = self.session.get(test_url, timeout=8, verify=False, allow_redirects=True)
+                    # 如果内页最终URL变成纯域名（路径丢失），说明是壳站，跳过
                     if r2.url.rstrip('/').endswith(('.com', '.xyz', '.net', '.us', '.cc')) and urlparse(r2.url).path in ('', '/'):
                         self._log(f'探测到壳站(内页301丢路径): {host} -> {r2.url}')
                         continue
@@ -115,13 +109,11 @@ class Spider(BaseSpider):
             self._log('首页加载失败或内容太短，使用默认分类')
 
     def _get_headers(self, referer=None):
-        # 【修复1配套】加 getattr 保护，避免 __init__ 探测阶段 self.host 还没赋值时报 AttributeError
-        base_host = getattr(self, 'host', '') or ''
         return {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            'Referer': referer or (base_host + '/' if base_host else 'https://www.baidu.com/')
+            'Referer': referer or (self.host + '/')
         }
 
     def _proxy_url(self, url):
@@ -129,69 +121,48 @@ class Spider(BaseSpider):
         if url.startswith('http://127.0.0.1'): return url
         return f'http://127.0.0.1:{_proxy_port}/{quote(url, safe="")}'
 
-    # ===== 【修复2/3】跳转时验证新 host，修正后仍跳首页则放弃，不污染 self.host =====
     def _fetch(self, url, referer=None, retries=3):
         if not url.startswith('http'): url = urljoin(self.host, url)
         for attempt in range(retries):
             try:
                 headers = self._get_headers(referer or self.host + '/')
                 r = self.session.get(url, headers=headers, timeout=15, verify=False)
+                # 【修复】检测是否被重定向到不同域名（壳站跳转）
                 final_url = r.url
                 parsed_final = urlparse(final_url)
                 parsed_req = urlparse(url)
-
                 if parsed_final.netloc != parsed_req.netloc:
+                    # 域名变了，更新host
                     new_host = f'{parsed_final.scheme}://{parsed_final.netloc}'
                     self._log(f'检测到域名跳转: {parsed_req.netloc} -> {parsed_final.netloc}')
-
+                    self.host = new_host
+                    # 如果路径被丢了（变成首页），重新请求一次正确的内页
                     if parsed_final.path in ('', '/'):
-                        # 路径被丢，修正后重试
                         corrected_url = urljoin(new_host, parsed_req.path + ('?' + parsed_req.query if parsed_req.query else ''))
                         self._log(f'路径丢失，修正URL: {corrected_url}')
                         r = self.session.get(corrected_url, headers=self._get_headers(referer or new_host + '/'), timeout=15, verify=False)
                         final_url = r.url
-                        # 【关键修复】修正后仍跳首页 -> 新域名是壳站，放弃本次结果，不切换 self.host
-                        if urlparse(r.url).path in ('', '/'):
-                            self._log(f'修正后仍跳首页，疑似壳站: {r.url}，放弃本次结果')
-                            r = None
-                        else:
-                            # 修正成功才切换 host
-                            self.host = new_host
-                            self._log(f'域名切换确认: {parsed_req.netloc} -> {new_host}')
-                    else:
-                        # 路径保留，说明新域名可信，切换 host
-                        self.host = new_host
-                        self._log(f'域名切换确认（路径保留）: {parsed_req.netloc} -> {new_host}')
-
-                if r is not None and r.status_code == 200 and len(r.text) > 1000:
+                if r.status_code == 200 and len(r.text) > 1000:
                     r.encoding = 'utf-8'
                     self._log(f'请求成功: {url} -> {final_url} (长度:{len(r.text)})')
                     return r.text
                 else:
-                    self._log(f'请求内容过短: {url} 长度:{len(r.text) if r is not None and r.text else 0}')
+                    self._log(f'请求内容过短: {url} 长度:{len(r.text) if r.text else 0}')
             except Exception as e:
                 self._log(f'请求失败 [{attempt+1}]: {url} - {e}')
             time.sleep(1)
-
         # 备用域名切换
-        req_path = urlparse(url).path
-        req_query = ('?' + urlparse(url).query) if urlparse(url).query else ''
         for h in self.HOSTS:
             if h == self.host: continue
             try:
-                new_url = h + req_path + req_query
-                r = self.session.get(new_url, headers=self._get_headers(referer or h + '/'), timeout=15)
-                # 【修复】备用域名也验证：请求内页却返回首页，说明是壳站，跳过
-                if req_path not in ('', '/') and urlparse(r.url).path in ('', '/'):
-                    self._log(f'备用域名 {h} 疑似壳站，跳过')
-                    continue
+                new_url = urljoin(h, urlparse(url).path + ('?'+urlparse(url).query if urlparse(url).query else ''))
+                r = self.session.get(new_url, headers=self._get_headers(referer or h+'/'), timeout=15)
                 if r.status_code == 200 and len(r.text) > 1000:
                     self.host = h
                     r.encoding = 'utf-8'
                     self._log(f'切换域名成功: {h} -> 长度:{len(r.text)}')
                     return r.text
-            except Exception:
-                pass
+            except: pass
         return ''
 
     @staticmethod
@@ -199,7 +170,7 @@ class Spider(BaseSpider):
         try: return base64.b64decode(s).decode('utf-8')
         except: return s
 
-    # ===== 分类（原样） =====
+    # ===== 分类 =====
     def _update_categories(self, text):
         seen_ids = {c['type_id'] for c in self._categories_cache}
         seen_names = {c['type_name'] for c in self._categories_cache}
@@ -219,7 +190,7 @@ class Spider(BaseSpider):
             if cat['type_id'] == str(tid): return cat['type_name']
         return f'分类_{tid}'
 
-    # ===== 【修复4】列表解析兼容绝对 URL =====
+    # ===== 列表解析（修复：过滤广告 pa-thumb） =====
     def _parse_list(self, html):
         items, seen_vids = [], set()
         cards = re.findall(r'<li[^>]*>(.*?)</li>', html, re.S)
@@ -230,21 +201,19 @@ class Spider(BaseSpider):
             if not a_match:
                 continue
             href = a_match.group(1).strip()
-
-            # 【修复4】兼容列表里出现绝对 URL 的情况
-            check_path = urlparse(href).path if href.startswith('http') else href.split('?')[0]
-            if not (check_path.startswith('/v5/') or check_path.startswith('/vodplay/')):
+            # 【修复】过滤广告外链（只保留站内 /v5/ 或 /vodplay/）
+            if not (href.startswith('/v5/') or href.startswith('/vodplay/')):
                 continue
+            # 【修复】过滤带 pa-thumb 的广告卡片（双重保险）
             if 'pa-thumb' in card:
                 continue
-            vid_match = re.search(r'/(?:v5|vodplay)/(\d+)', check_path)
+            vid_match = re.search(r'/(?:v5|vodplay)/(\d+)', href)
             if not vid_match:
                 continue
             vid = vid_match.group(1)
             if vid in seen_vids:
                 continue
             seen_vids.add(vid)
-
             title = ''
             h4 = re.search(r'<h4[^>]*class="title"[^>]*>\s*<a[^>]*>(.*?)</a>', card, re.S)
             if h4:
@@ -259,7 +228,6 @@ class Spider(BaseSpider):
                         title = re.sub(r'<[^>]+>', '', inner.group(1)).strip()
             if not title:
                 title = vid
-
             pic = ''
             img = re.search(r'data-original="([^"]+)"', card)
             if img:
@@ -281,7 +249,7 @@ class Spider(BaseSpider):
         html = self._fetch(url, referer=f'{self.host}/vodtype/{tid}-1.html')
         return self._parse_list(html) if html else []
 
-    # ===== 首页/分类（原样） =====
+    # ===== 首页/分类 =====
     def homeContent(self, filter):
         text = self._fetch(self.host + '/')
         if text and len(text) > 2000:
@@ -300,7 +268,7 @@ class Spider(BaseSpider):
         items = self._get_list(tid, page)
         return {'list': items, 'page': page, 'pagecount': page + 1, 'limit': len(items), 'total': page + 1}
 
-    # ===== 详情（原样） =====
+    # ===== 详情 =====
     def detailContent(self, ids):
         vid = str(ids[0] if isinstance(ids, list) else ids)
         detail = self._fetch_detail(vid)
@@ -382,7 +350,7 @@ class Spider(BaseSpider):
             'vod_content': title,
         }
 
-    # ===== 播放器（只改 1 处：id 判断兼容任意域名） =====
+    # ===== 播放器 =====
     def playerContent(self, flag, id, vipFlags=None):
         self._log(f'playerContent: id={id[:120] if len(id) > 120 else id}')
         if '.m3u8' in id or '.mp4' in id:
@@ -390,8 +358,7 @@ class Spider(BaseSpider):
 
         detail_url = id
         html = ''
-        # 【修复】原为 id.startswith(self.host)，host 切换后旧 URL 判不中；改为任意 http URL 都处理
-        if id.startswith('http'):
+        if id.startswith(self.host):
             html = self._fetch(id, referer=self.host)
         elif 'aid=' not in id:
             vid_match = re.search(r'/(\d+)-1-1\.html', id)
@@ -500,7 +467,7 @@ class Spider(BaseSpider):
             except: pass
         return None
 
-    # ===== 搜索（原样） =====
+    # ===== 搜索 =====
     def searchContent(self, key, quick, pg='1'):
         page = int(pg) if pg else 1
         url = f'{self.host}/vodsearch/{quote(key)}-------------{page}---.html'
