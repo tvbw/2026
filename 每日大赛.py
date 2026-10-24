@@ -25,19 +25,18 @@ SITE_CONFIG = {
     "play_from": "51通用最终版",
     "style": {"type": "rect", "ratio": 1.33},
     # ===== 保持 102 原配置（已验证可用） =====
-    "publish_url": "https://mrdsv1.com",
-
+    "publish_url": "https://mrdlv2.com/",
+    
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "js_base64",
     # 判断“这个域名是不是目标站”的特征选择器
     "host_check_selector": "#index article a",
-
+    
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
-        "https://www.ovbfagcl.cc/",
-        "https://beat.kuusvgto.cc/",
-        "https://mrdsv2.com/",
-        "https://mrdsv3.com/",
+        "https://mrdlv3.com/",
+        "https://mrdlv1.com/",
+     # "https://able.htinjysz.cc/",
     ],
 
     "list_selector": "#index article a, #archive article a",
