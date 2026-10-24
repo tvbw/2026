@@ -16,18 +16,29 @@
       "changeable": 1
     },
     {
-      "key": "每日标准模板3",
-      "name": "❤️91吃瓜1【每日模板】",
+      "key": "每日标准模板2",
+      "name": "❤️91吃瓜【每日模板】",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg1.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg-m.py"
     },
     {
-      "key": "标准模板2",
+      "key": "每日标准模板3",
+      "name": "❤️每日大乱头【每日模板】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld-m.py"
+    },
+    {
+      "key": "51模板4",
       "name": "❤️每日大乱斗【51模板】",
       "type": 3,
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld11.py",
@@ -40,15 +51,26 @@
       "changeable": 1
     },
     {
-      "key": "每日标准模板4",
-      "name": "❤️51吃瓜1【51模板】",
+      "key": "51吃瓜每日标准模板5",
+      "name": "❤️51吃瓜【每日模板】",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg-m2.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg-m.py"
+    },
+    {
+      "key": "51模板5",
+      "name": "❤️51吃瓜【51模板】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg-w.py"
     },
     {
       "key": "正宗聚合",
