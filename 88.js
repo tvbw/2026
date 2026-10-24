@@ -3,8 +3,8 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "每日大赛1",
-      "name": "❤️每日大赛标准模板1🔞",
+      "key": "每日大赛标准模板1",
+      "name": "❤️每日大赛1🔞",
       "type": 3,
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds1.py",
       "searchable": 1,
@@ -16,8 +16,8 @@
       "changeable": 1
     },
     {
-      "key": "每日大乱斗2",
-      "name": "❤️每日大乱斗标准模板2🔞",
+      "key": "标准模板2",
+      "name": "❤️每日大乱斗1🔞",
       "type": 3,
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld11.py",
       "searchable": 1,
@@ -29,7 +29,7 @@
       "changeable": 1
     },
     {
-      "key": "每日标准模板",
+      "key": "每日标准模板3",
       "name": "❤️91吃瓜1【模板】",
       "type": 3,
       "playerType": 2,
@@ -40,7 +40,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg1.py"
     },
     {
-      "key": "每日标准模板2",
+      "key": "每日标准模板4",
       "name": "❤️51吃瓜1【模板】",
       "type": 3,
       "playerType": 2,
