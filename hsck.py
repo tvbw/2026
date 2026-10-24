@@ -12,219 +12,278 @@ try:
 except ImportError:
     class BaseSpider: pass
 
-# ===== 图片代理（不变） =====
-_proxy_port = 0; _proxy_started = False
+# ===== 可选依赖：curl_cffi（有则用，无则降级 requests）=====
+try:
+    from curl_cffi import requests as cffi_requests
+    _HAS_CFFI = True
+except Exception:
+    cffi_requests = None
+    _HAS_CFFI = False
+
+# ===== 图片代理 =====
+_proxy_port = 0
+_proxy_started = False
 _proxy_session = requests.Session()
 _proxy_session.verify = False
-class _ThreadedHTTPServer(ThreadingMixIn, HTTPServer): daemon_threads = True
+
+class _ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    daemon_threads = True
+
 class _ProxyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             real_url = unquote(self.path[1:])
-            if not real_url or not real_url.startswith('http'): self.send_response(404); self.end_headers(); return
-            r = _proxy_session.get(real_url, headers={'User-Agent':'Mozilla/5.0','Referer':'http://hsck.tv/'}, timeout=20, verify=False)
-            ct = r.headers.get('Content-Type','image/jpeg')
-            self.send_response(200); self.send_header('Content-Type',ct)
-            self.send_header('Content-Length',len(r.content)); self.send_header('Access-Control-Allow-Origin','*')
-            self.end_headers(); self.wfile.write(r.content)
-        except: self.send_response(404); self.end_headers()
-    def log_message(self, format, *args): pass
+            if not real_url or not real_url.startswith('http'):
+                self.send_response(404); self.end_headers(); return
+            r = _proxy_session.get(real_url, headers={'User-Agent': 'Mozilla/5.0', 'Referer': 'http://hsck.tv/'}, timeout=20, verify=False)
+            ct = r.headers.get('Content-Type', 'image/jpeg')
+            self.send_response(200)
+            self.send_header('Content-Type', ct)
+            self.send_header('Content-Length', len(r.content))
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(r.content)
+        except Exception:
+            self.send_response(404); self.end_headers()
+
+    def log_message(self, format, *args):
+        pass
+
 def _start_proxy():
     global _proxy_port, _proxy_started
-    if _proxy_started: return
+    if _proxy_started:
+        return
     import socket
     sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sk.bind(('127.0.0.1',0)); _proxy_port = sk.getsockname()[1]; sk.close()
-    server = _ThreadedHTTPServer(('127.0.0.1',_proxy_port), _ProxyHandler)
+    sk.bind(('127.0.0.1', 0))
+    _proxy_port = sk.getsockname()[1]
+    sk.close()
+    server = _ThreadedHTTPServer(('127.0.0.1', _proxy_port), _ProxyHandler)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     _proxy_started = True
+
 
 # ===== Spider =====
 class Spider(BaseSpider):
     session = requests.Session()
-    HOSTS = 'https://hscangku.com',
+    HOSTS = ('https://hscangku.com',)
 
     DEFAULT_CATEGORIES = [
-        {'type_id':'15','type_name':'国产视频'},{'type_id':'8','type_name':'无码中文字幕'},{'type_id':'26','type_name':'骑兵破解'},
-        {'type_id':'10','type_name':'日本无码'},{'type_id':'7','type_name':'日本有码'},{'type_id':'1','type_name':'日韩AV'},
-        {'type_id':'9','type_name':'有码中文字幕'},{'type_id':'21','type_name':'欧美高清'},{'type_id':'22','type_name':'动漫剧情'}
+        {'type_id': '15', 'type_name': '国产视频'},
+        {'type_id': '22', 'type_name': '动漫剧情'},
     ]
 
     def __init__(self):
-        super().__init__()
+        try:
+            super().__init__()
+        except Exception:
+            pass
         self._debug = True
         self._categories_cache = list(self.DEFAULT_CATEGORIES)
-        # 先给一个安全初值，避免探测阶段 _get_headers 访问 self.host 报错
         self.host = self.HOSTS[0]
-        self.host = self._detect_working_host()
-        self._log(f'当前域名: {self.host}')
-
-    def _log(self, msg):
-        if self._debug: print(f'[hsck] {msg}')
-
-    def _detect_working_host(self):
-        """
-        探测并返回可用的实际域名。
-        通过 allow_redirects=False 手动捕获重定向目标（Location），
-        避免 requests 自动跟随导致抓不到那个"秒跳转"的二级域名。
-        """
-        for seed_host in self.HOSTS:
-            try:
-                # 关键：禁止自动重定向，以便捕获 Location 头
-                r = self.session.get(
-                    seed_host,
-                    timeout=8,
-                    verify=False,
-                    allow_redirects=False,
-                    headers=self._get_headers(referer=seed_host + '/')
-                )
-
-                target_url = None
-                if r.status_code in (301, 302, 303, 307, 308):
-                    target_url = r.headers.get('Location')
-                    self._log(f'检测到重定向: {seed_host} -> {target_url}')
-                elif r.status_code == 200:
-                    # 无重定向但内容有效，说明此域名本身即完整站
-                    if len(r.text) > 2000:
-                        self._log(f'无重定向，直接可用: {seed_host}')
-                        return seed_host
-                    else:
-                        self._log(f'无重定向但内容过短: {seed_host} (长度:{len(r.text)})')
-                        continue
-                else:
-                    self._log(f'请求返回异常状态码 {r.status_code}: {seed_host}')
-                    continue
-
-                if not target_url:
-                    self._log(f'重定向响应中未找到 Location 头: {seed_host}')
-                    continue
-
-                # 处理相对路径的 Location
-                if not target_url.startswith('http'):
-                    target_url = urljoin(seed_host, target_url)
-
-                parsed_target = urlparse(target_url)
-                new_host = f'{parsed_target.scheme}://{parsed_target.netloc}'
-
-                # 二次验证：确保目标域名能正常访问内页，排除"壳站"
-                test_page = f'{new_host}/vodtype/1-1.html'
-                r2 = self.session.get(
-                    test_page,
-                    timeout=10,
-                    verify=False,
-                    allow_redirects=True,
-                    headers=self._get_headers(referer=seed_host + '/')
-                )
-
-                # 内页被重定向回根路径 => 壳站特征
-                if urlparse(r2.url).path in ('', '/') and r2.url.rstrip('/') == new_host.rstrip('/'):
-                    self._log(f'目标域名 {new_host} 为壳站（内页丢失路径），跳过')
-                    continue
-
-                if r2.status_code == 200 and len(r2.text) > 2000:
-                    self._log(f'探测成功: {new_host} (重定向来源: {seed_host})')
-                    return new_host
-                else:
-                    self._log(f'目标域名内页验证失败: {new_host}, 状态码:{r2.status_code}, 长度:{len(r2.text) if r2.text else 0}')
-
-            except Exception as e:
-                self._log(f'探测 {seed_host} 时发生异常: {e}')
-                continue
-
-        self._log('所有种子域名探测失败，回退到原始域名')
-        return self.HOSTS[0]
-
-    def getName(self): return 'hsck'
-    def isVideoFormat(self, url): return '.m3u8' in url or '.mp4' in url or '.ts' in url or url.startswith('magnet:')
-    def manualVideoCheck(self): return False
-    def destroy(self): pass
-    def localProxy(self, param): return [404, 'text/plain', '']
-
-    def init(self, extend=''):
         self.session.verify = False
-        self.session.headers.update(self._get_headers())
-        _start_proxy()
-        text = self._fetch(self.host + '/')
-        if text and len(text) > 2000:
-            self._update_categories(text)
-        else:
-            self._log('首页加载失败或内容太短，使用默认分类')
+        try:
+            self.session.headers.update(self._get_headers())
+        except Exception:
+            pass
+        try:
+            detected = self._detect_working_host()
+            if detected:
+                self.host = detected
+        except Exception as e:
+            self._log(f'探测异常，使用默认域名: {type(e).__name__}: {e}')
+        self._log(f'当前域名: {self.host}, curl_cffi可用={_HAS_CFFI}')
+
+    # ---------- 基础 ----------
+    def _log(self, msg):
+        if self._debug:
+            try:
+                print(f'[hsck] {msg}')
+            except Exception:
+                pass
 
     def _get_headers(self, referer=None):
         return {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            'Referer': referer or (getattr(self, 'host', self.HOSTS[0]) + '/')
+            'Referer': referer or (getattr(self, 'host', self.HOSTS[0]) + '/'),
         }
 
     def _get_headers_cffi(self, referer=None):
-        """curl_cffi 专用头：不传 UA/Accept，交给 impersonate 管理指纹"""
-        return {
-            'Referer': referer or (getattr(self, 'host', self.HOSTS[0]) + '/')
-        }
+        # curl_cffi 下不传 UA/Accept/Accept-Language，让 impersonate 自己管理
+        return {'Referer': referer or (getattr(self, 'host', self.HOSTS[0]) + '/')}
+
+    def _http_request(self, method, url, referer=None, data=None, timeout=15, allow_redirects=True, extra_headers=None):
+        """
+        统一请求入口：
+        1) 优先 curl_cffi（若可用），自动尝试多个 impersonate 版本
+        2) 全部失败则降级 requests
+        3) 任何异常返回 None，绝不抛出
+        """
+        # --- curl_cffi ---
+        if _HAS_CFFI and cffi_requests is not None:
+            for ver in ("chrome124", "chrome120", "chrome110"):
+                try:
+                    hdrs = self._get_headers_cffi(referer)
+                    if extra_headers:
+                        hdrs.update(extra_headers)
+                    kw = dict(impersonate=ver, timeout=timeout,
+                              allow_redirects=allow_redirects,
+                              verify=False, headers=hdrs)
+                    if method.upper() == "POST":
+                        return cffi_requests.post(url, data=data, **kw)
+                    return cffi_requests.get(url, **kw)
+                except TypeError:
+                    continue
+                except Exception as e:
+                    self._log(f'cffi[{ver}] 失败: {type(e).__name__}: {e}')
+                    continue
+
+        # --- requests 降级 ---
+        try:
+            hdrs = self._get_headers(referer)
+            if extra_headers:
+                hdrs.update(extra_headers)
+            if method.upper() == "POST":
+                return self.session.post(url, data=data, timeout=timeout,
+                                         allow_redirects=allow_redirects,
+                                         verify=False, headers=hdrs)
+            return self.session.get(url, timeout=timeout,
+                                    allow_redirects=allow_redirects,
+                                    verify=False, headers=hdrs)
+        except Exception as e:
+            self._log(f'requests 失败: {type(e).__name__}: {e}')
+            return None
+
+    # ---------- 域名探测 ----------
+    def _detect_working_host(self):
+        for seed_host in self.HOSTS:
+            try:
+                r = self._http_request("GET", seed_host, referer=seed_host + '/', timeout=8, allow_redirects=False)
+                if r is None:
+                    self._log(f'探测 {seed_host} 无响应')
+                    continue
+
+                target_url = None
+                if r.status_code in (301, 302, 303, 307, 308):
+                    target_url = r.headers.get('Location')
+                    self._log(f'重定向: {seed_host} -> {target_url}')
+                elif r.status_code == 200:
+                    if len(r.text) > 2000:
+                        self._log(f'无重定向直接可用: {seed_host}')
+                        return seed_host
+                    self._log(f'无重定向但内容短: {seed_host} len={len(r.text)}')
+                    continue
+                else:
+                    self._log(f'{seed_host} status={r.status_code}')
+                    continue
+
+                if not target_url:
+                    self._log(f'{seed_host} 重定向无 Location')
+                    continue
+                if not target_url.startswith('http'):
+                    target_url = urljoin(seed_host, target_url)
+
+                parsed = urlparse(target_url)
+                new_host = f'{parsed.scheme}://{parsed.netloc}'
+
+                # 二次验证：内页是否可用
+                r2 = self._http_request("GET", f'{new_host}/vodtype/1-1.html',
+                                        referer=seed_host + '/', timeout=10, allow_redirects=True)
+                if r2 is None:
+                    self._log(f'{new_host} 内页无响应')
+                    continue
+                if urlparse(r2.url).path in ('', '/') and r2.url.rstrip('/') == new_host.rstrip('/'):
+                    self._log(f'{new_host} 是壳站，跳过')
+                    continue
+                if r2.status_code == 200 and len(r2.text) > 2000:
+                    self._log(f'探测成功: {new_host}')
+                    return new_host
+                self._log(f'{new_host} 内页验证失败 status={r2.status_code} len={len(r2.text) if r2.text else 0}')
+            except Exception as e:
+                self._log(f'探测 {seed_host} 异常: {type(e).__name__}: {e}')
+                continue
+        self._log('探测全部失败，回退默认域名')
+        return self.HOSTS[0]
+
+    # ---------- 通用工具 ----------
+    def getName(self):
+        return 'hsck'
+
+    def isVideoFormat(self, url):
+        return '.m3u8' in url or '.mp4' in url or '.ts' in url or url.startswith('magnet:')
+
+    def manualVideoCheck(self):
+        return False
+
+    def destroy(self):
+        pass
+
+    def localProxy(self, param):
+        return [404, 'text/plain', '']
+
+    def _proxy_url(self, url):
+        if not url:
+            return ''
+        if url.startswith('http://127.0.0.1'):
+            return url
+        return f'http://127.0.0.1:{_proxy_port}/{quote(url, safe="")}'
 
     def _fetch(self, url, referer=None, retries=3):
-        from curl_cffi import requests as cffi_requests
-
         if not url.startswith('http'):
             url = urljoin(self.host, url)
         for attempt in range(retries):
             try:
-                headers = self._get_headers_cffi(referer or self.host + '/')
-                r = cffi_requests.get(
-                    url,
-                    impersonate="chrome124",
-                    timeout=15,
-                    allow_redirects=True,
-                    verify=False,
-                    headers=headers,
-                )
+                r = self._http_request("GET", url, referer=referer or self.host + '/',
+                                       timeout=15, allow_redirects=True)
+                if r is None:
+                    time.sleep(1)
+                    continue
+
                 final_url = r.url
-                parsed_final = urlparse(final_url)
-                parsed_req = urlparse(url)
-                if parsed_final.netloc != parsed_req.netloc:
-                    new_host = f'{parsed_final.scheme}://{parsed_final.netloc}'
-                    self._log(f'检测到域名跳转: {parsed_req.netloc} -> {parsed_final.netloc}')
+                p_final = urlparse(final_url)
+                p_req = urlparse(url)
+                if p_final.netloc != p_req.netloc:
+                    new_host = f'{p_final.scheme}://{p_final.netloc}'
+                    self._log(f'域名跳转: {p_req.netloc} -> {p_final.netloc}')
                     self.host = new_host
-                    if parsed_final.path in ('', '/'):
-                        corrected_url = urljoin(new_host, parsed_req.path + ('?' + parsed_req.query if parsed_req.query else ''))
-                        self._log(f'路径丢失，修正URL: {corrected_url}')
-                        r = cffi_requests.get(
-                            corrected_url,
-                            impersonate="chrome124",
-                            timeout=15,
-                            allow_redirects=True,
-                            verify=False,
-                            headers=self._get_headers_cffi(referer or new_host + '/'),
-                        )
-                        final_url = r.url
-                if r.status_code == 200 and len(r.text) > 1000:
-                    r.encoding = 'utf-8'
+                    if p_final.path in ('', '/'):
+                        corrected = urljoin(new_host, p_req.path + ('?' + p_req.query if p_req.query else ''))
+                        r = self._http_request("GET", corrected,
+                                               referer=referer or new_host + '/',
+                                               timeout=15, allow_redirects=True)
+                        if r is not None:
+                            final_url = r.url
+
+                if r is not None and r.status_code == 200 and len(r.text) > 1000:
+                    try:
+                        r.encoding = 'utf-8'
+                    except Exception:
+                        pass
                     self._log(f'请求成功: {url} -> {final_url} (长度:{len(r.text)})')
                     return r.text
-                else:
-                    self._log(f'请求内容过短: {url} 长度:{len(r.text) if r.text else 0}')
+                if r is not None:
+                    self._log(f'内容过短: {url} 长度:{len(r.text) if r.text else 0}')
             except Exception as e:
-                self._log(f'请求失败 [{attempt+1}]: {url} - {e}')
+                self._log(f'请求异常 [{attempt+1}]: {url} - {type(e).__name__}: {e}')
             time.sleep(1)
+
+        # 备用域名（当前只有一个，留扩展位）
         for h in self.HOSTS:
             if h == self.host:
                 continue
             try:
                 new_url = urljoin(h, urlparse(url).path + ('?' + urlparse(url).query if urlparse(url).query else ''))
-                r = cffi_requests.get(
-                    new_url,
-                    impersonate="chrome124",
-                    timeout=15,
-                    allow_redirects=True,
-                    verify=False,
-                    headers=self._get_headers_cffi(referer or h + '/'),
-                )
-                if r.status_code == 200 and len(r.text) > 1000:
+                r = self._http_request("GET", new_url, referer=referer or h + '/',
+                                       timeout=15, allow_redirects=True)
+                if r is not None and r.status_code == 200 and len(r.text) > 1000:
                     self.host = h
-                    r.encoding = 'utf-8'
-                    self._log(f'切换域名成功: {h} -> 长度:{len(r.text)}')
+                    try:
+                        r.encoding = 'utf-8'
+                    except Exception:
+                        pass
+                    self._log(f'切换域名成功: {h} 长度:{len(r.text)}')
                     return r.text
             except Exception:
                 pass
@@ -232,78 +291,122 @@ class Spider(BaseSpider):
 
     @staticmethod
     def _decode_b64(s):
-        try: return base64.b64decode(s).decode('utf-8')
-        except: return s
+        try:
+            return base64.b64decode(s).decode('utf-8')
+        except Exception:
+            return s
 
-    # ===== 分类 =====
+    # ---------- 生命周期 ----------
+    def init(self, extend=''):
+        try:
+            self.session.verify = False
+            self.session.headers.update(self._get_headers())
+        except Exception:
+            pass
+        try:
+            _start_proxy()
+        except Exception as e:
+            self._log(f'启动图片代理失败: {e}')
+        text = self._fetch(self.host + '/')
+        if text and len(text) > 2000:
+            self._update_categories(text)
+        else:
+            self._log('首页加载失败或过短，使用默认分类')
+
+    # ---------- 分类 ----------
     def _update_categories(self, text):
         seen_ids = {c['type_id'] for c in self._categories_cache}
         seen_names = {c['type_name'] for c in self._categories_cache}
-        def clean_title(raw): return re.sub(r'<[^>]+>', '', raw).strip().replace(' ', '')
-        menus = re.findall(r'<ul[^>]*class=["\'][^"\']*(?:pannel__menu|header__menu)[^"\']*["\'][^>]*>(.*?)</ul>', text, re.S)
-        scope = '\n'.join(menus) if menus else text
-        links = re.findall(r'<a[^>]+href=["\']/vodtype/(\d+)(?:-\d+)?\.html["\'][^>]*>(.*?)</a>', scope, re.S)
-        for tid, raw_name in links:
-            name = clean_title(re.sub(r'\d+', '', raw_name))
-            if not name or name in seen_names or name in ['首页','留言','求片','APP','专题','排行榜','最新']: continue
-            if tid not in seen_ids:
-                self._categories_cache.append({'type_id': tid, 'type_name': name})
-                seen_ids.add(tid); seen_names.add(name)
+
+        def clean_title(raw):
+            return re.sub(r'<[^>]+>', '', raw).strip().replace(' ', '')
+
+        try:
+            menus = re.findall(r'<ul[^>]*class=["\'][^"\']*(?:pannel__menu|header__menu)[^"\']*["\'][^>]*>(.*?)</ul>', text, re.S)
+            scope = '\n'.join(menus) if menus else text
+            links = re.findall(r'<a[^>]+href=["\']/vodtype/(\d+)(?:-\d+)?\.html["\'][^>]*>(.*?)</a>', scope, re.S)
+            for tid, raw_name in links:
+                name = clean_title(re.sub(r'\d+', '', raw_name))
+                if not name or name in seen_names:
+                    continue
+                if name in ('首页', '留言', '求片', 'APP', '专题', '排行榜', '最新'):
+                    continue
+                if tid not in seen_ids:
+                    self._categories_cache.append({'type_id': tid, 'type_name': name})
+                    seen_ids.add(tid)
+                    seen_names.add(name)
+        except Exception as e:
+            self._log(f'更新分类异常: {e}')
 
     def _get_category_name(self, tid):
         for cat in self._categories_cache:
-            if cat['type_id'] == str(tid): return cat['type_name']
+            if cat['type_id'] == str(tid):
+                return cat['type_name']
         return f'分类_{tid}'
 
-    # ===== 列表解析（过滤广告 pa-thumb） =====
+    # ---------- 列表 ----------
     def _parse_list(self, html):
         items, seen_vids = [], set()
-        cards = re.findall(r'<li[^>]*>(.*?)</li>', html, re.S)
-        for card in cards:
-            if 'stui-vodlist__box' not in card:
-                continue
-            a_match = re.search(r'<a[^>]+href="([^"]+)"', card)
-            if not a_match:
-                continue
-            href = a_match.group(1).strip()
-            if not (href.startswith('/v5/') or href.startswith('/vodplay/')):
-                continue
-            if 'pa-thumb' in card:
-                continue
-            vid_match = re.search(r'/(?:v5|vodplay)/(\d+)', href)
-            if not vid_match:
-                continue
-            vid = vid_match.group(1)
-            if vid in seen_vids:
-                continue
-            seen_vids.add(vid)
-            title = ''
-            h4 = re.search(r'<h4[^>]*class="title"[^>]*>\s*<a[^>]*>(.*?)</a>', card, re.S)
-            if h4:
-                title = h4.group(1).strip()
-            else:
-                t_attr = re.search(r'title="([^"]+)"', card)
-                if t_attr:
-                    title = t_attr.group(1).strip()
+        if not html:
+            return items
+        try:
+            cards = re.findall(r'<li[^>]*>(.*?)</li>', html, re.S)
+            for card in cards:
+                if 'stui-vodlist__box' not in card:
+                    continue
+                if 'pa-thumb' in card:
+                    continue
+                a_match = re.search(r'<a[^>]+href="([^"]+)"', card)
+                if not a_match:
+                    continue
+                href = a_match.group(1).strip()
+                if not (href.startswith('/v5/') or href.startswith('/vodplay/')):
+                    continue
+                vid_match = re.search(r'/(?:v5|vodplay)/(\d+)', href)
+                if not vid_match:
+                    continue
+                vid = vid_match.group(1)
+                if vid in seen_vids:
+                    continue
+                seen_vids.add(vid)
+
+                title = ''
+                h4 = re.search(r'<h4[^>]*class="title"[^>]*>\s*<a[^>]*>(.*?)</a>', card, re.S)
+                if h4:
+                    title = h4.group(1).strip()
                 else:
-                    inner = re.search(r'<a[^>]*>(.*?)</a>', card, re.S)
-                    if inner:
-                        title = re.sub(r'<[^>]+>', '', inner.group(1)).strip()
-            if not title:
-                title = vid
-            pic = ''
-            img = re.search(r'data-original="([^"]+)"', card)
-            if img:
-                pic = img.group(1)
-                if pic.startswith('//'):
-                    pic = 'http:' + pic
-                elif pic.startswith('/'):
-                    pic = self.host + pic
-            remarks = ''
-            t_span = re.search(r'<span[^>]*class="[^"]*pic-text[^"]*">(.*?)</span>', card, re.S)
-            if t_span:
-                remarks = re.sub(r'<[^>]+>', '', t_span.group(1)).strip()
-            items.append({'vod_id': vid, 'vod_name': title, 'vod_pic': self._proxy_url(pic), 'vod_remarks': remarks})
+                    t_attr = re.search(r'title="([^"]+)"', card)
+                    if t_attr:
+                        title = t_attr.group(1).strip()
+                    else:
+                        inner = re.search(r'<a[^>]*>(.*?)</a>', card, re.S)
+                        if inner:
+                            title = re.sub(r'<[^>]+>', '', inner.group(1)).strip()
+                if not title:
+                    title = vid
+
+                pic = ''
+                img = re.search(r'data-original="([^"]+)"', card)
+                if img:
+                    pic = img.group(1)
+                    if pic.startswith('//'):
+                        pic = 'http:' + pic
+                    elif pic.startswith('/'):
+                        pic = self.host + pic
+
+                remarks = ''
+                t_span = re.search(r'<span[^>]*class="[^"]*pic-text[^"]*">(.*?)</span>', card, re.S)
+                if t_span:
+                    remarks = re.sub(r'<[^>]+>', '', t_span.group(1)).strip()
+
+                items.append({
+                    'vod_id': vid,
+                    'vod_name': title,
+                    'vod_pic': self._proxy_url(pic),
+                    'vod_remarks': remarks,
+                })
+        except Exception as e:
+            self._log(f'解析列表异常: {e}')
         self._log(f'解析到 {len(items)} 个视频')
         return items
 
@@ -312,36 +415,68 @@ class Spider(BaseSpider):
         html = self._fetch(url, referer=f'{self.host}/vodtype/{tid}-1.html')
         return self._parse_list(html) if html else []
 
-    # ===== 首页/分类 =====
+    # ---------- 首页 / 分类 ----------
     def homeContent(self, filter):
-        text = self._fetch(self.host + '/')
-        if text and len(text) > 2000:
-            self._update_categories(text)
-        cats = self._categories_cache
-        items = self._get_list(cats[0]['type_id'], 1) if cats else []
-        return {'class': cats, 'filters': {}, 'type': '影视', 'list': items, 'page': 1, 'pagecount': 1, 'limit': len(items), 'total': len(items)}
+        try:
+            text = self._fetch(self.host + '/')
+            if text and len(text) > 2000:
+                self._update_categories(text)
+        except Exception:
+            pass
+        cats = list(self._categories_cache)
+        items = []
+        try:
+            if cats:
+                items = self._get_list(cats[0]['type_id'], 1)
+        except Exception:
+            pass
+        return {'class': cats, 'filters': {}, 'type': '影视', 'list': items,
+                'page': 1, 'pagecount': 1, 'limit': len(items), 'total': len(items)}
 
     def homeVideoContent(self):
-        if self._categories_cache:
-            return {'list': self._get_list(self._categories_cache[0]['type_id'], 1)}
+        try:
+            if self._categories_cache:
+                return {'list': self._get_list(self._categories_cache[0]['type_id'], 1)}
+        except Exception:
+            pass
         return {'list': []}
 
     def categoryContent(self, tid, pg, filter, extend):
-        page = int(pg) if pg else 1
-        items = self._get_list(tid, page)
-        return {'list': items, 'page': page, 'pagecount': page + 1, 'limit': len(items), 'total': page + 1}
+        try:
+            page = int(pg) if pg else 1
+        except Exception:
+            page = 1
+        try:
+            items = self._get_list(tid, page)
+        except Exception:
+            items = []
+        return {'list': items, 'page': page, 'pagecount': page + 1,
+                'limit': len(items), 'total': page + 1}
 
-    # ===== 详情 =====
+    # ---------- 详情 ----------
     def detailContent(self, ids):
-        vid = str(ids[0] if isinstance(ids, list) else ids)
-        detail = self._fetch_detail(vid)
+        try:
+            vid = str(ids[0] if isinstance(ids, list) else ids)
+        except Exception:
+            vid = ''
+        if not vid:
+            return {'list': []}
+        detail = None
+        try:
+            detail = self._fetch_detail(vid)
+        except Exception as e:
+            self._log(f'详情异常: {e}')
         if not detail:
-            detail = {'vod_id': vid, 'vod_name': f'视频_{vid}', 'vod_pic': '',
-                      'vod_play_from': '在线播放', 'vod_play_url': f'线路1${self.host}/v5/{vid}-1-1.html',
-                      'vod_content': ''}
-        else:
-            if not detail.get('vod_name'):
-                detail['vod_name'] = f'视频_{vid}'
+            detail = {
+                'vod_id': vid,
+                'vod_name': f'视频_{vid}',
+                'vod_pic': '',
+                'vod_play_from': '在线播放',
+                'vod_play_url': f'线路1${self.host}/v5/{vid}-1-1.html',
+                'vod_content': '',
+            }
+        elif not detail.get('vod_name'):
+            detail['vod_name'] = f'视频_{vid}'
         return {'list': [detail]}
 
     def _fetch_detail(self, vid):
@@ -358,15 +493,11 @@ class Spider(BaseSpider):
         if m:
             full_title = m.group(1).strip()
             parts = full_title.split(' - ')
-            if len(parts) >= 2:
-                title = ' - '.join(parts[:-1]).strip()
-            else:
-                title = full_title
+            title = ' - '.join(parts[:-1]).strip() if len(parts) >= 2 else full_title
         if not title:
-            h3_matches = re.findall(r'<h3[^>]*class="title"[^>]*>(.*?)</h3>', html, re.S)
-            for h3 in h3_matches:
+            for h3 in re.findall(r'<h3[^>]*class="title"[^>]*>(.*?)</h3>', html, re.S):
                 clean = re.sub(r'<[^>]+>', '', h3).strip()
-                if clean and clean not in ['目录', '精选内容', '']:
+                if clean and clean not in ('目录', '精选内容', ''):
                     title = clean
                     break
         if not title:
@@ -382,7 +513,7 @@ class Spider(BaseSpider):
             cover = m.group(1)
 
         aid = asid = anid = ak = ''
-        for var in ['AID', 'ASID', 'ANID', 'AK']:
+        for var in ('AID', 'ASID', 'ANID', 'AK'):
             patterns = [
                 r"var\s+" + var + r"\s*=\s*'([^']+)'",
                 var + r"\s*=\s*'([^']+)'",
@@ -397,8 +528,7 @@ class Spider(BaseSpider):
                     elif var == 'ANID': anid = v.group(1)
                     elif var == 'AK': ak = v.group(1)
                     break
-
-        self._log(f'提取参数: AID={aid}, ASID={asid}, ANID={anid}, AK={ak[:20] if ak else "empty"}...')
+        self._log(f'提取参数: AID={aid}, ASID={asid}, ANID={anid}, AK={(ak[:20] + "...") if ak else "empty"}')
 
         play_url = f'{self.host}/v5/{vid}-1-1.html'
         if aid and ak:
@@ -413,8 +543,15 @@ class Spider(BaseSpider):
             'vod_content': title,
         }
 
-    # ===== 播放器 =====
+    # ---------- 播放 ----------
     def playerContent(self, flag, id, vipFlags=None):
+        try:
+            return self._player_content(flag, id, vipFlags)
+        except Exception as e:
+            self._log(f'playerContent 异常: {e}')
+            return {'parse': 1, 'url': id, 'header': {'User-Agent': 'Mozilla/5.0', 'Referer': self.host}}
+
+    def _player_content(self, flag, id, vipFlags):
         self._log(f'playerContent: id={id[:120] if len(id) > 120 else id}')
         if '.m3u8' in id or '.mp4' in id:
             return {'parse': 0, 'url': id, 'header': {'User-Agent': 'Mozilla/5.0', 'Referer': self.host}}
@@ -433,8 +570,6 @@ class Spider(BaseSpider):
             m = re.search(r'["\'](https?://[^\s"\'<>]+\.(?:m3u8|mp4)[^\s"\'<>]*)["\']', html)
             if m:
                 return {'parse': 0, 'url': m.group(1), 'header': {'Referer': self.host}}
-
-        if html:
             m3u8 = self._extract_player_aaaa(html)
             if m3u8:
                 return {'parse': 0, 'url': m3u8, 'header': {'Referer': self.host}}
@@ -443,10 +578,14 @@ class Spider(BaseSpider):
         if 'aid=' in id:
             try:
                 ps = dict(p.split('=') for p in id.split('?')[1].split('&'))
-                aid = ps.get('aid',''); asid = ps.get('asid','1'); anid = ps.get('anid','1'); ak = ps.get('ak','')
-            except: pass
+                aid = ps.get('aid', '')
+                asid = ps.get('asid', '1')
+                anid = ps.get('anid', '1')
+                ak = ps.get('ak', '')
+            except Exception:
+                pass
         elif html:
-            for var in ['AID', 'ASID', 'ANID', 'AK']:
+            for var in ('AID', 'ASID', 'ANID', 'AK'):
                 patterns = [
                     r"var\s+" + var + r"\s*=\s*'([^']+)'",
                     var + r"\s*=\s*'([^']+)'",
@@ -462,52 +601,58 @@ class Spider(BaseSpider):
                         elif var == 'AK': ak = v.group(1)
                         break
 
-        self._log(f'player 提取参数: AID={aid}, ASID={asid}, ANID={anid}, AK={ak[:20] if ak else "empty"}...')
+        self._log(f'player 参数: AID={aid}, ASID={asid}, ANID={anid}, AK={(ak[:20] + "...") if ak else "empty"}')
 
         if aid and ak:
             count_url = self.host + '/static/count.php'
-            gx = random.randint(100, 800)
-            gy = random.randint(100, 600)
-            dt = random.randint(2000, 5000)
             data = {
                 'id': aid, 'sid': asid, 'nid': anid, 'tk': ak, 'g': '1',
-                'x': gx, 'y': gy, 'dt': dt,
+                'x': random.randint(100, 800),
+                'y': random.randint(100, 600),
+                'dt': random.randint(2000, 5000),
                 'sw': 1920, 'sh': 1080,
-                'tz': -480, 't': int(time.time()*1000)
+                'tz': -480, 't': int(time.time() * 1000),
             }
-            headers = self._get_headers(referer=detail_url)
-            headers.update({
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                'Origin': self.host,
-            })
             for retry in range(3):
-                try:
-                    self._log(f'请求 count.php (重试{retry}): id={aid}, sid={asid}, nid={anid}')
-                    r = self.session.post(count_url, data=data, headers=headers, timeout=15)
-                    self._log(f'count.php 响应: {r.status_code}, 内容: {r.text[:200]}')
-                    if r.status_code == 200:
-                        try:
-                            resp = r.json()
-                        except:
-                            resp_text = r.text.strip()
-                            if resp_text.startswith('{'):
+                r = self._http_request(
+                    "POST", count_url,
+                    referer=detail_url, data=data, timeout=15,
+                    extra_headers={
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                        'Origin': self.host,
+                    },
+                )
+                if r is None:
+                    time.sleep(1)
+                    continue
+                self._log(f'count.php 响应: {r.status_code}, 内容: {r.text[:200]}')
+                if r.status_code == 200:
+                    resp = None
+                    try:
+                        resp = r.json()
+                    except Exception:
+                        resp_text = (r.text or '').strip()
+                        if resp_text.startswith('{'):
+                            try:
                                 resp = json.loads(resp_text)
-                            else:
-                                try:
-                                    decoded = base64.b64decode(resp_text).decode('utf-8')
-                                    resp = json.loads(decoded)
-                                except:
-                                    resp = {'ok': False}
-                        if resp.get('ok') and resp.get('u'):
+                            except Exception:
+                                resp = None
+                        if resp is None:
+                            try:
+                                resp = json.loads(base64.b64decode(resp_text).decode('utf-8'))
+                            except Exception:
+                                resp = {'ok': False}
+                    if isinstance(resp, dict) and resp.get('ok') and resp.get('u'):
+                        try:
                             real_url = base64.b64decode(resp['u']).decode('utf-8')
-                            if real_url.startswith('http'):
-                                self._log(f'真实地址: {real_url}')
-                                return {'parse': 0, 'url': real_url, 'header': {'Referer': self.host}}
-                        else:
-                            self._log(f'count.php 返回错误: {resp}')
-                except Exception as e:
-                    self._log(f'count.php 请求失败: {e}')
+                        except Exception:
+                            real_url = ''
+                        if real_url.startswith('http'):
+                            self._log(f'真实地址: {real_url}')
+                            return {'parse': 0, 'url': real_url, 'header': {'Referer': self.host}}
+                    else:
+                        self._log(f'count.php 返回异常: {resp}')
                 time.sleep(1)
 
         if html:
@@ -519,24 +664,36 @@ class Spider(BaseSpider):
 
     def _extract_player_aaaa(self, html):
         m = re.search(r'var\s+player_aaaa\s*=\s*({.*?});', html, re.S)
-        if not m: m = re.search(r'player_aaaa\s*=\s*({.*?});', html, re.S)
+        if not m:
+            m = re.search(r'player_aaaa\s*=\s*({.*?});', html, re.S)
         if m:
             try:
                 cfg = json.loads(m.group(1).replace('\\/', '/'))
                 url = cfg.get('url')
                 if url and '.m3u8' in url:
-                    if not url.startswith('http'): url = urljoin(self.host, url)
+                    if not url.startswith('http'):
+                        url = urljoin(self.host, url)
                     return url
-            except: pass
+            except Exception:
+                pass
         return None
 
-    # ===== 搜索 =====
+    # ---------- 搜索 ----------
     def searchContent(self, key, quick, pg='1'):
-        page = int(pg) if pg else 1
-        url = f'{self.host}/vodsearch/{quote(key)}-------------{page}---.html'
-        html = self._fetch(url, referer=self.host)
-        items = self._parse_list(html) if html else []
-        return {'list': items, 'page': page, 'pagecount': page+1, 'limit': len(items), 'total': len(items)}
+        try:
+            page = int(pg) if pg else 1
+        except Exception:
+            page = 1
+        try:
+            url = f'{self.host}/vodsearch/{quote(key)}-------------{page}---.html'
+            html = self._fetch(url, referer=self.host)
+            items = self._parse_list(html) if html else []
+        except Exception as e:
+            self._log(f'搜索异常: {e}')
+            items = []
+        return {'list': items, 'page': page, 'pagecount': page + 1,
+                'limit': len(items), 'total': len(items)}
+
 
 # ===== PAGE_PLAYLIST_START =====
 def _pl_install(_C):
@@ -722,11 +879,17 @@ def _pl_install(_C):
     def init(self, *args, **kwargs):
         _ensure(self)
         if _orig_init:
-            return _orig_init(self, *args, **kwargs)
+            try:
+                return _orig_init(self, *args, **kwargs)
+            except Exception:
+                return None
 
     def homeContent(self, *args, **kwargs):
         _ensure(self)
-        r = _orig_home(self, *args, **kwargs) if _orig_home else {}
+        try:
+            r = _orig_home(self, *args, **kwargs) if _orig_home else {}
+        except Exception:
+            r = {}
         try:
             _cache_page(self, ("home",), _as_result(r).get("list"))
         except Exception:
@@ -735,7 +898,10 @@ def _pl_install(_C):
 
     def homeVideoContent(self, *args, **kwargs):
         _ensure(self)
-        r = _orig_homev(self, *args, **kwargs) if _orig_homev else {"list": []}
+        try:
+            r = _orig_homev(self, *args, **kwargs) if _orig_homev else {"list": []}
+        except Exception:
+            r = {"list": []}
         try:
             _cache_page(self, ("homev",), _as_result(r).get("list"))
         except Exception:
@@ -744,7 +910,10 @@ def _pl_install(_C):
 
     def categoryContent(self, *args, **kwargs):
         _ensure(self)
-        r = _orig_cate(self, *args, **kwargs) if _orig_cate else {"list": []}
+        try:
+            r = _orig_cate(self, *args, **kwargs) if _orig_cate else {"list": []}
+        except Exception:
+            r = {"list": []}
         try:
             tid = args[0] if args else kwargs.get("tid", "")
             pg = args[1] if len(args) > 1 else kwargs.get("pg", "1")
@@ -758,7 +927,10 @@ def _pl_install(_C):
         _ensure(self)
         if not _orig_search:
             return {"list": []}
-        r = _orig_search(self, *args, **kwargs)
+        try:
+            r = _orig_search(self, *args, **kwargs)
+        except Exception:
+            r = {"list": []}
         try:
             key = args[0] if args else kwargs.get("key", "")
             pg = args[2] if len(args) > 2 else kwargs.get("pg", "1")
@@ -771,7 +943,10 @@ def _pl_install(_C):
         _ensure(self)
         if not _orig_searchp:
             return {"list": []}
-        r = _orig_searchp(self, *args, **kwargs)
+        try:
+            r = _orig_searchp(self, *args, **kwargs)
+        except Exception:
+            r = {"list": []}
         try:
             key = args[0] if args else kwargs.get("key", "")
             pg = args[2] if len(args) > 2 else kwargs.get("page", kwargs.get("pg", "1"))
@@ -797,6 +972,8 @@ def _pl_install(_C):
                 r = _orig_detail(self, call_ids, *args, **kwargs)
             except TypeError:
                 r = _orig_detail(self, call_ids)
+            except Exception:
+                r = {"list": []}
         else:
             r = {"list": []}
         try:
@@ -854,28 +1031,23 @@ def _pl_install(_C):
                 return _orig_player(self, flag, id, vipFlags)
             except TypeError:
                 return _orig_player(self, flag, id)
+        except Exception:
+            return {"parse": 1, "url": id, "header": {"Referer": getattr(self, "host", "")}}
 
     _C._pl_call_detail = _call_detail
     _C._pl_load_src = _load_src
     _C._pl_item_parts = _item_parts
     _C._pl_apply_playlist = _apply_playlist
-    if _orig_init:
-        _C.init = init
-    if _orig_home:
-        _C.homeContent = homeContent
-    if _orig_homev:
-        _C.homeVideoContent = homeVideoContent
-    if _orig_cate:
-        _C.categoryContent = categoryContent
-    if _orig_search:
-        _C.searchContent = searchContent
-    if _orig_searchp:
-        _C.searchContentPage = searchContentPage
-    if _orig_detail:
-        _C.detailContent = detailContent
-    if _orig_player:
-        _C.playerContent = playerContent
+    if _orig_init:    _C.init = init
+    if _orig_home:    _C.homeContent = homeContent
+    if _orig_homev:   _C.homeVideoContent = homeVideoContent
+    if _orig_cate:    _C.categoryContent = categoryContent
+    if _orig_search:  _C.searchContent = searchContent
+    if _orig_searchp: _C.searchContentPage = searchContentPage
+    if _orig_detail:  _C.detailContent = detailContent
+    if _orig_player:  _C.playerContent = playerContent
     return _C
+
 
 try:
     _pl_install(Spider)
