@@ -45,7 +45,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/连播黄色仓库动态版.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hsck.py"
     },
     {
       "key": "黄色仓库动态版",
