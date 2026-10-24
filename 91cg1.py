@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-多域名跳转站点爬虫模板（正式版）
+每日系列通用爬虫模板（兜底版）
 ================================
-站点特征：
-  1) 4-6 个固定长期主域名
-  2) 主域名跳转到"网址发布页"（JS 跳转 / Base64 混淆 / 文本域名列表）
-  3) 发布页给出 3-4 个不定期变动的二级域名
-  4) 二级域名实际承载内容（同构模板）
+设计要点：
+  1. SEED_HOSTS + PUBLISH_URLS + FALLBACK_HOSTS 同轮并发探测（打开快）
+  2. 命中结果按优先级排序：seed > publish > fallback（稳定性优先）
+  3. 全失败时：过期缓存 → FALLBACK_HOSTS[0] → FALLBACK_HOST → ""（兜底保险）
+  4. 内容抓取逻辑（SEL_* / 播放器 / AES 图片 / 播放源聚合）全部原样保留
 
 换站指引：
-  只改 SiteConfig 的 SEED_HOSTS / SITE_KEYWORDS / SEL_* / IMG_AES_KEYS / PUB_*
+  只改 SiteConfig 的 SEED_HOSTS / FALLBACK_HOSTS / SITE_KEYWORDS / SEL_*
   特殊行为通过钩子覆盖：_site_ok / _js_jump / _pub_hosts / _extract_playlist / aesimg
 """
 import json
@@ -49,21 +49,37 @@ LOG = logging.getLogger(__name__)
 # ① 配置层：换站只改本段
 # ==================================================================
 class SiteConfig:
-    # ---- 种子域名（长期固定域名，稳定性高的排前）----
+    # ---- ① 种子域名（长期固定主域名，稳定性高的排前）----
     SEED_HOSTS = [
-        "https://91cgb20.com/",
-        "https://91cgb18.com/",
-        "https://91cgb19.com/",
+        "https://mrdld2.com/",
+        "https://mrdld1.com/",
+        "https://mrdld3.com/",
     ]
-    FALLBACK_HOST  = None            # 设为 None 表示探测失败不兜底
+
+    # ---- ② 发布页（可选；每日系列一般没有，留空即可）----
+    PUBLISH_URLS = []
+    PUBLISH_URL   = ""
+
+    # ---- ③ 兜底域名（★ 必填：填当前活跃的二级域名）----
+    # 用户手动填入 1-3 个当前可访问的二级域名，提高稳定性
+    # 一旦探测全部失败（含种子/发布页/缓存），按顺序尝试
+    FALLBACK_HOSTS = [
+           "https://athlete.zvxzbbwf.cc/",
+           "https://auto.zvxzbbwf.cc/",
+    ]
+
+    # ---- 兼容旧字段（单值兜底，一般不用）----
+    FALLBACK_HOST = None
+
+    # ---- 缓存 ----
     HOST_CACHE_KEY = "mrds_host"
     HOST_CACHE_TTL = 6 * 3600        # 缓存 6 小时
 
-    # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 6
-    PROBE_MAX_ROUNDS     = 4
-    PROBE_MAX_STEPS      = 24
-    PROBE_TOTAL_DEADLINE = 40        # 秒
+    # ---- 探测参数（缩短，兜底更快）----
+    PROBE_TIMEOUT        = 5         # 单次 5s（兜底快）
+    PROBE_MAX_ROUNDS     = 3
+    PROBE_MAX_STEPS      = 20
+    PROBE_TOTAL_DEADLINE = 25        # 总耗时 25s（含兜底）
     PROBE_MIN_HTML       = 3000
     PROBE_MIN_ARTICLE    = 3
 
@@ -118,9 +134,18 @@ class SiteConfig:
 
 
 # ==================================================================
-# ② 域名解析器：多域名 BFS 探测
+# ② 域名解析器：BFS + 并发优先级 + 兜底
 # ==================================================================
 class DomainResolver:
+    """
+    探测顺序：
+      ① 缓存（有效）→ 验证 → 命中即用（最快）
+      ② 第一轮并发：SEED + PUBLISH + FALLBACK 一起探（速度）
+         命中按优先级排序：seed > publish > fallback（稳定性）
+      ③ 后续轮：从发布页/JS跳转/B64 提取新候选
+      ④ 全失败兜底：过期缓存 → FALLBACK_HOSTS[0] → FALLBACK_HOST → ""
+    """
+
     def __init__(self, cfg, fetcher, cache_get=None, cache_set=None):
         self.cfg, self.fetch = cfg, fetcher
         self.cache_get, self.cache_set = cache_get, cache_set
@@ -129,6 +154,7 @@ class DomainResolver:
     def _deadline_ok(self):
         return time.time() - self._start_ts < self.cfg.PROBE_TOTAL_DEADLINE
 
+    # ---- 站点判定 ----
     def _site_ok(self, html):
         if not html or len(html) < self.cfg.PROBE_MIN_HTML:
             return False
@@ -139,6 +165,7 @@ class DomainResolver:
         has_mk = any(m in low for m in self.cfg.SITE_MARKERS)
         return has_kw and has_mk
 
+    # ---- JS 跳转 ----
     def _js_jump(self, html):
         if not html:
             return ""
@@ -151,6 +178,7 @@ class DomainResolver:
                 return m.group(1).rstrip("/") + "/"
         return ""
 
+    # ---- 发布页候选域名提取 ----
     def _pub_hosts(self, html, current_host=""):
         if not html:
             return []
@@ -182,6 +210,23 @@ class DomainResolver:
             seen.add(s)
             out.append(cfg.PUB_HOST_PREFIX % s)
         return out
+
+    # ---- 优先级：越小越优先 ----
+    def _priority(self, url):
+        cfg = self.cfg
+        u = (url or "").lower().rstrip("/")
+        for i, h in enumerate(cfg.SEED_HOSTS):
+            if h.lower().rstrip("/") in u:
+                return 10 + i
+        for i, h in enumerate(cfg.PUBLISH_URLS or []):
+            if h.lower().rstrip("/") in u:
+                return 30 + i
+        if cfg.PUBLISH_URL and cfg.PUBLISH_URL.lower().rstrip("/") in u:
+            return 30
+        for i, h in enumerate(cfg.FALLBACK_HOSTS or []):
+            if h.lower().rstrip("/") in u:
+                return 50 + i
+        return 99  # 提取到的候选（BFS 二级域名）
 
     @staticmethod
     def _expand_schemes(urls):
@@ -240,7 +285,7 @@ class DomainResolver:
             LOG.debug("批量探测异常: %s", e)
         return results
 
-    # ---------- 缓存 ----------
+    # ---- 缓存 ----
     def _read_cache(self):
         if not self.cache_get:
             return None
@@ -276,11 +321,20 @@ class DomainResolver:
         except Exception:
             pass
 
-    # ---------- 主流程 ----------
+    # ---- 从探测结果中挑优先级最高的命中 ----
+    def _pick_best_hit(self, res):
+        hits = [(u, final) for u, (ok, final, _h) in res.items() if ok]
+        if not hits:
+            return ""
+        hits.sort(key=lambda x: self._priority(x[0]))
+        return hits[0][1].rstrip("/")
+
+    # ---- 主流程 ----
     def resolve(self):
         cfg = self.cfg
         cached = self._read_cache()
 
+        # ① 缓存有效路径（最快）
         if cached and self._cache_fresh(cached):
             LOG.info("验证缓存 host: %s", cached["host"])
             res = self._probe_batch([cached["host"] + "/"], cfg.PROBE_TIMEOUT)
@@ -291,9 +345,15 @@ class DomainResolver:
                     return h
             LOG.info("缓存失效，重新探测")
 
-        seeds = list(cfg.SEED_HOSTS)
+        # ② 第一轮：seed + publish + fallback 一起并发
+        seeds = list(cfg.SEED_HOSTS or [])
+        seeds.extend(cfg.PUBLISH_URLS or [])
+        if cfg.PUBLISH_URL:
+            seeds.append(cfg.PUBLISH_URL)
+        seeds.extend(cfg.FALLBACK_HOSTS or [])
         if cached:
             seeds.insert(0, cached["host"] + "/")
+
         current = self._expand_schemes(seeds)
 
         for rnd in range(cfg.PROBE_MAX_ROUNDS):
@@ -302,13 +362,14 @@ class DomainResolver:
             LOG.debug("第 %d 轮，候选 %d 个", rnd + 1, len(current))
             res = self._probe_batch(current, cfg.PROBE_TIMEOUT)
 
-            for _u, (ok, final, _h) in res.items():
-                if ok:
-                    h = final.rstrip("/")
-                    self._write_cache(h)
-                    LOG.info("确定 host: %s", h)
-                    return h
+            # 按优先级挑最高命中的（seed 优先于 fallback）
+            best = self._pick_best_hit(res)
+            if best:
+                self._write_cache(best)
+                LOG.info("确定 host: %s", best)
+                return best
 
+            # 从 seed/publish 页面提取下一轮候选
             nxt = []
             for u, (_ok, _f, html) in res.items():
                 if not html:
@@ -319,20 +380,28 @@ class DomainResolver:
                 nxt.extend(self._pub_hosts(html, u))
             current = self._expand_schemes(nxt)
 
+        # ③ 兜底路径：过期缓存 → 硬兜底列表 → 单值兜底 → 空
         if cached:
             LOG.warning("使用过期缓存: %s", cached["host"])
             return cached["host"]
 
-        if getattr(cfg, "FALLBACK_HOST", None):
-            LOG.warning("使用硬兜底: %s", cfg.FALLBACK_HOST)
-            return cfg.FALLBACK_HOST.rstrip("/")
+        fb_list = list(getattr(cfg, "FALLBACK_HOSTS", None) or [])
+        if fb_list:
+            h = fb_list[0].rstrip("/")
+            LOG.warning("使用兜底域名[0]: %s", h)
+            return h
 
-        LOG.error("域名探测失败，请更新 SEED_HOSTS")
+        if getattr(cfg, "FALLBACK_HOST", None):
+            h = cfg.FALLBACK_HOST.rstrip("/")
+            LOG.warning("使用单值兜底: %s", h)
+            return h
+
+        LOG.error("域名探测失败，请更新 SEED_HOSTS 或 FALLBACK_HOSTS")
         return ""
 
 
 # ==================================================================
-# ③ 主爬虫基类
+# ③ 主爬虫基类（内容抓取逻辑，每日系列原样）
 # ==================================================================
 class BaseMultiDomainSpider(BaseSpider):
     CONFIG = SiteConfig
