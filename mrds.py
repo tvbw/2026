@@ -103,11 +103,9 @@ class Spider(BaseSpider):
             (cached + '/') if cached else '',
             'https://mrdsa2.com/',
             'https://mrdsa1.com/',
-            'https://mrds.club/',
             "https://mrdsy1.com/",
             "https://mrdsy2.com/",
-            "https://mrdsy3.com/",,
-            'https://mrdsk.com/',
+            "https://mrdsy3.com/",
         ]
         queue, seen = [], set()
         for u in seeds:
@@ -138,7 +136,7 @@ class Spider(BaseSpider):
                 if h not in seen:
                     seen.add(h)
                     queue.append(h)
-        return cached or 'https://www.htrnnxgg.cc'
+        return cached or 'https://www.ajuokwof.cc/'
 
     def homeContent(self, filter):
         try:
