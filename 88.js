@@ -70,18 +70,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/91av.py"
     },
     {
-      "key": "91JAV改版每日大赛",
-      "name": "❤️91JAV改版每日大赛",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91mrds.py"
-    },
-    {
-
       "key": "hanime1",
       "name": "❤️hanime动画",
       "type": 3,
