@@ -51,6 +51,9 @@ class Spider(BaseSpider):
             'https://mrdsa2.com/',
             'https://mrdsa1.com/',
             'https://mrdsk.com/',
+            "https://mrdsy1.com/",
+            "https://mrdsy2.com/",
+            "https://mrdsy3.com/",
         ]
         for url in dynamic_urls:
             try:
