@@ -158,31 +158,46 @@ class Spider(BaseSpider):
             'Referer': referer or (getattr(self, 'host', self.HOSTS[0]) + '/')
         }
 
-    def _proxy_url(self, url):
-        if not url: return ''
-        if url.startswith('http://127.0.0.1'): return url
-        return f'http://127.0.0.1:{_proxy_port}/{quote(url, safe="")}'
+    def _get_headers_cffi(self, referer=None):
+        """curl_cffi 专用头：不传 UA/Accept，交给 impersonate 管理指纹"""
+        return {
+            'Referer': referer or (getattr(self, 'host', self.HOSTS[0]) + '/')
+        }
 
     def _fetch(self, url, referer=None, retries=3):
-        if not url.startswith('http'): url = urljoin(self.host, url)
+        from curl_cffi import requests as cffi_requests
+
+        if not url.startswith('http'):
+            url = urljoin(self.host, url)
         for attempt in range(retries):
             try:
-                headers = self._get_headers(referer or self.host + '/')
-                r = self.session.get(url, headers=headers, timeout=15, verify=False)
-                # 检测是否被重定向到不同域名（壳站跳转）
+                headers = self._get_headers_cffi(referer or self.host + '/')
+                r = cffi_requests.get(
+                    url,
+                    impersonate="chrome124",
+                    timeout=15,
+                    allow_redirects=True,
+                    verify=False,
+                    headers=headers,
+                )
                 final_url = r.url
                 parsed_final = urlparse(final_url)
                 parsed_req = urlparse(url)
                 if parsed_final.netloc != parsed_req.netloc:
-                    # 域名变了，更新host
                     new_host = f'{parsed_final.scheme}://{parsed_final.netloc}'
                     self._log(f'检测到域名跳转: {parsed_req.netloc} -> {parsed_final.netloc}')
                     self.host = new_host
-                    # 如果路径被丢了（变成首页），重新请求一次正确的内页
                     if parsed_final.path in ('', '/'):
                         corrected_url = urljoin(new_host, parsed_req.path + ('?' + parsed_req.query if parsed_req.query else ''))
                         self._log(f'路径丢失，修正URL: {corrected_url}')
-                        r = self.session.get(corrected_url, headers=self._get_headers(referer or new_host + '/'), timeout=15, verify=False)
+                        r = cffi_requests.get(
+                            corrected_url,
+                            impersonate="chrome124",
+                            timeout=15,
+                            allow_redirects=True,
+                            verify=False,
+                            headers=self._get_headers_cffi(referer or new_host + '/'),
+                        )
                         final_url = r.url
                 if r.status_code == 200 and len(r.text) > 1000:
                     r.encoding = 'utf-8'
@@ -193,18 +208,26 @@ class Spider(BaseSpider):
             except Exception as e:
                 self._log(f'请求失败 [{attempt+1}]: {url} - {e}')
             time.sleep(1)
-        # 备用域名切换
         for h in self.HOSTS:
-            if h == self.host: continue
+            if h == self.host:
+                continue
             try:
-                new_url = urljoin(h, urlparse(url).path + ('?'+urlparse(url).query if urlparse(url).query else ''))
-                r = self.session.get(new_url, headers=self._get_headers(referer or h+'/'), timeout=15)
+                new_url = urljoin(h, urlparse(url).path + ('?' + urlparse(url).query if urlparse(url).query else ''))
+                r = cffi_requests.get(
+                    new_url,
+                    impersonate="chrome124",
+                    timeout=15,
+                    allow_redirects=True,
+                    verify=False,
+                    headers=self._get_headers_cffi(referer or h + '/'),
+                )
                 if r.status_code == 200 and len(r.text) > 1000:
                     self.host = h
                     r.encoding = 'utf-8'
                     self._log(f'切换域名成功: {h} -> 长度:{len(r.text)}')
                     return r.text
-            except: pass
+            except Exception:
+                pass
         return ''
 
     @staticmethod
