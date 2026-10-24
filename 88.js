@@ -17,8 +17,8 @@
     },
     {
 
-      "key": "每日大乱斗1",
-      "name": "❤️每日大乱斗1🔞",
+      "key": "每日大乱斗2",
+      "name": "❤️每日大乱斗2🔞",
       "type": 3,
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld11.py",
       "searchable": 1,
