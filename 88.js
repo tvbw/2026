@@ -37,28 +37,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
     },
     {
-      "key": "黄色仓库动态版1",
-      "name": "黄仓黄金动态版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hsck.py"
-    },
-    {
-      "key": "黄色仓库动态版",
-      "name": "黄色仓库DEEP版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hsck-Deep.py"
-    },
-    {
       "key": "91JAV最终版",
       "name": "❤️91JAV最终版",
       "type": 3,
