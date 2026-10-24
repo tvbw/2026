@@ -30,7 +30,19 @@
       "changeable": 1
     },
     {
-
+❇️      "key": "每日大乱斗3",
+      "name": "❤️每日大乱斗3🔞",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld1.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "changeable": 1
+    },
+    {
       "key": "正宗聚合",
       "name": "❤️影视聚合",
       "type": 3,
