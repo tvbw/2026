@@ -52,6 +52,8 @@ class Spider(BaseSpider):
         super().__init__()
         self._debug = True
         self._categories_cache = list(self.DEFAULT_CATEGORIES)
+        # 先给一个安全初值，避免探测阶段 _get_headers 访问 self.host 报错
+        self.host = self.HOSTS[0]
         self.host = self._detect_working_host()
         self._log(f'当前域名: {self.host}')
 
@@ -59,30 +61,75 @@ class Spider(BaseSpider):
         if self._debug: print(f'[hsck] {msg}')
 
     def _detect_working_host(self):
-        """探测可用域名，优先找能正常访问内页（不跨域301）的站点"""
-        for host in self.HOSTS:
+        """
+        探测并返回可用的实际域名。
+        通过 allow_redirects=False 手动捕获重定向目标（Location），
+        避免 requests 自动跟随导致抓不到那个"秒跳转"的二级域名。
+        """
+        for seed_host in self.HOSTS:
             try:
-                # 先测首页
-                r = self.session.get(host, timeout=8, verify=False, allow_redirects=True)
-                if r.status_code == 200 and len(r.text) > 2000:
-                    final_host = r.url.rstrip('/')
-                    # 再测一个内页，看是否会被重定向到首页（壳站特征）
-                    test_url = f'{final_host}/vodtype/1-1.html'
-                    r2 = self.session.get(test_url, timeout=8, verify=False, allow_redirects=True)
-                    # 如果内页最终URL变成纯域名（路径丢失），说明是壳站，跳过
-                    if r2.url.rstrip('/').endswith(('.com', '.xyz', '.net', '.us', '.cc')) and urlparse(r2.url).path in ('', '/'):
-                        self._log(f'探测到壳站(内页301丢路径): {host} -> {r2.url}')
-                        continue
-                    if len(r2.text) > 2000:
-                        self.host = final_host
-                        self._log(f'探测成功: {final_host} (首页:{len(r.text)}, 分类页:{len(r2.text)})')
-                        return final_host
+                # 关键：禁止自动重定向，以便捕获 Location 头
+                r = self.session.get(
+                    seed_host,
+                    timeout=8,
+                    verify=False,
+                    allow_redirects=False,
+                    headers=self._get_headers(referer=seed_host + '/')
+                )
+
+                target_url = None
+                if r.status_code in (301, 302, 303, 307, 308):
+                    target_url = r.headers.get('Location')
+                    self._log(f'检测到重定向: {seed_host} -> {target_url}')
+                elif r.status_code == 200:
+                    # 无重定向但内容有效，说明此域名本身即完整站
+                    if len(r.text) > 2000:
+                        self._log(f'无重定向，直接可用: {seed_host}')
+                        return seed_host
                     else:
-                        self._log(f'探测失败(分类页内容短): {final_host}')
+                        self._log(f'无重定向但内容过短: {seed_host} (长度:{len(r.text)})')
+                        continue
                 else:
-                    self._log(f'探测失败(首页异常): {host}')
+                    self._log(f'请求返回异常状态码 {r.status_code}: {seed_host}')
+                    continue
+
+                if not target_url:
+                    self._log(f'重定向响应中未找到 Location 头: {seed_host}')
+                    continue
+
+                # 处理相对路径的 Location
+                if not target_url.startswith('http'):
+                    target_url = urljoin(seed_host, target_url)
+
+                parsed_target = urlparse(target_url)
+                new_host = f'{parsed_target.scheme}://{parsed_target.netloc}'
+
+                # 二次验证：确保目标域名能正常访问内页，排除"壳站"
+                test_page = f'{new_host}/vodtype/1-1.html'
+                r2 = self.session.get(
+                    test_page,
+                    timeout=10,
+                    verify=False,
+                    allow_redirects=True,
+                    headers=self._get_headers(referer=seed_host + '/')
+                )
+
+                # 内页被重定向回根路径 => 壳站特征
+                if urlparse(r2.url).path in ('', '/') and r2.url.rstrip('/') == new_host.rstrip('/'):
+                    self._log(f'目标域名 {new_host} 为壳站（内页丢失路径），跳过')
+                    continue
+
+                if r2.status_code == 200 and len(r2.text) > 2000:
+                    self._log(f'探测成功: {new_host} (重定向来源: {seed_host})')
+                    return new_host
+                else:
+                    self._log(f'目标域名内页验证失败: {new_host}, 状态码:{r2.status_code}, 长度:{len(r2.text) if r2.text else 0}')
+
             except Exception as e:
-                self._log(f'探测失败: {host} - {e}')
+                self._log(f'探测 {seed_host} 时发生异常: {e}')
+                continue
+
+        self._log('所有种子域名探测失败，回退到原始域名')
         return self.HOSTS[0]
 
     def getName(self): return 'hsck'
@@ -106,7 +153,7 @@ class Spider(BaseSpider):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            'Referer': referer or (self.host + '/')
+            'Referer': referer or (getattr(self, 'host', self.HOSTS[0]) + '/')
         }
 
     def _proxy_url(self, url):
@@ -120,7 +167,7 @@ class Spider(BaseSpider):
             try:
                 headers = self._get_headers(referer or self.host + '/')
                 r = self.session.get(url, headers=headers, timeout=15, verify=False)
-                # 【修复】检测是否被重定向到不同域名（壳站跳转）
+                # 检测是否被重定向到不同域名（壳站跳转）
                 final_url = r.url
                 parsed_final = urlparse(final_url)
                 parsed_req = urlparse(url)
@@ -183,7 +230,7 @@ class Spider(BaseSpider):
             if cat['type_id'] == str(tid): return cat['type_name']
         return f'分类_{tid}'
 
-    # ===== 列表解析（修复：过滤广告 pa-thumb） =====
+    # ===== 列表解析（过滤广告 pa-thumb） =====
     def _parse_list(self, html):
         items, seen_vids = [], set()
         cards = re.findall(r'<li[^>]*>(.*?)</li>', html, re.S)
@@ -194,10 +241,8 @@ class Spider(BaseSpider):
             if not a_match:
                 continue
             href = a_match.group(1).strip()
-            # 【修复】过滤广告外链（只保留站内 /v5/ 或 /vodplay/）
             if not (href.startswith('/v5/') or href.startswith('/vodplay/')):
                 continue
-            # 【修复】过滤带 pa-thumb 的广告卡片（双重保险）
             if 'pa-thumb' in card:
                 continue
             vid_match = re.search(r'/(?:v5|vodplay)/(\d+)', href)
