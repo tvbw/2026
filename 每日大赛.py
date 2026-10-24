@@ -21,7 +21,6 @@ class Spider(BaseSpider):
             self.proxies = json.loads(extend)
         except:
             self.proxies = {}
-        self.session = requests.Session()
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
@@ -48,51 +47,69 @@ class Spider(BaseSpider):
 
     def get_working_host(self):
         dynamic_urls = [
-            'https://also.qeuotomj.cc/',
-            'https://angry.jrgrvklt.cc',
-            'https://airline.jrgrvklt.cc'
-            "https://mrdsy1.com/",
-            "https://mrdsy2.com/",
-            "https://mrdsy3.com/",
-           #每日大赛发布页 'https://www.hidkvzbmo.cc'
+            'https://www.mrds66.com/',
+            'https://mrdsa2.com/',
+            'https://mrdsa1.com/',
+            'https://mrdsk.com/',
         ]
         for url in dynamic_urls:
             try:
-                response = self.session.get(url, headers=self.headers, proxies=self.proxies, timeout=10)
+                response = requests.get(
+                    url,
+                    headers=self.headers,
+                    proxies=self.proxies,
+                    timeout=6,
+                    verify=False,
+                    allow_redirects=True
+                )
                 if response.status_code == 200:
-                    return url
+                    return response.url.rstrip('/')
             except Exception:
                 continue
-        return dynamic_urls[0]
+        return 'https://www.mrds66.com'
 
     def homeContent(self, filter):
+        try:
+            response = requests.get(self.host, headers=self.headers, proxies=self.proxies, timeout=15)
+            if response.status_code != 200:
+                return {'class': [], 'list': []}
+            data = self.getpq(response.text)
 
-            self.session.get(self.host, proxies=self.proxies, timeout=6)
-            classes = [
-                 {'type_name': '每日大赛','type_id': '/category/mrds/'},
-                 {'type_name': '主题大赛','type_id': '/category/ztds/'},
-                 {'type_name': '热搜吃瓜','type_id': '/category/rstt/'},
-                 {'type_name': '校园学生','type_id': '/category/xazd/'},
-                 {'type_name': '必撸大赛','type_id': '/category/blyp/'},
-                 {'type_name': '反差泄密','type_id': '/category/fctg/'},
-                 {'type_name': '网红黑料','type_id': '/category/mhds/'},
-                 {'type_name': '猎奇重口','type_id': '/category/lqdp/'},
-                 {'type_name': 'AV看片','type_id': '/category/jdsj/'},
-                 {'type_name': '明星大赛','type_id': '/category/mxwh/'},
-                 {'type_name': '动漫之家','type_id': '/category/smdh/'},
-                 {'type_name': '影视国漫','type_id': '/category/dypd/'},
-                 {'type_name': 'cos写真','type_id': '/category/mtds/'},
-                 {'type_name': '声控ASMR','type_id': '/category/ysds/'},
-                 {'type_name': '寸止挑战','type_id': '/category/czds/'},
-                 {'type_name': '混剪PMV','type_id': '/category/hjds/'},
-                 {'type_name': '原创投稿','type_id': '/category/tgds/'},
-                 {'type_name': '欧美精品','type_id': '/category/omjp/'},
-                 {'type_name': '全网参赛','type_id': '/category/qwcs/'},
-                 {'type_name': 'AI剧场','type_id': '/category/aijc/'}
-          ]
-            return {'class': classes, 'list': []}
+            classes = []
+            category_selectors = ['.category-list ul li', '.nav-menu li', '.menu li', 'nav ul li']
+            for selector in category_selectors:
+                for k in data(selector).items():
+                    link = k('a')
+                    href = (link.attr('href') or '').strip()
+                    name = (link.text() or '').strip()
+                    if not href or href == '#' or not name or href == '/':
+                        continue
+                    if not href.startswith('http'):
+                        href = href if href.startswith('/') else f"/{href}"
+                    classes.append({'type_name': name, 'type_id': href})
+                if classes:
+                    break
+
+            if not classes:
+                classes = [
+                    {'type_name': '每日大赛', 'type_id': '/category/mrds/'},
+                ]
+
+            return {
+                'class': classes,
+                'list': self.getlist(data('#index article, article'))
+            }
+        except Exception:
+            return {'class': [], 'list': []}
 
     def homeVideoContent(self):
+        try:
+            response = requests.get(self.host, headers=self.headers, proxies=self.proxies, timeout=15)
+            if response.status_code != 200:
+                return {'list': []}
+            data = self.getpq(response.text)
+            return {'list': self.getlist(data('#index article, article'))}
+        except Exception:
             return {'list': []}
 
     def categoryContent(self, tid, pg, filter, extend):
@@ -100,38 +117,56 @@ class Spider(BaseSpider):
             if '@folder' in tid:
                 v = self.getfod(tid.replace('@folder', ''))
                 return {'list': v, 'page': 1, 'pagecount': 1, 'limit': 90, 'total': len(v)}
-            
+
             pg = int(pg) if pg else 1
-            
+
             if tid.startswith('http'):
                 base_url = tid.rstrip('/')
             else:
                 path = tid if tid.startswith('/') else f"/{tid}"
                 base_url = f"{self.host}{path}".rstrip('/')
-            
+
             if pg == 1:
                 url = f"{base_url}/"
             else:
-                url = f"{base_url}/{pg}/"
-                
-            response = self.session.get(url, proxies=self.proxies, timeout=7)
-            if response.status_code != 200: return {'list': [], 'page': pg, 'pagecount': 30, 'limit': 90, 'total': 0}
-                
+                host_no_slash = self.host.rstrip('/')
+                if base_url == host_no_slash:
+                    url = f"{host_no_slash}/page/{pg}/"
+                elif '/category/' in base_url or '/tag/' in base_url:
+                    url = f"{base_url}/{pg}/"
+                else:
+                    if '/page/' in base_url:
+                        url = f"{base_url}/{pg}/"
+                    else:
+                        url = f"{base_url}/page/{pg}/"
+
+            response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
+            if response.status_code != 200:
+                return {
+                    'list': [],
+                    'page': pg,
+                    'pagecount': 9999,
+                    'limit': 90,
+                    'total': 0
+                }
+
             data = self.getpq(response.text)
-            videos = self.getlist(data('article'), tid)
-            
-            return {'list': videos, 'page': pg, 'pagecount': 30, 'limit': 90, 'total': 1000}
-        except Exception as e:
-            return {'list': [], 'page': pg, 'pagecount': 999, 'limit': 90, 'total': 0}
+            videos = self.getlist(data('#archive article, #index article, article'), tid)
+
+            return {'list': videos, 'page': pg, 'pagecount': 9999, 'limit': 90, 'total': 999999}
+        except Exception:
+            return {'list': [], 'page': pg, 'pagecount': 9999, 'limit': 90, 'total': 0}
 
     def detailContent(self, ids):
         try:
             url = ids[0] if ids[0].startswith('http') else f"{self.host}{ids[0]}"
-            response = self.session.get(url, headers=self.headers, proxies=self.proxies, timeout=7)
+            response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
             data = self.getpq(response.text)
-            
+
             plist = []
             used_names = set()
+
+            # 策略1: 提取 DPlayer 配置
             if data('.dplayer'):
                 for c, k in enumerate(data('.dplayer').items(), start=1):
                     try:
@@ -143,14 +178,14 @@ class Spider(BaseSpider):
                             if video_url:
                                 ep_name = ''
                                 parent = k.parents().eq(0)
-                                for _ in range(0):
+                                for _ in range(4):
                                     if not parent: break
                                     heading = parent.find('h2, h3, h4').eq(0).text().strip()
                                     if heading:
                                         ep_name = heading
                                         break
                                     parent = parent.parents().eq(0)
-                                
+
                                 base_name = ep_name if ep_name else f"视频{c}"
                                 name = base_name
                                 count = 2
@@ -158,42 +193,52 @@ class Spider(BaseSpider):
                                     name = f"{base_name} {count}"
                                     count += 1
                                 used_names.add(name)
-                                
+
                                 plist.append(f"{name}${video_url}")
-                    except: continue
-            
+                    except:
+                        continue
+
+            # 策略2: 提取正文中的文本链接
             if not plist:
                 content_area = data('.post-content, article')
                 for i, link in enumerate(content_area('a').items(), start=1):
                     link_text = link.text().strip()
                     link_href = link.attr('href')
-                    
-                    if link_href and any(kw in link_text for kw in ['点击观看', '观看', '播放', '视频', '第一弹', '第二弹', '第三弹', '第四弹', '第五弹', '第六弹', '第七弹', '第八弹', '第九弹', '第十弹']):
+
+                    if link_href and any(kw in link_text for kw in ['点击观看', '观看', '播放', '视频', '第一弹']):
                         ep_name = link_text.replace('点击观看：', '').replace('点击观看', '').strip()
-                        if not ep_name: ep_name = f"视频{i}"
-                        
+                        if not ep_name:
+                            ep_name = f"视频{i}"
+
                         if not link_href.startswith('http'):
                             link_href = f"{self.host}{link_href}" if link_href.startswith('/') else f"{self.host}/{link_href}"
                         
                         plist.append(f"{ep_name}${link_href}")
             
-            play_url = '#'.join(plist) if plist else f"未找到视频源${url}"
-            
+            play_url = '#'.join(plist) if plist else f"未找到视频源，请访问网页${url}"
+
+            # ★★★ 标签点击功能修复核心区域 ★★★
+            # 采用 reference 代码中的 [a=cr:...] 格式
             vod_content = ''
             try:
                 tags = []
                 seen_names = set()
                 seen_ids = set()
                 
-                tag_links = data('.tags a, .keywords a, .post-tags a')
+                # 每日大赛的标签选择器
+                tag_links = data('.post-tags a, .tags a, .keywords a')
                 
                 candidates = []
                 for k in tag_links.items():
                     title = k.text().strip()
                     href = k.attr('href')
                     if title and href:
+                        # 修正相对链接为绝对链接
+                        if not href.startswith('http'):
+                            href = f"{self.host}{href}" if href.startswith('/') else f"{self.host}/{href}"
                         candidates.append({'name': title, 'id': href})
                 
+                # 按长度排序，与参考代码保持一致
                 candidates.sort(key=lambda x: len(x['name']), reverse=True)
                 
                 for item in candidates:
@@ -201,43 +246,56 @@ class Spider(BaseSpider):
                     id_ = item['id']
                     
                     if id_ in seen_ids: continue
-                    
+                    # 简单的去重逻辑
                     is_duplicate = False
                     for seen in seen_names:
-                        if name in seen:
+                        if name in seen: 
                             is_duplicate = True
                             break
+                    if is_duplicate and name not in seen_names: pass # 允许完全匹配的标签
+                    elif is_duplicate: pass
+
+                    # 生成播放器专用跳转代码：[a=cr:{json}/]名称[/a]
+                    target = json.dumps({'id': id_, 'name': name})
+                    tags.append(f'[a=cr:{target}/]{name}[/a]')
                     
-                    if not is_duplicate:
-                        target = json.dumps({'id': id_, 'name': name})
-                        tags.append(f'[a=cr:{target}/]{name}[/a]')
-                        seen_names.add(name)
-                        seen_ids.add(id_)
+                    seen_names.add(name)
+                    seen_ids.add(id_)
                 
+                # 如果有标签，拼接显示
                 if tags:
-                    vod_content = ' '.join(tags)
+                    # 参考代码只显示标签，这里为了体验更好，我加上了正文摘要
+                    tags_str = ' '.join(tags)
+                    summary = data('.post-content').text() or ''
+                    summary = summary[:150] + '...' if len(summary) > 150 else summary
+                    vod_content = f"{tags_str}\n\n{summary}"
                 else:
-                    vod_content = data('.post-card-title').text()
+                    vod_content = data('.post-title').text() or data('h1').text()
+
             except Exception:
-                vod_content = '获取标签失败'
+                vod_content = '每日大赛'
 
             if not vod_content:
-                vod_content = data('h2').text() or '每日大赛'
+                vod_content = '每日大赛'
 
-            return {'list': [{'vod_play_from': '每日大赛', 'vod_play_url': play_url, 'vod_content': vod_content}]}
+            return {'list': [{
+                'vod_play_from': '每日大赛',
+                'vod_play_url': play_url,
+                'vod_content': vod_content
+            }]}
         except:
             return {'list': [{'vod_play_from': '每日大赛', 'vod_play_url': '获取失败'}]}
 
     def searchContent(self, key, quick, pg="1"):
         try:
             pg = int(pg) if pg else 1
-            
+
             if pg == 1:
                 url = f"{self.host}/search/{key}/"
             else:
                 url = f"{self.host}/search/{key}/{pg}/"
             
-            response = self.session.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
+            response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
             return {'list': self.getlist(self.getpq(response.text)('article')), 'page': pg, 'pagecount': 9999}
         except:
             return {'list': [], 'page': pg, 'pagecount': 9999}
@@ -258,7 +316,7 @@ class Spider(BaseSpider):
                 return [404, 'text/plain', b'Expired']
             elif type_ == 'img':
                 real_url = self.d64(url) if not url.startswith('http') else url
-                res = self.session.get(real_url, headers=self.headers, proxies=self.proxies, timeout=10)
+                res = requests.get(real_url, headers=self.headers, proxies=self.proxies, timeout=10)
                 content = self.aesimg(res.content)
                 return [200, 'image/jpeg', content]
             elif type_ == 'm3u8':
@@ -274,7 +332,7 @@ class Spider(BaseSpider):
 
     def m3Proxy(self, url):
         url = self.d64(url)
-        res = self.session.get(url, headers=self.headers, proxies=self.proxies)
+        res = requests.get(url, headers=self.headers, proxies=self.proxies)
         data = res.text
         base = res.url.rsplit('/', 1)[0]
         lines = []
@@ -288,7 +346,7 @@ class Spider(BaseSpider):
         return [200, "application/vnd.apple.mpegurl", '\n'.join(lines)]
 
     def tsProxy(self, url):
-        return [200, 'video/mp2t', self.session.get(self.d64(url), headers=self.headers, proxies=self.proxies).content]
+        return [200, 'video/mp2t', requests.get(self.d64(url), headers=self.headers, proxies=self.proxies).content]
 
     def e64(self, text):
         return b64encode(str(text).encode()).decode()
@@ -317,16 +375,28 @@ class Spider(BaseSpider):
             card_html = k.outer_html() if hasattr(k, 'outer_html') else str(k)
             a = k if k.is_('a') else k('a').eq(0)
             href = a.attr('href')
-            title = k('h2').text() or k('.post-card-title').text() or k('.post-title').text()
+            title = k('h2').text() or k('.entry-title').text() or k('.post-title').text()
             if not title and k.is_('a'): title = k.text()
             
             if href and title:
                 img = self.getimg(k('script').text(), k, card_html)
+                
+                remarks = k('time').text()
+                if not remarks:
+                    full_text = k.text()
+                    m = re.search(r'(\d{4}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日)', full_text)
+                    if m:
+                        remarks = m.group(1)
+                    else:
+                        m2 = re.search(r'(\d{4}-\d{1,2}-\d{1,2})', full_text)
+                        if m2:
+                            remarks = m2.group(1)
+                
                 videos.append({
                     'vod_id': f"{href}{'@folder' if is_folder else ''}",
                     'vod_name': title.strip(),
                     'vod_pic': img,
-                    'vod_remarks': (k('.post-card-info>span').eq(1).text() or '').strip('•'),
+                    'vod_remarks': remarks.strip() if remarks else '',
                     'vod_tag': 'folder' if is_folder else '',
                     'style': {"type": "rect", "ratio": 1.33}
                 })
@@ -334,7 +404,7 @@ class Spider(BaseSpider):
 
     def getfod(self, id):
         url = f"{self.host}{id}"
-        data = self.getpq(self.session.get(url, headers=self.headers, proxies=self.proxies).text)
+        data = self.getpq(requests.get(url, headers=self.headers, proxies=self.proxies).text)
         videos = []
         for i, h2 in enumerate(data('.post-content h2').items()):
             p_txt = data('.post-content p').eq(i * 2)
