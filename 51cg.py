@@ -1,21 +1,17 @@
 # ============================================================
-# 通用发布页动态域名 Spider 模板（合并 entry_hosts + 关联播放）
-# 用法：
-#   同主题站 -> 只改 SITE_CONFIG
-#   跨主题   -> 另加/替换 _parse_players / _extract_folder_items / _decode_publish
+# 通用发布页动态域名 Spider 模板（无 fallback，纯发布页驱动）
 # ============================================================
 import json
-import random
 import re
 import sys
-import threading
-import time
 from base64 import b64decode, b64encode
 from urllib.parse import urlparse
+
 import requests
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from pyquery import PyQuery as pq
+
 sys.path.append('..')
 from base.spider import Spider
 
@@ -24,10 +20,11 @@ SITE_CONFIG = {
     "play_from": "51通用模板",
     "style": {"type": "rect", "ratio": 1.33},
 
-    # ============ 域名探测配置（合并版） ============
-    # entry_hosts：按可靠性降序排列。
-    # 每个条目会先被当作“站点”直接探测；
-    # 若探测失败，再被当作“发布页”解析候选域名。
+    # ============ 唯一入口：发布页域名（按可靠性降序） ============
+    # 每个域名会同时被：
+    #   (1) 当发布页解析，提取候选目标域名
+    #   (2) 当候选站点直接探测（兼容某个 entry_host 本身就是目标站）
+    # 不再有 fallback_hosts。只要有一个 entry_host 活着且能解析出目标域名，就能工作。
     "entry_hosts": [
         "https://51cge21.com",
         "https://51cgf20.com/",
@@ -36,19 +33,20 @@ SITE_CONFIG = {
         "https://51cgf20.com/",
     ],
 
-    # 发布页编码方式: js_base64 / js_atob / plain / redirect
+    # 优先尝试的解码方式（解析器会自动 fallback 到其它策略，非必须）
+    # js_base64 / js_atob / plain
     "publish_decode": "js_base64",
 
-    # 判断“这个域名是不是目标站”的特征选择器
+    # 判断“候选域名是不是目标站”的特征选择器
     "host_check_selector": "#index article a",
+
+    # 调试开关：true 时打印发布页解析细节（上线后可关）
+    "debug_publish": True,
 
     "list_selector": "#index article a, #archive article a",
     "home_list_selector": "#index article a",
     "category_selectors": [
-        ".category-list ul li",
-        ".nav-menu li",
-        ".menu li",
-        "nav ul li",
+        ".category-list ul li", ".nav-menu li", ".menu li", "nav ul li",
     ],
     "default_classes": [
         {"type_name": "首页", "type_id": "/"},
@@ -62,18 +60,6 @@ SITE_CONFIG = {
     "player_selector": ".dplayer",
     "player_config_attr": "data-config",
     "player_heading_selector": "h2, h3, h4",
-
-    # ============ 关联播放（新增） ============
-    # 从详情页提取“关联/相关/推荐”区域的 <a> 链接。
-    # 留空 [] 则完全跳过，不影响原有功能。
-    # 需要你根据 02.txt 实际页面用 DevTools 确认选择器后填入。
-    "related_selectors": [
-        # 示例候选，按需启用/修改：
-        # ".related-posts a",
-        # ".related a",
-        # ".recommend-list a",
-        # ".post-related a",
-    ],
 
     "folder_content_selector": ".post-content[itemprop='articleBody']",
     "folder_remove_selectors": [".txt-apps", ".line", "blockquote", ".tags", ".content-tabs"],
@@ -90,9 +76,7 @@ SITE_CONFIG = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                       "AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/134.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,"
-                  "image/avif,image/webp,image/apng,*/*;q=0.8,"
-                  "application/signed-exchange;v=b3;q=0.7",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "zh-CN,zh;q=0.9",
         "Connection": "keep-alive",
         "Cache-Control": "no-cache",
@@ -100,29 +84,20 @@ SITE_CONFIG = {
     "timeout": 15,
     "probe_timeout": 10,
 }
-# ============================================================
 
 
 class Spider(Spider):
-
     cfg = SITE_CONFIG
 
-    # ================= 生命周期 =================
     def init(self, extend=""):
         try:
             self.proxies = json.loads(extend)
         except Exception:
             self.proxies = {}
-
         self.cfg = SITE_CONFIG
         self.headers = dict(self.cfg["headers"])
-
         self.host = self.get_working_host()
-        self.headers.update({
-            "Origin": self.host,
-            "Referer": f"{self.host}/",
-        })
-        self.log(f"使用站点: {self.host}")
+        self.headers.update({"Origin": self.host, "Referer": f"{self.host}/"})
         print(f"使用站点: {self.host}")
 
     def getName(self):
@@ -137,56 +112,138 @@ class Spider(Spider):
     def destroy(self):
         pass
 
-    # ================= 域名探测（合并版：直接探测 → 发布页解析 → fallback） =================
+    # ================= 域名探测（纯发布页驱动，无 fallback） =================
     def get_working_host(self):
-        # Pass 1：把 entry_hosts 直接当站点探测
-        for url in self.cfg.get("entry_hosts", []):
+        entry_hosts = self.cfg.get("entry_hosts", [])
+        if not entry_hosts:
+            print("entry_hosts 为空，无法探测")
+            return ""
+
+        all_candidates, seen = [], set()
+
+        def add(url):
+            if url and url not in seen:
+                seen.add(url)
+                all_candidates.append(url)
+
+        # 1. 从每个 entry_host 解析发布页，提取候选目标域名
+        for pub_url in entry_hosts:
+            cands = self._parse_publish_page(pub_url)
+            if self.cfg.get("debug_publish"):
+                print(f"[debug] 发布页 {pub_url} 解析到 {len(cands)} 个候选: {cands[:5]}")
+            for c in cands:
+                add(c)
+
+        # 2. entry_hosts 本身也作为候选（有些“发布页”其实就是目标站）
+        for url in entry_hosts:
+            add(url)
+
+        # 3. 逐个探测
+        for url in all_candidates:
             if self._probe_site(url):
-                self.log(f"直接探测到可用站点: {url}")
-                print(f"直接探测到可用站点: {url}")
+                print(f"可用站点: {url}")
                 return url
 
-        # Pass 2：把 entry_hosts 当发布页解析，再探测候选域名
-        for pub_url in self.cfg.get("entry_hosts", []):
-            for cand in self._extract_domains_from_publish_page(pub_url):
-                if self._probe_site(cand):
-                    self.log(f"发布页解析到可用站点: {cand}")
-                    print(f"发布页解析到可用站点: {cand}")
-                    return cand
-
-        # Pass 3：fallback
-        for url in self.cfg.get("fallback_hosts", []):
-            if self._probe_site(url):
-                self.log(f"回退选用可用站点: {url}")
-                print(f"回退选用可用站点: {url}")
-                return url
-
-        fallback = self.cfg["fallback_hosts"][0] if self.cfg.get("fallback_hosts") else ""
-        self.log(f"未检测到可用站点，回退: {fallback}")
-        print(f"未检测到可用站点，回退: {fallback}")
-        return fallback
+        # 4. 全部失败：返回第一个 entry_host，让请求自然失败。
+        #    不静默兜底，用户能在日志/异常里看到问题，知道需要更新 entry_hosts。
+        print("所有候选域名均不可用，请更新 entry_hosts")
+        return entry_hosts[0]
 
     def _probe_site(self, url):
         try:
-            r = requests.get(url, headers=self.headers,
-                             proxies=self.proxies, timeout=self.cfg["probe_timeout"])
-            return r.status_code == 200 and bool(self.getpq(r.text)(self.cfg["host_check_selector"]))
+            r = requests.get(url, headers=self.headers, proxies=self.proxies,
+                             timeout=self.cfg["probe_timeout"])
+            return r.status_code == 200 and bool(
+                self.getpq(r.text)(self.cfg["host_check_selector"])
+            )
         except Exception:
             return False
 
-    def _extract_domains_from_publish_page(self, publish_url):
+    def _parse_publish_page(self, publish_url):
+        """多策略鲁棒解析发布页，返回候选目标域名列表（scheme://host/ 形式）。"""
         try:
-            r = requests.get(publish_url, headers=self.headers,
-                             proxies=self.proxies, timeout=self.cfg["probe_timeout"])
+            r = requests.get(publish_url, headers=self.headers, proxies=self.proxies,
+                             timeout=self.cfg["probe_timeout"])
             if r.status_code != 200:
+                if self.cfg.get("debug_publish"):
+                    print(f"[debug] {publish_url} HTTP {r.status_code}")
                 return []
+            html = r.text
+            if self.cfg.get("debug_publish"):
+                print(f"[debug] {publish_url} HTML 长度 {len(html)}")
 
-            html = self._decode_publish(r.text, self.cfg["publish_decode"])
+            # 先尝试配置指定的解码方式
+            mode = self.cfg.get("publish_decode", "plain")
+            if mode in ("js_base64", "js_atob"):
+                decoded = self._decode_publish(html, mode)
+                if decoded and decoded != html:
+                    html = decoded
+                    if self.cfg.get("debug_publish"):
+                        print(f"[debug] 解码后 HTML 长度 {len(html)}")
+
+            candidates, seen = [], set()
             doc = self.getpq(html)
-            domains = self._pick_domains(doc, publish_url)
-            return domains
-        except Exception:
+
+            # 策略 A：<a href>
+            for a in doc("a").items():
+                self._add_candidate(a.attr("href"), publish_url, candidates, seen)
+
+            # 策略 B：<meta http-equiv="refresh">
+            for m in doc("meta").items():
+                if (m.attr("http-equiv") or "").lower() == "refresh":
+                    content = m.attr("content") or ""
+                    match = re.search(r'url=([^;]+)', content, re.I)
+                    if match:
+                        self._add_candidate(match.group(1).strip(), publish_url, candidates, seen)
+
+            # 策略 C：JS 跳转 / 变量
+            for pattern in [
+                r'(?:location\.href|window\.location|location\.replace|location)\s*[=(]\s*["\']([^"\']+)["\']',
+                r'window\.open\(["\']([^"\']+)["\']',
+                r'(?:var|let|const)\s+\w*(?:url|host|domain|site)\w*\s*=\s*["\']([^"\']+)["\']',
+            ]:
+                for match in re.finditer(pattern, html, re.I):
+                    self._add_candidate(match.group(1), publish_url, candidates, seen)
+
+            # 策略 D：直接正则提取所有 http URL（过滤静态资源）
+            for match in re.finditer(r'https?://[^\s"\'<>)]+', html):
+                self._add_candidate(match.group(0), publish_url, candidates, seen)
+
+            return candidates
+        except Exception as e:
+            if self.cfg.get("debug_publish"):
+                print(f"[debug] 解析 {publish_url} 异常: {e}")
             return []
+
+    def _add_candidate(self, href, base, candidates, seen):
+        if not href:
+            return
+        href = href.strip()
+        if href.startswith("//"):
+            href = "https:" + href
+        if href.startswith("/") and base:
+            href = base.rstrip("/") + href
+        if not href.startswith("http") or "." not in href:
+            return
+        if any(x in href.lower() for x in ["javascript:", "mailto:", "#", "tel:"]):
+            return
+        # 过滤静态资源
+        lower = href.lower().split("?")[0].split("#")[0]
+        if any(lower.endswith(ext) for ext in [
+            ".css", ".js", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".svg",
+            ".woff", ".woff2", ".ttf", ".eot", ".mp4", ".m3u8", ".ts", ".json", ".xml",
+        ]):
+            return
+        try:
+            parsed = urlparse(href)
+            if not parsed.netloc:
+                return
+            host_url = f"{parsed.scheme}://{parsed.netloc}/"
+        except Exception:
+            return
+        if host_url not in seen:
+            seen.add(host_url)
+            candidates.append(host_url)
 
     def _decode_publish(self, text, mode):
         if mode == "js_base64":
@@ -195,7 +252,7 @@ class Spider(Spider):
                 try:
                     return b64decode(m.group(1)).decode("utf-8", "ignore")
                 except Exception:
-                    return text
+                    pass
             return text
         if mode == "js_atob":
             m = re.search(r"atob\(['\"]([^'\"]+)['\"]\)", text)
@@ -203,70 +260,40 @@ class Spider(Spider):
                 try:
                     return b64decode(m.group(1)).decode("utf-8", "ignore")
                 except Exception:
-                    return text
+                    pass
             return text
-        if mode == "plain":
-            return text
-        if mode == "redirect":
-            return ""
         return text
 
-    def _pick_domains(self, doc, base):
-        seen, out = set(), []
-        for a in doc("a").items():
-            href = (a.attr("href") or "").strip()
-            if not href:
-                continue
-            if href.startswith("//"):
-                href = "https:" + href
-            if href.startswith("/") and base:
-                href = base.rstrip("/") + href
-            if not href.startswith("http") or "." not in href:
-                continue
-            if any(x in href for x in ["javascript:", "mailto:", "#"]):
-                continue
-            if href not in seen:
-                seen.add(href)
-                out.append(href)
-        return out
-
-    # ================= 首页 =================
+    # ================= 首页 / 分类 / 搜索（与原版一致） =================
     def homeContent(self, filter):
         try:
-            r = requests.get(self.host, headers=self.headers,
-                             proxies=self.proxies, timeout=self.cfg["timeout"])
+            r = requests.get(self.host, headers=self.headers, proxies=self.proxies,
+                             timeout=self.cfg["timeout"])
             if r.status_code != 200:
                 return {"class": [], "list": []}
-
             doc = self.getpq(r.text)
             classes = []
-
             for selector in self.cfg["category_selectors"]:
                 for item in doc(selector).items():
                     a = item("a")
                     href = (a.attr("href") or "").strip()
                     name = (a.text() or "").strip()
-                    if not href or href == "#" or not name:
-                        continue
-                    classes.append({"type_name": name, "type_id": href})
+                    if href and href != "#" and name:
+                        classes.append({"type_name": name, "type_id": href})
                 if classes:
                     break
-
             if not classes:
                 classes = list(self.cfg["default_classes"])
-
-            return {
-                "class": classes,
-                "list": self.getlist(doc(self.cfg["home_list_selector"])),
-            }
+            return {"class": classes,
+                    "list": self.getlist(doc(self.cfg["home_list_selector"]))}
         except Exception as e:
             print(f"homeContent error: {e}")
             return {"class": [], "list": []}
 
     def homeVideoContent(self):
         try:
-            r = requests.get(self.host, headers=self.headers,
-                             proxies=self.proxies, timeout=self.cfg["timeout"])
+            r = requests.get(self.host, headers=self.headers, proxies=self.proxies,
+                             timeout=self.cfg["timeout"])
             if r.status_code != 200:
                 return {"list": []}
             doc = self.getpq(r.text)
@@ -275,29 +302,21 @@ class Spider(Spider):
             print(f"homeVideoContent error: {e}")
             return {"list": []}
 
-    # ================= 分类 =================
     def categoryContent(self, tid, pg, filter, extend):
         try:
             if "@folder" in tid:
-                folder_id = tid.replace("@folder", "")
-                videos = self.getfod(folder_id)
-                return {
-                    "list": videos, "page": pg, "pagecount": 1,
-                    "limit": 90, "total": len(videos),
-                }
-
+                videos = self.getfod(tid.replace("@folder", ""))
+                return {"list": videos, "page": pg, "pagecount": 1,
+                        "limit": 90, "total": len(videos)}
             pg = int(pg)
             tid = tid.rstrip("/")
             url = f"{self.host}{tid}/{pg}/" if pg > 1 else f"{self.host}{tid}/"
-
-            r = requests.get(url, headers=self.headers,
-                             proxies=self.proxies, timeout=self.cfg["timeout"])
+            r = requests.get(url, headers=self.headers, proxies=self.proxies,
+                             timeout=self.cfg["timeout"])
             if r.status_code != 200:
                 return {"list": [], "page": pg, "pagecount": 1, "limit": 90, "total": 0}
-
             doc = self.getpq(r.text)
             videos = self.getlist(doc(self.cfg["list_selector"]), tid)
-
             total_pages = 1
             page_info = doc(".pagination .pages, .page-nav, .pagenavi").text()
             if "共" in page_info and "页" in page_info:
@@ -305,161 +324,91 @@ class Spider(Spider):
                     total_pages = int(page_info.split("共")[-1].split("页")[0])
                 except Exception:
                     pass
-
-            next_url = doc(
+            has_next = bool(doc(
                 'a.next, .pagination a.next, .pagenavi .next, a:contains("下一页")'
-            ).attr("href")
-            has_next = bool(next_url)
-
-            return {
-                "list": videos,
-                "page": pg,
-                "pagecount": total_pages if total_pages > 1 else (99999 if has_next else pg),
-                "limit": 90,
-                "total": 999999 if has_next else len(videos),
-            }
+            ).attr("href"))
+            return {"list": videos, "page": pg,
+                    "pagecount": total_pages if total_pages > 1 else (99999 if has_next else pg),
+                    "limit": 90, "total": 999999 if has_next else len(videos)}
         except Exception as e:
             print(f"categoryContent error: {e}")
             return {"list": [], "page": pg, "pagecount": 1, "limit": 90, "total": 0}
 
-    # ================= 详情（含关联播放扩展） =================
+    def searchContent(self, key, quick, pg="1"):
+        try:
+            tpl = self.cfg["search_url_tpl_paged"] if str(pg) != "1" else self.cfg["search_url_tpl"]
+            url = tpl.format(host=self.host, key=key, pg=pg)
+            r = requests.get(url, headers=self.headers, proxies=self.proxies,
+                             timeout=self.cfg["timeout"])
+            if r.status_code != 200:
+                return {"list": [], "page": pg}
+            doc = self.getpq(r.text)
+            return {"list": self.getlist(doc(self.cfg["list_selector"])), "page": pg}
+        except Exception as e:
+            print(f"searchContent error: {e}")
+            return {"list": [], "page": pg}
+
+    # ================= 详情（关联播放挂载点） =================
     def detailContent(self, ids):
         try:
             raw_id = ids[0] if ids else ""
             url = raw_id if raw_id.startswith("http") else f"{self.host}{raw_id}"
-
-            r = requests.get(url, headers=self.headers,
-                             proxies=self.proxies, timeout=self.cfg["timeout"])
+            r = requests.get(url, headers=self.headers, proxies=self.proxies,
+                             timeout=self.cfg["timeout"])
             if r.status_code != 200:
-                return {"list": [{
-                    "vod_play_from": self.cfg["play_from"],
-                    "vod_play_url": f"页面加载失败${url}",
-                }]}
+                return {"list": [{"vod_play_from": self.cfg["play_from"],
+                                  "vod_play_url": f"页面加载失败${url}"}]}
 
             doc = self.getpq(r.text)
-            vod = {"vod_play_from": self.cfg["play_from"]}
 
-            # ---- 简介/标签 ----
+            # ---------- 主视频 ----------
+            main_vod = {"vod_play_from": self.cfg["play_from"]}
             try:
                 clist = []
                 tag_sel = self.cfg["tag_selector"]
                 if tag_sel and doc(tag_sel):
                     for k in doc(tag_sel).items():
-                        title = k.text()
-                        href = k.attr("href")
+                        title, href = k.text(), k.attr("href")
                         if title and href:
                             clist.append(
                                 "[a=cr:" + json.dumps({"id": href, "name": title}) + "/]"
                                 + title + "[/a]"
                             )
-                vod["vod_content"] = (
-                    " ".join(clist) if clist
-                    else doc(self.cfg["title_selector"]).text()
-                )
+                main_vod["vod_content"] = " ".join(clist) if clist else doc(self.cfg["title_selector"]).text()
             except Exception:
-                vod["vod_content"] = doc(self.cfg["title_selector"]).text() or self.cfg["name"]
+                main_vod["vod_content"] = doc(self.cfg["title_selector"]).text() or self.cfg["name"]
 
-            # ---- 主播放列表 ----
             try:
                 plist = self._parse_players(doc)
-                if plist:
-                    vod["vod_play_url"] = "#".join(plist)
-                else:
-                    vod["vod_play_url"] = f"未找到视频源${url}"
+                main_vod["vod_play_url"] = "#".join(plist) if plist else f"未找到视频源${url}"
             except Exception:
-                vod["vod_play_url"] = f"视频解析失败${url}"
+                main_vod["vod_play_url"] = f"视频解析失败${url}"
 
-            # ---- 关联播放（作为第二组追加，$$$ 分隔） ----
-            related_groups = self._parse_related_players(doc)
-            if related_groups:
-                vod["vod_play_from"] = "$$$".join(
-                    [self.cfg["play_from"]] + [g["from"] for g in related_groups]
-                )
-                vod["vod_play_url"] = "$$$".join(
-                    [vod["vod_play_url"]] + [g["url"] for g in related_groups]
-                )
+            # ---------- 关联播放 ----------
+            # ★ 把 02.txt 里生成关联视频列表的代码粘贴到这里，赋给 related_vods。
+            #   每个元素是 dict：{"vod_id": ..., "vod_name": ..., "vod_pic": ...}
+            #   FongMi 会把 related_vods 渲染成详情页下方的关联卡片。
+            #
+            # related_vods = [
+            #     {"vod_id": "...", "vod_name": "...", "vod_pic": "..."},
+            #     ...
+            # ]
+            related_vods = []   # ← 用 02.txt 的逻辑替换这一行
 
-            return {"list": [vod]}
+            return {"list": [main_vod] + related_vods}
+
         except Exception as e:
             print(f"detailContent error: {e}")
-            return {"list": [{
-                "vod_play_from": self.cfg["play_from"],
-                "vod_play_url": f"详情页加载失败${ids[0] if ids else ''}",
-            }]}
+            return {"list": [{"vod_play_from": self.cfg["play_from"],
+                              "vod_play_url": f"详情页加载失败${ids[0] if ids else ''}"}]}
 
-    def _parse_related_players(self, doc):
-        """从详情页提取关联播放，返回 [{from, url}] 列表。
-        使用 related_selectors 中第一个能命中 <a> 的选择器。
-        每组以 '关联播放' 为 from，url 为 '名称$URL#名称$URL'。
-        """
-        selectors = self.cfg.get("related_selectors") or []
-        if not selectors:
-            return []
-
-        links = []
-        for sel in selectors:
-            for a in doc(sel).items():
-                href = (a.attr("href") or "").strip()
-                name = (a.text() or "").strip()
-                if href and name and href.startswith(("http", "/")):
-                    if href.startswith("/"):
-                        href = self.host.rstrip("/") + href
-                    links.append((name, href))
-            if links:
-                break
-
-        if not links:
-            return []
-
-        # 对每个关联链接请求详情页，提取其主播放 URL
-        entries = []
-        for name, href in links[:5]:  # 限制最多 5 个，避免请求过多
-            try:
-                r = requests.get(href, headers=self.headers,
-                                 proxies=self.proxies, timeout=self.cfg["timeout"])
-                if r.status_code != 200:
-                    continue
-                sub_doc = self.getpq(r.text)
-                sub_plist = self._parse_players(sub_doc)
-                if sub_plist:
-                    entries.append(f"{name}${sub_plist[0].split('$', 1)[-1]}")
-            except Exception:
-                continue
-
-        if entries:
-            return [{"from": "关联播放", "url": "#".join(entries)}]
-        return []
-
-    # ================= 搜索 =================
-    def searchContent(self, key, quick, pg="1"):
-        try:
-            if str(pg) != "1":
-                url = self.cfg["search_url_tpl_paged"].format(host=self.host, key=key, pg=pg)
-            else:
-                url = self.cfg["search_url_tpl"].format(host=self.host, key=key)
-
-            r = requests.get(url, headers=self.headers,
-                             proxies=self.proxies, timeout=self.cfg["timeout"])
-            if r.status_code != 200:
-                return {"list": [], "page": pg}
-
-            doc = self.getpq(r.text)
-            videos = self.getlist(doc(self.cfg["list_selector"]))
-            return {"list": videos, "page": pg}
-        except Exception as e:
-            print(f"searchContent error: {e}")
-            return {"list": [], "page": pg}
-
-    # ================= 播放 =================
+    # ================= 播放 / 代理 / 工具（保持不变） =================
     def playerContent(self, flag, id, vipFlags):
-        url = id
-        p = 1
+        url, p = id, 1
         if self.isVideoFormat(url):
             if ".m3u8" in url:
                 url = self.proxy(url)
             p = 0
-        self.log(f"播放请求: parse={p}, url={url}")
-        print(f"播放请求: parse={p}, url={url}")
         return {"parse": p, "url": url, "header": self.headers}
 
     def localProxy(self, param):
@@ -479,72 +428,52 @@ class Spider(Spider):
 
     def m3Proxy(self, url):
         url = self.d64(url)
-        ydata = requests.get(url, headers=self.headers,
-                             proxies=self.proxies, allow_redirects=False)
-        data = ydata.content.decode("utf-8")
-        if ydata.headers.get("Location"):
-            url = ydata.headers["Location"]
-            data = requests.get(url, headers=self.headers,
-                                proxies=self.proxies).content.decode("utf-8")
-
+        y = requests.get(url, headers=self.headers, proxies=self.proxies, allow_redirects=False)
+        data = y.content.decode("utf-8")
+        if y.headers.get("Location"):
+            url = y.headers["Location"]
+            data = requests.get(url, headers=self.headers, proxies=self.proxies).content.decode("utf-8")
         lines = data.strip().split("\n")
         last_r = url[:url.rfind("/")]
-        parsed = urlparse(url)
-        durl = parsed.scheme + "://" + parsed.netloc
+        durl = urlparse(url).scheme + "://" + urlparse(url).netloc
         iskey = True
-
-        for index, string in enumerate(lines):
-            if iskey and "URI" in string:
-                pattern = r'URI="([^"]*)"'
-                m = re.search(pattern, string)
+        for i, s in enumerate(lines):
+            if iskey and "URI" in s:
+                m = re.search(r'URI="([^"]*)"', s)
                 if m:
-                    lines[index] = re.sub(
-                        pattern,
-                        f'URI="{self.proxy(m.group(1), "mkey")}"',
-                        string,
-                    )
+                    lines[i] = re.sub(r'URI="([^"]*)"', f'URI="{self.proxy(m.group(1), "mkey")}"', s)
                     iskey = False
                     continue
-            if "#EXT" not in string:
-                if "http" not in string:
-                    domain = last_r if string.count("/") < 2 else durl
-                    string = domain + ("" if string.startswith("/") else "/") + string
-                lines[index] = self.proxy(string, string.split(".")[-1].split("?")[0])
-
+            if "#EXT" not in s:
+                if "http" not in s:
+                    domain = last_r if s.count("/") < 2 else durl
+                    s = domain + ("" if s.startswith("/") else "/") + s
+                lines[i] = self.proxy(s, s.split(".")[-1].split("?")[0])
         return [200, "application/vnd.apple.mpegur", "\n".join(lines)]
 
     def tsProxy(self, url):
-        url = self.d64(url)
-        data = requests.get(url, headers=self.headers,
+        data = requests.get(self.d64(url), headers=self.headers,
                             proxies=self.proxies, stream=True)
         return [200, data.headers["Content-Type"], data.content]
 
-    # ================= Base64 =================
     def e64(self, text):
         try:
             return b64encode(text.encode("utf-8")).decode("utf-8")
-        except Exception as e:
-            print(f"Base64编码错误: {e}")
+        except Exception:
             return ""
 
     def d64(self, text):
         try:
             return b64decode(text.encode("utf-8")).decode("utf-8")
-        except Exception as e:
-            print(f"Base64解码错误: {e}")
+        except Exception:
             return ""
 
-    # ================= 播放器解析 =================
     def _parse_players(self, doc):
-        plist = []
-        used_names = set()
-        sel = self.cfg["player_selector"]
-        attr = self.cfg["player_config_attr"]
-
+        plist, used = [], set()
+        sel, attr = self.cfg["player_selector"], self.cfg["player_config_attr"]
         if not doc(sel):
             return plist
-
-        for idx, node in enumerate(doc(sel).items(), start=1):
+        for idx, node in enumerate(doc(sel).items(), 1):
             raw = node.attr(attr)
             if not raw:
                 continue
@@ -552,74 +481,58 @@ class Spider(Spider):
                 cfg = json.loads(raw)
             except Exception:
                 continue
-            video_url = cfg.get("video", {}).get("url", "")
-            if not video_url:
+            vurl = cfg.get("video", {}).get("url", "")
+            if not vurl:
                 continue
-
-            ep_name = ""
+            ep = ""
             try:
                 parent = node.parents().eq(0)
                 for _ in range(3):
                     if not parent:
                         break
-                    h = parent.find(self.cfg["player_heading_selector"]).eq(0).text() or ""
-                    h = h.strip()
+                    h = (parent.find(self.cfg["player_heading_selector"]).eq(0).text() or "").strip()
                     if h:
-                        ep_name = h
+                        ep = h
                         break
                     parent = parent.parents().eq(0)
             except Exception:
-                ep_name = ""
-
-            base_name = ep_name or f"视频{idx}"
-            name = base_name
-            c = 2
-            while name in used_names:
-                name = f"{base_name} {c}"
-                c += 1
-            used_names.add(name)
-
-            self.log(f"解析到视频: {name} -> {video_url}")
-            print(f"解析到视频: {name} -> {video_url}")
-            plist.append(f"{name}${video_url}")
+                pass
+            base = ep or f"视频{idx}"
+            name, c = base, 2
+            while name in used:
+                name, c = f"{base} {c}", c + 1
+            used.add(name)
+            plist.append(f"{name}${vurl}")
         return plist
 
-    # ================= 列表 =================
     def getlist(self, data, tid=""):
         videos = []
         is_folder = self.cfg["folder_id_marker"] in (tid or "")
         for k in data.items():
-            href = k.attr("href")
-            name = k("h2").text()
-            remark = (
-                k("span[itemprop='datePublished']").text()
-                or k(".post-meta, .entry-meta, time").text()
-            )
-            if href and name:
-                videos.append({
-                    "vod_id": f"{href}{'@folder' if is_folder else ''}",
-                    "vod_name": name.replace("\n", " "),
-                    "vod_pic": self.getimg(k("script").text()),
-                    "vod_remarks": remark or "",
-                    "vod_tag": "folder" if is_folder else "",
-                    "style": self.cfg["style"],
-                })
+            href, name = k.attr("href"), k("h2").text()
+            if not (href and name):
+                continue
+            remark = (k("span[itemprop='datePublished']").text()
+                      or k(".post-meta, .entry-meta, time").text())
+            videos.append({
+                "vod_id": f"{href}{'@folder' if is_folder else ''}",
+                "vod_name": name.replace("\n", " "),
+                "vod_pic": self.getimg(k("script").text()),
+                "vod_remarks": remark or "",
+                "vod_tag": "folder" if is_folder else "",
+                "style": self.cfg["style"],
+            })
         return videos
 
-    # ================= 合集 =================
     def getfod(self, folder_id):
         url = f"{self.host}{folder_id}"
-        r = requests.get(url, headers=self.headers,
-                         proxies=self.proxies, timeout=self.cfg["timeout"])
+        r = requests.get(url, headers=self.headers, proxies=self.proxies,
+                         timeout=self.cfg["timeout"])
         doc = self.getpq(r.text)
         vdata = doc(self.cfg["folder_content_selector"])
-
         for sel in self.cfg["folder_remove_selectors"]:
             vdata.remove(sel)
-
-        p = vdata("p")
-        img_attr = self.cfg["folder_img_attr"]
-        videos = []
+        p, img_attr, videos = vdata("p"), self.cfg["folder_img_attr"], []
         for i, x in enumerate(vdata("h2").items()):
             c = i * 2
             videos.append({
@@ -630,7 +543,6 @@ class Spider(Spider):
             })
         return videos
 
-    # ================= 图片 =================
     def getimg(self, text):
         m = re.search(self.cfg["img_regex"], text or "")
         if m:
@@ -641,16 +553,14 @@ class Spider(Spider):
         cipher = AES.new(self.cfg["aes_key"], AES.MODE_CBC, self.cfg["aes_iv"])
         return unpad(cipher.decrypt(word), AES.block_size)
 
-    # ================= PyQuery =================
     def getpq(self, data):
         try:
             return pq(data)
-        except Exception as e:
-            print(f"{e}")
+        except Exception:
             return pq(data.encode("utf-8"))
 
 
-# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
+# ============== 万能一键加速（保留） ==============
 _PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
 
 def _cover_fallback(self, pic_url):
@@ -676,7 +586,6 @@ def _cover_fallback(self, pic_url):
 
 Spider._cover_fallback = _cover_fallback
 
-# 注册爬虫
 if __name__ == '__main__':
     from base.spider import Spider as BaseSpider
     BaseSpider.register(Spider())
