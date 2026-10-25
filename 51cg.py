@@ -42,13 +42,6 @@ SITE_CONFIG = {
     # 判断“这个域名是不是目标站”的特征选择器
     "host_check_selector": "#index article a",
 
-    # fallback_hosts：BFS 最后兜底
-    "fallback_hosts": [
-        "https://album.hhhepogu.cc/",
-        "https://battle.hhhepogu.cc/",
-        "https://black.hhhepogu.cc/",
-    ],
-
     "list_selector": "#index article a, #archive article a",
     "home_list_selector": "#index article a",
     "category_selectors": [
