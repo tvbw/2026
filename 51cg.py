@@ -1,5 +1,5 @@
 # ============================================================
-# 51吃瓜 Spider —— 二级域名轮询 + 详情页关联推荐
+# 51吃瓜 Spider —— 二级域名轮询 + 详情页关联推荐（8-10条）
 # ============================================================
 import json
 import re
@@ -67,7 +67,7 @@ SITE_CONFIG = {
         r"/post/\d+",
         r"/archives/\d+",
     ],
-    # 关联视频最大条数（FongMi 详情页下方会显示这些卡片）
+    # 关联视频最大条数（设为 10，FongMi 详情页下方会自动渲染为卡片）
     "related_limit": 10,
 
     # ============ 合集 ============
@@ -146,7 +146,7 @@ class Spider(Spider):
         except Exception:
             return False
 
-    # ================= 首页 / 分类 / 搜索（保持原样） =================
+    # ================= 首页 / 分类 / 搜索 =================
     def homeContent(self, filter):
         try:
             r = requests.get(self.host, headers=self.headers, proxies=self.proxies,
@@ -269,16 +269,16 @@ class Spider(Spider):
             # ---------- 关联推荐（8-10 条卡片） ----------
             related_vods = self._extract_related_videos(doc, url)
 
+            # 返回主视频 + 关联推荐列表
             return {"list": [vod] + related_vods}
         except Exception as e:
             print(f"detailContent error: {e}")
             return {"list": [{"vod_play_from": self.cfg["play_from"],
                               "vod_play_url": f"详情页加载失败${ids[0] if ids else ''}"}]}
 
+    # ★★★ 修复并增强的关联推荐提取逻辑 ★★★
     def _extract_related_videos(self, doc, current_url):
-        """从详情页提取 8-10 条关联视频，返回 vod dict 列表。
-        策略：① related_selectors 命中 → ② 详情页所有 <a> 匹配文章模式 → ③ 首页兜底
-        """
+        """从详情页提取 8-10 条关联视频，返回 vod dict 列表。"""
         limit = int(self.cfg.get("related_limit", 10))
         results, seen = [], set()
         current_norm = current_url.rstrip("/").split("?")[0]
@@ -286,26 +286,28 @@ class Spider(Spider):
         patterns = [re.compile(p) for p in self.cfg.get("article_href_patterns", [])]
 
         def _norm(href):
-            if not href:
-                return ""
-            if href.startswith("/"):
+            """将任意相对路径转换为绝对 URL"""
+            if not href: return ""
+            href = href.strip()
+            if href.startswith("//"):
+                href = "https:" + href
+            elif href.startswith("/"):
                 href = self.host.rstrip("/") + href
+            elif not href.startswith("http"):
+                href = self.host.rstrip("/") + "/" + href.lstrip("/")
             return href.rstrip("/").split("?")[0]
 
         def _add(href, name, pic=""):
-            if len(results) >= limit:
-                return
+            if len(results) >= limit: return
             href_n = _norm(href)
-            if not href_n or href_n == current_norm or href_n in seen:
-                return
-            if not href.startswith("http"):
-                return
+            if not href_n or href_n == current_norm or href_n in seen: return
+            
             name = (name or "").replace("\n", " ").strip()
-            if len(name) < 2 or len(name) > 100:
-                return
+            if len(name) < 2 or len(name) > 100: return
+            
             seen.add(href_n)
             results.append({
-                "vod_id": href,
+                "vod_id": href_n,
                 "vod_name": name,
                 "vod_pic": pic,
                 "vod_remarks": "",
@@ -321,7 +323,7 @@ class Spider(Spider):
                 name = (a("h2").text() or a.attr("title") or a.text() or "").strip()
                 _add(href, name)
 
-        # 策略 2：详情页所有 <a> 中匹配文章模式
+        # 策略 2：详情页所有 <a> 中匹配文章模式（如 /mrdg123）
         if len(results) < limit and patterns:
             for a in doc("a").items():
                 if len(results) >= limit:
@@ -334,7 +336,7 @@ class Spider(Spider):
                 name = (a("h2").text() or a.attr("title") or a.text() or "").strip()
                 _add(href, name)
 
-        # 策略 3：首页兜底
+        # 策略 3：首页兜底（如果详情页里的相关推荐不足 8 条）
         if len(results) < limit:
             try:
                 hr = requests.get(self.host, headers=self.headers, proxies=self.proxies,
