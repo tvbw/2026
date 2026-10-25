@@ -4,7 +4,7 @@
   "sites": [
     {
       "key": "正宗聚合",
-      "name": "❤️影视聚合",
+      "name": "🍁影视聚合",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -14,8 +14,42 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
     },
     {
+      "key": "红果短剧",
+      "name": "🍁红果短剧",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tushen6/Tomorrow/31232c367fd6a53549e889adc99e4b4404e08552/py/%E7%BA%A2%E6%9E%9C%E7%9F%AD%E5%89%A7.py#L4"
+    },
+    {
+      "key": "电影侠1",
+      "name": "🍁电影侠1",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/wliqi495-create/jaychou123/656b4f4746c01d5ec04282f9e118fe15f984823b/yingshi/py9/%E7%94%B5%E5%BD%B1%E4%BE%A0.py#L4"
+    },
+    {
+      "key": "电影侠2",
+      "name": "🍁电影侠2",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/woshishiq1/hipy-drpy2/d0f81a93c31550328cbbd8bc15c9171846ca8d43/wzxxcz/py/%E7%94%B5%E5%BD%B1%E4%BE%A0.py#L4"
+    },
+    {
+
       "key": "xb6v修护",
-      "name": "❤️6V影视【正牌】",
+      "name": "🍁6V影视",
       "type": 3,
       "playerType": 2,
       "style": {
