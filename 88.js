@@ -36,17 +36,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/dyxia.py"
     },
     {
-      "key": "电影侠2",
-      "name": "🍁电影侠2",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/woshishiq1/hipy-drpy2/d0f81a93c31550328cbbd8bc15c9171846ca8d43/wzxxcz/py/%E7%94%B5%E5%BD%B1%E4%BE%A0.py#L4"
-    },
-    {
 
       "key": "xb6v修护",
       "name": "🍁6V影视",
