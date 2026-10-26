@@ -14,19 +14,8 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
     },
     {
-      "key": "红果短剧",
-      "name": "🍁红果短剧",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hgduanju.py"
-    },
-    {
-      "key": "电影侠1",
-      "name": "🍁电影侠1",
+      "key": "电影侠",
+      "name": "🍁电影侠",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -36,7 +25,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/dyxia.py"
     },
     {
-
       "key": "xb6v修护",
       "name": "🍁6V影视",
       "type": 3,
