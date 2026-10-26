@@ -3,7 +3,19 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "正宗聚合",
+      "key": "🍁4GTV",
+      "name": "🍁GTV",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/4gtv%E7%9B%B4%E6%92%AD.py"
+    },
+    {
+
+      "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
       "playerType": 2,
