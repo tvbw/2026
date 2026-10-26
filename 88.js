@@ -3,6 +3,28 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "🍁Hanime1(终极自愈+全功能版)",
+      "name": "🍁Hanime",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Hanime1(终极自愈+全功能版).py"
+    },
+    {
+      "key": "🍁91porn",
+      "name": "🍁91porn",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91porn.py"
+    },
+    {
       "key": "🍁4GTV",
       "name": "🍁GTV",
       "type": 3,
