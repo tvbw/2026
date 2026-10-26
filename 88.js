@@ -22,7 +22,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tushen6/Tomorrow/31232c367fd6a53549e889adc99e4b4404e08552/py/%E7%BA%A2%E6%9E%9C%E7%9F%AD%E5%89%A7.py#L4"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hgduanju.py"
     },
     {
       "key": "电影侠1",
@@ -33,7 +33,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/wliqi495-create/jaychou123/656b4f4746c01d5ec04282f9e118fe15f984823b/yingshi/py9/%E7%94%B5%E5%BD%B1%E4%BE%A0.py#L4"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/dyxia.py"
     },
     {
       "key": "电影侠2",
