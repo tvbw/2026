@@ -2312,3 +2312,478 @@ class _StreamSession:
     def __init__(self, url, content_key, total, moov_start, moov):
         if len(content_key) != 16:
             raise
+
+
+# ============================================================
+# ========== 红果短剧 2026-10 修复补丁（追加在文件末尾即可）==========
+# 覆盖内容：
+#   - _page / _data          （不再强依赖 _ROUTER_DATA + 加 Cookie）
+#   - 新增 _parse_cards_html / _extract_json_ld_episodes
+#   - homeContent / homeVideoContent / categoryContent
+#   - searchContent / detailContent / playerContent
+# 原有常量、CENC 解密、x-bogus 签名：全部不动
+# ============================================================
+
+_GLOBAL_COOKIE = (
+    "ttwid=1%7CFUe-ibOEzn12SnhVP5nOngwf5MskiJr-lpk7vofauZU%7C1792971906"
+    "%7Cd963d4932d31ef188fabdf562dd0a877a05a764af65ba2628747b2bf00086a7d; "
+    "gfkadpd=8662,48688; biz_trace_id=5337fe76; "
+    "passport_csrf_token=dbad8c67f041074db23d7d3c256d44ee; "
+    "passport_csrf_token_default=dbad8c67f041074db23d7d3c256d44ee; "
+    "s_v_web_id=verify_mvohn33s_51c923f8_bf06_e515_8d72_db4b61c56533; "
+    "passport_mfa_token=Cjj1KZy5OQ%2FgeVBU6dGaNX3zj9LRYPPIaJw9de3stkdDfpkvxxyRAb%2FsiG5ak7UvMzCh95vXpYfV7hpKCjwAAAAAAAAAAAAAUQ%2BdUPUO1oJjwuRvzYzHUlxDQKpkWfK2CbMCefRjKYJrHTai1pHiqtci14tpjONL0qkQkvKfDhj2sdFsIAIiAQPJvLze; "
+    "d_ticket=927f013eb2451ea41f6447f7c923a3d58f9ef; "
+    "odin_tt=1b226008f93c9d612cfd5aee59a4d5ce75624bca6c141d1d5580e0a37de7c95dd51764d1dc4aad9425112655d7949248b6d6f38a10bcb58fd7e456db67e3a7c2; "
+    "n_mh=Fi8Chlxlfbrkp34GV4R3gHj7qtGbmcKuK4hS_6MHDU0; "
+    "passport_auth_status=25d9b84afcda1658710a2ad19a464008%2C; "
+    "passport_auth_status_ss=25d9b84afcda1658710a2ad19a464008%2C; "
+    "sid_guard=fcb1646b867814ca355be9580dacd9e1%7C1792972707%7C5184000%7CThu%2C+24-Dec-2026+23%3A58%3A27+GMT; "
+    "uid_tt=902cadfa8f6ede901d5a4ad9fffaaa5e; "
+    "uid_tt_ss=902cadfa8f6ede901d5a4ad9fffaaa5e; "
+    "sid_tt=fcb1646b867814ca355be9580dacd9e1; "
+    "sessionid=fcb1646b867814ca355be9580dacd9e1; "
+    "sessionid_ss=fcb1646b867814ca355be9580dacd9e1; "
+    "session_tlb_tag=sttt%7C3%7C_LFka4Z4FMo1W-lYDazZ4f_________6WuJ8pUQnYbohCqDBJqOb8eNG_vt1gpcUe2HrHYIGu8M%3D; "
+    "is_staff_user=false; has_biz_token=false; "
+    "sid_ucp_v1=1.0.0-KGUxYWNiMzZmYzhhMTY1OGYyNzZlYmFmNzVmNzAyNGE3ZTBmY2ZiNDAKIAig84ChoM3QARCjr_rWBhjbrR8gDDDnhIGlBjgCQPEHGgJsZiIgZmNiMTY0NmI4Njc4MTRjYTM1NWJlOTU4MGRhY2Q5ZTE; "
+    "ssid_ucp_v1=1.0.0-KGUxYWNiMzZmYzhhMTY1OGYyNzZlYmFmNzVmNzAyNGE3ZTBmY2ZiNDAKIAig84ChoM3QARCjr_rWBhjbrR8gDDDnhIGlBjgCQPEHGgJsZiIgZmNiMTY0NmI4Njc4MTRjYTM1NWJlOTU4MGRhY2Q5ZTE"
+)
+
+_PC_UA = (
+    "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/132.0.0.0 Mobile Safari/537.36"
+)
+
+
+def _pc_headers():
+    h = {
+        "User-Agent": _PC_UA,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,"
+                  "image/avif,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "Cache-Control": "no-cache",
+        "Referer": SITE + "/",
+    }
+    if _GLOBAL_COOKIE:
+        h["Cookie"] = _GLOBAL_COOKIE
+    return h
+
+
+def _page(url):
+    last_err = None
+    for attempt in range(3):
+        try:
+            r = requests.get(url, headers=_pc_headers(), timeout=30)
+            r.raise_for_status()
+            r.encoding = r.encoding or "utf-8"
+            text = r.text or ""
+            if len(text) < 500:
+                raise RuntimeError("empty page")
+            return text
+        except Exception as err:
+            last_err = err
+            try:
+                time.sleep(0.6 * (attempt + 1))
+            except Exception:
+                pass
+    raise RuntimeError("page fetch failed: %s" % last_err)
+
+
+def _data(url):
+    html = _page(url)
+
+    m = re.search(r"(?:window\.)?_ROUTER_DATA\s*=\s*", html)
+    if m:
+        try:
+            return json.JSONDecoder().raw_decode(html[m.end():])[0]
+        except (ValueError, TypeError):
+            pass
+
+    m = re.search(r'<script[^>]+id="__NEXT_DATA__"[^>]*>(.*?)</script>',
+                  html, re.S)
+    if m:
+        try:
+            return json.loads(m.group(1))
+        except (ValueError, TypeError):
+            pass
+
+    for var in ("__INITIAL_STATE__", "__INITIAL_DATA__", "__DATA__"):
+        m = re.search(rf"(?:window\.)?{var}\s*=\s*", html)
+        if m:
+            try:
+                return json.JSONDecoder().raw_decode(html[m.end():])[0]
+            except (ValueError, TypeError):
+                pass
+
+    for m in re.finditer(
+        r'<script[^>]+type="application/json"[^>]*>(.*?)</script>',
+        html, re.S,
+    ):
+        try:
+            obj = json.loads(m.group(1))
+            if isinstance(obj, dict) and obj:
+                return obj
+        except (ValueError, TypeError):
+            pass
+
+    return {}
+
+
+def _parse_cards_html(html):
+    cards = []
+    seen = set()
+    for m in re.finditer(
+        r'<a[^>]*href="(/detail\?series_id=(\d+))"[^>]*>(.*?)</a>',
+        html, re.S,
+    ):
+        href, sid, block = m.group(1), m.group(2), m.group(3)
+        if sid in seen:
+            continue
+        seen.add(sid)
+
+        title = ""
+        tm = re.search(r'<p[^>]*class="[^"]*pc-title[^"]*"[^>]*>([^<]+)</p>', block)
+        if tm:
+            title = tm.group(1).strip()
+        if not title:
+            am = re.search(r'<img[^>]*alt="([^"]+)"', block)
+            if am:
+                title = am.group(1).strip()
+
+        pic = ""
+        pm = re.search(r'<img[^>]*class="[^"]*image[^"]*"[^>]*src="([^"]+)"', block)
+        if pm:
+            pic = pm.group(1)
+        if not pic:
+            pm = re.search(r'<img[^>]*src="(https?://[^"]+)"', block)
+            if pm:
+                pic = pm.group(1)
+
+        ep = ""
+        em = re.search(r'<p[^>]*class="[^"]*pc-episode[^"]*"[^>]*>([^<]+)</p>', block)
+        if em:
+            ep = em.group(1).strip()
+
+        tags = re.findall(
+            r'<span[^>]*class="[^"]*pc-tag-text[^"]*"[^>]*>([^<]+)</span>',
+            block,
+        )
+        tags = [t.strip() for t in tags if t.strip()]
+
+        if title and sid:
+            cards.append({
+                "vod_id": sid,
+                "vod_name": title,
+                "vod_pic": pic,
+                "vod_remarks": ep,
+                "vod_content": " / ".join(tags),
+            })
+    return cards
+
+
+def _extract_json_ld_episodes(html, series_id=""):
+    episodes = []
+    for m in re.finditer(
+        r'<script[^>]+type="application/ld\+json"[^>]*>(.*?)</script>',
+        html, re.S,
+    ):
+        try:
+            data = json.loads(m.group(1))
+        except Exception:
+            continue
+        items = data if isinstance(data, list) else [data]
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            if item.get("@type") != "TVEpisode":
+                continue
+            content_url = item.get("contentUrl") or ""
+            if not content_url:
+                continue
+            episodes.append({
+                "url": content_url,
+                "name": item.get("name") or "",
+            })
+    return episodes
+
+
+def _patched_homeContent(self, filter):
+    class_list = [
+        {"type_id": "/category/real-drama", "type_name": "真人剧"},
+        {"type_id": "/category/comic-drama", "type_name": "漫剧"},
+        {"type_id": "/category/ai-drama", "type_name": "AI剧"},
+        {"type_id": "/category/comic", "type_name": "漫画"},
+    ]
+    home_list = []
+    try:
+        html = _page(SITE + "/")
+        home_list = _parse_cards_html(html)[:40]
+    except Exception:
+        home_list = []
+    return {"class": class_list, "list": home_list}
+
+
+def _patched_homeVideoContent(self):
+    try:
+        html = _page(SITE + "/")
+        return {"list": _parse_cards_html(html)[:60]}
+    except Exception:
+        return {"list": []}
+
+
+def _patched_categoryContent(self, tid, pg, filter, extend):
+    try:
+        page = max(1, int(pg))
+    except (TypeError, ValueError):
+        page = 1
+
+    tid_str = str(tid)
+    if tid_str.startswith("/category/"):
+        base = SITE + tid_str
+    elif tid_str in ("comic", "manju", "漫剧"):
+        base = SITE + "/category/comic-drama"
+    elif tid_str in ("ai_comic", "ai_manju", "AI漫剧", "ai漫剧"):
+        base = SITE + "/category/ai-drama"
+    elif tid_str == "/":
+        base = SITE + "/"
+    else:
+        base = SITE + "/category/real-drama"
+
+    url = base + (f"?page={page}" if page > 1 else "")
+    try:
+        html = _page(url)
+        items = _parse_cards_html(html)
+        max_page = page
+        for m in re.finditer(r'href="[^"]*[?&]page=(\d+)"', html):
+            try:
+                n = int(m.group(1))
+                if n > max_page:
+                    max_page = n
+            except Exception:
+                pass
+        return {
+            "page": page,
+            "pagecount": max_page,
+            "limit": len(items),
+            "total": max_page * len(items) if items else 0,
+            "list": items,
+        }
+    except Exception:
+        return {"page": page, "pagecount": 1, "limit": 0, "total": 0, "list": []}
+
+
+def _patched_searchContent(self, key, quick=False, pg="1"):
+    try:
+        page = max(1, int(pg))
+    except (TypeError, ValueError):
+        page = 1
+    key = str(key or "").strip() or "短剧"
+
+    try:
+        api_url = f"{SITE}/search?q={quote(key)}&page={page}"
+        r = requests.get(api_url, headers=_pc_headers(), timeout=15)
+        if r.status_code == 200:
+            try:
+                data = r.json()
+                rows = data.get("data") or data.get("list") or []
+                if isinstance(rows, list) and rows:
+                    items = []
+                    for row in rows:
+                        sid = str(row.get("series_id") or row.get("id") or "")
+                        name = row.get("series_name") or row.get("title") or ""
+                        if sid and name:
+                            items.append({
+                                "vod_id": sid,
+                                "vod_name": name,
+                                "vod_pic": row.get("cover") or row.get("pic") or "",
+                                "vod_remarks": row.get("episode_cnt") or "",
+                            })
+                    if items:
+                        return {"page": page, "pagecount": 1,
+                                "limit": len(items), "total": len(items),
+                                "list": items}
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+    for url in (
+        f"{SITE}/search/{quote(key)}",
+        f"{SITE}/search?keyword={quote(key)}",
+        f"{SITE}/search?q={quote(key)}",
+    ):
+        try:
+            html = _page(url)
+            items = _parse_cards_html(html)
+            if items:
+                return {"page": page, "pagecount": 1,
+                        "limit": len(items), "total": len(items),
+                        "list": items}
+        except Exception:
+            continue
+
+    return {"page": page, "pagecount": 1, "limit": 0, "total": 0, "list": []}
+
+
+def _patched_detailContent(self, ids):
+    sid = str(ids[0] if isinstance(ids, (list, tuple)) else ids)
+    sid = sid.replace("hg-series-v1:", "")
+
+    series_name = ""
+    series_cover = ""
+    series_intro = ""
+    episode_right_text = ""
+    actors = []
+    vids = []
+
+    try:
+        data = _data(SITE + "/detail?series_id=" + quote(sid, safe=""))
+        p = (data.get("loaderData") or {}).get("detail_page") or {}
+        s = p.get("seriesDetail") or {}
+        series_name = str(s.get("series_name") or "")
+        series_cover = str(s.get("series_cover") or "")
+        series_intro = str(s.get("series_intro") or "")
+        episode_right_text = str(s.get("episode_right_text") or "")
+        vids = list(s.get("vid_list") or [])
+        actors = [str(x.get("nickname"))
+                  for x in (s.get("celebrities") or [])
+                  if isinstance(x, dict) and x.get("nickname")]
+    except Exception:
+        pass
+
+    html = ""
+    try:
+        html = _page(SITE + "/detail?series_id=" + quote(sid, safe=""))
+    except Exception:
+        pass
+
+    episodes = []
+    if html:
+        episodes = _extract_json_ld_episodes(html, sid)
+        if not series_name:
+            m = re.search(r'<title>([^<]+)</title>', html)
+            if m:
+                series_name = re.split(r"[_\-|–]", m.group(1))[0].strip()
+        if not series_cover:
+            m = re.search(r'<meta[^>]+property="og:image"[^>]+content="([^"]+)"', html)
+            if m:
+                series_cover = m.group(1)
+
+    play_from = []
+    play_url = []
+    if episodes:
+        play_from.append("红果短剧")
+        play_url.append("#".join(
+            f"{ep.get('name') or ('第%d集' % (i + 1))}${ep['url']}"
+            for i, ep in enumerate(episodes)
+        ))
+    elif vids:
+        for q, line_name in _HG_QUALITY_LINES:
+            eps = "#".join(
+                "第%d集%s%s%s%s" % (i + 1, "$", EPISODE_PREFIX, q + ":", str(v))
+                for i, v in enumerate(vids)
+            )
+            play_from.append(line_name)
+            play_url.append(eps)
+    else:
+        play_from.append("红果短剧")
+        play_url.append(f"未找到播放源${SITE}/detail?series_id={sid}")
+
+    return {"list": [{
+        "vod_id": sid,
+        "vod_name": series_name,
+        "vod_pic": series_cover,
+        "vod_year": "", "vod_area": "", "vod_director": "",
+        "vod_actor": ",".join(actors),
+        "vod_content": series_intro,
+        "vod_remarks": episode_right_text,
+        "vod_play_from": "$$$".join(play_from),
+        "vod_play_url": "$$$".join(play_url),
+    }]}
+
+
+def _patched_playerContent(self, flag, id, vipFlags=None):
+    if str(id).startswith("http") and ".mp4" in str(id).lower():
+        return {
+            "parse": 0,
+            "jx": 0,
+            "playUrl": "",
+            "url": id,
+            "header": _pc_headers(),
+        }
+
+    token_q, vid = _split_episode_token(id)
+    line_q = "1080"
+    for name_key, candidate_q in _QUALITY_LINE_NAME_TO_Q.items():
+        if name_key in str(flag or ""):
+            line_q = candidate_q
+            break
+    q = line_q if token_q == "1080" and str(flag) else token_q
+    q = q if q in _QUALITY_LINE_NAME_TO_Q else "1080"
+
+    if not str(vid).isdigit():
+        return {
+            "parse": 1, "jx": 0, "playUrl": "",
+            "url": SITE + "/",
+            "header": {"User-Agent": _PC_UA},
+        }
+
+    proxy = ""
+    try:
+        if hasattr(self, "getProxyUrl"):
+            proxy = (self.getProxyUrl() or "").strip()
+    except Exception:
+        proxy = ""
+
+    if proxy:
+        sep = "&" if "?" in proxy else "?"
+        url = proxy + sep + urlencode({
+            "vid": vid,
+            "q": q,
+            "hg": "cenc",
+            "did": self.device_id or "",
+            "iid": self.install_id or "",
+        })
+        return {
+            "parse": 0, "jx": 0, "playUrl": "",
+            "url": url,
+            "header": {
+                "User-Agent": MEDIA_UA,
+                "Referer": "https://novel.snssdk.com/",
+            },
+        }
+
+    try:
+        port = _start_stream_server()
+    except Exception:
+        port = 0
+    if port:
+        query = urlencode({
+            "vid": vid, "q": q,
+            "did": self.device_id or "",
+            "iid": self.install_id or "",
+        })
+        return {
+            "parse": 0, "jx": 0, "playUrl": "",
+            "url": "http://127.0.0.1:%d/hg.mp4?%s" % (port, query),
+            "header": {"User-Agent": _PC_UA},
+        }
+
+    return {
+        "parse": 1, "jx": 0, "playUrl": "",
+        "url": SITE + "/",
+        "header": {"User-Agent": _PC_UA},
+    }
+
+
+# ---- 应用补丁 ----
+Spider.homeContent       = _patched_homeContent
+Spider.homeVideoContent  = _patched_homeVideoContent
+Spider.categoryContent   = _patched_categoryContent
+Spider.searchContent     = _patched_searchContent
+Spider.detailContent     = _patched_detailContent
+Spider.playerContent     = _patched_playerContent
+
+print("[红果短剧] 补丁已应用：homeContent / homeVideoContent / "
+      "categoryContent / searchContent / detailContent / playerContent")
