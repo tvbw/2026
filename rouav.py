@@ -29,7 +29,7 @@ class Spider(SpiderBase):
     def __init__(self):
         super(Spider, self).__init__()
         # 发布导航站双活入口与默认兜底主站
-        self.navUrls = ["https://x99dh.cc", "https://x99dh.one"]
+        self.navUrls = ["https://x99dh.cc", "https://x99dh.net"]
         self.defaultHost = "https://rou123.ws"
         self.siteUrl = self.defaultHost
         self.siteName = "rouAV"
