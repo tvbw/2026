@@ -114,10 +114,10 @@
       "api": "http://pglblb.test.upcdn.net/2026py/test/好色TV.py"
     },
     {
-      "key": "每日大赛标准模板1",
-      "name": "❤️每日大赛【每日模板】",
+      "key": "每日大赛",
+      "name": "❤️每日大赛🔞",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds-m.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds.py",
       "searchable": 1,
       "quickSearch": 1,
       "style": {
@@ -1559,19 +1559,6 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld-m.py"
-    },
-    {
-      "key": "每日大赛",
-      "name": "❤️每日大赛🔞",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "changeable": 1
     },
     {
       "key": "51模板4",
