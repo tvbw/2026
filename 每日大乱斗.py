@@ -5,6 +5,7 @@
 链路：种子域名列表 → (302 自动跟随) → 主站
       → 取 response.url 最终域名作为 self.host
       → 6 小时缓存，失效自动重探
+      → 探测全部失败时回退到 SEED_HOSTS[0]，避免全空白
 """
 import json
 import re
@@ -45,13 +46,12 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 4 个三级域名（来自发布页；失效后旧域名一般仍可 302 到新域名）----
     SEED_HOSTS = [
-        "https://busy.wzjhwoiir.cc/",
-        "https://cabinet.wzjhwoiir.cc/",
-        "https://capable.wzjhwoiir.cc/",
-        "https://d3abxmgsrop61e.cloudfront.net/",
+        "https://ceo.kludlvje.cc/",
+        "https://cause.kludlvje.cc/",
+        "https://amazing.kludlvje.cc/",
     ]
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host"        # 每个站点必须唯一
+    HOST_CACHE_KEY = "mrds1_host"          # 每个站点必须唯一
     HOST_CACHE_TTL = 6 * 3600
 
     # ---- 探测参数 ----
@@ -59,9 +59,8 @@ class SiteConfig:
     PROBE_MIN_HTML       = 3000
     PROBE_MIN_ARTICLE    = 3
 
-    # ---- 站点特征 ----
-    # 建议填本站唯一关键字（如 ["每日大乱斗"]），防止与其他站点串位
-    SITE_KEYWORDS    = []
+    # ---- 站点特征（务必带引号！）----
+    SITE_KEYWORDS    = ["每日大赛"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article"]
 
     # ---- 列表 / 详情选择器 ----
@@ -73,7 +72,6 @@ class SiteConfig:
     SEL_SUMMARY      = ".post-content"
     SEL_TITLE        = ".post-title, h1"
 
-    # ---- 一级导航选择器 ----
     SEL_NAV = [
         "ul.navbar-nav.mr-auto > li.nav-item > a.nav-link",
         "ul.navbar-nav > li.nav-item > a.nav-link",
@@ -88,7 +86,6 @@ class SiteConfig:
         "nav a",
     ]
 
-    # ---- 二级下拉选择器 ----
     SEL_SUB_NAV = [
         "ul.navbar-nav.mr-auto li.nav-item.dropdown > ul.dropdown-menu > li.dropdown-item > a",
         "ul.dropdown-menu > li.dropdown-item > a",
@@ -138,9 +135,7 @@ class DomainResolver:
         self.cfg, self.fetch = cfg, fetcher
         self.cache_get, self.cache_set = cache_get, cache_set
 
-    # ============ 站点内容识别（核心逻辑，本站永久不变） ============
     def _site_ok(self, html):
-        """配置了 SITE_KEYWORDS 就必须命中，否则视为非本站"""
         if not html or len(html) < self.cfg.PROBE_MIN_HTML:
             return False
         if self.cfg.SITE_KEYWORDS:
@@ -149,7 +144,6 @@ class DomainResolver:
         if low.count("<article") >= self.cfg.PROBE_MIN_ARTICLE:
             return True
         return any(m in low for m in self.cfg.SITE_MARKERS) and len(html) > 20000
-    # ==============================================================
 
     def _safe_fetch(self, url, timeout):
         try:
@@ -197,6 +191,7 @@ class DomainResolver:
     def resolve(self):
         cached = self._read_cache()
 
+        # 1) 缓存优先
         if cached and self._cache_fresh(cached):
             r = self._safe_fetch(cached["host"] + "/", self.cfg.PROBE_TIMEOUT)
             if r is not None and r.status_code == 200 and self._site_ok(r.text):
@@ -209,6 +204,7 @@ class DomainResolver:
             LOG.info("缓存失效: %s", cached["host"])
             print(f"缓存失效: {cached['host']}")
 
+        # 2) 并发探测 SEED_HOSTS（带详细日志）
         urls = list(self.cfg.SEED_HOSTS)
         if cached:
             urls.insert(0, cached["host"] + "/")
@@ -222,11 +218,18 @@ class DomainResolver:
                     u = futs[f]
                     try:
                         r = f.result()
-                    except Exception:
+                    except Exception as e:
+                        print(f"探测异常 {u}: {e}")
                         continue
-                    if r is None or r.status_code != 200:
+                    if r is None:
+                        print(f"探测无响应: {u}")
+                        continue
+                    if r.status_code != 200:
+                        print(f"探测 HTTP {r.status_code}: {u}")
                         continue
                     if not self._site_ok(r.text):
+                        kws = self.cfg.SITE_KEYWORDS or '结构判断'
+                        print(f"探测内容不匹配: {u} (len={len(r.text or '')}, 关键词={kws})")
                         continue
                     final = (r.url or u).rstrip("/")
                     self._write_cache(final)
@@ -240,10 +243,19 @@ class DomainResolver:
             except Exception as e:
                 LOG.debug("并发探测异常: %s", e)
 
+        # 3) 全部失败
         if cached:
             LOG.warning("使用过期缓存: %s", cached["host"])
             print(f"使用过期缓存: {cached['host']}")
             return cached["host"]
+
+        # ============ 兜底：与 51/91 模板一致 ============
+        if self.cfg.SEED_HOSTS:
+            fallback = self.cfg.SEED_HOSTS[0].rstrip("/")
+            print(f"【警告】所有域名探测失败，回退到种子域名: {fallback}")
+            print(f"【提示】如内容为空或报错，请检查 SITE_KEYWORDS 是否与站点实际标题匹配")
+            return fallback
+        # ================================================
 
         LOG.error("域名探测失败，请更新 SEED_HOSTS")
         print("域名探测失败，请更新 SEED_HOSTS")
@@ -251,7 +263,7 @@ class DomainResolver:
 
 
 # ==================================================================
-# ③ 主爬虫基类（以下内容与用户原有 3-每日模板 完全一致）
+# ③ 主爬虫基类
 # ==================================================================
 class BaseMultiDomainSpider(BaseSpider):
     CONFIG = SiteConfig
@@ -278,7 +290,7 @@ class BaseMultiDomainSpider(BaseSpider):
             self.headers.update({"Origin": self.host, "Referer": self.host + "/"})
         print(f"使用站点: {self.host}")
 
-    def getName(self):          return "🌈 多域名自愈通用版"
+    def getName(self):          return "🌈 每日系列自愈版"
     def manualVideoCheck(self): return False
     def isVideoFormat(self, u): return any(e in (u or "") for e in (".m3u8", ".mp4", ".ts"))
     def destroy(self):          self._img_cache.clear()
@@ -693,11 +705,11 @@ class Spider(BaseMultiDomainSpider):
     CONFIG = SiteConfig
 
     def getName(self):
-        return "❇️ 多域名三级自愈版"
+        return "❇️ 每日系列三级自愈版"
 
 
 # ==================================================================
-# ⑤ 播放源聚合扩展（与用户原有 3-每日模板完全一致）
+# ⑤ 播放源聚合扩展
 # ==================================================================
 def _install_playlist_extension(_C):
     if getattr(_C, "_pl_patched", False):
