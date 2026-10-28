@@ -3,158 +3,313 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "🔞8kporner",
-      "name": "🔞8kporner",
+      "key": "🔞ddmf5",
+      "name": "🍁蛋蛋魔法影视",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/8kporner.py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/ddmf5.py"
     },
     {
-      "key": "🔞91porn",
-      "name": "🔞91porn",
+      "key": "🔞bpwz3",
+      "name": "🔞bpwz3",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/91porn.py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/bpwz3.py"
     },
     {
-      "key": "🔞Jable (1)",
-      "name": "🔞Jable (1)",
+      "key": "🔞bpwz2",
+      "name": "🔞bpwz2",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/Jable (1).py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/bpwz2.py"
     },
     {
-      "key": "🔞Jable_new(1)",
-      "name": "🔞Jable_new(1)",
+
+      "key": "🔞18jspa3",
+      "name": "🔞18jspa3",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/Jable_new(1).py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/18jspa3.py"
     },
     {
-      "key": "🔞jable",
-      "name": "🔞jable",
+
+      "key": "🔞18jspa2",
+      "name": "🔞18jspa2",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/jable.py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/18jspa2.py"
     },
     {
-      "key": "🔞javtiful",
-      "name": "🔞javtiful",
+
+      "key": "🔞chengguo2",
+      "name": "🔞chengguo2",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/javtiful.py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/chengguo2.py"
     },
     {
-      "key": "🔞lissavcn",
-      "name": "🔞lissavcn",
+
+      "key": "🔞lbav",
+      "name": "🔞lbav",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/lissavcn.py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/lbav.py"
     },
     {
-      "key": "🔞lissavjp",
-      "name": "🔞lissavjp",
+
+      "key": "🔞lbav2",
+      "name": "🔞lbav2",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/lissavjp.py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/lbav2.py"
     },
     {
-      "key": "🔞rouav",
-      "name": "🔞rouav",
+
+      "key": "🔞lbav3",
+      "name": "🔞lbav3",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/rouav.py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/lbav3.py"
     },
     {
-      "key": "🔞好色TV",
-      "name": "🔞好色TV",
+
+      "key": "🔞yangshipin_m3u",
+      "name": "🔞yangshipin_m3u",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/好色TV.py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/yangshipin_m3u.py"
     },
     {
-      "key": "🔞好色TV (1)",
-      "name": "🔞好色TV (1)",
+
+      "key": "🔞ppnix",
+      "name": "🔞ppnix",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/好色TV (1).py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/ppnix.py"
     },
     {
-      "key": "🔞好色tv (2)",
-      "name": "🔞好色tv (2)",
+
+      "key": "🔞madouai",
+      "name": "🔞madouai",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/好色tv (2).py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/madouai.py"
     },
     {
-      "key": "🔞肉视频 (1)",
-      "name": "🔞肉视频 (1)",
+
+      "key": "🔞madouai2",
+      "name": "🔞madouai2",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/肉视频 (1).py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/madouai2.py"
     },
     {
-      "key": "🔞肉视频",
-      "name": "🔞肉视频",
+
+      "key": "🔞madouai3",
+      "name": "🔞madouai3",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/肉视频.py"
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/madouai3.py"
+    },
+    {
+
+      "key": "🔞xmhjs5",
+      "name": "🔞xmhjs5",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/xmhjs5.py"
+    },
+    {
+      "key": "🔞xmhsites3",
+      "name": "🔞xmhsites3",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/xmhsites3.py"
+    },
+    {
+      "key": "🔞kxyy",
+      "name": "🔞kxyy",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/kxyy.py"
+    },
+    {
+      "key": "🔞dida2",
+      "name": "🔞dida2",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/dida2.py"
+    },
+    {
+      "key": "🔞蜜桃视频",
+      "name": "🔞蜜桃视频",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/py/蜜桃视频.py"
+    },
+    {
+      "key": "🔞寂寞阿姨🔞",
+      "name": "🔞寂寞阿姨🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/py/寂寞阿姨🔞.py"
+    },
+    {
+      "key": "🔞房中秘术🔞",
+      "name": "🔞房中秘术🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/py/%E6%88%BF%E4%B8%AD%E3%8A%99%EF%B8%8F%E6%9C%AF%F0%9F%94%9E.py"
+    },
+    {
+      "key": "🔞成人中心",
+      "name": "🔞成人中心",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/py/成人中心.py"
+    },
+    {
+      "key": "🔞撸王宝典🔞",
+      "name": "🔞撸王宝典🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/py/撸王宝典🔞.py"
+    },
+    {
+      "key": "🔞污漫天堂🔞",
+      "name": "🔞污漫天堂🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/py/污漫天堂🔞.py"
+    },
+    {
+      "key": "🔞海角乱伦🔞",
+      "name": "🔞海角乱伦🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/py/海角乱伦🔞.py"
+    },
+    {
+      "key": "🔞清纯人妻🔞",
+      "name": "🔞清纯人妻🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/py/清纯人妻🔞.py"
+    },
+    {
+      "key": "🔞肉漫屋🔞",
+      "name": "🔞肉漫屋🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/py/肉漫屋🔞.py"
     },
     {
 
@@ -235,6 +390,50 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
+    },
+    {
+      "key": "🔞lissavcn",
+      "name": "🔞lissavcn",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/lissavcn.py"
+    },
+    {
+      "key": "🔞lissavjp",
+      "name": "🔞lissavjp",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/lissavjp.py"
+    },
+    {
+      "key": "🔞rouav",
+      "name": "🔞rouav",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/rouav.py"
+    },
+    {
+      "key": "🔞好色TV",
+      "name": "🔞好色TV",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/好色TV.py"
     },
     {
       "key": "每日大赛标准模板1",
