@@ -1,11 +1,15 @@
 # ============================================================
-# 51通用模板 · 动态发布页自愈版 V3（对齐 Zaka/rouav 原理）
+# 51通用模板 · 动态发布页自愈版 V4
 # 
-# 原理对齐要点：
-#   1) Zaka/rouav 的 navUrls 是"发布页导航站"，从不作为主站候选
-#   2) 51bla18/19/20.com 同样只是导航页，主站 xxx.luwhogpx.cc 藏在 HTML 明文里
-#   3) 探活必须严格 —— Zaka 只验 HTTP 200，rouav 只验 /vodtype 页面
-#   4) 绝不因为"页面大小正常"就误判成功（本次修复核心）
+# 真实链路（与参考代码完全不同的模式）：
+#   入口 (51bla18.com) --302--> 发布页 (djrqnywk.cc) --<a>链接--> 主站A/B/C
+#
+# 核心策略：
+#   1) 请求入口URL时 allow_redirects=True，跟随302拿到发布页HTML
+#   2) 从发布页HTML提取所有 <a> 标签的 href 作为候选
+#   3) 发布页自身域名绝不入候选池（防止误判）
+#   4) 探活唯一判据：主站首页必须有 #index article a
+#   5) 保留 Base64 解析作为兜底（兼容未来发布页改版）
 # ============================================================
 import json
 import os
@@ -33,7 +37,7 @@ sys.path.append('..')
 from base.spider import Spider
 
 # ============================================================
-# 本地文件缓存（框架缓存失效兜底）
+# 本地文件缓存
 # ============================================================
 CACHE_FILE_NAME = "spider_host_cache.json"
 CACHE_TTL = 48 * 3600
@@ -96,7 +100,7 @@ SITE_CONFIG = {
     "play_from": "51通用合一缓存板",
     "style": {"type": "rect", "ratio": 1.33},
 
-    # ------- 发布页（导航站，不是主站！） -------
+    # ------- 固定发布入口（会自动跟随302到二级发布页） -------
     "publish_urls": [
         "https://51bla18.com/",
         "https://51bla19.com/",
@@ -105,30 +109,31 @@ SITE_CONFIG = {
     "publish_url": "https://51bla20.com/",
     "publish_decode": "plain",
 
-    # Base64 JSON name 关键词（如果发布页含此结构则可用）
-    "site_names": ["51bla", "luwhogpx", "稀缺资源"],
-
-    # 完全无兜底
+    # 完全依赖自愈，无兜底域名
     "fallback_hosts": [],
 
-    # 探活：只接受选择器命中（严格）
+    # ------- 探活：唯一判据（严格） -------
+    # 主站首页必须包含此选择器命中的元素才算可用
+    # 发布页(djrqnywk.cc)不会有这个结构 → 自动被过滤
     "host_check_selector": "#index article a",
 
-    # 主站域名白名单模式（51特色：xxx.luwhogpx.cc）
-    # 不填则从发布页解析到的所有非黑名单域名都会尝试
-    "host_pattern_hints": [".luwhogpx.cc", "51"],
-
-    # CDN/统计/框架黑名单（域名包含这些词的排除）
+    # ------- 候选过滤黑名单（防止把CDN/统计/框架域名当主站） -------
     "host_blacklist": [
-        "google", "facebook", "twitter", "cloudflare", "cdn",
-        "static", "analytics", "doubleclick", "gstatic",
-        "jsdelivr", "bootstrap", "jquery", "fontawesome",
-        "cdnjs", "unpkg", "baidu", "51.la", "cnzz", "umeng",
-        "gtag", "googletagmanager", "adservice", "adsterra",
-        "themes", "wp-content", "wp-includes", "beacon",
-        "telemetry", "statistics", "clarity", "hotjar",
-        "yandex", "bing", "w3.org", "schema.org", "gmpg.org",
-        "json-schema", "wordpress", "elementor", "jquery",
+        "google", "facebook", "twitter", "cloudflare", "gstatic",
+        "googletagmanager", "googlesyndication", "google-analytics",
+        "doubleclick", "jsdelivr", "cdnjs", "unpkg", "bootstrapcdn",
+        "jquery", "fontawesome", "baidu.com", "51.la", "cnzz",
+        "umeng", "gtag", "w3.org", "schema.org", "gmpg.org",
+        "wordpress.org", "jquery.com", "wix.com", "wixstatic",
+        "telegram.org", "t.me", "youtube.com", "youtu.be",
+        "instagram", "tiktok", "weibo", "qq.com", "weixin",
+    ],
+
+    # ------- 提取链接时跳过明显非主站的路径关键字 -------
+    "skip_path_keywords": [
+        "about", "privacy", "contact", "terms", "advertise",
+        "faq", "help", "login", "register", "signup",
+        "javascript:", "mailto:", "tel:", "#",
     ],
 
     "list_selector": "#index article a, #archive article a",
@@ -177,7 +182,7 @@ SITE_CONFIG = {
     },
 
     "timeout": 15,
-    "probe_timeout": 6,
+    "probe_timeout": 8,
     "fast_timeout": 3,
     "probe_workers": 8,
 }
@@ -199,7 +204,7 @@ class Spider(Spider):
         self.cfg = SITE_CONFIG
         self.headers = dict(self.cfg["headers"])
 
-        # urllib 兜底 opener（对齐 rouav，绕证书/反爬）
+        # urllib 兜底 opener（绕证书/反爬）
         try:
             ctx = ssl.create_default_context()
             ctx.check_hostname = False
@@ -235,7 +240,7 @@ class Spider(Spider):
         pass
 
     # ============================================================
-    # 【修复1】统一请求：失败自动刷新域名重试（对齐 rouav _fetch）
+    # 统一请求：失败自动刷新域名重试（对齐 rouav _fetch）
     # ============================================================
     def _get(self, url, retry_on_fail=True, **kwargs):
         kwargs.setdefault("timeout", self.cfg["timeout"])
@@ -288,17 +293,20 @@ class Spider(Spider):
         return False
 
     # ============================================================
-    # 发布页抓取：requests → urllib 双引擎
+    # 发布页抓取：requests → urllib 双引擎，跟随302
+    # 返回 (text, final_url) —— final_url 是302之后的真实发布页URL
     # ============================================================
     def _fetch_publish_page(self, url, timeout):
+        # 尝试 1: requests（allow_redirects=True 自动跟随302）
         try:
             r = requests.get(url, headers=self.headers, proxies=self.proxies,
                              timeout=timeout, allow_redirects=True)
             if r.status_code == 200 and len(r.text or "") > 100:
                 return r.text, r.url
         except Exception as e:
-            self.log(f"requests 失败: {e}")
+            self.log(f"requests 抓取失败: {e}")
 
+        # 尝试 2: urllib（绕证书/反爬）
         if not self._opener:
             return "", url
         try:
@@ -324,12 +332,12 @@ class Spider(Spider):
             except Exception:
                 pass
         except Exception as e:
-            self.log(f"urllib 失败: {e}")
+            self.log(f"urllib 抓取失败: {e}")
         return "", url
 
     # ============================================================
-    # 【修复2 · 核心】探活严格化：只允许选择器命中通过
-    # 对齐 Zaka 的 chk.get("code") == 200 —— 绝不宽容误判
+    # 探活：严格（唯一判据是选择器命中）
+    # 发布页(djrqnywk.cc)没有 #index article a → 自动被过滤
     # ============================================================
     def _probe_one(self, url, timeout):
         try:
@@ -337,7 +345,6 @@ class Spider(Spider):
                              timeout=timeout, allow_redirects=True)
             if r.status_code != 200:
                 return False
-            # 唯一判据：主站首页必须有 #index article a 文章列表
             try:
                 doc = self.getpq(r.text)
                 return bool(doc(self.cfg["host_check_selector"]))
@@ -357,7 +364,7 @@ class Spider(Spider):
         with ThreadPoolExecutor(max_workers=workers) as ex:
             future_map = {ex.submit(self._probe_one, u, timeout): u for u in urls}
             try:
-                for fut in as_completed(future_map, timeout=timeout + 3):
+                for fut in as_completed(future_map, timeout=timeout + 5):
                     u = future_map[fut]
                     try:
                         results[u] = fut.result(timeout=0)
@@ -377,7 +384,7 @@ class Spider(Spider):
         return ""
 
     # ============================================================
-    # 缓存：框架 getCache 优先 + 文件兜底
+    # 缓存
     # ============================================================
     def _cache_get(self):
         if Spider._cached_host:
@@ -414,6 +421,7 @@ class Spider(Spider):
     # 域名解析主流程
     # ============================================================
     def get_working_host(self):
+        # 1) 缓存优先
         cached = self._cache_get()
         if cached:
             if self._probe_one(cached, self.cfg["fast_timeout"]):
@@ -423,6 +431,7 @@ class Spider(Spider):
             self.log(f"缓存失效: {cached}")
             self._cache_del()
 
+        # 2) 从发布页提取候选
         candidates = self.extract_domains_from_publish_page()
 
         for u in (self.cfg.get("fallback_hosts") or []):
@@ -447,7 +456,7 @@ class Spider(Spider):
         return ""
 
     # ============================================================
-    # 【修复3 · 核心】发布页解析：Zaka/rouav 原理 + 51 明文扫描
+    # 【核心】发布页解析：跟随302 → 提取链接 → Base64兜底
     # ============================================================
     def extract_domains_from_publish_page(self):
         entries = self.cfg.get("publish_urls") or [self.cfg.get("publish_url", "")]
@@ -464,150 +473,110 @@ class Spider(Spider):
 
         for entry in entries:
             try:
+                # 请求入口，自动跟随302，拿到最终发布页URL
                 text, final_url = self._fetch_publish_page(entry, self.cfg["probe_timeout"])
                 if not text:
                     self.log(f"发布页无响应: {entry}")
+                    print(f"发布页无响应: {entry}")
                     continue
 
-                # ---- 关键补充：发布页发生跨域 302，跳转目标就是主站候选 ----
-                p_entry = urlparse(entry)
-                p_final = urlparse(final_url or entry)
-                if p_final.netloc and p_final.netloc != p_entry.netloc:
-                    cand = f"{p_final.scheme}://{p_final.netloc}"
-                    self.log(f"发布页跨域跳转 → 候选: {cand}")
-                    _add([cand])
+                entry_host = urlparse(entry).netloc
+                final_host = urlparse(final_url).netloc
+                if final_host and final_host != entry_host:
+                    self.log(f"302 跳转: {entry_host} → {final_host}")
+                    print(f"302 跳转: {entry_host} → {final_host}")
 
-                # ---- 策略1: Base64 JSON 站点列表（Zaka/rouav 核心） ----
+                # ---- 策略1【核心】: 提取发布页上所有 <a> 链接 ----
+                # djrqnywk.cc 页面上的3-4个链接就是最终主站候选
+                _add(self._extract_all_links(text, final_url or entry))
+
+                # ---- 策略2【兜底】: Base64 JSON（兼容未来改版） ----
                 _add(self._extract_b64_sites(text))
 
-                # ---- 策略2: HTML 选择器（a.route 等） ----
-                _add(self._extract_from_html(text, final_url or entry))
-
-                # ---- 策略3: 【51 核心】全文本 URL 正则扫描 ----
-                # 51bla 发布页把 *.luwhogpx.cc 明文写在 <a> / <div> / <script> 里
-                _add(self._extract_urls_by_regex(text))
-
-                # ---- 策略4: meta refresh 跳转 ----
+                # ---- 策略3【兜底】: meta refresh / JS location ----
                 target = self._find_meta_refresh(text)
                 if target:
                     _add(self._fetch_and_extract(target, base=entry))
-
-                # ---- 策略5: JS location 跳转 ----
                 target = self._find_js_location(text)
                 if target:
                     _add(self._fetch_and_extract(target, base=entry))
 
             except Exception as e:
                 self.log(f"发布页入口失败 [{entry}]: {e}")
+                print(f"发布页入口失败 [{entry}]: {e}")
                 continue
 
         if all_domains:
-            self.log(f"发布页共提取 {len(all_domains)} 个候选: {all_domains[:10]}")
-            print(f"发布页共提取 {len(all_domains)} 个候选: {all_domains[:10]}")
+            self.log(f"共提取 {len(all_domains)} 个候选: {all_domains[:10]}")
+            print(f"共提取 {len(all_domains)} 个候选: {all_domains[:10]}")
         else:
-            self.log("发布页未提取到任何候选域名")
-            print("发布页未提取到任何候选域名")
+            self.log("未提取到任何候选域名")
+            print("未提取到任何候选域名")
         return all_domains
 
     # ------------------------------------------------------------
-    # 过滤工具
+    # 【核心】提取页面上所有 <a> 链接
     # ------------------------------------------------------------
-    def _is_publish_domain(self, host):
-        """过滤发布页自身域名"""
-        entries = self.cfg.get("publish_urls") or []
-        host_l = host.lower()
-        for e in entries:
-            try:
-                p = urlparse(e)
-                if p.netloc and p.netloc.lower() == host_l:
-                    return True
-            except Exception:
-                pass
-        return False
-
-    def _is_blacklisted(self, host):
-        """过滤 CDN/统计/框架/广告域名"""
-        host_l = host.lower()
-        for kw in self.cfg.get("host_blacklist", []):
-            if kw and kw.lower() in host_l:
-                return True
-        return False
-
-    def _looks_like_main_site(self, host):
-        """白名单校验：优先接受匹配 host_pattern_hints 的域名"""
-        hints = self.cfg.get("host_pattern_hints", [])
-        if not hints:
-            return True   # 无白名单配置时全接受（由探活筛选）
-        host_l = host.lower()
-        # 任意 hint 匹配即可（包含匹配）
-        for h in hints:
-            if h and h.lower() in host_l:
-                return True
-        return False
-
-    # ------------------------------------------------------------
-    # 【修复4 · 核心】全文本 URL 正则扫描（51 发布页专用）
-    # ------------------------------------------------------------
-    def _extract_urls_by_regex(self, text):
-        """从页面全文本提取所有 xxx.yyy.zzz 形式的域名"""
+    def _extract_all_links(self, html, base_url):
+        """从发布页提取所有可用的 <a href>，过滤CDN/发布页自身/无关路径"""
         out, seen = [], set()
-        if not text:
+        if not html:
             return out
 
-        # 匹配 https?://host/path 或 //host
-        for m in re.finditer(
-            r'https?://([a-zA-Z0-9][a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,})(?::\d+)?',
-            text
-        ):
-            host = m.group(1).lower()
-            if self._is_blacklisted(host) or self._is_publish_domain(host):
-                continue
-            base_url = "https://" + host
-            if base_url not in seen:
-                seen.add(base_url)
-                out.append(base_url)
+        try:
+            doc = self.getpq(html)
+        except Exception as e:
+            self.log(f"PyQuery 解析失败: {e}")
+            return out
 
-        # 协议相对 URL（//xxx.luwhogpx.cc/）
-        for m in re.finditer(
-            r'(?<![:/])//([a-zA-Z0-9][a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,})(?::\d+)?',
-            text
-        ):
-            host = m.group(1).lower()
-            if self._is_blacklisted(host) or self._is_publish_domain(host):
+        for a_tag in doc("a").items():
+            href = (a_tag.attr("href") or "").strip()
+            if not href:
                 continue
-            base_url = "https://" + host
-            if base_url not in seen:
-                seen.add(base_url)
-                out.append(base_url)
 
-        # 特殊：51 主站域名模式（白名单，即使不带 http 前缀也接受）
-        for hint in self.cfg.get("host_pattern_hints", []):
-            if not hint or "." not in hint:
+            # 跳过明显非主站链接
+            skip = False
+            href_l = href.lower()
+            for kw in self.cfg.get("skip_path_keywords", []):
+                if kw.lower() in href_l:
+                    skip = True
+                    break
+            if skip:
                 continue
-            hint_esc = re.escape(hint.lstrip("."))
-            for m in re.finditer(
-                r'([a-zA-Z0-9][a-zA-Z0-9\-]{1,30}\.' + hint_esc + r')',
-                text, re.I
-            ):
-                host = m.group(1).lower()
-                if self._is_blacklisted(host):
+
+            # 标准化URL
+            url = self._normalize_url(href, base_url)
+            if not url:
+                continue
+
+            # 提取根域名
+            try:
+                p = urlparse(url)
+                if not p.netloc:
                     continue
-                base_url = "https://" + host
-                if base_url not in seen:
-                    seen.add(base_url)
-                    out.append(base_url)
+                base = f"{p.scheme}://{p.netloc}"
+            except Exception:
+                continue
 
-        # 白名单过滤：如果配了 host_pattern_hints，仅保留匹配项
-        if self.cfg.get("host_pattern_hints"):
-            out = [u for u in out if self._looks_like_main_site(urlparse(u).netloc)]
+            # 过滤发布页自身（djrqnywk.cc 不能当候选）
+            if self._is_publish_domain(p.netloc):
+                continue
+
+            # 过滤CDN/统计/框架
+            if self._is_blacklisted(p.netloc):
+                continue
+
+            if base not in seen:
+                seen.add(base)
+                out.append(base)
 
         if out:
-            self.log(f"URL 正则扫描到 {len(out)} 个候选: {out[:8]}")
-            print(f"URL 正则扫描到 {len(out)} 个候选: {out[:8]}")
+            self.log(f"从页面提取到 {len(out)} 个链接候选: {out[:8]}")
+            print(f"从页面提取到 {len(out)} 个链接候选: {out[:8]}")
         return out
 
     # ------------------------------------------------------------
-    # Base64 JSON（Zaka/rouav 核心移植）
+    # Base64 兜底（保留原有逻辑）
     # ------------------------------------------------------------
     def _safe_b64_decode(self, s):
         if not s:
@@ -620,20 +589,10 @@ class Spider(Spider):
         except Exception:
             return ""
 
-    def _match_site_name(self, name):
-        names = self.cfg.get("site_names") or []
-        if not names:
-            return True
-        if not name:
-            return False
-        nl = name.lower()
-        return any(kw and kw.lower() in nl for kw in names)
-
     def _extract_b64_sites(self, text):
         out, seen = [], set()
         if not text:
             return out
-
         for block in re.findall(r'["\']([A-Za-z0-9+/=_-]{60,})["\']', text):
             decoded = self._safe_b64_decode(block)
             if not decoded or "[" not in decoded:
@@ -650,14 +609,9 @@ class Spider(Spider):
                 continue
             if not isinstance(data, list):
                 continue
-
             for item in data:
                 if not isinstance(item, dict):
                     continue
-                name = (item.get("name") or "").strip()
-                if not self._match_site_name(name):
-                    continue
-
                 cand = []
                 main = item.get("url", "")
                 if isinstance(main, str) and main:
@@ -667,7 +621,6 @@ class Spider(Spider):
                         u_obj if isinstance(u_obj, str) else "")
                     if u and u not in cand:
                         cand.append(u)
-
                 for c_url in cand:
                     c_url = (c_url or "").strip()
                     if not c_url.startswith("http"):
@@ -677,34 +630,41 @@ class Spider(Spider):
                         base = f"{p.scheme}://{p.netloc}"
                     except Exception:
                         continue
-                    if base and base not in seen:
+                    if base and not self._is_publish_domain(p.netloc) \
+                            and not self._is_blacklisted(p.netloc) \
+                            and base not in seen:
                         seen.add(base)
                         out.append(base)
         return out
 
     # ------------------------------------------------------------
-    # HTML 选择器 / 跳转
+    # 过滤工具
     # ------------------------------------------------------------
-    def _extract_from_html(self, text, base_url):
-        try:
-            doc = self.getpq(self._decode_publish(text, self.cfg["publish_decode"]))
-        except Exception:
-            return []
-        domains = []
-        for a in doc("a.route, a[data-line4], .routes a").items():
-            href = (a.attr("href") or "").strip()
-            if href:
-                domains.append(href)
-        if not domains:
-            domains = self._pick_domains(doc, base_url)
-        seen, uniq = set(), []
-        for u in domains:
-            u = self._normalize_url(u, base_url)
-            if u and u not in seen:
-                seen.add(u)
-                uniq.append(u)
-        return uniq
+    def _is_publish_domain(self, host):
+        if not host:
+            return False
+        host_l = host.lower()
+        for e in self.cfg.get("publish_urls") or []:
+            try:
+                p = urlparse(e)
+                if p.netloc and p.netloc.lower() == host_l:
+                    return True
+            except Exception:
+                pass
+        return False
 
+    def _is_blacklisted(self, host):
+        if not host:
+            return False
+        host_l = host.lower()
+        for kw in self.cfg.get("host_blacklist", []):
+            if kw and kw.lower() in host_l:
+                return True
+        return False
+
+    # ------------------------------------------------------------
+    # 跳转页解析（meta refresh / JS location）
+    # ------------------------------------------------------------
     def _fetch_and_extract(self, target_url, base):
         try:
             target_url = self._normalize_url(target_url, base)
@@ -714,11 +674,9 @@ class Spider(Spider):
             text, final_url = self._fetch_publish_page(target_url, self.cfg["probe_timeout"])
             if not text:
                 return []
-            doms = self._extract_b64_sites(text)
+            doms = self._extract_all_links(text, final_url or target_url)
             if not doms:
-                doms = self._extract_from_html(text, final_url or target_url)
-            if not doms:
-                doms = self._extract_urls_by_regex(text)
+                doms = self._extract_b64_sites(text)
             return doms
         except Exception as e:
             self.log(f"跳转解析失败: {e}")
@@ -763,33 +721,6 @@ class Spider(Spider):
         if any(x in u for x in ["javascript:", "mailto:", "#"]):
             return ""
         return u
-
-    def _decode_publish(self, text, mode):
-        if mode == "js_base64":
-            m = re.search(r"Base64\.decode\(['\"]([^'\"]+)['\"]\)", text)
-            if m:
-                try:
-                    return b64decode(m.group(1)).decode("utf-8", "ignore")
-                except Exception:
-                    pass
-        if mode == "js_atob":
-            m = re.search(r"atob\(['\"]([^'\"]+)['\"]\)", text)
-            if m:
-                try:
-                    return b64decode(m.group(1)).decode("utf-8", "ignore")
-                except Exception:
-                    pass
-        return text
-
-    def _pick_domains(self, doc, base):
-        seen, out = set(), []
-        for a in doc("a").items():
-            href = (a.attr("href") or "").strip()
-            u = self._normalize_url(href, base)
-            if u and u not in seen:
-                seen.add(u)
-                out.append(u)
-        return out
 
     # ================= 首页 =================
     def homeContent(self, filter):
