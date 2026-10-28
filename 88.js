@@ -160,6 +160,28 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cg.py"
     },
     {
+      "key": "51大赛",
+      "name": "❤️51大赛｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51ds.py"
+    },
+    {
+      "key": "51爆料",
+      "name": "❤️51爆料｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51bl.py"
+    },
+    {
       "key": "连播玩物社区",
       "name": "❤️连播玩物社区",
       "type": 3,
@@ -1525,76 +1547,6 @@
       },
       "ext": "http://pglblb.test.upcdn.net/2026py/jable.py",
       "api": "http://pglblb.test.upcdn.net/2026py/jable.py"
-    },
-    {
-
-      "key": "每日标准模板2",
-      "name": "❤️91吃瓜【每日模板】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg-m.py"
-    },
-    {
-      "key": "每日标准模板3",
-      "name": "❤️每日大乱斗【每日模板】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld-m.py"
-    },
-    {
-      "key": "51模板4",
-      "name": "❤️每日大乱斗【51模板】",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld11.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "changeable": 1
-    },
-    {
-      "key": "51吃瓜每日标准模板5",
-      "name": "❤️51吃瓜【每日模板】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg-m.py"
-    },
-    {
-      "key": "51模板5",
-      "name": "❤️51吃瓜【51模板】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg-w.py"
-    },
-    {
-
-      "key": "51大赛",
-      "name": "❤️51大赛｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py"
     },
     {
       "key": "jable_失效自愈版",
