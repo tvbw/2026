@@ -3,40 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "🍁Hanime1(终极自愈+全功能版)",
-      "name": "🍁Hanime",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Hanime1(终极自愈+全功能版).py"
-    },
-    {
-      "key": "🍁91porn",
-      "name": "🍁91porn",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91porn.py"
-    },
-    {
-      "key": "🍁4GTV",
-      "name": "🍁GTV",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/4gtv%E7%9B%B4%E6%92%AD.py"
-    },
-    {
-
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
@@ -92,17 +58,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/91av.py"
     },
     {
-      "key": "hanime1",
-      "name": "❤️hanime动画",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/hanime.py"
-    },
-    {
       "key": "连播18AV",
       "name": "❤️连播18AV",
       "type": 3,
@@ -112,6 +67,41 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播18AV.py"
+    },
+    {
+      "key": "91吃瓜",
+      "name": "❤️91吃瓜",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
+    },
+    {
+      "key": "每日大赛标准模板1",
+      "name": "❤️每日大赛【每日模板】",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds-m.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "changeable": 1
+    },
+    {
+      "key": "mrdld",
+      "name": "❤️每日大乱斗🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
     },
     {
       "key": "连播草榴社区",
@@ -163,63 +153,6 @@
       "changeable": 1
     },
     {
-      "key": "91吃瓜",
-      "name": "❤️91吃瓜",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
-    },
-    {
-      "key": "51吃瓜",
-      "name": "❤️51吃瓜｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cg.py"
-    },
-    {
-      "key": "51大赛",
-      "name": "❤️51大赛｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py"
-    },
-    {
-      "key": "mrdld",
-      "name": "❤️每日大乱斗🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
-    },
-    {
-      "key": "每日大赛",
-      "name": "❤️每日大赛🔞",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "changeable": 1
-    },
-    {
       "key": "csp_xbpq_禁片天堂",
       "name": "❤️禁片天堂【🔞】",
       "type": 3,
@@ -249,6 +182,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
+
     },
     {
       "key": "csp_xbpq_s直播【🔞】",
@@ -1525,19 +1459,7 @@
       "api": "http://pglblb.test.upcdn.net/2026py/jable.py"
     },
     {
-      "key": "每日大赛标准模板1",
-      "name": "❤️每日大赛【每日模板】",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds-m.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "changeable": 1
-    },
-    {
+
       "key": "每日标准模板2",
       "name": "❤️91吃瓜【每日模板】",
       "type": 3,
@@ -1558,6 +1480,19 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld-m.py"
+    },
+    {
+      "key": "每日大赛",
+      "name": "❤️每日大赛🔞",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "changeable": 1
     },
     {
       "key": "51模板4",
@@ -1593,6 +1528,28 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg-w.py"
+    },
+    {
+      "key": "51吃瓜",
+      "name": "❤️51吃瓜｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cg.py"
+    },
+    {
+      "key": "51大赛",
+      "name": "❤️51大赛｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py"
     },
     {
       "key": "push_agent",
