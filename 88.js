@@ -171,17 +171,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51bl.py"
     },
     {
-      "key": "17黑料",
-      "name": "❤️17黑料｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/17hl.py"
-    },
-    {
+
       "key": "18av",
       "name": "5❤️18av【🔞】",
       "type": 3,
@@ -694,7 +684,6 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/missav免翻全分类版.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/missav免翻全分类版.py",
       "searchable": 1,
       "quickSearch": 1,
@@ -709,20 +698,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/白嫖之王-封面修复第二版.py",
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/白嫖之王-封面修复第二版.py"
-    },
-    {
-      "key": "18jspa",
-      "name": "❤️18jspa【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18jspa.py",
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/18jspa.py"
     },
     {
       "key": "🔞杏吧资源",
@@ -1558,6 +1534,17 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/Zaka影院·动态发布自愈版.py"
+    },
+    {
+      "key": "17黑料",
+      "name": "❤️17黑料｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/17hl.py"
     },
     {
       "key": "push_agent",
