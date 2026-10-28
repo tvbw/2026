@@ -51,7 +51,7 @@ class SiteConfig:
         "https://d3abxmgsrop61e.cloudfront.net/",
     ]
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host"        # 每个站点必须唯一
+    HOST_CACHE_KEY = "mrdld_host"        # 每个站点必须唯一
     HOST_CACHE_TTL = 6 * 3600
 
     # ---- 探测参数 ----
@@ -61,7 +61,7 @@ class SiteConfig:
 
     # ---- 站点特征 ----
     # 建议填本站唯一关键字（如 ["每日大乱斗"]），防止与其他站点串位
-    SITE_KEYWORDS    = []
+    SITE_KEYWORDS    = [每日大乱斗]
     SITE_MARKERS     = ["post-title", "entry-title", "<article"]
 
     # ---- 列表 / 详情选择器 ----
