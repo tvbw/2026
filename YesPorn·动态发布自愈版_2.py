@@ -268,7 +268,7 @@ class Spider(SpiderBase):
                 vid = href_m.group(2).strip()
                 title = title_m.group(1).strip()
                 pic = img_m.group(1).strip() if img_m else ""
-                
+
                 remarks = ""
                 if duration_m:
                     remarks = re.sub(r'<[^>]+>', '', duration_m.group(1)).strip()
@@ -355,25 +355,31 @@ class Spider(SpiderBase):
             }]
         }
 
-    # 4. 播放器：parse=1 启动 TVBox 原生嗅探器精准拦截动态正片流
+    # 4. 播放器：修复 header 为 JSON 字符串，parse 依据链接是否为直链动态判断
     def playerContent(self, flag, id, vipFlags):
         headers = {
             "User-Agent": self._ua,
             "Referer": self.baseHost + "/",
             "Accept": "*/*"
         }
+
+        # 如果传入的 id 已经是视频直链（.m3u8/.mp4 等），parse 设为 0 直接播放；
+        # 否则视为 embed 页面，parse=1 启动 TVBox 原生嗅探器拦截动态正片流
+        is_direct = self.isVideoFormat(id)
+        parse_flag = 0 if is_direct else 1
+
         return {
-            "parse": 1,
+            "parse": parse_flag,
             "jx": 0,
             "url": str(id).strip(),
-            "header": headers
+            "header": json.dumps(headers)   # 关键修复：必须是 JSON 字符串
         }
 
     # 5. 搜索功能
     def searchContent(self, key, quick, pg="1"):
         page_int = int(pg) if str(pg).isdigit() else 1
         encoded_key = urllib.parse.quote(key)
-        
+
         if page_int > 1:
             search_url = "%s/search/%s/%d/" % (self.baseHost, encoded_key, page_int)
         else:
@@ -398,7 +404,7 @@ class Spider(SpiderBase):
                 vid = href_m.group(2).strip()
                 title = title_m.group(1).strip()
                 pic = img_m.group(1).strip() if img_m else ""
-                
+
                 remarks = ""
                 if duration_m:
                     remarks = re.sub(r'<[^>]+>', '', duration_m.group(1)).strip()
