@@ -3,6 +3,163 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "🔞8kporner",
+      "name": "🔞8kporner",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/8kporner.py"
+    },
+    {
+      "key": "🔞91porn",
+      "name": "🔞91porn",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/91porn.py"
+    },
+    {
+      "key": "🔞Jable (1)",
+      "name": "🔞Jable (1)",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/Jable (1).py"
+    },
+    {
+      "key": "🔞Jable_new(1)",
+      "name": "🔞Jable_new(1)",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/Jable_new(1).py"
+    },
+    {
+      "key": "🔞jable",
+      "name": "🔞jable",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/jable.py"
+    },
+    {
+      "key": "🔞javtiful",
+      "name": "🔞javtiful",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/javtiful.py"
+    },
+    {
+      "key": "🔞lissavcn",
+      "name": "🔞lissavcn",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/lissavcn.py"
+    },
+    {
+      "key": "🔞lissavjp",
+      "name": "🔞lissavjp",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/lissavjp.py"
+    },
+    {
+      "key": "🔞rouav",
+      "name": "🔞rouav",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/rouav.py"
+    },
+    {
+      "key": "🔞好色TV",
+      "name": "🔞好色TV",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/好色TV.py"
+    },
+    {
+      "key": "🔞好色TV (1)",
+      "name": "🔞好色TV (1)",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/好色TV (1).py"
+    },
+    {
+      "key": "🔞好色tv (2)",
+      "name": "🔞好色tv (2)",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/好色tv (2).py"
+    },
+    {
+      "key": "🔞肉视频 (1)",
+      "name": "🔞肉视频 (1)",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/肉视频 (1).py"
+    },
+    {
+      "key": "🔞肉视频",
+      "name": "🔞肉视频",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/肉视频.py"
+    },
+    {
+
+
+
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
