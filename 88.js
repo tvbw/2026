@@ -168,7 +168,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播草榴社区.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/clsq.py"
     },
     {
       "key": "连播玩物社区",
