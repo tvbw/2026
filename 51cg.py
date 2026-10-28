@@ -16,6 +16,15 @@ img_cache = {}
 
 class Spider(BaseSpider):
 
+    # ============ 站点识别配置（每个站点换站时改这里） ============
+    HOST_CACHE_KEY    = "51_host"        # 缓存键，每个站点必须唯一
+    HOST_CACHE_TTL    = 6 * 3600         # 缓存 6 小时
+    SITE_KEYWORDS     = []               # 本站唯一关键字，如 ["51爆料","51吃瓜"]
+    PROBE_MIN_HTML    = 3000
+    PROBE_MIN_ARTICLE = 3
+    SITE_MARKERS      = ["post-title", "entry-title", "<article"]
+    # ==========================================================
+
     def init(self, extend=""):
         try:
             self.proxies = json.loads(extend)
@@ -45,8 +54,46 @@ class Spider(BaseSpider):
         global img_cache
         img_cache.clear()
 
+    # ============ 站点内容识别（核心逻辑，本站永久不变） ============
+    def _site_ok(self, html):
+        """判断返回的 HTML 是否来自本站"""
+        if not html or len(html) < self.PROBE_MIN_HTML:
+            return False
+        # 配置了站点关键词 → 必须命中，否则不是本站
+        if self.SITE_KEYWORDS:
+            return any(kw in html for kw in self.SITE_KEYWORDS)
+        # 未配置关键词 → 结构判断
+        low = html.lower()
+        if low.count("<article") >= self.PROBE_MIN_ARTICLE:
+            return True
+        return any(m in low for m in self.SITE_MARKERS) and len(html) > 20000
+    # ==============================================================
+
     def get_working_host(self):
-        # 三个三级域名：失效后若旧域名还能 302 到新域名，自愈即可生效
+        # 1) 缓存优先
+        try:
+            cached = self.getCache(self.HOST_CACHE_KEY)
+        except Exception:
+            cached = None
+        if cached and isinstance(cached, str) and cached.startswith("http"):
+            try:
+                r = requests.get(cached, headers=self.headers, proxies=self.proxies,
+                                 timeout=10, allow_redirects=True)
+                if r.status_code == 200 and self._site_ok(r.text):
+                    parsed = urlparse(r.url)
+                    final = f"{parsed.scheme}://{parsed.netloc}/" if parsed.netloc else cached
+                    print(f"缓存有效: {cached} → {final}")
+                    if final.rstrip('/') != cached.rstrip('/'):
+                        try: self.setCache(self.HOST_CACHE_KEY, final)
+                        except: pass
+                    return final
+                print(f"缓存失效: {cached}")
+                try: self.delCache(self.HOST_CACHE_KEY)
+                except: pass
+            except Exception:
+                pass
+
+        # 2) 探测动态域名（每个都用 _site_ok 验证）
         dynamic_urls = [
             'https://brother.bqtvyoxk.cc/',
             'https://career.bqtvyoxk.cc/',
@@ -56,15 +103,14 @@ class Spider(BaseSpider):
             try:
                 response = requests.get(url, headers=self.headers, proxies=self.proxies,
                                         timeout=10, allow_redirects=True)
-                if response.status_code == 200:
-                    # 关键：取 302 后的最终域名，避免后续每次请求都经过跳板
+                if response.status_code == 200 and self._site_ok(response.text):
                     parsed = urlparse(response.url)
-                    if parsed.netloc:
-                        final = f"{parsed.scheme}://{parsed.netloc}/"
-                        if final.rstrip('/') != url.rstrip('/'):
-                            print(f"域名自动跳转: {url} → {final}")
-                        return final
-                    return url
+                    final = f"{parsed.scheme}://{parsed.netloc}/" if parsed.netloc else url
+                    if final.rstrip('/') != url.rstrip('/'):
+                        print(f"域名自动跳转: {url} → {final}")
+                    try: self.setCache(self.HOST_CACHE_KEY, final)
+                    except: pass
+                    return final
             except Exception:
                 continue
         return dynamic_urls[0]
@@ -78,7 +124,6 @@ class Spider(BaseSpider):
             classes = []
             seen_hrefs = set()
 
-            # 策略1：一级目录（51 站点真实结构 + 91 兼容结构）
             one_level_selectors = [
                 'ul.navbar-nav.mr-auto > li.nav-item > a.nav-link',
                 'ul.navbar-nav > li.nav-item > a.nav-link',
@@ -98,7 +143,6 @@ class Spider(BaseSpider):
                     classes.append({'type_name': name, 'type_id': href})
                 if classes: break
 
-            # 策略2：二级下拉菜单（51 站点两级结构）
             try:
                 for a in data('ul.navbar-nav.mr-auto li.nav-item.dropdown > ul.dropdown-menu > li.dropdown-item > a').items():
                     href = (a.attr('href') or '').strip()
@@ -311,9 +355,8 @@ class Spider(BaseSpider):
         data = res.text
         base = res.url.rsplit('/', 1)[0]
         lines = []
-        iskey = True  # 只处理第一个 AES key URI，避免误伤其它 URI
+        iskey = True
         for line in data.split('\n'):
-            # 补充 51 的 URI key 代理逻辑
             if iskey and 'URI="' in line:
                 m = re.search(r'URI="([^"]*)"', line)
                 if m:
