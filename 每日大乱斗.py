@@ -5,15 +5,6 @@
 链路：种子域名列表 → (302 自动跟随) → 主站
       → 取 response.url 最终域名作为 self.host
       → 6 小时缓存，失效自动重探
-
-目录抓取：
-  一级导航（多选择器） + 二级下拉（多选择器） → 去重合并
-  全部失败才回退 {"首页", "/"}
-
-播放源提取：
-  dplayer.data-config → 关键词/URL 模式双条件 fallback
-
-换站只需改 SEED_HOSTS（以及可选的 SITE_KEYWORDS）。
 """
 import json
 import re
@@ -60,7 +51,7 @@ class SiteConfig:
         "https://d3abxmgsrop61e.cloudfront.net/",
     ]
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host"
+    HOST_CACHE_KEY = "mrds_host"        # 每个站点必须唯一
     HOST_CACHE_TTL = 6 * 3600
 
     # ---- 探测参数 ----
@@ -69,8 +60,7 @@ class SiteConfig:
     PROBE_MIN_ARTICLE    = 3
 
     # ---- 站点特征 ----
-    # SITE_KEYWORDS 留空 [] 则不强制关键词；靠 article 数量 + markers 判断
-    # 针对具体站点可写 ["每日大乱斗"] 等；换站时删掉即可
+    # 建议填本站唯一关键字（如 ["每日大乱斗"]），防止与其他站点串位
     SITE_KEYWORDS    = []
     SITE_MARKERS     = ["post-title", "entry-title", "<article"]
 
@@ -83,15 +73,13 @@ class SiteConfig:
     SEL_SUMMARY      = ".post-content"
     SEL_TITLE        = ".post-title, h1"
 
-    # ---- 一级导航选择器（按精确→通用排序，取第一个有结果的）----
+    # ---- 一级导航选择器 ----
     SEL_NAV = [
-        # Bootstrap navbar 结构（51 站点/每日站点等）
         "ul.navbar-nav.mr-auto > li.nav-item > a.nav-link",
         "ul.navbar-nav > li.nav-item > a.nav-link",
         "ul.navbar-nav li a.nav-link",
         "#navbarCollapse a.nav-link",
         ".navbar-nav a.nav-link",
-        # 通用结构
         ".category-list ul li",
         ".nav-menu li",
         ".menu li",
@@ -100,39 +88,32 @@ class SiteConfig:
         "nav a",
     ]
 
-    # ---- 二级下拉选择器（与一级合并去重）----
+    # ---- 二级下拉选择器 ----
     SEL_SUB_NAV = [
         "ul.navbar-nav.mr-auto li.nav-item.dropdown > ul.dropdown-menu > li.dropdown-item > a",
         "ul.dropdown-menu > li.dropdown-item > a",
         ".dropdown-menu a",
     ]
 
-    # ---- 兜底分类（只在全部抓取失败时使用；首页是任何站点都存在的）----
     DEFAULT_CATEGORY = {"type_name": "首页", "type_id": "/"}
 
-    # ---- 播放源链接关键词（文本匹配）----
     LINK_KEYWORDS = (
-        # 引导类
         "点击观看", "点击播放", "点击进入", "进入观看", "前往观看",
         "观看", "播放", "视频", "立即观看", "在线观看", "在线播放",
         "完整版", "高清",
-        # 分集/分弹
         "第一弹", "第二弹", "第三弹", "第四弹", "第五弹",
         "第六弹", "第七弹", "第八弹", "第九弹", "第十弹",
         "第1集", "第2集", "第3集", "第4集", "第5集",
         "第6集", "第7集", "第8集", "第9集", "第10集",
         "第1话", "第2话", "第3话", "第4话", "第5话",
-        # 英文
         "episode", "watch", "play", "full",
     )
 
-    # ---- 播放源链接 URL 模式（正则，命中即视为播放源）----
     LINK_URL_PATTERNS = (
         r"/vodplay/", r"/vodplay\b", r"/v/\d+", r"/play/",
         r"/video/", r"/watch/", r"/player/", r"\.m3u8",
     )
 
-    # ---- 图片 AES 解密 ----
     IMG_AES_KEYS = [
         (b"f5d965df75336270", b"97b60394abc2fbe1"),
         (b"75336270f5d965df", b"abc2fbe197b60394"),
@@ -150,30 +131,25 @@ class SiteConfig:
 
 
 # ==================================================================
-# ② 域名解析器（并发探测 + 302 最终域名 + 6h 缓存）
+# ② 域名解析器
 # ==================================================================
 class DomainResolver:
     def __init__(self, cfg, fetcher, cache_get=None, cache_set=None):
         self.cfg, self.fetch = cfg, fetcher
         self.cache_get, self.cache_set = cache_get, cache_set
 
+    # ============ 站点内容识别（核心逻辑，本站永久不变） ============
     def _site_ok(self, html):
+        """配置了 SITE_KEYWORDS 就必须命中，否则视为非本站"""
         if not html or len(html) < self.cfg.PROBE_MIN_HTML:
             return False
+        if self.cfg.SITE_KEYWORDS:
+            return any(kw in html for kw in self.cfg.SITE_KEYWORDS)
         low = html.lower()
-        # 强条件：article 数量足够
         if low.count("<article") >= self.cfg.PROBE_MIN_ARTICLE:
             return True
-        # 关键词为空 → 只靠 markers 判断
-        has_kw = (not self.cfg.SITE_KEYWORDS
-                  or any(kw in html for kw in self.cfg.SITE_KEYWORDS))
-        has_mk = any(m in low for m in self.cfg.SITE_MARKERS)
-        if has_kw and has_mk:
-            return True
-        # 弱条件：关键词命中且页面 > 20KB（应对非 article 结构的站点）
-        if has_kw and len(html) > 20000:
-            return True
-        return False
+        return any(m in low for m in self.cfg.SITE_MARKERS) and len(html) > 20000
+    # ==============================================================
 
     def _safe_fetch(self, url, timeout):
         try:
@@ -221,7 +197,6 @@ class DomainResolver:
     def resolve(self):
         cached = self._read_cache()
 
-        # 1) 缓存优先
         if cached and self._cache_fresh(cached):
             r = self._safe_fetch(cached["host"] + "/", self.cfg.PROBE_TIMEOUT)
             if r is not None and r.status_code == 200 and self._site_ok(r.text):
@@ -234,7 +209,6 @@ class DomainResolver:
             LOG.info("缓存失效: %s", cached["host"])
             print(f"缓存失效: {cached['host']}")
 
-        # 2) 并发探测 SEED_HOSTS
         urls = list(self.cfg.SEED_HOSTS)
         if cached:
             urls.insert(0, cached["host"] + "/")
@@ -266,7 +240,6 @@ class DomainResolver:
             except Exception as e:
                 LOG.debug("并发探测异常: %s", e)
 
-        # 3) 全部失败
         if cached:
             LOG.warning("使用过期缓存: %s", cached["host"])
             print(f"使用过期缓存: {cached['host']}")
@@ -278,7 +251,7 @@ class DomainResolver:
 
 
 # ==================================================================
-# ③ 主爬虫基类
+# ③ 主爬虫基类（以下内容与用户原有 3-每日模板 完全一致）
 # ==================================================================
 class BaseMultiDomainSpider(BaseSpider):
     CONFIG = SiteConfig
@@ -310,7 +283,6 @@ class BaseMultiDomainSpider(BaseSpider):
     def isVideoFormat(self, u): return any(e in (u or "") for e in (".m3u8", ".mp4", ".ts"))
     def destroy(self):          self._img_cache.clear()
 
-    # ---- 网络 ----
     def _get(self, url, timeout=None, **kw):
         try:
             return requests.get(
@@ -360,7 +332,6 @@ class BaseMultiDomainSpider(BaseSpider):
         seen.add(new)
         return new
 
-    # ---- 首页 ----
     def homeContent(self, filter=False):
         if not self.host:
             return {"class": [], "list": []}
@@ -380,7 +351,6 @@ class BaseMultiDomainSpider(BaseSpider):
             return {"list": []}
         return {"list": self._parse_list(data(self.CONFIG.SEL_ARTICLE_HOME))}
 
-    # ---- 【核心改动】目录自动抓取：一级 + 二级去重合并 ----
     def _parse_classes(self, data):
         classes = []
         seen = set()
@@ -401,7 +371,6 @@ class BaseMultiDomainSpider(BaseSpider):
             seen.add(href)
             classes.append({"type_name": name, "type_id": href})
 
-        # 1) 一级导航：取第一个有结果的选择器
         for sel in self.CONFIG.SEL_NAV:
             hit = False
             for k in data(sel).items():
@@ -411,7 +380,6 @@ class BaseMultiDomainSpider(BaseSpider):
             if hit and classes:
                 break
 
-        # 2) 二级下拉：取第一个有结果的选择器，追加并去重
         for sel in self.CONFIG.SEL_SUB_NAV:
             hit = False
             for a in data(sel).items():
@@ -420,13 +388,11 @@ class BaseMultiDomainSpider(BaseSpider):
             if hit:
                 break
 
-        # 3) 全部失败 → 回退首页
         if not classes:
             classes = [dict(self.CONFIG.DEFAULT_CATEGORY)]
 
         return classes
 
-    # ---- 分类 ----
     def categoryContent(self, tid, pg=1, filter=False, extend=None):
         if not self.host:
             return {"list": [], "page": 1, "pagecount": 1, "limit": 90, "total": 0}
@@ -461,7 +427,6 @@ class BaseMultiDomainSpider(BaseSpider):
             return "%s/%d/" % (base, pg)
         return "%s/page/%d/" % (base, pg)
 
-    # ---- 列表解析 ----
     def _parse_list(self, data, tid=""):
         is_folder = "/mrdg" in (tid or "")
         videos = []
@@ -499,7 +464,6 @@ class BaseMultiDomainSpider(BaseSpider):
             })
         return out
 
-    # ---- 搜索 ----
     def searchContent(self, key, quick=False, pg=1):
         if not self.host:
             return {"list": [], "page": 1, "pagecount": 1}
@@ -513,7 +477,6 @@ class BaseMultiDomainSpider(BaseSpider):
             "page": pg, "pagecount": 9999,
         }
 
-    # ---- 详情 ----
     def detailContent(self, ids):
         vid = str(ids[0] if isinstance(ids, (list, tuple)) else ids)
         if not self.host:
@@ -553,7 +516,6 @@ class BaseMultiDomainSpider(BaseSpider):
                 continue
         return out
 
-    # ---- 【核心改动】播放源链接：关键词 OR URL 模式 双条件 ----
     def _from_links(self, data):
         out, used = [], set()
         for i, link in enumerate(data(self.CONFIG.SEL_CONTENT)("a").items(), 1):
@@ -595,7 +557,6 @@ class BaseMultiDomainSpider(BaseSpider):
             return " ".join(tags) + "\n\n" + summary
         return data(self.CONFIG.SEL_TITLE).text() or "未命名"
 
-    # ---- 图片 ----
     def _parse_pic(self, k):
         return self._extract_img(k("script").text(), k)
 
@@ -668,7 +629,6 @@ class BaseMultiDomainSpider(BaseSpider):
                 pass
         return data
 
-    # ---- 播放 & 代理 ----
     def playerContent(self, flag, id, vipFlags=None):
         parse = 0 if self.isVideoFormat(id) else 1
         url = self.proxy(id) if ".m3u8" in id else id
@@ -737,7 +697,7 @@ class Spider(BaseMultiDomainSpider):
 
 
 # ==================================================================
-# ⑤ 播放源聚合扩展（保留每日模板原逻辑，支持多线路聚合）
+# ⑤ 播放源聚合扩展（与用户原有 3-每日模板完全一致）
 # ==================================================================
 def _install_playlist_extension(_C):
     if getattr(_C, "_pl_patched", False):
