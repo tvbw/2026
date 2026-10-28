@@ -1,18 +1,16 @@
 # ============================================================
-# 51通用模板 · 动态发布页自愈版 V8（最终）
+# 51通用模板 · 三级域名自动跳转 + 目录自动抓取（最终版）
 #
-# 关键修复（基于真实页面结构 + 91模板启示）：
-#   1) 探活选择器：从 #index article a 改为 #navbar（主站真实结构）
-#   2) 域名提取：全文本正则扫描（捕获 footer 明文域名 + <a> 链接）
-#   3) 最终域名：探活时返回 response.url 的根域名（跟随302后的真实落地）
-#   4) 发布页过滤：静态配置 + 动态跟踪302落地域名
-#   5) 请求自愈：404/502/503 自动触发刷新并重试
+# 核心：
+#   1) 域名探测：91 代码同款 —— 硬编码列表 + requests 跟随 302 + 取最终域名
+#   2) 探活选择器：基于真实结构 #navbarCollapse / .navbar-nav / a.nav-link
+#   3) 目录抓取：优先精确匹配主站导航，自动提取一级 + 二级分类
+#   4) default_classes 仅作最后兜底
 # ============================================================
 import json
 import os
 import re
 import sys
-import tempfile
 import time
 import gzip
 import zlib
@@ -34,7 +32,7 @@ sys.path.append('..')
 from base.spider import Spider
 
 # ============================================================
-# 本地文件缓存（框架缓存失效兜底）
+# 本地文件缓存
 # ============================================================
 CACHE_FILE_NAME = "spider_host_cache.json"
 CACHE_TTL = 48 * 3600
@@ -45,7 +43,7 @@ def _cache_file_candidates():
     for getter in (
         lambda: os.path.join(os.path.dirname(os.path.abspath(__file__)), CACHE_FILE_NAME),
         lambda: os.path.join(os.getcwd(), CACHE_FILE_NAME),
-        lambda: os.path.join(tempfile.gettempdir(), CACHE_FILE_NAME),
+        lambda: os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), CACHE_FILE_NAME),
         lambda: "/data/local/tmp/" + CACHE_FILE_NAME,
     ):
         try:
@@ -97,48 +95,42 @@ SITE_CONFIG = {
     "play_from": "51通用合一缓存板",
     "style": {"type": "rect", "ratio": 1.33},
 
-    # 发布入口（会 302 到 djrqnywk.cc 这类中转页）
-    "publish_urls": [
-        "https://51bla18.com/",
-        "https://51bla19.com/",
-        "https://51bla20.com/",
-    ],
-    "publish_url": "https://51bla20.com/",
-
-    # ------- 探活选择器（基于主站真实结构 <nav id="navbar" class="navbar">）-------
-    # 发布页(djrqnywk.cc)没有 navbar → 自动排除
-    "host_check_selector": "#navbar, nav.navbar, a.nav-link",
-
-    # ------- 域名黑名单（统计/框架/CDN，非主站）-------
-    # 注意：不包含 cloudfront.net，因为它是真实线路四
-    "host_blacklist": [
-        "googletagmanager.com", "google-analytics.com", "gstatic.com",
-        "googlesyndication.com", "doubleclick.net",
-        "jsdelivr.net", "cdnjs.cloudflare.com", "unpkg.com",
-        "fontawesome.com", "bootcdn.net", "staticfile.org",
-        "w3.org", "schema.org", "gmpg.org",
-        "qihoo.com", "bdstatic.com", "360.cn",
-        "telegram.org", "t.me", "twitter.com", "github.com",
-        "facebook.com", "google.com", "youtube.com",
-        "pm.me",  # 发布页邮箱地址
+    # ------- 硬编码可用域名列表（按优先级排序）-------
+    "dynamic_urls": [
+        "https://brother.bqtvyoxk.cc/",
+        "https://career.bqtvyoxk.cc/",
+        "https://aspect.bqtvyoxk.cc/",
     ],
 
-    # ------- 分类选择器（主站真实结构 ul.navbar-nav > li > a.nav-link）-------
+    # ------- 探活选择器（基于真实主站结构）-------
+    # 主站真实结构：<div class="collapse navbar-collapse" id="navbarCollapse">
+    #             <ul class="navbar-nav mr-auto">
+    "host_check_selector": "#navbarCollapse, .navbar-nav, nav.navbar, a.nav-link",
+
+    # ------- 分类选择器（精确 → 通用依次尝试）-------
+    # 主站一级目录：ul.navbar-nav.mr-auto > li.nav-item > a.nav-link
+    # 主站二级目录：li.nav-item.dropdown > ul.dropdown-menu > li.dropdown-item > a
     "category_selectors": [
-        "ul.navbar-nav li.category-level-0 a.nav-link",
-        "ul.navbar-nav > li > a.nav-link",
+        "ul.navbar-nav.mr-auto > li.nav-item > a.nav-link",
+        "ul.navbar-nav > li.nav-item > a.nav-link",
+        "ul.navbar-nav li a.nav-link",
         ".category-list ul li",
         ".nav-menu li",
         ".menu li",
         "nav ul li",
     ],
+
+    # 二级下拉菜单选择器（单独处理）
+    "sub_category_selector": (
+        "ul.navbar-nav.mr-auto li.nav-item.dropdown > ul.dropdown-menu > li.dropdown-item > a"
+    ),
+
+    # ------- 仅在完全抓取失败时兜底 -------
     "default_classes": [
-        {"type_name": "今日爆料", "type_id": "/category/jrbl/"},
-        {"type_name": "必撸精品", "type_id": "/category/bljp/"},
-        {"type_name": "热搜爆料", "type_id": "/category/rmdg/"},
+        {"type_name": "首页", "type_id": "/"},
     ],
 
-    # ------- 列表选择器 -------
+    # ------- 列表选择器（91 代码同款）-------
     "list_selector": "article, #index article, #archive article",
     "home_list_selector": "article, #index article, #archive article",
     "folder_id_marker": "/mrdg",
@@ -174,7 +166,6 @@ SITE_CONFIG = {
     "timeout": 15,
     "probe_timeout": 8,
     "fast_timeout": 4,
-    "probe_workers": 8,
 }
 # ====================配置区结束===================
 
@@ -193,15 +184,6 @@ class Spider(Spider):
         self.cfg = SITE_CONFIG
         self.headers = dict(self.cfg["headers"])
 
-        # 发布页自身域名集合（静态配置 + 动态 302 落地追踪）
-        self._publish_hosts = set()
-        for u in (self.cfg.get("publish_urls") or []):
-            try:
-                self._publish_hosts.add(urlparse(u).netloc.lower())
-            except Exception:
-                pass
-
-        # urllib 兜底引擎
         try:
             ctx = ssl.create_default_context()
             ctx.check_hostname = False
@@ -291,48 +273,38 @@ class Spider(Spider):
         return False
 
     # ============================================================
-    # 发布页抓取：requests + urllib 双引擎
+    # 域名探测（91 代码同款逻辑）
     # ============================================================
-    def _fetch_publish_page(self, url, timeout):
-        try:
-            r = requests.get(url, headers=self.headers, proxies=self.proxies,
-                             timeout=timeout, allow_redirects=True)
-            if r.status_code == 200 and len(r.text or "") > 200:
-                return r.text, r.url
-        except Exception as e:
-            self.log(f"requests 抓取发布页失败: {e}")
+    def get_working_host(self):
+        cached = self._cache_get()
+        if cached:
+            final = self._probe_one(cached, self.cfg["fast_timeout"])
+            if final:
+                self.log(f"缓存命中: {cached} → {final}")
+                print(f"缓存命中: {cached} → {final}")
+                if final != cached:
+                    self._cache_set(final)
+                return final
+            self.log(f"缓存失效: {cached}")
+            self._cache_del()
 
-        if not self._opener:
-            return "", url
-        try:
-            req = urllib.request.Request(url, headers=self.headers)
-            with self._opener.open(req, timeout=timeout) as resp:
-                final_url = resp.geturl()
-                raw = resp.read()
-                enc = (resp.headers.get("Content-Encoding", "") or "").lower()
-                if raw.startswith(b"\x1f\x8b") or enc == "gzip":
-                    raw = gzip.decompress(raw)
-                elif enc == "deflate":
-                    try:
-                        raw = zlib.decompress(raw)
-                    except Exception:
-                        raw = zlib.decompress(raw, -zlib.MAX_WBITS)
-                return raw.decode("utf-8", errors="ignore"), final_url
-        except urllib.error.HTTPError as e:
-            try:
-                raw = e.read()
-                if raw.startswith(b"\x1f\x8b"):
-                    raw = gzip.decompress(raw)
-                return raw.decode("utf-8", errors="ignore"), url
-            except Exception:
-                pass
-        except Exception as e:
-            self.log(f"urllib 抓取发布页失败: {e}")
-        return "", url
+        urls = self.cfg.get("dynamic_urls", [])
+        if not urls:
+            self.log("未配置任何动态域名")
+            return ""
 
-    # ============================================================
-    # 【核心修复1】探活：返回重定向后的最终域名（不是候选域名本身）
-    # ============================================================
+        print(f"待探测域名({len(urls)}): {urls}")
+        host = self._probe_concurrent(urls, self.cfg["probe_timeout"])
+        if host:
+            self._cache_set(host)
+            self.log(f"自愈成功: {host}")
+            print(f"自愈成功: {host}")
+            return host
+
+        self.log("所有域名均未通过探活")
+        print("所有域名均未通过探活")
+        return ""
+
     def _probe_one(self, url, timeout):
         """返回重定向后的最终根域名；失败返回空字符串"""
         try:
@@ -342,37 +314,30 @@ class Spider(Spider):
                 return ""
             try:
                 doc = self.getpq(r.text)
-                if not (doc("#navbar") or doc("nav.navbar") or doc("a.nav-link")):
+                # 使用配置中的探活选择器（基于真实主站结构）
+                if not doc(self.cfg["host_check_selector"]):
                     return ""
             except Exception:
                 return ""
 
-            # 关键：取重定向后的最终根域名
             try:
                 parsed = urlparse(r.url)
                 if not parsed.netloc:
                     return ""
-                final_base = f"{parsed.scheme}://{parsed.netloc}"
-                # 若最终域名被 302 到发布页，则视为失败
-                if parsed.netloc.lower() in self._publish_hosts:
-                    self.log(f"探活落地到发布页，跳过: {url} → {final_base}")
-                    return ""
-                return final_base
+                return f"{parsed.scheme}://{parsed.netloc}"
             except Exception:
                 return ""
         except Exception:
             return ""
 
     def _probe_concurrent(self, urls, timeout):
-        """并发探活，返回第一个通过探活的最终域名"""
         if not urls:
             return ""
         if len(urls) == 1:
             return self._probe_one(urls[0], timeout)
 
         results = {}
-        workers = min(self.cfg.get("probe_workers", 8), len(urls))
-        with ThreadPoolExecutor(max_workers=workers) as ex:
+        with ThreadPoolExecutor(max_workers=min(4, len(urls))) as ex:
             future_map = {ex.submit(self._probe_one, u, timeout): u for u in urls}
             try:
                 for fut in as_completed(future_map, timeout=timeout + 5):
@@ -429,114 +394,7 @@ class Spider(Spider):
         _clear_host_cache()
 
     # ============================================================
-    # 域名解析主流程
-    # ============================================================
-    def get_working_host(self):
-        # 1) 缓存优先
-        cached = self._cache_get()
-        if cached:
-            final = self._probe_one(cached, self.cfg["fast_timeout"])
-            if final:
-                self.log(f"缓存命中: {cached} → {final}")
-                print(f"缓存命中: {cached} → {final}")
-                if final != cached:
-                    self._cache_set(final)
-                return final
-            self.log(f"缓存失效: {cached}")
-            self._cache_del()
-
-        # 2) 发布页提取候选
-        candidates = self._extract_candidates_from_publish_pages()
-        if not candidates:
-            self.log("发布页未提取到候选域名")
-            print("发布页未提取到候选域名")
-            return ""
-
-        print(f"待探活候选({len(candidates)}): {candidates[:12]}")
-        host = self._probe_concurrent(candidates, self.cfg["probe_timeout"])
-        if host:
-            self._cache_set(host)
-            self.log(f"自愈成功: {host}")
-            print(f"自愈成功: {host}")
-            return host
-
-        self.log("所有候选均未通过探活")
-        print("所有候选均未通过探活")
-        return ""
-
-    # ============================================================
-    # 【核心修复2】从发布页全文本提取域名
-    # ============================================================
-    def _extract_candidates_from_publish_pages(self):
-        entries = self.cfg.get("publish_urls") or [self.cfg.get("publish_url", "")]
-        entries = [e for e in entries if e]
-
-        all_cands = []
-        seen = set()
-
-        def _add(cands):
-            for c in cands:
-                if c and c not in seen:
-                    seen.add(c)
-                    all_cands.append(c)
-
-        for entry in entries:
-            try:
-                text, final_url = self._fetch_publish_page(entry, self.cfg["probe_timeout"])
-                if not text:
-                    self.log(f"发布页无响应: {entry}")
-                    continue
-
-                # 动态记录发布页落地域名
-                try:
-                    final_host = urlparse(final_url).netloc.lower()
-                    if final_host:
-                        self._publish_hosts.add(final_host)
-                except Exception:
-                    pass
-
-                # 提取所有 https://xxx.xxx 形式的域名
-                cands = self._extract_domains_from_text(text)
-                _add(cands)
-
-            except Exception as e:
-                self.log(f"处理发布页失败 [{entry}]: {e}")
-                continue
-
-        if all_cands:
-            self.log(f"共提取 {len(all_cands)} 个候选域名: {all_cands[:12]}")
-            print(f"共提取 {len(all_cands)} 个候选域名: {all_cands[:12]}")
-        return all_cands
-
-    def _extract_domains_from_text(self, text):
-        """从任意文本中提取所有绝对 URL 的域名"""
-        cands = []
-        seen = set()
-        # 匹配 http://host 或 https://host
-        for m in re.finditer(
-            r'https?://([a-zA-Z0-9][a-zA-Z0-9.\-]{3,}\.[a-zA-Z]{2,})(?::\d+)?',
-            text
-        ):
-            host = m.group(1).lower()
-            if host in self._publish_hosts:
-                continue
-            if self._is_blacklisted(host):
-                continue
-            base = "https://" + host
-            if base not in seen:
-                seen.add(base)
-                cands.append(base)
-        return cands
-
-    def _is_blacklisted(self, host):
-        host_l = host.lower()
-        for kw in self.cfg.get("host_blacklist", []):
-            if kw and kw.lower() in host_l:
-                return True
-        return False
-
-    # ============================================================
-    # 内容解析（基于真实主站结构）
+    # 首页：自动抓取一级 + 二级目录
     # ============================================================
     def homeContent(self, filter):
         try:
@@ -547,19 +405,7 @@ class Spider(Spider):
                 return {"class": [], "list": []}
 
             doc = self.getpq(r.text)
-            classes = []
-            for selector in self.cfg["category_selectors"]:
-                for item in doc(selector).items():
-                    a = item("a") if item.is_("li") else item
-                    href = (a.attr("href") or "").strip()
-                    name = (a.text() or "").strip()
-                    if not href or href == "#" or not name:
-                        continue
-                    classes.append({"type_name": name, "type_id": href})
-                if classes:
-                    break
-            if not classes:
-                classes = list(self.cfg["default_classes"])
+            classes = self._parse_categories(doc)
 
             return {
                 "class": classes,
@@ -568,6 +414,87 @@ class Spider(Spider):
         except Exception as e:
             print(f"homeContent error: {e}")
             return {"class": [], "list": []}
+
+    def _parse_categories(self, doc):
+        """自动抓取主站导航分类：一级 + 二级下拉"""
+        classes = []
+        seen_href = set()
+
+        try:
+            self_host = urlparse(self.host).netloc if self.host else ""
+        except Exception:
+            self_host = ""
+
+        def _add(name, href):
+            name = (name or "").strip()
+            href = (href or "").strip()
+            if not name or not href or href in ("#", ""):
+                return
+            # 排除伪链接
+            if href.startswith(("javascript:", "mailto:", "tel:")):
+                return
+            # 排除外链
+            if href.startswith("http"):
+                try:
+                    if urlparse(href).netloc != self_host:
+                        return
+                except Exception:
+                    return
+            # 相对路径统一成 / 开头
+            if not href.startswith("http") and not href.startswith("/"):
+                href = "/" + href
+            if href in seen_href:
+                return
+            seen_href.add(href)
+            classes.append({"type_name": name, "type_id": href})
+
+        # ---- 策略1：一级目录（真实结构）----
+        # <li class="nav-item"><a class="nav-link dropdown-toggle" href="/category/wpcz/"><div>今日吃瓜</div></a></li>
+        try:
+            for li in doc("ul.navbar-nav.mr-auto > li.nav-item, ul.navbar-nav > li.nav-item").items():
+                # 只处理带 <a> 的，跳过只有 <button> 的 dropdown
+                a = li("> a.nav-link").eq(0)
+                if not a:
+                    a = li("> a").eq(0)
+                if not a:
+                    continue
+                href = a.attr("href") or ""
+                name = a.text().strip()
+                if name:
+                    _add(name, href)
+        except Exception as e:
+            print(f"一级目录抓取失败: {e}")
+
+        # ---- 策略2：二级下拉目录 ----
+        # <li class="dropdown-item"><a href="/category/mrds/" title="每日大赛">每日大赛</a></li>
+        try:
+            for a in doc(self.cfg["sub_category_selector"]).items():
+                href = a.attr("href") or ""
+                name = (a.attr("title") or "").strip() or a.text().strip()
+                if name:
+                    _add(name, href)
+        except Exception as e:
+            print(f"二级目录抓取失败: {e}")
+
+        # ---- 策略3：通用选择器兜底 ----
+        if not classes:
+            for selector in self.cfg["category_selectors"]:
+                for item in doc(selector).items():
+                    a = item("a") if item.is_("li") else item
+                    href = (a.attr("href") or "").strip()
+                    name = (a.text() or "").strip()
+                    if not href or href == "#" or not name:
+                        continue
+                    _add(name, href)
+                if classes:
+                    break
+
+        # ---- 策略4：default_classes 最后兜底 ----
+        if not classes:
+            classes = list(self.cfg["default_classes"])
+
+        print(f"自动抓取到 {len(classes)} 个分类")
+        return classes
 
     def homeVideoContent(self):
         try:
@@ -582,6 +509,9 @@ class Spider(Spider):
             print(f"homeVideoContent error: {e}")
             return {"list": []}
 
+    # ============================================================
+    # 分类内容
+    # ============================================================
     def categoryContent(self, tid, pg, filter, extend):
         try:
             if not self.host:
@@ -593,7 +523,13 @@ class Spider(Spider):
                         "limit": 90, "total": len(videos)}
             pg = int(pg)
             tid = tid.rstrip("/")
-            url = f"{self.host}{tid}/{pg}/" if pg > 1 else f"{self.host}{tid}/"
+
+            # 首页 tid="/" 直接请求根路径
+            if tid == "" or tid == "/":
+                url = f"{self.host}/" if pg == 1 else f"{self.host}/page/{pg}/"
+            else:
+                url = f"{self.host}{tid}/{pg}/" if pg > 1 else f"{self.host}{tid}/"
+
             r = self._fetch(url)
             if not r or r.status_code != 200:
                 return {"list": [], "page": pg, "pagecount": 1, "limit": 90, "total": 0}
@@ -617,6 +553,9 @@ class Spider(Spider):
             print(f"categoryContent error: {e}")
             return {"list": [], "page": pg, "pagecount": 1, "limit": 90, "total": 0}
 
+    # ============================================================
+    # 详情 / 搜索 / 播放
+    # ============================================================
     def detailContent(self, ids):
         try:
             raw_id = ids[0] if ids else ""
