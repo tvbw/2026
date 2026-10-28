@@ -3,6 +3,117 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "肉视频_2",
+      "name": "❤️肉视频_2",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/肉视频_2.py"
+    },
+    {
+      "key": "终极自愈+全功能版lissavjp",
+      "name": "❤️终极自愈+全功能版lissavjp",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/终极自愈+全功能版lissavjp.py"
+    },
+    {
+      "key": "xv123xf",
+      "name": "❤️xv123xf",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xv123xf.py"
+    },
+    {
+      "key": "xHamster·动态发布自愈版_2",
+      "name": "❤️xHamster·动态发布自愈版_2",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xHamster·动态发布自愈版_2.py"
+    },
+    {
+      "key": "rouav终极自愈+全功能版",
+      "name": "❤️rouav终极自愈+全功能版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/rouav终极自愈+全功能版.py"
+    },
+    {
+      "key": "lissavCN终极自愈+全功能版",
+      "name": "❤️lissavCN终极自愈+全功能版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/lissavCN终极自愈+全功能版.py"
+    },
+    {
+      "key": "YesPorn·动态发布自愈版_2",
+      "name": "❤️YesPorn·动态发布自愈版_2",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/YesPorn·动态发布自愈版_2.py"
+    },
+    {
+      "key": "YesPorn·动态发布自愈版",
+      "name": "❤️YesPorn·动态发布自愈版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/YesPorn·动态发布自愈版.py"
+    },
+    {
+      "key": "XV123",
+      "name": "❤️XV123",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/XV123.py"
+    },
+    {
+      "key": "Hanime1(终极自愈+全功能版)",
+      "name": "❤️Hanime1(终极自愈+全功能版)",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Hanime1(终极自愈+全功能版).py"
+    },
+    {
+
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
@@ -14,15 +125,26 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
     },
     {
-      "key": "电影侠",
-      "name": "🍁电影侠",
+      "key": "电影侠1",
+      "name": "🍁电影侠1",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/dyxia.py"
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18-/a0bf14d8b64456e0339dbd076fef5fea077da163/bd/haozi/py/%E7%94%B5%E5%BD%B1%E4%BE%A0.py#L27"
+    },
+    {
+      "key": "电影侠2",
+      "name": "🍁电影侠2",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/20261001-18-/a0bf14d8b64456e0339dbd076fef5fea077da163/wzxxcz/py/%E7%94%B5%E5%BD%B1%E4%BE%A0.py#L3"
     },
     {
       "key": "xb6v修护",
