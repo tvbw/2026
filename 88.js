@@ -171,6 +171,17 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51bl.py"
     },
     {
+      "key": "17黑料",
+      "name": "❤️17黑料｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/17hl.py"
+    },
+    {
       "key": "18av",
       "name": "5❤️18av【🔞】",
       "type": 3,
