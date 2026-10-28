@@ -45,9 +45,9 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 三级域名列表 ----
     SEED_HOSTS = [
-            'https://birth.wveksuxvt.cc/',
-            'https://advance.wveksuxvt.cc/',
-            'https://bill.wveksuxvt.cc/',
+            'https://brain.smingrvwa.cc/',
+            'https://battle.smingrvwa.cc/',
+            'https://butter.smingrvwa.cc/',
     ]
     FALLBACK_HOST  = None
     HOST_CACHE_KEY = "51ds_host"           # 必须唯一
