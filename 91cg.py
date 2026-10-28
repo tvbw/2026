@@ -25,7 +25,7 @@ SITE_CONFIG = {
     "play_from": "51通用最终版",
     "style": {"type": "rect", "ratio": 1.33},
     # ===== 保持 102 原配置（已验证可用） =====
-    "publish_url": "https://91cgb18.com/",
+    "publish_url": "https://bean.yfqnystf.cc/",
 
     # 发布页编码方式: js_base64 / js_atob / plain / redirect
     "publish_decode": "js_base64",
@@ -34,12 +34,12 @@ SITE_CONFIG = {
 
     # 发布页解析失败时的兜底域名
     "fallback_hosts": [
-        "https://adjust.fcscxvxp.cc/",
-        "https://d2b1qy9i9ojpol.cloudfront.net/", 
+        "https://angry.yfqnystf.cc/",
+        "https://chain.yfqnystf.cc/", 
+        "https://assume.yfqnystf.cc/",
         "https://91cgb20.com/",
         "https://91cgb18.com/",
         "https://91cgb19.com/",
-     # "https://able.htinjysz.cc/",
     ],
 
     "list_selector": "#index article a, #archive article a",
