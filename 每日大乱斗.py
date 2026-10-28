@@ -51,7 +51,7 @@ class SiteConfig:
         "https://amazing.kludlvje.cc/",
     ]
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds1_host"          # 每个站点必须唯一
+    HOST_CACHE_KEY = "mrdld_host"          # 每个站点必须唯一
     HOST_CACHE_TTL = 6 * 3600
 
     # ---- 探测参数 ----
@@ -60,7 +60,7 @@ class SiteConfig:
     PROBE_MIN_ARTICLE    = 3
 
     # ---- 站点特征（务必带引号！）----
-    SITE_KEYWORDS    = ["每日大赛"]
+    SITE_KEYWORDS    = ["每日大乱斗"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article"]
 
     # ---- 列表 / 详情选择器 ----
