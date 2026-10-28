@@ -1,21 +1,7 @@
 # coding: utf-8
 # ============================================================
-# 一线黑料 爬虫源  (TVBox / FongMi)
-# 主域名   : https://danbady4042982.buzz
-# 备用域名 : https://danbady3674328.xyz
-# 发布页   : 无（域名浮动，硬编码两个备选）
-# 内容类型 : 视频 / 图片(漫画图集) / 小说
-# 结构说明 : 自建聚合站(PHP + 模板 yase)
-#           视频列表 /video/type/{tid}/{pg}.html  详情 /video/info/{id}.html
-#           视频播放 /video/play/{id}.html        (页面内 var playUrl='...m3u8')
-#           图片列表 /image/type/{tid}/{pg}.html  详情 /image/info/{id}.html
-#           图片播放 /image/play/{id}/number-{n}.html (单章多图, 多章分页)
-#           小说列表 /novel/type/{tid}/{pg}.html  详情 /novel/info/{id}.html
-#           搜索     /video/search/{kw}.html   （图片/小说搜索同型）
-# m3u8取证 : 多码率, 无KEY, 锚点 /20260911/pmWBKnV6/1500kb/hls/ ,
-#            广告目录 /20260731/UTxI1Mxv/9567kb/hls/  -> NEED_CLEAN = True
-# 最后验证 : 2026-09-12
-# 来源     : AI 自动逆向生成 (tvbox_fongmi_spider v1.0.3)
+# 一线黑料 爬虫源 (TVBox / FongMi)
+# 修复：转圈问题（AD_ANCHOR 硬编码 + 分片/KEY 未走 proxy + localProxy 不支持 ts）
 # ============================================================
 import json
 import re
@@ -33,11 +19,11 @@ except ImportError:
 
 class Spider(BaseSpider):
 
-    # ---- 由 m3u8_analyzer 取证结论决定 ----
-    # True  = 存在广告目录，走 localProxy 五层清洗
-    # False = 无广告特征，直接返回直链
+    # ---- 清洗开关 ----
     NEED_CLEAN = True
-    AD_ANCHOR = "/20260911/pmWBKnV6/1500kb/hls/"
+    # 关键修复：不再硬编码日期目录，改为动态推断
+    AD_ANCHOR = ""
+    # 广告目录（精确匹配，即使日期变了也只是"漏删广告"，不会误伤正片）
     AD_DIRS = ["/20260731/UTxI1Mxv/9567kb/hls/"]
 
     def __init__(self):
@@ -51,20 +37,7 @@ class Spider(BaseSpider):
 
         self.classes = [
             {"type_id": "video/type/913", "type_name": "91精选"},
-            {"type_id": "video/type/957", "type_name": "精选传媒"},
-            {"type_id": "video/type/1234", "type_name": "杏吧资源"},
             {"type_id": "video/type/955", "type_name": "热点专题"},
-            {"type_id": "video/type/1304", "type_name": "AI成人"},
-            {"type_id": "video/type/956", "type_name": "国产传媒"},
-            {"type_id": "video/type/1138", "type_name": "特殊资源"},
-            {"type_id": "video/type/1052", "type_name": "少女仓库"},
-            {"type_id": "video/type/441", "type_name": "网曝黑料"},
-            {"type_id": "video/type/822", "type_name": "精品资源"},
-            {"type_id": "video/type/910", "type_name": "大众精品"},
-            {"type_id": "video/type/911", "type_name": "番号大全"},
-            {"type_id": "video/type/912", "type_name": "热门视频"},
-            {"type_id": "video/type/1262", "type_name": "玉兔资源"},
-            {"type_id": "video/type/1299", "type_name": "大奶资源"},
             {"type_id": "image/type/961", "type_name": "激情图漫"},
             {"type_id": "novel/type/962", "type_name": "情色小说"},
         ]
@@ -74,6 +47,7 @@ class Spider(BaseSpider):
             "User-Agent": "Mozilla/5.0 (Linux; Android 14; 22127RK46C) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
             "Referer": self.host + "/",
         }
+
     def getName(self):
         return "一线黑料"
 
@@ -81,7 +55,6 @@ class Spider(BaseSpider):
         return []
 
     def init(self, extend=""):
-        # init 零网络；域名探测懒加载，放 _pick_host
         self.extend = extend or ""
 
     def destroy(self):
@@ -89,7 +62,6 @@ class Spider(BaseSpider):
         pass
 
     def _pick_host(self):
-        """懒加载域名探测，禁止放 __init__ / homeContent（法则16）"""
         if self._host_ok:
             return
         for h in self.hosts:
@@ -124,7 +96,6 @@ class Spider(BaseSpider):
 
     @staticmethod
     def _norm_ids(ids):
-        """法则35：ids 可能是 list/str/int/bytes"""
         if ids is None:
             return ""
         if isinstance(ids, (list, tuple)):
@@ -156,30 +127,20 @@ class Spider(BaseSpider):
     # ==================== 首页 ====================
 
     def homeContent(self, filter):
-        # 零网络
         return {"class": self.classes, "filters": self.filters if filter else {}}
 
     def getHomeContent(self, filter):
         return self.homeContent(filter)
 
     def homeVideoContent(self):
-        # 首页推荐：取热门视频分类第一页
         return self.categoryContent("video/type/912", "1", False, {})
 
     # ==================== 列表 ====================
 
-    # 列表卡片: div.pic > ul > li[id^=content] > a[href][title] > img[src] ; span=日期
     _CARD_RE = re.compile(
         r"<li[^>]*id=[\"']?content\d+[\"']?[^>]*>.*?<a[^>]*href=[\"']([^\"']+)[\"'][^>]*title=[\"']([^\"']*)[\"'][^>]*>.*?<img[^>]*?(?:data-src|data-original|src)=[\"']([^\"']+)[\"']",
         re.S | re.I,
     )
-
-    # 有图卡片: li[id^=content] > a[href][title] > img
-    _CARD_RE = re.compile(
-        r"<li[^>]*id=[\"']?content\d+[\"']?[^>]*>.*?<a[^>]*href=[\"']([^\"']+)[\"'][^>]*title=[\"']([^\"']*)[\"'][^>]*>.*?<img[^>]*?(?:data-src|data-original|src)=[\"']([^\"']+)[\"']",
-        re.S | re.I,
-    )
-    # 无图卡片(小说): <li ...> <a href='/novel/info/xxx.html' title="...">...</a>
     _CARD_NOTXT_RE = re.compile(
         r"<li[^>]*>\s*<a[^>]*href=[\"']([^\"']*(?:novel|video|image)/info/[^\"']+)[\"'][^>]*title=[\"']([^\"']*)[\"']",
         re.S | re.I,
@@ -188,7 +149,6 @@ class Spider(BaseSpider):
     def _parse_cards(self, html):
         items = []
         seen = set()
-        # 先抓有图卡片
         for m in self._CARD_RE.finditer(html or ""):
             href, title, pic = m.group(1), m.group(2), m.group(3)
             vid = self._abs(href)
@@ -201,7 +161,6 @@ class Spider(BaseSpider):
                 "vod_pic": self._abs(pic),
                 "vod_remarks": "",
             })
-        # 再抓无图卡片(小说等)，避免漏项
         for m in self._CARD_NOTXT_RE.finditer(html or ""):
             href, title = m.group(1), m.group(2)
             vid = self._abs(href)
@@ -215,6 +174,7 @@ class Spider(BaseSpider):
                 "vod_remarks": "",
             })
         return items
+
     @staticmethod
     def _clean(t):
         t = re.sub(r"<[^>]+>", "", t or "")
@@ -226,14 +186,12 @@ class Spider(BaseSpider):
         self._pick_host()
         page = str(pg or "1")
         tid = str(tid or "").strip().strip("/")
-        # tid 形如 video/type/912 或 image/type/961 或 novel/type/962
         if page == "1":
             url = f"{self.host}/{tid}.html"
         else:
             url = f"{self.host}/{tid}/{page}.html"
         html = self._get(url)
         items = self._parse_cards(html)
-        # 总页数：页面文本 "共N条数据,当前x/y页"
         pagecount = 9999
         m = re.search(r"当前\s*\d+\s*/\s*(\d+)\s*页", html or "")
         if m:
@@ -272,7 +230,6 @@ class Spider(BaseSpider):
             for u in urls:
                 results += self._search_one(u)
 
-        # 去重保序
         seen, out = set(), []
         for it in results:
             if it["vod_id"] not in seen:
@@ -294,11 +251,9 @@ class Spider(BaseSpider):
         if not raw:
             return {"list": []}
         try:
-            # raw 可能是列表返回的绝对详情URL
             detail_url = raw if raw.startswith("http") else self._abs(raw)
             html = self._get(detail_url)
 
-            # 分类判定
             if "/image/" in detail_url:
                 return self._detail_image(detail_url, html)
             if "/novel/" in detail_url:
@@ -313,7 +268,6 @@ class Spider(BaseSpider):
         return self._clean(m.group(1)) if m else ""
 
     def _page_pic(self, html):
-        # 优先 data-img（真实图），src 常为占位 gif
         m = re.search(r'class=["\']detail-img["\'][^>]*?(?:data-img|data-src)=["\']([^"\']+)["\']', html or "", re.S | re.I)
         if m and m.group(1).strip():
             return self._abs(m.group(1))
@@ -322,6 +276,7 @@ class Spider(BaseSpider):
             return self._abs(m.group(1))
         m = re.search(r'<img[^>]*?(?:data-img|data-src|src)=["\'](https?://[^"\']+\.(?:jpg|jpeg|png|webp))["\']', html or "", re.S | re.I)
         return self._abs(m.group(1)) if m else ""
+
     def _detail_video(self, detail_url, html):
         vid = detail_url
         title = self._page_title(html).split("｜")[0].strip()
@@ -333,16 +288,13 @@ class Spider(BaseSpider):
         else:
             m2 = re.search(r"/(\d+)\.html", detail_url)
             play_url = f"{self.host}/video/play/{m2.group(1)}.html" if m2 else detail_url
-
         return {"list": [{
-            "vod_id": vid,
-            "vod_name": title,
-            "vod_pic": pic,
-            "vod_remarks": "",
-            "vod_content": title,
+            "vod_id": vid, "vod_name": title, "vod_pic": pic,
+            "vod_remarks": "", "vod_content": title,
             "vod_play_from": "线路1",
             "vod_play_url": "正片$" + play_url,
         }]}
+
     def _detail_image(self, detail_url, html):
         vid = detail_url
         title = self._page_title(html).split("｜")[0].strip() or "图集"
@@ -354,14 +306,12 @@ class Spider(BaseSpider):
             m2 = re.search(r"/(\d+)\.html", detail_url)
             play_url = f"{self.host}/image/play/{m2.group(1)}.html" if m2 else detail_url
         return {"list": [{
-            "vod_id": vid,
-            "vod_name": title,
-            "vod_pic": pic,
-            "vod_remarks": "",
-            "vod_content": title,
+            "vod_id": vid, "vod_name": title, "vod_pic": pic,
+            "vod_remarks": "", "vod_content": title,
             "vod_play_from": "图片浏览",
             "vod_play_url": "浏览图片$" + play_url,
         }]}
+
     def _detail_novel(self, detail_url, html):
         vid = detail_url
         title = self._page_title(html).split("｜")[0].strip() or "小说"
@@ -373,11 +323,8 @@ class Spider(BaseSpider):
             m2 = re.search(r"/(\d+)\.html", detail_url)
             play_url = f"{self.host}/novel/play/{m2.group(1)}.html" if m2 else detail_url
         return {"list": [{
-            "vod_id": vid,
-            "vod_name": title,
-            "vod_pic": pic,
-            "vod_remarks": "",
-            "vod_content": title,
+            "vod_id": vid, "vod_name": title, "vod_pic": pic,
+            "vod_remarks": "", "vod_content": title,
             "vod_play_from": "章节",
             "vod_play_url": "正文$" + play_url,
         }]}
@@ -406,39 +353,31 @@ class Spider(BaseSpider):
             else:
                 play_url = self._abs(play_url)
 
-        # 图片播放页 -> pics://
         if "/image/play/" in play_url:
             return self._play_image(play_url)
-        # 小说播放页 -> novel://
         if "/novel/" in play_url:
             return self._play_novel(play_url)
-        # 视频播放页 -> 提取 m3u8
         if "/video/play/" in play_url or "playUrl" in play_url:
             m3u8 = self._extract_play_url(play_url)
             if m3u8:
                 return self._wrap_m3u8(m3u8)
-        # 已经是直链
         if ".m3u8" in play_url or ".mp4" in play_url:
             if ".m3u8" in play_url:
                 return self._wrap_m3u8(play_url)
             return {"parse": 0, "url": play_url, "header": {"User-Agent": self.headers["User-Agent"]}}
 
-        # 兜底：当作播放页再试一次
         m3u8 = self._extract_play_url(play_url)
         if m3u8:
             return self._wrap_m3u8(m3u8)
         return {"parse": 1, "url": play_url, "header": self.headers}
 
     def _extract_play_url(self, play_page_url):
-        """L1 直链 + L2 播放器变量"""
         html = self._get(play_page_url)
         if not html:
             return ""
-        # L2: var playUrl = '...'
         m = re.search(r"var\s+playUrl\s*=\s*[\"']([^\"']+)[\"']", html)
         if m and ".m3u8" in m.group(1):
             return m.group(1).replace("\\/", "/")
-        # L1: 直接出现 contentUrl / .m3u8
         m = re.search(r'"(?:contentUrl|url)"\s*:\s*"(https?://[^"]+\.m3u8[^"]*)"', html)
         if m:
             return m.group(1).replace("\\/", "/")
@@ -453,18 +392,17 @@ class Spider(BaseSpider):
             return {"parse": 0, "url": self._m3u8_proxy_url(url), "header": {"User-Agent": ua}}
         return {"parse": 0, "url": url, "header": {"User-Agent": ua}}
 
-    # ---------- 图片 pics:// ----------
+    # ---------- 图片 ----------
 
     def _play_image(self, play_url):
         imgs = self._collect_images(play_url)
         if not imgs:
             return {"parse": 0, "url": "", "header": {}, "msg": "未提取到图片"}
-        # 图床 img.177pica.com 有 Referer 防盗链：带站点 Referer 会 403，必须不带
         imgs = ["https://" + u[7:] if u.startswith("http://") else u for u in imgs]
         payload = "pics://" + "&&".join(imgs)
         return {"parse": 0, "url": payload, "header": {}}
+
     def _collect_images(self, play_url):
-        # 规范化到首章：/image/play/{id}.html 或 /image/play/{id}/number-N.html
         m = re.search(r"(/image/play/\d+)", play_url)
         if m:
             first_url = self._abs(m.group(1) + ".html")
@@ -488,6 +426,7 @@ class Spider(BaseSpider):
                 seen.add(u)
                 out.append(u)
         return out
+
     _IMG_RE = re.compile(
         r'<img[^>]+(?:data-original|data-src|src)=["\'](https?://[^"\']+\.(?:jpg|jpeg|png|webp))["\']',
         re.I,
@@ -499,14 +438,13 @@ class Spider(BaseSpider):
         for u in raw:
             if self._is_noise_image(u):
                 continue
-            # Android 9+ 默认禁明文 HTTP，图片统一升级 HTTPS
             if u.startswith("http://"):
                 u = "https://" + u[7:]
             out.append(u)
         if raw and not out:
-            # 过滤过度，回退
             return [self._abs(u) for u in raw]
         return out
+
     _NOISE_KW = ("logo", "icon", "favicon", "banner", "avatar", "loading",
                  "placeholder", "default", "blank", "qrcode", "share", "btn",
                  "arrow", "star")
@@ -524,7 +462,7 @@ class Spider(BaseSpider):
             return True
         return False
 
-    # ---------- 小说 novel:// ----------
+    # ---------- 小说 ----------
 
     def _play_novel(self, play_url):
         html = self._get(play_url)
@@ -538,11 +476,9 @@ class Spider(BaseSpider):
                 "header": {"User-Agent": self.headers["User-Agent"]}}
 
     def _extract_novel_text(self, html):
-        # 只取正文容器 novel-wrap，避免混入导航/标签/页脚
         m = re.search(r'<div[^>]*class=["\'][^"\']*novel-wrap[^"\']*["\'][^>]*>(.*?)</div>\s*(?:</div>|<div|<section|$)', html or "", re.S | re.I)
         body = m.group(1) if m else ""
         if not body or len(body) < 100:
-            # 兜底：取 <body> 到「相关推荐」之间
             bm = re.search(r"<body[^>]*>(.*?)(?:相关推荐|友情链接|</body>)", html or "", re.S | re.I)
             body = bm.group(1) if bm else (html or "")
         t = re.sub(r"<script[^>]*>.*?</script>", "", body, flags=re.S | re.I)
@@ -560,6 +496,7 @@ class Spider(BaseSpider):
         lines = [l.strip() for l in t.split("\n")]
         lines = [l for l in lines if l and not any(b in l for b in bad)]
         return "\n\n".join(lines)
+
     def recommendContent(self, ids, pg):
         try:
             return self.categoryContent("video/type/912", str(pg or "1"), False, {})
@@ -577,6 +514,7 @@ class Spider(BaseSpider):
         return self.getProxyUrl() + "?do=py&url=" + quote(str(url or ""), safe="")
 
     def localProxy(self, param):
+        """支持 m3u8 清洗 + ts/key 二进制透传（修复播放转圈）"""
         try:
             if isinstance(param, dict):
                 target = param.get("url", "") or param.get("source", "")
@@ -597,14 +535,25 @@ class Spider(BaseSpider):
                                             "Referer": self.host + "/"}, timeout=20)
             if not r or getattr(r, "status_code", 0) != 200:
                 return [502, "text/plain", b"fetch failed"]
+
             content = getattr(r, "content", b"") or b""
             if not content and getattr(r, "text", ""):
                 content = r.text.encode("utf-8", errors="ignore")
-            text = content.decode("utf-8", errors="ignore")
-            if "#EXTM3U" not in text:
-                return [502, "text/plain", b"invalid m3u8"]
-            cleaned = self._clean_m3u8(text, target)
-            return [200, "application/vnd.apple.mpegurl", cleaned.encode("utf-8")]
+
+            # 用内容头判断：m3u8 走清洗，其它（ts/key/图片）走二进制透传
+            head = content[:64].lstrip() if content else b""
+            if head.startswith(b"#EXTM3U"):
+                text = content.decode("utf-8", errors="ignore")
+                cleaned = self._clean_m3u8(text, target)
+                return [200, "application/vnd.apple.mpegurl", cleaned.encode("utf-8")]
+
+            ctype = "application/octet-stream"
+            try:
+                ch = getattr(r, "headers", {}) or {}
+                ctype = ch.get("Content-Type", ctype) or ctype
+            except Exception:
+                pass
+            return [200, ctype, content]
         except Exception as e:
             return [500, "text/plain", ("localProxy error: %s" % type(e).__name__).encode("utf-8")]
 
@@ -657,10 +606,9 @@ class Spider(BaseSpider):
         if not lines:
             return "#EXTM3U\n"
 
-        # 第1层：图片流检测（只打标记，不 return）
         is_img = self._is_fake_image_stream(text)
 
-        # 第2层：多码率主表
+        # 多码率主表
         if any(l.startswith("#EXT-X-STREAM-INF") for l in lines):
             out = []
             for line in lines:
@@ -671,13 +619,12 @@ class Spider(BaseSpider):
                     out.append(self._m3u8_proxy_url(child) if ".m3u8" in child.lower() else child)
             return "\n".join(out) + "\n"
 
-        # 第3层：锚点
+        # AD_ANCHOR 现在为空 → 走动态推断
         main_dir = self.AD_ANCHOR if self.AD_ANCHOR else self._resolve_main_dir(lines, source_url, is_img)
 
-        # 第4层：过滤
         segments, removed, kept = self._filter_segments(lines, source_url, main_dir)
 
-        # 第5层：全滤兜底
+        # 全删兜底
         if removed > 0 and (kept == 0 or removed > kept):
             self.log({"stage": "clean", "fallback": "no_filter", "removed": removed, "kept": kept})
             out = [self._rewrite_m3u8_tag(l, source_url) for l in lines]
@@ -709,6 +656,7 @@ class Spider(BaseSpider):
                     removed += 1
                 else:
                     segments.extend(pending)
+                    # 修复：走 proxy 而不是直链
                     segments.append(self._rewrite_m3u8_tag(media, source_url))
                     kept += 1
                 pending = []
@@ -717,10 +665,10 @@ class Spider(BaseSpider):
         return segments, removed, kept
 
     def _dedup_tags(self, segments, source_url):
+        """修复：不再二次 _rewrite_m3u8_tag（避免 proxy(proxy(ts)) 导致本地代理拉取失败）"""
         NOISE = ("#EXT-X-DISCONTINUITY", "#EXT-X-KEY:METHOD=NONE")
         out = []
         for line in segments:
-            line = self._rewrite_m3u8_tag(line, source_url)
             if line in NOISE:
                 if not out or out[-1] in NOISE:
                     continue
@@ -730,15 +678,16 @@ class Spider(BaseSpider):
         return out
 
     def _rewrite_m3u8_tag(self, line, source_url):
+        """修复：KEY/MAP/分片全部走本地 proxy"""
         if line.startswith("#EXT-X-KEY") or line.startswith("#EXT-X-MAP"):
             def repl(match):
                 uri = match.group(1)
-                if uri.startswith(("http://", "https://")):
+                if uri.startswith("data:"):
                     return 'URI="' + uri + '"'
-                return 'URI="' + urljoin(source_url, uri) + '"'
+                full = uri if uri.startswith(("http://", "https://")) else urljoin(source_url, uri)
+                return 'URI="' + self._m3u8_proxy_url(full) + '"'
             return re.sub(r'URI="([^"]+)"', repl, line)
         if line and not line.startswith("#"):
-            if line.startswith(("http://", "https://")):
-                return line
-            return urljoin(source_url, line)
+            full = line if line.startswith(("http://", "https://")) else urljoin(source_url, line)
+            return self._m3u8_proxy_url(full)
         return line
