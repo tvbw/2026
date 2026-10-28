@@ -46,12 +46,13 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 4 个三级域名（来自发布页；失效后旧域名一般仍可 302 到新域名）----
     SEED_HOSTS = [
-        "https://ceo.kludlvje.cc/",
-        "https://cause.kludlvje.cc/",
-        "https://amazing.kludlvje.cc/",
+        "https://busy.wzjhwoiir.cc/",
+        "https://cabinet.wzjhwoiir.cc/",
+        "https://capable.wzjhwoiir.cc/",
+        "https://d3abxmgsrop61e.cloudfront.net/",
     ]
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host"          # 每个站点必须唯一
+    HOST_CACHE_KEY = "mrdld_host"          # 每个站点必须唯一
     HOST_CACHE_TTL = 6 * 3600
 
     # ---- 探测参数 ----
@@ -60,7 +61,7 @@ class SiteConfig:
     PROBE_MIN_ARTICLE    = 3
 
     # ---- 站点特征（务必带引号！）----
-    SITE_KEYWORDS    = ["每日大赛"]
+    SITE_KEYWORDS    = ["每日大乱斗"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article"]
 
     # ---- 列表 / 详情选择器 ----
