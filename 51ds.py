@@ -46,9 +46,9 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 4 个三级域名（来自发布页；失效后旧域名一般仍可 302 到新域名）----
     SEED_HOSTS = [
-            'https://brain.smingrvwa.cc/',
-            'https://battle.smingrvwa.cc/',
-            'https://butter.smingrvwa.cc/',
+            'https://am.wveksuxvt.cc/',
+            'https://army.wveksuxvt.cc/',
+            'https://add.wveksuxvt.cc/',
     ]
     FALLBACK_HOST  = None
     HOST_CACHE_KEY = "51ds_host"          # 改前缀每个站点必须唯一
