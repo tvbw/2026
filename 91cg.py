@@ -16,6 +16,15 @@ img_cache = {}
 
 class Spider(BaseSpider):
 
+    # ============ 站点识别配置（每个站点换站时改这里） ============
+    HOST_CACHE_KEY    = "91_host"        # 缓存键，每个站点必须唯一
+    HOST_CACHE_TTL    = 6 * 3600
+    SITE_KEYWORDS     = []               # 本站唯一关键字，如 ["91吃瓜"]
+    PROBE_MIN_HTML    = 3000
+    PROBE_MIN_ARTICLE = 3
+    SITE_MARKERS      = ["post-title", "entry-title", "<article"]
+    # ==========================================================
+
     def init(self, extend=""):
         try:
             self.proxies = json.loads(extend)
@@ -45,16 +54,59 @@ class Spider(BaseSpider):
         global img_cache
         img_cache.clear()
 
+    # ============ 站点内容识别（核心逻辑，本站永久不变） ============
+    def _site_ok(self, html):
+        if not html or len(html) < self.PROBE_MIN_HTML:
+            return False
+        if self.SITE_KEYWORDS:
+            return any(kw in html for kw in self.SITE_KEYWORDS)
+        low = html.lower()
+        if low.count("<article") >= self.PROBE_MIN_ARTICLE:
+            return True
+        return any(m in low for m in self.SITE_MARKERS) and len(html) > 20000
+    # ==============================================================
+
     def get_working_host(self):
+        # 1) 缓存优先
+        try:
+            cached = self.getCache(self.HOST_CACHE_KEY)
+        except Exception:
+            cached = None
+        if cached and isinstance(cached, str) and cached.startswith("http"):
+            try:
+                r = requests.get(cached, headers=self.headers, proxies=self.proxies,
+                                 timeout=10, allow_redirects=True)
+                if r.status_code == 200 and self._site_ok(r.text):
+                    parsed = urlparse(r.url)
+                    final = f"{parsed.scheme}://{parsed.netloc}/" if parsed.netloc else cached
+                    print(f"缓存有效: {cached} → {final}")
+                    if final.rstrip('/') != cached.rstrip('/'):
+                        try: self.setCache(self.HOST_CACHE_KEY, final)
+                        except: pass
+                    return final
+                print(f"缓存失效: {cached}")
+                try: self.delCache(self.HOST_CACHE_KEY)
+                except: pass
+            except Exception:
+                pass
+
+        # 2) 探测动态域名
         dynamic_urls = [
             'https://but.ecxpeyyv.cc/',
             'https://adopt.ecxpeyyv.cc/'
         ]
         for url in dynamic_urls:
             try:
-                response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=10)
-                if response.status_code == 200:
-                    return url
+                response = requests.get(url, headers=self.headers, proxies=self.proxies,
+                                        timeout=10, allow_redirects=True)
+                if response.status_code == 200 and self._site_ok(response.text):
+                    parsed = urlparse(response.url)
+                    final = f"{parsed.scheme}://{parsed.netloc}/" if parsed.netloc else url
+                    if final.rstrip('/') != url.rstrip('/'):
+                        print(f"域名自动跳转: {url} → {final}")
+                    try: self.setCache(self.HOST_CACHE_KEY, final)
+                    except: pass
+                    return final
             except Exception:
                 continue
         return dynamic_urls[0]
@@ -64,7 +116,7 @@ class Spider(BaseSpider):
             response = requests.get(self.host, headers=self.headers, proxies=self.proxies, timeout=15)
             if response.status_code != 200: return {'class': [], 'list': []}
             data = self.getpq(response.text)
-            
+
             classes = []
             category_selectors = ['.category-list ul li', '.nav-menu li', '.menu li', 'nav ul li']
             for selector in category_selectors:
@@ -75,10 +127,10 @@ class Spider(BaseSpider):
                     if not href or href == '#' or not name: continue
                     classes.append({'type_name': name, 'type_id': href})
                 if classes: break
-            
+
             if not classes:
                 classes = [{'type_name': '最新', 'type_id': '/latest/'}, {'type_name': '热门', 'type_id': '/hot/'}]
-            
+
             return {'class': classes, 'list': self.getlist(data('#index article, article'))}
         except Exception as e:
             return {'class': [], 'list': []}
@@ -97,26 +149,26 @@ class Spider(BaseSpider):
             if '@folder' in tid:
                 v = self.getfod(tid.replace('@folder', ''))
                 return {'list': v, 'page': 1, 'pagecount': 1, 'limit': 90, 'total': len(v)}
-            
+
             pg = int(pg) if pg else 1
-            
+
             if tid.startswith('http'):
                 base_url = tid.rstrip('/')
             else:
                 path = tid if tid.startswith('/') else f"/{tid}"
                 base_url = f"{self.host}{path}".rstrip('/')
-            
+
             if pg == 1:
                 url = f"{base_url}/"
             else:
                 url = f"{base_url}/{pg}/"
-                
+
             response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
             if response.status_code != 200: return {'list': [], 'page': pg, 'pagecount': 9999, 'limit': 90, 'total': 0}
-                
+
             data = self.getpq(response.text)
             videos = self.getlist(data('#archive article, #index article, article'), tid)
-            
+
             return {'list': videos, 'page': pg, 'pagecount': 9999, 'limit': 90, 'total': 999999}
         except Exception as e:
             return {'list': [], 'page': pg, 'pagecount': 9999, 'limit': 90, 'total': 0}
@@ -126,7 +178,7 @@ class Spider(BaseSpider):
             url = ids[0] if ids[0].startswith('http') else f"{self.host}{ids[0]}"
             response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
             data = self.getpq(response.text)
-            
+
             plist = []
             used_names = set()
             if data('.dplayer'):
@@ -136,7 +188,7 @@ class Spider(BaseSpider):
                         if config_attr:
                             config = json.loads(config_attr)
                             video_url = config.get('video', {}).get('url', '')
-                            
+
                             if video_url:
                                 ep_name = ''
                                 parent = k.parents().eq(0)
@@ -147,7 +199,7 @@ class Spider(BaseSpider):
                                         ep_name = heading
                                         break
                                     parent = parent.parents().eq(0)
-                                
+
                                 base_name = ep_name if ep_name else f"视频{c}"
                                 name = base_name
                                 count = 2
@@ -155,62 +207,62 @@ class Spider(BaseSpider):
                                     name = f"{base_name} {count}"
                                     count += 1
                                 used_names.add(name)
-                                
+
                                 plist.append(f"{name}${video_url}")
                     except: continue
-            
+
             if not plist:
                 content_area = data('.post-content, article')
                 for i, link in enumerate(content_area('a').items(), start=1):
                     link_text = link.text().strip()
                     link_href = link.attr('href')
-                    
+
                     if link_href and any(kw in link_text for kw in ['点击观看', '观看', '播放', '视频', '第一弹', '第二弹', '第三弹', '第四弹', '第五弹', '第六弹', '第七弹', '第八弹', '第九弹', '第十弹']):
                         ep_name = link_text.replace('点击观看：', '').replace('点击观看', '').strip()
                         if not ep_name: ep_name = f"视频{i}"
-                        
+
                         if not link_href.startswith('http'):
                             link_href = f"{self.host}{link_href}" if link_href.startswith('/') else f"{self.host}/{link_href}"
-                        
+
                         plist.append(f"{ep_name}${link_href}")
-            
+
             play_url = '#'.join(plist) if plist else f"未找到视频源${url}"
-            
+
             vod_content = ''
             try:
                 tags = []
                 seen_names = set()
                 seen_ids = set()
-                
+
                 tag_links = data('.tags a, .keywords a, .post-tags a')
-                
+
                 candidates = []
                 for k in tag_links.items():
                     title = k.text().strip()
                     href = k.attr('href')
                     if title and href:
                         candidates.append({'name': title, 'id': href})
-                
+
                 candidates.sort(key=lambda x: len(x['name']), reverse=True)
-                
+
                 for item in candidates:
                     name = item['name']
                     id_ = item['id']
-                    
+
                     if id_ in seen_ids: continue
-                    
+
                     is_duplicate = False
                     for seen in seen_names:
                         if name in seen:
                             is_duplicate = True
                             break
-                    
+
                     if not is_duplicate:
                         target = json.dumps({'id': id_, 'name': name})
                         tags.append(f'[a=cr:{target}/]{name}[/a]')
                         seen_names.add(name)
                         seen_ids.add(id_)
-                
+
                 if tags:
                     vod_content = ' '.join(tags)
                 else:
@@ -228,12 +280,12 @@ class Spider(BaseSpider):
     def searchContent(self, key, quick, pg="1"):
         try:
             pg = int(pg) if pg else 1
-            
+
             if pg == 1:
                 url = f"{self.host}/search/{key}/"
             else:
                 url = f"{self.host}/search/{key}/{pg}/"
-            
+
             response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
             return {'list': self.getlist(self.getpq(response.text)('article')), 'page': pg, 'pagecount': 9999}
         except:
@@ -316,7 +368,7 @@ class Spider(BaseSpider):
             href = a.attr('href')
             title = k('h2').text() or k('.entry-title').text() or k('.post-title').text()
             if not title and k.is_('a'): title = k.text()
-            
+
             if href and title:
                 img = self.getimg(k('script').text(), k, card_html)
                 videos.append({
@@ -348,7 +400,7 @@ class Spider(BaseSpider):
     def getimg(self, text, elem=None, html_content=None):
         if m := re.search(r"loadBannerDirect\('([^']+)'", text or ''):
             return self._proc_url(m.group(1))
-        
+
         if html_content is None and elem is not None:
              html_content = elem.outer_html() if hasattr(elem, 'outer_html') else str(elem)
         if not html_content: return ''
@@ -361,11 +413,11 @@ class Spider(BaseSpider):
 
         m = re.search(r'(https?://[^"\'\s)]+\.(?:jpg|png|jpeg|webp))', html_content, re.I)
         if m: return self._proc_url(m.group(1))
-            
+
         if 'url(' in html_content:
             m = re.search(r'url\s*\(\s*[\'"]?([^"\'\)]+)[\'"]?\s*\)', html_content, re.I)
             if m: return self._proc_url(m.group(1))
-            
+
         return ''
 
     def _proc_url(self, url):
