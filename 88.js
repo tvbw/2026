@@ -171,17 +171,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51bl.py"
     },
     {
-      "key": "连播玩物社区",
-      "name": "❤️连播玩物社区",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播玩物社区.py"
-    },
-    {
       "key": "18av",
       "name": "5❤️18av【🔞】",
       "type": 3,
