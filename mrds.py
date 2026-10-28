@@ -50,7 +50,7 @@ class SiteConfig:
         "https://amazing.kludlvje.cc/",
     ]
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host"        # 每个站点必须唯一
+    HOST_CACHE_KEY = "mrds1_host"        # 每个站点必须唯一
     HOST_CACHE_TTL = 6 * 3600
 
     # ---- 探测参数 ----
