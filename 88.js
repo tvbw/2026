@@ -3,115 +3,48 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "🔞终极自愈rouav",
-      "name": "🔞终极自愈rouav",
+      "key": "jable_失效自愈版",
+      "name": "❤️jable_失效自愈版",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/rouav5星自愈.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/jable_失效自愈版.py"
     },
     {
-      "key": "终极自愈+全功能版lissavjp",
-      "name": "❤️终极自愈+全功能版lissavjp",
+      "key": "Zaka影院·动态发布自愈版",
+      "name": "❤️Zaka影院·动态发布自愈版",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/终极自愈+全功能版lissavjp.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Zaka影院·动态发布自愈版.py"
     },
     {
-      "key": "xHamster·动态发布自愈版_2",
-      "name": "❤️xHamster·动态发布自愈版_2",
+      "key": "红果短剧修复版",
+      "name": "❤️红果短剧修复版",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xHamster·动态发布自愈版_2.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/红果短剧修复版.py"
     },
     {
-      "key": "YesPorn·动态发布自愈版_2",
-      "name": "❤️YesPorn·动态发布自愈版_2",
+      "key": "91porn逆向版",
+      "name": "❤️91porn逆向版",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/YesPorn·动态发布自愈版_2.py"
-    },
-    {
-      "key": "rouav终极自愈+全功能版",
-      "name": "❤️rouav终极自愈+全功能版",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/rouav终极自愈+全功能版.py"
-    },
-    {
-      "key": "lissavCN终极自愈+全功能版",
-      "name": "❤️lissavCN终极自愈+全功能版",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/lissavCN终极自愈+全功能版.py"
-    },
-    {
-      "key": "xv123xf",
-      "name": "❤️xv123xf",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xv123xf.py"
-    },
-    {
-      "key": "XV123",
-      "name": "❤️XV123",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/XV123.py"
-    },
-    {
-      "key": "YesPorn·动态发布自愈版",
-      "name": "❤️YesPorn·动态发布自愈版",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/YesPorn·动态发布自愈版.py"
-    },
-    {
-
-      "key": "Hanime1(终极自愈+全功能版)",
-      "name": "❤️Hanime1(终极自愈+全功能版)",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Hanime1(终极自愈+全功能版).py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91porn逆向版.py"
     },
     {
 
@@ -126,26 +59,15 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
     },
     {
-      "key": "电影侠1",
-      "name": "🍁电影侠1",
+      "key": "电影侠",
+      "name": "🍁电影侠",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18-/a0bf14d8b64456e0339dbd076fef5fea077da163/bd/haozi/py/%E7%94%B5%E5%BD%B1%E4%BE%A0.py#L27"
-    },
-    {
-      "key": "电影侠2",
-      "name": "🍁电影侠2",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18-/a0bf14d8b64456e0339dbd076fef5fea077da163/wzxxcz/py/%E7%94%B5%E5%BD%B1%E4%BE%A0.py#L3"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/dyxia.py"
     },
     {
       "key": "xb6v修护",
@@ -192,17 +114,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播18AV.py"
     },
     {
-      "key": "91吃瓜",
-      "name": "❤️91吃瓜",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
-    },
-    {
+
       "key": "🔞lissavcn",
       "name": "🔞lissavcn",
       "type": 3,
@@ -225,7 +137,17 @@
       "api": "http://pglblb.test.upcdn.net/2026py/test/lissavjp.py"
     },
     {
-
+      "key": "🔞rouav",
+      "name": "🔞rouav",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/test/rouav.py"
+    },
+    {
       "key": "🔞好色TV",
       "name": "🔞好色TV",
       "type": 3,
@@ -259,6 +181,28 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
+    },
+    {
+      "key": "91吃瓜",
+      "name": "❤️91吃瓜",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
+    },
+    {
+      "key": "51吃瓜",
+      "name": "❤️51吃瓜｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cg.py"
     },
     {
       "key": "连播草榴社区",
@@ -1710,17 +1654,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg-w.py"
     },
     {
-      "key": "51吃瓜",
-      "name": "❤️51吃瓜｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cg.py"
-    },
-    {
+
       "key": "51大赛",
       "name": "❤️51大赛｜🔞",
       "type": 3,
