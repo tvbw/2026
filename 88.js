@@ -3,51 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "jable_失效自愈版",
-      "name": "❤️jable_失效自愈版",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/jable_失效自愈版.py"
-    },
-    {
-      "key": "Zaka影院·动态发布自愈版",
-      "name": "❤️Zaka影院·动态发布自愈版",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Zaka影院·动态发布自愈版.py"
-    },
-    {
-      "key": "红果短剧修复版",
-      "name": "❤️红果短剧修复版",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/红果短剧修复版.py"
-    },
-    {
-      "key": "91porn逆向版",
-      "name": "❤️91porn逆向版",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91porn逆向版.py"
-    },
-    {
-
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
@@ -1664,6 +1619,28 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds.py"
+    },
+    {
+      "key": "jable_失效自愈版",
+      "name": "❤️jable_失效自愈版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/jable_失效自愈版.py"
+    },
+    {
+      "key": "Zaka影院·动态发布自愈版",
+      "name": "❤️Zaka影院·动态发布自愈版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Zaka影院·动态发布自愈版.py"
     },
     {
       "key": "push_agent",
