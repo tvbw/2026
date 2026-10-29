@@ -149,6 +149,28 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
     },
     {
+      "key": "91热爆",
+      "name": "❤️91热爆",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91rb.py"
+    },
+    {
+      "key": "91黑料",
+      "name": "❤️91黑料",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91hl.py"
+    },
+    {
       "key": "51吃瓜",
       "name": "❤️51吃瓜｜🔞",
       "type": 3,
