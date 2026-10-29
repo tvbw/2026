@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-91JAV · 三级域名自愈版
+91JAV · 多域名自愈版 v2
 ================================
-- 域名自愈：种子域名并发探测 + 302 跟随 + 6h TTL 缓存 + 详细日志 + 兜底
-- 运行时容错：请求失败自动切换到 backup_hosts，并可从 GitLab README 拉新域名
-- 业务保留：分类 / theme / actress / 黑料 / 搜索 / 详情 / m3u8 / 图片 AES 解密
+- 域名自愈：种子域名并发探测 + 302 跟随 + 6h TTL 缓存 + 失败切换 + 兜底
+- 目录自动：首页导航栏自动解析生成分类，无任何手工目录 / 硬编码分类
+- 业务保留：完整沿用 91av 原始实现（黑料 / 专题 / 女优 / 搜索 / 详情 / m3u8 / 图片 AES 解密）
 """
 import base64
 import json
@@ -46,24 +46,24 @@ LOG = logging.getLogger(__name__)
 # ① 配置层
 # ==================================================================
 class SiteConfig:
-    # ---- 三级域名（用户提供的最新有效域名）----
+    # ---- 三级域名（种子列表，可随时扩充）----
     SEED_HOSTS = [
+        "https://born.zbywlcc.com/",
         "https://blow.xhjug.cc/",
         "https://assume.xhjug.cc/",
-        "https://born.zbywlcc.com/",
     ]
-    HOST_CACHE_KEY = "91jav_host"
+    HOST_CACHE_KEY = "91jav_host"          # 缓存 key 必须唯一
     HOST_CACHE_TTL = 6 * 3600
 
     # ---- 探测参数 ----
     PROBE_TIMEOUT     = 8
     PROBE_MIN_HTML    = 3000
-    PROBE_MIN_ARTICLE = 3
 
-    # ---- 站点特征（首页 HTML 出现任一即认为命中）----
-    SITE_KEYWORDS = [91jav]
+    # ---- 站点特征（首页 HTML 出现任一即认为是本站）----
+    SITE_KEYWORDS = []
     SITE_MARKERS  = ["bind_video_img", "/videos/"]
 
+    # ---- 请求 Header ----
     HEADERS = {
         "User-Agent": ("Mozilla/5.0 (Linux; Android 10; SM-G981B) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -74,9 +74,17 @@ class SiteConfig:
         "Cache-Control": "no-cache",
     }
 
+    # ---- 首页导航解析失败时的兜底（仅作为降级，不作为主逻辑）----
+    FALLBACK_CLASSES = [
+        {"type_id": "/new",         "type_name": "最新更新"},
+        {"type_id": "/heiliao",     "type_name": "黑料吃瓜"},
+        {"type_id": "/theme",       "type_name": "专题合集"},
+        {"type_id": "/actress/hot", "type_name": "热门女优"},
+    ]
+
 
 # ==================================================================
-# ② 域名解析器（并发探测 + 302跟随 + TTL缓存 + 兜底）
+# ② 域名解析器（并发探测 + 302 跟随 + TTL 缓存 + 兜底）
 # ==================================================================
 class DomainResolver:
     def __init__(self, cfg, fetcher, cache_get=None, cache_set=None):
@@ -131,10 +139,19 @@ class DomainResolver:
         except Exception:
             pass
 
+    def _clear_cache(self):
+        if not self.cache_set:
+            return
+        try:
+            if hasattr(self, "cache_del") and self.cache_del:
+                self.cache_del(self.cfg.HOST_CACHE_KEY)
+        except Exception:
+            pass
+
     def resolve(self):
         cached = self._read_cache()
 
-        # 1) 缓存优先
+        # 1) 缓存优先（验证 TTL + 内容）
         if cached and self._cache_fresh(cached):
             r = self._safe_fetch(cached["host"] + "/", self.cfg.PROBE_TIMEOUT)
             if r is not None and r.status_code == 200 and self._site_ok(r.text):
@@ -200,36 +217,18 @@ class Spider(BaseSpider):
 
     # ---------- 生命周期 ----------
     def getName(self):
-        return "91JAV·三级自愈版"
+        return "91JAV·多域自愈版"
 
     def init(self, extend=""):
         self.name = "91JAV"
 
-        # 备用域名（用于运行时切换 / README 动态追加）
-        self.backup_hosts = [h.rstrip("/") for h in [
-            "https://born.zbywlcc.com",
-            "https://blow.xhjug.cc",
-            "https://assume.xhjug.cc",
-        ]]
-        self.shield = []
-        self.readmes = [
-            "https://gitlab.com/91JAV2/dz/-/raw/main/README.md",
-            "https://gitlab.com/91jav1/dz/-/raw/main/README.md",
-        ]
-        self._readme_done = False
-        self._img_cache = {}
-        self.aes_key = b"f5d965df75336270"
-        self.aes_iv  = b"97b60394abc2fbe1"
-
-        # 扩展参数
+        # 解析扩展配置（仅支持 proxies）
         self.proxies = {}
         if isinstance(extend, str) and extend.strip():
             s = extend.strip()
             if s.startswith("{"):
                 try:
                     cfg = json.loads(s)
-                    self.backup_hosts = [h.rstrip("/") for h in (cfg.get("backup_hosts") or self.backup_hosts)]
-                    self.shield = [h.rstrip("/") for h in (cfg.get("shield") or [])]
                     if isinstance(cfg.get("proxies"), dict):
                         self.proxies = cfg["proxies"]
                 except Exception:
@@ -239,61 +238,27 @@ class Spider(BaseSpider):
         self.session = requests.Session()
         self.session.headers.update(self.headers)
 
-        # ★ 三级域名自愈：使用 DomainResolver 解析 host
+        self._img_cache = {}
+        self.aes_key = b"f5d965df75336270"
+        self.aes_iv  = b"97b60394abc2fbe1"
+
+        # ★ 三级域名自愈：DomainResolver 并发探测 → 拿 host
         resolver = DomainResolver(
             self.CONFIG, self._probe_fetch,
             cache_get=getattr(self, "getCache", None),
             cache_set=getattr(self, "setCache", None),
         )
-        resolved = resolver.resolve()
-        self.host = resolved or self.CONFIG.SEED_HOSTS[0].rstrip("/")
+        try:
+            resolver.cache_del = getattr(self, "delCache", None)
+        except Exception:
+            pass
+        self.host = resolver.resolve() or self.CONFIG.SEED_HOSTS[0].rstrip("/")
         self._set_host(self.host)
-
-        # 分类 / 过滤定义
-        self.themes = [
-            ("2", "角色剧情"), ("3", "中文字幕"), ("4", "制服诱惑"),
-            ("5", "直接开啪"), ("6", "丝袜美腿"), ("7", "捆绑调教"),
-            ("8", "多P群交"), ("10", "羞辱强暴"), ("11", "无码高清"),
-            ("14", "乱伦伦理"), ("15", "人妻诱惑"), ("17", "网黄精选"),
-        ]
-        self.theme_sorts = [
-            {"n": "近期最佳", "v": "hot"},
-            {"n": "今日更新", "v": "update"},
-            {"n": "最多观看", "v": "watch"},
-            {"n": "最高收藏", "v": "favorite"},
-        ]
-        self.categories = [
-            {"type_id": "/new",                   "type_name": "最新更新"},
-            {"type_id": "/theme/detail/3/update", "type_name": "中文字幕"},
-            {"type_id": "/theme/detail/11/hot",   "type_name": "无码高清"},
-            {"type_id": "/heiliao",               "type_name": "黑料吃瓜"},
-            {"type_id": "/theme",                 "type_name": "专题合集"},
-            {"type_id": "/actress/hot",           "type_name": "热门女优"},
-        ]
-        self.filters = {
-            "/theme/detail/3/update":  [{"key": "sort", "name": "排序", "value": self.theme_sorts}],
-            "/theme/detail/11/hot":    [{"key": "sort", "name": "排序", "value": self.theme_sorts}],
-            "/theme": [{"key": "sort", "name": "排序", "value": [
-                {"n": "预设排序", "v": "sort"},
-                {"n": "热度优先", "v": "check_num"},
-                {"n": "最多影片", "v": "count"},
-            ]}],
-            "/actress/hot": [{"key": "sort", "name": "排序", "value": [
-                {"n": "热度优先", "v": "hot"},
-                {"n": "最多影片", "v": "count"},
-            ]}],
-        }
-        self.tids = {"/new": "/new", "/theme": "/theme",
-                     "/actress/hot": "/actress/hot", "/heiliao": "/heiliao"}
-        self._filters_actress = []
-        for tid, _ in self.themes:
-            self.tids["/theme/detail/%s/update" % tid] = "/theme/detail/%s/update" % tid
-            self.tids["/theme/detail/%s/hot"    % tid] = "/theme/detail/%s/hot"    % tid
 
         print(f"使用站点: {self.host}")
 
     def _probe_fetch(self, url, timeout=None):
-        """独立的探测请求，不依赖 self.host，初始化阶段可安全调用。"""
+        """独立的探测请求，不依赖 self.host，可安全在 init 里调用。"""
         try:
             return requests.get(
                 url,
@@ -313,97 +278,59 @@ class Spider(BaseSpider):
         if hasattr(self, "session"):
             self.session.headers.update(self.headers)
 
-    def _hosts(self):
-        return list(dict.fromkeys([self.host] + self.backup_hosts + self.shield))
-
-    # ---------- README 兜底（拉最新域名） ----------
-    def _resolve_readme(self):
-        if self._readme_done:
-            return
-        self._readme_done = True
-        for ru in self.readmes:
+    def _re_resolve(self):
+        """域名挂了：清缓存 → 重新探测一次，成功则切换。"""
+        try:
+            resolver = DomainResolver(
+                self.CONFIG, self._probe_fetch,
+                cache_get=getattr(self, "getCache", None),
+                cache_set=getattr(self, "setCache", None),
+            )
             try:
-                r = self.session.get(ru, headers=self.headers, timeout=15,
-                                     verify=False, proxies=self.session.proxies or None)
-                if r.status_code != 200 or not r.text:
-                    continue
-                txt = r.text
-                targets = []
-                m = re.search(r'91JAV\s*国内备用地址\s*[：:]\s*(https?://[^\s<>"\'\)]+)', txt)
-                if m:
-                    targets.append(("redirect", m.group(1).rstrip("/")))
-                m = re.search(r'91JAV\s*国内最新网址\s+(https?://[^\s<>"\'\)]+)', txt)
-                if m:
-                    targets.append(("publish", m.group(1).rstrip("/")))
-                m = re.search(r'91JAV\s*海外永久地址[^v]*?（需要VPN）\s*(https?://[^\s<>"\'\)]+)', txt)
-                if m:
-                    targets.append(("direct", m.group(1).rstrip("/")))
-                for typ, u in targets:
-                    if u in self.backup_hosts or u in self.shield or u == self.host \
-                       or "gitlab" in u or "t.me" in u or "app" in u \
-                       or "msugpac" in u or "pm.me" in u:
-                        continue
-                    try:
-                        if typ == "redirect":
-                            rr = self.session.get(u, headers=self.headers, timeout=10,
-                                                  verify=False, allow_redirects=True,
-                                                  proxies=self.session.proxies or None)
-                            fm = re.match(r"(https?://[^/]+)", rr.url)
-                            final = fm.group(1) if fm else u
-                            if rr.status_code == 200 and \
-                               ("bind_video_img" in rr.text or "/videos/" in rr.text) and \
-                               final not in self.backup_hosts and final != self.host:
-                                self.backup_hosts.append(final)
-                        elif typ == "publish":
-                            pub = self.session.get(u, headers=self.headers, timeout=10,
-                                                   verify=False, proxies=self.session.proxies or None)
-                            if pub.status_code == 200:
-                                for line in re.findall(r'https?://[^"\'\s<>]+', pub.text):
-                                    lu = line.rstrip("'\".,;")
-                                    if ("cloudfront" in lu or "zbywlcc" in lu or
-                                        "okknubyz" in lu or "gyqspl" in lu or "xhjug" in lu) and \
-                                       lu not in self.backup_hosts and lu != self.host:
-                                        self.backup_hosts.append(lu)
-                        else:
-                            rr = self.session.get(u + "/theme/detail/3/update/",
-                                                  headers=self.headers, timeout=10,
-                                                  verify=False, allow_redirects=True,
-                                                  proxies=self.session.proxies or None)
-                            fm = re.match(r"(https?://[^/]+)", rr.url)
-                            final = fm.group(1) if fm else u
-                            if rr.status_code == 200 and \
-                               ("bind_video_img" in rr.text or "/videos/" in rr.text) and \
-                               final not in self.backup_hosts and final != self.host:
-                                self.backup_hosts.append(final)
-                    except Exception:
-                        continue
+                resolver.cache_del = getattr(self, "delCache", None)
             except Exception:
-                continue
+                pass
+            resolver._clear_cache()
+            new_host = resolver.resolve()
+            if new_host and new_host != self.host:
+                self._set_host(new_host)
+                print(f"域名切换: → {new_host}")
+                return True
+            return bool(new_host)
+        except Exception as e:
+            LOG.debug("re_resolve 异常: %s", e)
+            return False
 
-    # ---------- 通用请求（带 host 容错切换） ----------
-    def _get(self, url):
+    # ---------- 通用请求 ----------
+    def _get(self, url, timeout=None):
+        """只用 self.host，失败切换一次域名，不再遍历所有 backup（避免慢转圈）。"""
+        if not self.host:
+            return ""
         url = self._fix(url)
         for attempt in range(2):
-            for h in self._hosts():
-                try:
-                    target = re.sub(r"https?://[^/]+", h, url) if url.startswith("http") else h + url
-                    r = self.session.get(target, headers=self.headers, timeout=20,
-                                         verify=False, proxies=self.session.proxies or None)
-                    r.encoding = r.apparent_encoding or "utf-8"
-                    if r.status_code == 200 and r.text:
-                        if h != self.host:
-                            self._set_host(h)
-                        return r.text
-                except Exception:
-                    continue
+            try:
+                r = self.session.get(
+                    url,
+                    headers=self.headers,
+                    timeout=timeout or 12,
+                    verify=False,
+                    proxies=self.proxies or None,
+                )
+                r.encoding = r.apparent_encoding or "utf-8"
+                if r.status_code == 200 and r.text:
+                    return r.text
+            except Exception as e:
+                LOG.debug("GET %s 异常: %s", url, e)
             if attempt == 0:
-                self._resolve_readme()
+                if not self._re_resolve():
+                    break
+                url = self._fix(url)
         return ""
 
     def _fix(self, url):
         return urljoin(self.host + "/", (url or "").strip().replace("`", "").replace("\\/", "/"))
 
-    # ---------- 图片解密 ----------
+    # ---------- 图片处理（完全沿用原实现） ----------
     def _aes_dec(self, data):
         if not data or not _HAS_CRYPTO:
             return b""
@@ -437,7 +364,7 @@ class Spider(BaseSpider):
             r = self.session.get(u, headers={
                 "User-Agent": self.headers.get("User-Agent", "Mozilla/5.0"),
                 "Referer": self.host + "/",
-            }, timeout=20, verify=False, proxies=self.session.proxies or None)
+            }, timeout=20, verify=False, proxies=self.proxies or None)
             data = r.content or b""
             if not data:
                 return [404, "text/plain", "", ""]
@@ -472,7 +399,7 @@ class Spider(BaseSpider):
         nxt = re.search(r'<a[^>]*rel="next"[^>]*>', html or "") or ("下一页" in (html or ""))
         return max(nums + [pg + 1 if nxt else pg])
 
-    # ---------- 列表解析 ----------
+    # ---------- 列表解析（原版） ----------
     def _list(self, html):
         out = []
         seen = set()
@@ -564,8 +491,6 @@ class Spider(BaseSpider):
                 if aid in seen:
                     continue
                 seen.add(aid)
-                if aid not in self._filters_actress:
-                    self._filters_actress.append(aid)
                 seg = m.group(3)
                 nm = re.search(r'alt="([^"]*)"', seg)
                 name = nm.group(1) if nm else "女优" + aid
@@ -579,31 +504,70 @@ class Spider(BaseSpider):
                 continue
         return out
 
-    # ---------- 首页 / 分类 ----------
-    def homeContent(self, filter):
-        fl = dict(self.filters)
-        for t, _ in self.themes:
-            fl["theme$" + t] = [{"key": "sort", "name": "排序", "value": self.theme_sorts}]
-        for t in self._filters_actress:
-            fl["actress$" + t] = [{"key": "sort", "name": "排序", "value": [
-                {"n": "近期最佳", "v": "hot"},
-                {"n": "今日更新", "v": "latest"},
-                {"n": "最多观看", "v": "watch"},
-                {"n": "最高收藏", "v": "favorite"},
-            ]}]
-        return {"class": self.categories,
-                "list":  self._list(self._get(self.host)),
-                "filters": fl}
+    # ---------- 目录自动抓取（替代手工分类表） ----------
+    def _extract_nav_classes(self, html):
+        """从首页导航栏自动提取分类入口，无手工目录。
+        只保留本站分类路径：/new、/heiliao、/theme、/actress、/category、/tag 等。"""
+        if not html:
+            return []
+        classes, seen = [], set()
+        # 优先只扫描 <nav> 区域
+        nav_m = re.search(r'<nav[^>]*>(.*?)</nav>', html, re.S | re.I)
+        scope = nav_m.group(1) if nav_m else html
+
+        for m in re.finditer(r'<a\s+[^>]*href="(/[^"]*)"[^>]*>(.*?)</a>', scope, re.S):
+            href = m.group(1).strip()
+            text = re.sub(r'<[^>]+>', '', m.group(2)).strip()
+            text = re.sub(r'\s+', ' ', text)
+            if not href or not text or len(text) > 20:
+                continue
+            # 只保留栏目入口
+            if not re.match(r'^/(new|heiliao|theme|actress|category|tag)(?:/|$)', href):
+                continue
+            # 过滤具体详情页 / 单页
+            if re.match(r'^/(actress|theme)/detail/', href):
+                continue
+            # /new 后面不带子路径
+            if href.startswith('/new') and href.rstrip('/') != '/new':
+                continue
+            # 规范化：去尾部斜杠
+            norm = href.rstrip('/') or '/'
+            if norm == '/' or norm in seen:
+                continue
+            seen.add(norm)
+            classes.append({"type_id": norm, "type_name": text})
+        return classes
+
+    def _fallback_classes(self):
+        return [dict(c) for c in self.CONFIG.FALLBACK_CLASSES]
+
+    # ---------- 首页 ----------
+    def homeContent(self, filter=False):
+        if not self.host:
+            return {"class": [], "list": []}
+        html = self._get(self.host)
+        if not html:
+            return {"class": [], "list": []}
+        classes = self._extract_nav_classes(html) or self._fallback_classes()
+        return {
+            "class": classes,
+            "list":  self._list(html),
+        }
 
     def homeVideoContent(self):
-        return {"list": self._list(self._get(self.host + "/new"))}
+        if not self.host:
+            return {"list": []}
+        html = self._get(self.host + "/new")
+        return {"list": self._list(html) if html else []}
 
+    # ---------- 分类 ----------
     def categoryContent(self, tid, pg, filter, extend):
         pg = int(pg) if str(pg).isdigit() else 1
-        tid = str(tid)
+        tid = str(tid).rstrip("/")
         ex = self._ext(extend)
         sort = ex.get("sort", "") or ""
 
+        # 具体专题
         if tid.startswith("theme$"):
             t = tid.split("$")[1]
             st = sort if sort in ("hot", "update", "watch", "favorite") else "update"
@@ -612,21 +576,16 @@ class Spider(BaseSpider):
             return {"page": pg, "pagecount": self._pagecount(ht, pg),
                     "limit": len(items) or 24, "total": 0, "list": items}
 
+        # 具体女优
         if tid.startswith("actress$"):
             aid = tid.split("$")[1]
             st = sort if sort in ("hot", "latest", "watch", "favorite") else "latest"
             ht = self._get(self.host + "/actress/detail/%s/%s/" % (aid, st))
             items = self._list(ht)
-            if "actress$" + aid not in self.filters:
-                self.filters["actress$" + aid] = [{"key": "sort", "name": "排序", "value": [
-                    {"n": "近期最佳", "v": "hot"},
-                    {"n": "今日更新", "v": "latest"},
-                    {"n": "最多观看", "v": "watch"},
-                    {"n": "最高收藏", "v": "favorite"},
-                ]}]
             return {"page": pg, "pagecount": self._pagecount(ht, pg),
                     "limit": len(items) or 24, "total": 0, "list": items}
 
+        # 专题总入口（12 个主题卡片）
         if tid == "/theme":
             st = sort if sort in ("sort", "check_num", "count") else "sort"
             ht = self._get(self.host + "/theme/%s" % st)
@@ -634,32 +593,22 @@ class Spider(BaseSpider):
             return {"page": pg, "pagecount": pg,
                     "limit": len(items) or 12, "total": len(items), "list": items}
 
-        if tid == "/actress/hot":
+        # 女优总入口
+        if tid in ("/actress", "/actress/hot"):
             st = sort if sort in ("hot", "count") else "hot"
             ht = self._get(self.host + "/actress/%s/" % st)
             items = self._actress_list(ht)
             return {"page": pg, "pagecount": self._pagecount(ht, pg) or 1,
                     "limit": len(items) or 24, "total": 0, "list": items}
 
-        base = self.tids.get(tid, tid)
+        # 通用列表（/new /heiliao /category/xxx /tag/xxx）
+        base = tid if tid.startswith("/") else "/" + tid
         if sort in ("hot", "update", "watch", "favorite"):
             base = re.sub(r"/(?:hot|update|watch|favorite)$", "/" + sort, base)
         url = self.host + base + (("/" + str(pg)) if pg > 1 else "/")
         ht = self._get(url)
         items = self._list(ht)
         pc = self._pagecount(ht, pg)
-        if 0 < len(items) < 20 and pc > pg:
-            seen = {it.get("vod_id") for it in items}
-            for sp in range(pg + 1, pc + 1):
-                extra = self._list(self._get(self.host + str(base).rstrip("/") + "/" + str(sp) + "/"))
-                if not extra:
-                    break
-                for it in extra:
-                    vid = it.get("vod_id")
-                    if vid and vid not in seen:
-                        seen.add(vid)
-                        items.append(it)
-            pc = pg
         return {"page": pg, "pagecount": pc,
                 "limit": len(items) or 24, "total": 0, "list": items}
 
@@ -675,6 +624,7 @@ class Spider(BaseSpider):
                 html = self._get(url)
                 title, pic, desc, tags, dur = "", "", "", "", ""
 
+                # 黑料
                 if "/heiliao/post/" in url:
                     hm = re.search(r'heiliao-detail-title[^>]*>([^<]+)', html) or \
                          re.search(r'<h1[^>]*>(.*?)</h1>', html, re.S)
@@ -689,14 +639,14 @@ class Spider(BaseSpider):
                     play = self._m3u8(html) or url
                     if not title:
                         title = sv
-                    desc = (desc or "")[:500]
                     out.append({"vod_id": sv, "vod_name": title, "vod_pic": self._pic(pic),
-                                "vod_content": desc,
+                                "vod_content": (desc or "")[:500],
                                 "vod_remarks": "m3u8" if ".m3u8" in play else "",
                                 "vod_play_from": "91JAV",
                                 "vod_play_url": "正片$" + play})
                     continue
 
+                # 普通视频
                 v = re.search(r'<video[^>]*id="player"[^>]*>', html) or \
                     re.search(r'<video[^>]*class="[^"]*dplayer[^"]*"[^>]*>', html)
                 if v:
@@ -736,10 +686,9 @@ class Spider(BaseSpider):
                     m2 = re.search(r'<meta[^>]*name="description"[^>]*content="([^"]*)"', html)
                     if m2:
                         desc = m2.group(1)
-                desc = (desc or "")[:500]
                 remarks = " ".join(x for x in [dur, tags] if x)
                 out.append({"vod_id": sv, "vod_name": title, "vod_pic": self._pic(pic),
-                            "vod_content": desc, "vod_remarks": remarks,
+                            "vod_content": (desc or "")[:500], "vod_remarks": remarks,
                             "vod_play_from": "91JAV",
                             "vod_play_url": "正片$" + sv})
             except Exception:
@@ -759,7 +708,7 @@ class Spider(BaseSpider):
         except Exception:
             return {"list": [], "page": int(pg)}
 
-    # ---------- m3u8 ----------
+    # ---------- m3u8 提取（原版） ----------
     def _m3u8(self, body):
         m = re.search(r'var\s+hlsUrl\s*=\s*["\']([^"\']+)', body or "")
         if m:
@@ -775,21 +724,15 @@ class Spider(BaseSpider):
     # ---------- 播放 ----------
     def playerContent(self, flag, id, vipFlags):
         hd = dict(self.headers)
-        u = str(id or "")
+        u = str(id or "").strip()
+        if not u:
+            return {"parse": 0, "url": "", "header": hd}
         if u.endswith(".m3u8") or ".m3u8?" in u or u.endswith(".mp4"):
             if not u.startswith("http"):
                 u = self._fix(u)
             return {"parse": 0, "url": u, "header": hd}
-        last = ""
-        for h in self._hosts():
-            try:
-                target = u if u.startswith("http") else h + u
-                body = self._get(target)
-                url = self._m3u8(body)
-                if url:
-                    url = url if url.startswith("http") else h + url
-                    return {"parse": 0, "url": url, "header": hd}
-                last = target
-            except Exception:
-                continue
-        return {"parse": 0 if last.startswith("http") else 1, "url": last, "header": hd}
+        body = self._get(u)
+        url = self._m3u8(body)
+        if url:
+            return {"parse": 0, "url": url, "header": hd}
+        return {"parse": 1, "url": u, "header": hd}
