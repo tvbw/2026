@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-91大赛 · 多域名自愈版
+91大赛 · 多域名自愈版（图片修复版）
 ================================
-架构参考每日模板：并发探测 + TTL缓存 + 详细日志 + 兜底
-业务层完整保留 91大赛 原逻辑：
-    - 正则列表解析（Xc_home_article-si / Xc_archive-si）
-    - 硬编码分类 + 动态抓取兜底
-    - 详情页 13 策略提取视频
-    - 剧集自动聚合
-    - 封面 AES-128-CBC 解密 + CDN 重写
+- 域名自愈：并发探测 + TTL缓存 + 302跟随 + 详细日志 + 兜底
+- 图片链路：urlsafe b64 + CDN/原URL双路兜底 + 明图直通 + 解密失败返回原内容
+- 业务保留：正则列表 + 13策略提取 + 剧集聚合 + AES解密 + CDN重写
 """
 import sys
 import json
@@ -95,7 +91,6 @@ class SiteConfig:
     PROBE_MIN_HTML       = 3000
     PROBE_MIN_ARTICLE    = 3
 
-    # 探活特征：优先关键词，命中则通过；否则用结构标记
     SITE_KEYWORDS    = ["91大赛"]
     SITE_MARKERS     = ["Xc_home_article", "Xc_archive", "/archives/"]
 
@@ -183,7 +178,6 @@ class DomainResolver:
     def resolve(self):
         cached = self._read_cache()
 
-        # 1) 缓存优先
         if cached and self._cache_fresh(cached):
             r = self._safe_fetch(cached["host"] + "/", self.cfg.PROBE_TIMEOUT)
             if r is not None and r.status_code == 200 and self._site_ok(r.text):
@@ -194,7 +188,6 @@ class DomainResolver:
                 return final
             print(f"缓存失效: {cached['host']}")
 
-        # 2) 并发探测
         urls = list(self.cfg.SEED_HOSTS)
         if cached:
             urls.insert(0, cached["host"] + "/")
@@ -231,7 +224,6 @@ class DomainResolver:
             except Exception as e:
                 LOG.debug("并发探测异常: %s", e)
 
-        # 3) 全部失败兜底
         if cached:
             print(f"使用过期缓存: {cached['host']}")
             return cached["host"]
@@ -343,7 +335,6 @@ class Spider(BaseSpider):
         dynamic = self._fetch_dynamic_classes(html) if html else []
         seen = set()
 
-        # 动态分类优先
         for tid, name in dynamic:
             if tid not in seen:
                 seen.add(tid)
@@ -354,7 +345,6 @@ class Spider(BaseSpider):
                     'subclass':  [{'type_id': t[0], 'type_name': f"{t[2]} {t[1]}"}
                                   for t in HOT_TAGS]
                 })
-        # 硬编码分类兜底 + 补全
         for tid, name, icon in MANUAL_CLASSES:
             if tid not in seen:
                 seen.add(tid)
@@ -375,7 +365,6 @@ class Spider(BaseSpider):
         if not html:
             return []
         classes = []
-        # 两种常见结构
         for href, name in re.findall(
             r'<a class="item[^"]*" href="(/category/[^"]+)"[^>]*>(.*?)</a>',
             html, re.S,
@@ -412,7 +401,7 @@ class Spider(BaseSpider):
             'limit': 90, 'total': len(videos),
         }
 
-    # ==================== 列表解析（保留原逻辑） ====================
+    # ==================== 列表解析 ====================
     def _parse_list_html(self, html):
         if not html:
             return []
@@ -429,7 +418,6 @@ class Spider(BaseSpider):
                     html, re.S,
                 )
             if not items:
-                # 兜底：直接抓 <a href="...archives/xxx..."> 卡片
                 for block, href in re.findall(r'(<a\s[^>]*href="([^"]*)"[^>]*>.*?</a>)', html, re.S):
                     title = re.search(r'title="([^"]*)"', block) or re.search(r'alt="([^"]*)"', block)
                     title = title.group(1) if title else ''
@@ -481,16 +469,25 @@ class Spider(BaseSpider):
             print(f"列表解析出错: {e}")
         return videos
 
+    # ==================== 【修复】图片提取：多属性兜底 ====================
     def _extract_list_image(self, block):
+        """多属性兜底：data-xkrkllgl → data-* → src"""
         xk = re.search(r'data-xkrkllgl="([^"]+)"', block)
-        if xk:
-            return self._cover_url(xk.group(1))
-        ds = re.search(r'data-src="([^"]+)"', block)
-        if ds:
-            return self._cover_url(ds.group(1))
+        if xk and xk.group(1).strip():
+            return self._cover_url(xk.group(1).strip())
+
+        for attr in ('data-src', 'data-original', 'data-lazy', 'data-img', 'data-url'):
+            m = re.search(rf'{attr}="([^"]+)"', block)
+            if m:
+                val = m.group(1).strip()
+                if val and 'zw.png' not in val and 'lazyload' not in val:
+                    return self._cover_url(val)
+
         src = re.search(r'<img[^>]*src="([^"]+)"', block)
-        if src and 'zw.png' not in src.group(1) and 'lazyload' not in src.group(1):
-            return self._cover_url(src.group(1))
+        if src:
+            val = src.group(1).strip()
+            if val and 'zw.png' not in val and 'lazyload' not in val and not val.startswith('data:'):
+                return self._cover_url(val)
         return ''
 
     def _fix_image_url(self, pic_url):
@@ -503,7 +500,6 @@ class Spider(BaseSpider):
         return urljoin(self.host + "/", pic_url)
 
     def _cdn_image_url(self, pic_url):
-        """加密封面统一改写为 CDN 域名"""
         if not pic_url:
             return pic_url
         if re.search(r'/(?:new|xiao|upload|uploads)/', pic_url):
@@ -518,6 +514,7 @@ class Spider(BaseSpider):
             return self._proxy_image_url(raw_url)
         return raw_url
 
+    # ==================== 【修复】图片代理URL：urlsafe b64 ====================
     def _proxy_image_url(self, raw_url):
         if not raw_url:
             return ''
@@ -527,12 +524,13 @@ class Spider(BaseSpider):
             if not proxy_base:
                 return raw_url
             sep = '&' if '?' in proxy_base else '?'
-            b64 = base64.b64encode(raw_url.encode('utf-8')).decode('utf-8')
+            b64 = base64.urlsafe_b64encode(raw_url.encode('utf-8')).decode('utf-8').rstrip('=')
             return f"{proxy_base}{sep}type=image&url={b64}"
-        except Exception:
+        except Exception as e:
+            print(f"[img] URL构造失败: {e}")
             return raw_url
 
-    # ==================== 详情页（保留剧集聚合逻辑） ====================
+    # ==================== 详情页 ====================
     def _norm_ids(self, ids):
         if ids is None:
             return ""
@@ -728,7 +726,6 @@ class Spider(BaseSpider):
                                 'episode_name': ep.group(2), 'episode_num': ep_num,
                                 'vod_play_url': purl,
                             })
-            # 加上当前视频自身
             self_url = (self.host + '/archives/' + str(exclude_vid) + '/'
                         if str(exclude_vid).isdigit()
                         else self.host + str(exclude_vid))
@@ -770,7 +767,6 @@ class Spider(BaseSpider):
     # ==================== 播放 ====================
     def playerContent(self, flag, id, vipFlags=None):
         play_url = str(id).strip()
-        # 若 id 为空则直接返回空
         if not play_url:
             return {"parse": 0, "playUrl": "", "url": "", "header": {}}
         video_url = play_url if play_url.startswith('http') else urljoin(self.host + "/", play_url)
@@ -799,41 +795,103 @@ class Spider(BaseSpider):
         except Exception as e:
             return [500, "text/plain", ("localProxy error: %s" % type(e).__name__).encode("utf-8")]
 
-    # ---------- 图片解密代理 ----------
+    # ---------- 【修复】图片代理：多级兜底 ----------
     def _proxy_image(self, params):
         url = params.get('url', '')
         if not url:
             return [404, "text/plain", b"no url"]
+
+        # 1) 解码 URL（urlsafe / 标准 b64 / 明文）
+        if not url.startswith('http'):
+            decoded = self._decode_url_param(url)
+            if decoded:
+                url = decoded
+
+        # 2) 构造尝试列表：CDN → 原 URL
+        try_urls = []
+        cdn = self._cdn_image_url(url)
+        if cdn and cdn != url:
+            try_urls.append(('cdn', cdn))
+        try_urls.append(('raw', url))
+
+        # 3) 逐个尝试
+        for tag, try_url in try_urls:
+            try:
+                r = requests.get(
+                    try_url,
+                    headers={
+                        'Referer': self.host + '/',
+                        'User-Agent': self.CONFIG.HEADERS["User-Agent"],
+                    },
+                    timeout=15, proxies=self.proxies, verify=False,
+                )
+                if r.status_code != 200:
+                    print(f"[img] {tag} HTTP {r.status_code}: {try_url}")
+                    continue
+
+                raw = r.content or b""
+                if not raw:
+                    print(f"[img] {tag} 内容为空: {try_url}")
+                    continue
+
+                # 3a) 明图直通
+                if self._image_magic_ok(raw):
+                    print(f"[img] {tag} 明图直通 ({len(raw)}B): {try_url}")
+                    return [200, self._detect_image_type(raw), raw]
+
+                # 3b) AES 解密
+                decrypted = self._aes_decrypt_image(raw)
+                if decrypted:
+                    print(f"[img] {tag} 解密成功 ({len(decrypted)}B): {try_url}")
+                    return [200, self._detect_image_type(decrypted), decrypted]
+
+                # 3c) 解密失败 → 返回原内容兜底
+                print(f"[img] {tag} 解密失败，兜底返回原内容 "
+                      f"({len(raw)}B, head={raw[:8].hex()}): {try_url}")
+                return [200, "image/jpeg", raw]
+
+            except Exception as e:
+                print(f"[img] {tag} 请求异常 {type(e).__name__}: {try_url}")
+                continue
+
+        print(f"[img] 全链路失败: {url}")
+        return [500, "text/plain", b"image failed"]
+
+    # ---------- 【新增】URL参数解码 ----------
+    def _decode_url_param(self, s):
+        if not s:
+            return ''
         try:
-            if not url.startswith('http'):
-                try:
-                    url = base64.b64decode(url).decode('utf-8')
-                except Exception:
-                    pass
-            url = self._cdn_image_url(url)
-            r = requests.get(url, headers={'Referer': self.host + '/'},
-                             timeout=15, proxies=self.proxies, verify=False)
-            if r.status_code != 200:
-                return [404, "text/plain", b"fetch failed"]
-            raw = r.content or b""
-            decrypted = self._aes_decrypt_image(raw)
-            if not decrypted:
-                return [500, "text/plain", b"decrypt failed"]
+            pad = '=' * ((4 - len(s) % 4) % 4)
+            decoded = base64.urlsafe_b64decode(s + pad).decode('utf-8')
+            if decoded.startswith('http'):
+                return decoded
+        except Exception:
+            pass
+        try:
+            pad = '=' * ((4 - len(s) % 4) % 4)
+            decoded = base64.b64decode(s + pad).decode('utf-8')
+            if decoded.startswith('http'):
+                return decoded
+        except Exception:
+            pass
+        return s if s.startswith('http') else ''
 
-            content_type = "image/jpeg"
-            if decrypted[:8] == b'\x89PNG\r\n\x1a\n':
-                content_type = "image/png"
-            elif decrypted[:6] in (b'GIF89a', b'GIF87a'):
-                content_type = "image/gif"
-            elif decrypted[:4] == b'RIFF' and decrypted[8:12] == b'WEBP':
-                content_type = "image/webp"
-            elif decrypted[:2] == b'\xff\xd8':
-                content_type = "image/jpeg"
-            return [200, content_type, decrypted]
-        except Exception as e:
-            print(f"图片代理异常: {e}")
-            return [500, "text/plain", b"proxy error"]
+    # ---------- 【新增】图片类型检测 ----------
+    def _detect_image_type(self, data):
+        if not data:
+            return "image/jpeg"
+        if data[:8] == b'\x89PNG\r\n\x1a\n':
+            return "image/png"
+        if data[:6] in (b'GIF89a', b'GIF87a'):
+            return "image/gif"
+        if data[:4] == b'RIFF' and data[8:12] == b'WEBP':
+            return "image/webp"
+        if data[:2] == b'\xff\xd8':
+            return "image/jpeg"
+        return "image/jpeg"
 
+    # ---------- AES 图片解密 ----------
     def _image_magic_ok(self, data):
         if not data:
             return False
@@ -887,7 +945,6 @@ class Spider(BaseSpider):
         return [200, "application/vnd.apple.mpegurl", cleaned.encode("utf-8")]
 
     def _clean_m3u8(self, m3u8_text, m3u8_url='', referer=''):
-        """保留原 m3u8 逻辑（简化版），91大赛播放主要为 mp4/m3u8 直链，此处仅做基本修复"""
         if not m3u8_text or "#EXTM3U" not in m3u8_text:
             return m3u8_text or "#EXTM3U\n"
         try:
