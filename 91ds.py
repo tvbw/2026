@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-91大赛 · 多域名自愈版（图片修复版）
+91大赛 · 多域名自愈版（图片修复版 v2）
 ================================
 - 域名自愈：并发探测 + TTL缓存 + 302跟随 + 详细日志 + 兜底
-- 图片链路：urlsafe b64 + CDN/原URL双路兜底 + 明图直通 + 解密失败返回原内容
+- 图片链路：urlsafe b64 + 原URL优先/CDN兜底 + 明图直通 + 解密失败返回原内容
+- CDN 域名：从首页 HTML 动态提取，站点换图床无需改代码
 - 业务保留：正则列表 + 13策略提取 + 剧集聚合 + AES解密 + CDN重写
 """
 import sys
@@ -59,12 +60,6 @@ MANUAL_CLASSES = [
 HOT_TAGS = [
     ('/tag/91大赛/', '91大赛', '🔥'),
     ('/tag/吃瓜/', '吃瓜', '🍉'),
-    ('/tag/反差/', '反差', '😈'),
-    ('/tag/自慰/', '自慰', '💧'),
-    ('/tag/口交/', '口交', '👄'),
-    ('/tag/巨乳/', '巨乳', '🍈'),
-    ('/tag/后入/', '后入', '🐕'),
-    ('/tag/母狗/', '母狗', '🐶'),
     ('/tag/反差婊/', '反差婊', '💋'),
     ('/tag/高颜值/', '高颜值', '✨'),
     ('/tag/美乳/', '美乳', '🍒'),
@@ -94,8 +89,8 @@ class SiteConfig:
     SITE_KEYWORDS    = ["91大赛"]
     SITE_MARKERS     = ["Xc_home_article", "Xc_archive", "/archives/"]
 
-    # ---- 图片解密配置 ----
-    CDN_XHOST   = "https://pic.xustgq.cn"
+    # ---- 图片配置（CDN_XHOST 会被 init() 动态覆盖，这里是兜底默认值）----
+    CDN_XHOST   = "https://pic.hdhwqx.cn"   # 原 pic.xustgq.cn 已挂，更新为当前域名
     IMG_AES_KEY = "f5d965df75336270"
     IMG_AES_IV  = "97b60394abc2fbe1"
 
@@ -274,7 +269,41 @@ class Spider(BaseSpider):
         self.host = resolver.resolve()
         if self.host:
             self.headers.update({"Origin": self.host, "Referer": self.host + "/"})
+            # ★ 从首页 HTML 动态提取图片 CDN 域名（站点换图床时自动适配）
+            self._detect_cdn_host()
         print(f"使用站点: {self.host}")
+
+    def _detect_cdn_host(self):
+        """从首页 HTML 里提取图片域名，作为 CDN_XHOST 的兜底来源。
+        优先 data-src / loadThumb 的绝对地址；失败则保留默认值。"""
+        try:
+            html = self._get_html(self.host)
+            if not html:
+                return
+            candidates = []
+            # 1) data-src="https://xxx/path/..."
+            for m in re.finditer(r'data-src="(https?://([^/"]+)/[^"]+)"', html):
+                candidates.append(m.group(2))
+            # 2) loadThumb("https:\/\/xxx\/path...")
+            for m in re.finditer(r'loadThumb\(\s*"(https?:[^"]+)"', html):
+                v = m.group(1).replace('\\/', '/')
+                mm = re.match(r'https?://([^/]+)/', v)
+                if mm:
+                    candidates.append(mm.group(1))
+            # 3) <img src="https://xxx/..."> 且非 data:
+            for m in re.finditer(r'<img[^>]+src="(https?://([^/"]+)/[^"]+)"', html):
+                candidates.append(m.group(2))
+
+            if not candidates:
+                return
+            # 取出现次数最多的域名
+            from collections import Counter
+            host = Counter(candidates).most_common(1)[0][0]
+            if host:
+                self.CONFIG.CDN_XHOST = "https://" + host
+                print(f"动态 CDN 域名: {self.CONFIG.CDN_XHOST}")
+        except Exception as e:
+            print(f"提取 CDN 失败: {e}")
 
     def isVideoFormat(self, url):
         return True
@@ -469,9 +498,9 @@ class Spider(BaseSpider):
             print(f"列表解析出错: {e}")
         return videos
 
-    # ==================== 【修复】图片提取：多属性兜底 ====================
+    # ==================== 图片提取：多属性兜底 ====================
     def _extract_list_image(self, block):
-        """多属性兜底：data-xkrkllgl → data-* → src"""
+        """多属性兜底：data-xkrkllgl → data-src/data-* → src"""
         xk = re.search(r'data-xkrkllgl="([^"]+)"', block)
         if xk and xk.group(1).strip():
             return self._cover_url(xk.group(1).strip())
@@ -500,6 +529,7 @@ class Spider(BaseSpider):
         return urljoin(self.host + "/", pic_url)
 
     def _cdn_image_url(self, pic_url):
+        """把原图 URL 的 host 换成 CDN_XHOST（仅当路径命中图片目录时）。"""
         if not pic_url:
             return pic_url
         if re.search(r'/(?:new|xiao|upload|uploads)/', pic_url):
@@ -514,12 +544,12 @@ class Spider(BaseSpider):
             return self._proxy_image_url(raw_url)
         return raw_url
 
-    # ==================== 【修复】图片代理URL：urlsafe b64 ====================
+    # ==================== 图片代理URL：urlsafe b64（不预转CDN） ====================
     def _proxy_image_url(self, raw_url):
         if not raw_url:
             return ''
         try:
-            raw_url = self._cdn_image_url(raw_url)
+            # ★ 不再预先转 CDN，把原始 URL 交给代理做多路兜底
             proxy_base = self.getProxyUrl() if hasattr(self, 'getProxyUrl') else ''
             if not proxy_base:
                 return raw_url
@@ -795,7 +825,7 @@ class Spider(BaseSpider):
         except Exception as e:
             return [500, "text/plain", ("localProxy error: %s" % type(e).__name__).encode("utf-8")]
 
-    # ---------- 【修复】图片代理：多级兜底 ----------
+    # ---------- 图片代理：原URL优先 + CDN兜底 + 多级兜底 ----------
     def _proxy_image(self, params):
         url = params.get('url', '')
         if not url:
@@ -806,13 +836,21 @@ class Spider(BaseSpider):
             decoded = self._decode_url_param(url)
             if decoded:
                 url = decoded
+        # 1b) 兜底：参数可能被 URL 编码过（如 https%3A%2F%2F...）
+        if not url.startswith('http'):
+            try:
+                url = unquote(url)
+            except Exception:
+                pass
+        if not url.startswith('http'):
+            print(f"[img] url 无效: {str(url)[:80]}")
+            return [404, "text/plain", b"invalid url"]
 
-        # 2) 构造尝试列表：CDN → 原 URL
-        try_urls = []
+        # 2) 构造尝试列表：原 URL 优先 → CDN 兜底
+        try_urls = [('raw', url)]
         cdn = self._cdn_image_url(url)
         if cdn and cdn != url:
             try_urls.append(('cdn', cdn))
-        try_urls.append(('raw', url))
 
         # 3) 逐个尝试
         for tag, try_url in try_urls:
@@ -857,7 +895,7 @@ class Spider(BaseSpider):
         print(f"[img] 全链路失败: {url}")
         return [500, "text/plain", b"image failed"]
 
-    # ---------- 【新增】URL参数解码 ----------
+    # ---------- URL参数解码 ----------
     def _decode_url_param(self, s):
         if not s:
             return ''
@@ -877,7 +915,7 @@ class Spider(BaseSpider):
             pass
         return s if s.startswith('http') else ''
 
-    # ---------- 【新增】图片类型检测 ----------
+    # ---------- 图片类型检测 ----------
     def _detect_image_type(self, data):
         if not data:
             return "image/jpeg"
