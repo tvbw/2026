@@ -61,7 +61,7 @@ class SiteConfig:
     PROBE_MIN_ARTICLE = 3
 
     # ---- 站点特征（首页 HTML 出现任一即认为命中）----
-    SITE_KEYWORDS = []
+    SITE_KEYWORDS = [91AV]
     SITE_MARKERS  = ["bind_video_img", "/videos/"]
 
     HEADERS = {
