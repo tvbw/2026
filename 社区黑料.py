@@ -218,15 +218,11 @@ class Spider(BaseSpider):
     def getDependence(self):
         return []
 
-    # ---------------- 初始化 & 抗封锁入口 ----------------
-    def _new_host(self):
-        """生成一个随机子域入口（服务端泛解析，任意子域均通）。"""
-        sub = ''.join(random.choice(string.ascii_lowercase + string.digits)
-                      for _ in range(random.randint(5, 8)))
-        return "https://%s.opf1x78l.work" % sub
-
-    def _load_device_id(self, extend):
-        """device_id 持久化：extend 显式传 → 本地缓存文件 → 首次随机并落盘。
+def _new_host(self):
+    """生成一个随机子域入口（服务端泛解析，任意子域均通）。"""
+    sub = ''.join(random.choice(string.ascii_lowercase + string.digits)
+                  for _ in range(random.randint(5, 8)))
+    return "https://%s.6eoi5iqx.work" % sub
 
         原版每次 init 都 uuid4()，等于每次重启都是新设备，容易被服务端当异常设备标记。
         这里优先复用，落盘失败（沙盒无写权限）时退回随机，不影响功能。
