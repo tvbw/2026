@@ -47,7 +47,17 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
     },
     {
-
+      "key": "91JAV最终版",
+      "name": "❤️91JAV",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91av.py"
+    },
+    {
       "key": "连播18AV",
       "name": "❤️连播18AV",
       "type": 3,
@@ -128,17 +138,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
     },
     {
-      "key": "91JAV最终版",
-      "name": "❤️91JAV",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91jav.py"
-    },
-    {
+
       "key": "91吃瓜",
       "name": "❤️91吃瓜",
       "type": 3,
