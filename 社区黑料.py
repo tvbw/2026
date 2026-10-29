@@ -219,7 +219,11 @@ class Spider(BaseSpider):
         return []
 
 def _new_host(self):
-    """生成一个随机子域入口（服务端泛解析，任意子域均通）。"""
+    # 如果泛解析只对特定子域生效，就把 abcdefg123 这类实测可用的写进来
+    # 多个候选轮着用，配合 _fetch_api 的换域重试
+    FIXED_SUBS = ["abcdefg123"]   # 实测可用的子域，按需补充
+    if random.random() < 0.5 and FIXED_SUBS:
+        return "https://%s.6eoi5iqx.work" % random.choice(FIXED_SUBS)
     sub = ''.join(random.choice(string.ascii_lowercase + string.digits)
                   for _ in range(random.randint(5, 8)))
     return "https://%s.6eoi5iqx.work" % sub
