@@ -48,9 +48,9 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 三级域名（用户提供的最新有效域名）----
     SEED_HOSTS = [
-        "https://born.zbywlcc.com/",
         "https://blow.xhjug.cc/",
         "https://assume.xhjug.cc/",
+        "https://born.zbywlcc.com/",
     ]
     HOST_CACHE_KEY = "91jav_host"
     HOST_CACHE_TTL = 6 * 3600
@@ -61,7 +61,7 @@ class SiteConfig:
     PROBE_MIN_ARTICLE = 3
 
     # ---- 站点特征（首页 HTML 出现任一即认为命中）----
-    SITE_KEYWORDS = [91AV]
+    SITE_KEYWORDS = [91jav]
     SITE_MARKERS  = ["bind_video_img", "/videos/"]
 
     HEADERS = {
