@@ -55,7 +55,7 @@ class SiteConfig:
     PROBE_MIN_HTML = 3000
 
     # ---- 站点特征 ----
-    SITE_KEYWORDS = []
+    SITE_KEYWORDS = [91jav]
     SITE_MARKERS  = ["bind_video_img", "/videos/"]
 
     # ---- 通用 Header ----
