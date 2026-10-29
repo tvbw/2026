@@ -149,15 +149,15 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
     },
     {
-      "key": "91热爆",
-      "name": "❤️91热爆",
+      "key": "91大赛",
+      "name": "❤️91大赛",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91rb.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91ds.py"
     },
     {
       "key": "91黑料",
