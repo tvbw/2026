@@ -38,8 +38,8 @@ class Spider(SpiderBase):
         self.zone_slug = "z3"
         self.site = {
             "name": "三区",
-            "host": "https://618405.xyz",
-            "api_host": "https://h5.xxoo475.org",   # z1 用；其他区可留默认
+            "host": "https://618333.xyz",
+            "api_host": "https://h5.xxoo168.org",   # z1 用；其他区可留默认
             "mod": "vod",                            # z4 改 art
             "default": "1",
             "subs": [
@@ -58,7 +58,7 @@ class Spider(SpiderBase):
         self.domain_pools = {zid: [] for zid in self.zone_order}
 
         # CDN 域名关键字：这些不是主站，不做相对路径转换
-        self._cdn_keywords = ("618799", "6180013", "6180023", "6182321",
+        self._cdn_keywords = ("618333", "6180013", "6180023", "6182321",
                               "6182063", "6182275", "6182231")
 
         self.ctx = ssl.create_default_context()
