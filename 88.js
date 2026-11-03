@@ -1609,18 +1609,19 @@
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
+      "name": "央视直播",
+      "type": 0,
+      "url": "https://raw.githubusercontent.com/tvbw/tbox2025/main/live/live_ipv4.txt",
+      "ua": "okHttp/Mod-1.4.0.0"
+    },
+    {
       "name": "易发直播",
       "type": 0,
       "url": "https://raw.githubusercontent.com/fafa002/yf2025/main/yiyifafa.txt",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
-      "name": "午夜直播",
-      "type": 0,
-      "url": "https://newrecha.neocities.org/live/xxx%E8%A7%86%E9%A2%91%E8%B5%84%E6%BA%90.txt",
-      "ua": "okHttp/Mod-1.4.0.0"
-    },
-    {
+
       "name": "欧美剧场",
       "type": 0,
       "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E8%A7%86%E9%A2%91.txt",
