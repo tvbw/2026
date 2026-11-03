@@ -3,6 +3,273 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "🔞123AV",
+      "name": "🔞123AV",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/123AV.py"
+    },
+    {
+      "key": "🔞51擦边",
+      "name": "🔞51擦边",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51擦边.py"
+    },
+    {
+      "key": "🔞51短剧",
+      "name": "🔞51短剧",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51短剧.py"
+    },
+    {
+      "key": "🔞69吃瓜网",
+      "name": "🔞69吃瓜网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/69吃瓜网.py"
+    },
+    {
+      "key": "🔞911爆料网",
+      "name": "🔞911爆料网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/911爆料网.py"
+    },
+    {
+      "key": "🔞91porna(OK适配精简版)",
+      "name": "🔞91porna(OK适配精简版)",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91porna(OK适配精简版).py"
+    },
+    {
+      "key": "🔞91大神",
+      "name": "🔞91大神",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91大神.py"
+    },
+    {
+      "key": "🔞91大赛",
+      "name": "🔞91大赛",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91大赛.py"
+    },
+    {
+      "key": "🔞91情报局",
+      "name": "🔞91情报局",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91情报局.py"
+    },
+    {
+      "key": "🔞AVJOY·蝴蝶影视",
+      "name": "🔞AVJOY·蝴蝶影视",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/AVJOY·蝴蝶影视.py"
+    },
+    {
+      "key": "🔞Catemby多播放",
+      "name": "🔞Catemby多播放",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/Catemby多播放.py"
+    },
+    {
+      "key": "🔞Chaturbate 直播",
+      "name": "🔞Chaturbate 直播",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/Chaturbate 直播.py"
+    },
+    {
+      "key": "🔞[影¹⁸]蝴蝶影院",
+      "name": "🔞[影¹⁸]蝴蝶影院",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/[影¹⁸]蝴蝶影院.py"
+    },
+    {
+      "key": "🔞pornav",
+      "name": "🔞pornav",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/pornav.py"
+    },
+    {
+      "key": "🔞中国x站",
+      "name": "🔞中国x站",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/中国x站.py"
+    },
+    {
+      "key": "🔞久久网",
+      "name": "🔞久久网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/久久网.py"
+    },
+    {
+      "key": "🔞你的秘书",
+      "name": "🔞你的秘书",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/你的秘书.py"
+    },
+    {
+      "key": "🔞爆操留学生[18]",
+      "name": "🔞爆操留学生[18]",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/爆操留学生[18].py"
+    },
+    {
+      "key": "🔞爽水妹",
+      "name": "🔞爽水妹",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/爽水妹.py"
+    },
+    {
+      "key": "🔞聚合",
+      "name": "🔞聚合",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/聚合.py"
+    },
+    {
+      "key": "🔞色花堂视频[18]",
+      "name": "🔞色花堂视频[18]",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/色花堂视频[18].py"
+    },
+    {
+      "key": "🔞蝴蝶影视·95da",
+      "name": "🔞蝴蝶影视·95da",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/蝴蝶影视·95da.py"
+    },
+    {
+      "key": "🔞露思AV网",
+      "name": "🔞露思AV网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/露思AV网.py"
+    },
+    {
+      "key": "🔞🦋 蝴蝶影视·HoHoJ多域漂移版",
+      "name": "🔞🦋 蝴蝶影视·HoHoJ多域漂移版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/🦋 蝴蝶影视·HoHoJ多域漂移版.py"
+    },
+    {
+
+
+
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
