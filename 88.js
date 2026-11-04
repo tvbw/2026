@@ -3,271 +3,248 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "🔞123AV",
-      "name": "🔞123AV",
+      "key": "🔞PY-18jspa-2db60781",
+      "name": "🔞PY-18jspa-2db60781",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/123AV.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-18jspa-2db60781.py"
     },
     {
-      "key": "🔞51擦边",
-      "name": "🔞51擦边",
+      "key": "🔞sources/video/PY-91porna-7ff4e50e",
+      "name": "🔞sources/video/PY-91porna-7ff4e50e",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51擦边.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/sources/video/PY-91porna-7ff4e50e.py"
     },
     {
-      "key": "🔞51短剧",
-      "name": "🔞51短剧",
+      "key": "🔞PY-Hanime1（免翻）-a40c0174",
+      "name": "🔞PY-Hanime1（免翻）-a40c0174",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51短剧.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-Hanime1（免翻）-a40c0174.py"
     },
     {
-      "key": "🔞69吃瓜网",
-      "name": "🔞69吃瓜网",
+      "key": "🔞PY-Missav（免翻）-049cd28d",
+      "name": "🔞PY-Missav（免翻）-049cd28d",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/69吃瓜网.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-Missav（免翻）-049cd28d.py"
     },
     {
-      "key": "🔞911爆料网",
-      "name": "🔞911爆料网",
+      "key": "🔞PY-Twitter精选-3e0303be",
+      "name": "🔞PY-Twitter精选-3e0303be",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/911爆料网.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-Twitter精选-3e0303be.py"
     },
     {
-      "key": "🔞91porna(OK适配精简版)",
-      "name": "🔞91porna(OK适配精简版)",
+      "key": "🔞PY-XChina-09038929",
+      "name": "🔞PY-XChina-09038929",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91porna(OK适配精简版).py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-XChina-09038929.py"
     },
     {
-      "key": "🔞91大神",
-      "name": "🔞91大神",
+      "key": "🔞PY-X红颜-eec81d24",
+      "name": "🔞PY-X红颜-eec81d24",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91大神.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-X红颜-eec81d24.py"
     },
     {
-      "key": "🔞91大赛",
-      "name": "🔞91大赛",
+      "key": "🔞PY-[成人]蝙蝠视频🔞-e1a6c17c",
+      "name": "🔞PY-[成人]蝙蝠视频🔞-e1a6c17c",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91大赛.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-[成人]蝙蝠视频🔞-e1a6c17c.py"
     },
     {
-      "key": "🔞91情报局",
-      "name": "🔞91情报局",
+      "key": "🔞PY-[瑟]618-cf84fc00",
+      "name": "🔞PY-[瑟]618-cf84fc00",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91情报局.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-[瑟]618-cf84fc00.py"
     },
     {
-      "key": "🔞AVJOY·蝴蝶影视",
-      "name": "🔞AVJOY·蝴蝶影视",
+      "key": "🔞PY-[瑟]VPorn-e43130e0",
+      "name": "🔞PY-[瑟]VPorn-e43130e0",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/AVJOY·蝴蝶影视.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-[瑟]VPorn-e43130e0.py"
     },
     {
-      "key": "🔞Catemby多播放",
-      "name": "🔞Catemby多播放",
+      "key": "🔞PY-[瑟]YouTube-c218faad",
+      "name": "🔞PY-[瑟]YouTube-c218faad",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/Catemby多播放.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-[瑟]YouTube-c218faad.py"
     },
     {
-      "key": "🔞Chaturbate 直播",
-      "name": "🔞Chaturbate 直播",
+      "key": "🔞PY-[瑟]mjv011(1)-b2666142",
+      "name": "🔞PY-[瑟]mjv011(1)-b2666142",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/Chaturbate 直播.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-[瑟]mjv011(1)-b2666142.py"
     },
     {
-      "key": "🔞[影¹⁸]蝴蝶影院",
-      "name": "🔞[影¹⁸]蝴蝶影院",
+      "key": "🔞PY-[瑟]居屋短剧-f159c1fd",
+      "name": "🔞PY-[瑟]居屋短剧-f159c1fd",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/[影¹⁸]蝴蝶影院.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-[瑟]居屋短剧-f159c1fd.py"
     },
     {
-      "key": "🔞pornav",
-      "name": "🔞pornav",
+      "key": "🔞PY-[瑟]怦然心动-39efc998",
+      "name": "🔞PY-[瑟]怦然心动-39efc998",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/pornav.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-[瑟]怦然心动-39efc998.py"
     },
     {
-      "key": "🔞中国x站",
-      "name": "🔞中国x站",
+      "key": "🔞PY-[瑟]未来影院",
+      "name": "🔞PY-[瑟]未来影院",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/中国x站.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-[瑟]未来影院-e6c8c703.py"
     },
     {
-      "key": "🔞久久网",
-      "name": "🔞久久网",
+      "key": "🔞PY-[瑟]黄豆短剧-9e507396PY-[瑟]黄豆短剧-9e507396",
+      "name": "🔞PY-[瑟]黄豆短剧-9e507396PY-[瑟]黄豆短剧-9e507396",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/久久网.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-[瑟]黄豆短剧-9e507396PY-[瑟]黄豆短剧-9e507396.py"
     },
     {
-      "key": "🔞你的秘书",
-      "name": "🔞你的秘书",
+      "key": "🔞PY-jiujiu-bba96c00",
+      "name": "🔞PY-jiujiu-bba96c00",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/你的秘书.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-jiujiu-bba96c00.py"
     },
     {
-      "key": "🔞爆操留学生[18]",
-      "name": "🔞爆操留学生[18]",
+      "key": "🔞PY-jiujiu-bba96c00",
+      "name": "🔞PY-jiujiu-bba96c00",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/爆操留学生[18].py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-jiujiu-bba96c00.py"
     },
     {
-      "key": "🔞爽水妹",
-      "name": "🔞爽水妹",
+      "key": "🔞PY-porna91-384a0eba",
+      "name": "🔞PY-porna91-384a0eba",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/爽水妹.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-porna91-384a0eba.py"
     },
     {
-      "key": "🔞聚合",
-      "name": "🔞聚合",
+      "key": "🔞PY-久久网-a825e9e1",
+      "name": "🔞PY-久久网-a825e9e1",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/聚合.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-久久网-a825e9e1.py"
     },
     {
-      "key": "🔞色花堂视频[18]",
-      "name": "🔞色花堂视频[18]",
+      "key": "🔞PY-xn--69-956965f4",
+      "name": "🔞PY-xn--69-956965f4",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/色花堂视频[18].py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-xn--69-956965f4.py"
     },
     {
-      "key": "🔞蝴蝶影视·95da",
-      "name": "🔞蝴蝶影视·95da",
+      "key": "🔞PY-xx9已过验证-f7da5cca",
+      "name": "🔞PY-xx9已过验证-f7da5cca",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/蝴蝶影视·95da.py"
+      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-xx9已过验证-f7da5cca.py"
     },
     {
-      "key": "🔞露思AV网",
-      "name": "🔞露思AV网",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/露思AV网.py"
-    },
-    {
-      "key": "🔞🦋 蝴蝶影视·HoHoJ多域漂移版",
-      "name": "🔞🦋 蝴蝶影视·HoHoJ多域漂移版",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/🦋 蝴蝶影视·HoHoJ多域漂移版.py"
-    },
-    {
-
 
 
       "key": "🍁正宗聚合",
@@ -1702,6 +1679,17 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py",
       "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/熊猫视频.py"
+    },
+    {
+      "key": "🔞蝴蝶影视·95da",
+      "name": "🔞蝴蝶影视·95da",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/蝴蝶影视·95da.py"
     },
     {
       "key": "x视频.py",
