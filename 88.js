@@ -3,366 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "🍁[Aure][剧¹⁸]黄果短剧_竞速",
-      "name": "🍁[Aure][剧¹⁸]黄果短剧_竞速",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][剧¹⁸]黄果短剧_竞速.py"
-    },
-    {
-      "key": "🍁[Aure][影¹⁸]123AV",
-      "name": "🍁[Aure][影¹⁸]123AV",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]123AV.py"
-    },
-    {
-
-      "key": "🍁[Aure][影¹⁸]57吃瓜网",
-      "name": "🍁[Aure][影¹⁸]57吃瓜网",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]57吃瓜网.py"
-    },
-    {
-
-      "key": "🍁[Aure][影¹⁸]5X社区",
-      "name": "🍁[Aure][影¹⁸]5X社区",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]5X社区.py"
-    },
-    {
-
-      "key": "🍁[Aure][影¹⁸]GetAV",
-      "name": "🍁[Aure][影¹⁸]GetAV",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]GetAV.py"
-    },
-    {
-
-      "key": "🍁[Aure][影¹⁸]HoHoJ",
-      "name": "🍁[Aure][影¹⁸]HoHoJ",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]HoHoJ.py"
-    },
-    {
-
-      "key": "🍁[Aure][影¹⁸]Hubff",
-      "name": "🍁[Aure][影¹⁸]Hubff",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]Hubff.py"
-    },
-    {
-
-      "key": "🍁[Aure][影¹⁸]JAVDAY",
-      "name": "🍁[Aure][影¹⁸]JAVDAY",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]JAVDAY.py"
-    },
-    {
-
-      "key": "🍁[Aure][影¹⁸]Jable",
-      "name": "🍁[Aure][影¹⁸]Jable",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]Jable.py"
-    },
-    {
-
-      "key": "🍁[Aure][影¹⁸]Javtiful",
-      "name": "🍁[Aure][影¹⁸]Javtiful",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]Javtiful.py"
-    },
-    {
-
-      "key": "🍁[Aure][影¹⁸]SUPJAV",
-      "name": "🍁[Aure][影¹⁸]SUPJAV",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]SUPJAV.py"
-    },
-    {
-
-      "key": "🍁[Aure][影¹⁸]SupjavWP",
-      "name": "🍁[Aure][影¹⁸]SupjavWP",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]SupjavWP.py"
-    },
-    {
-
-      "key": "🍁[Aure][影¹⁸]XOJAV",
-      "name": "🍁[Aure][影¹⁸]XOJAV",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]XOJAV.py"
-    },
-    {
-
-      "key": "🍁[Aure][影¹⁸]fcjav",
-      "name": "🍁[Aure][影¹⁸]fcjav",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]fcjav.py"
-    },
-    {
-
-      "key": "🍁[Aure][影¹⁸]xHamster",
-      "name": "🍁[Aure][影¹⁸]xHamster",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]xHamster.py"
-    },
-    {
-
-      "key": "🍁[剧¹⁸]91成人短剧",
-      "name": "🍁[剧¹⁸]91成人短剧",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[剧¹⁸]91成人短剧.py"
-    },
-    {
-
-      "key": "🍁[剧¹⁸]红果黄剧",
-      "name": "🍁[剧¹⁸]红果黄剧",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[剧¹⁸]红果黄剧.py"
-    },
-    {
-
-      "key": "🍁[剧¹⁸]肉视频",
-      "name": "🍁[剧¹⁸]肉视频",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[剧¹⁸]肉视频.py"
-    },
-    {
-
-      "key": "🍁[影¹⁸]134X",
-      "name": "🍁[影¹⁸]134X",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[影¹⁸]134X.py"
-    },
-    {
-
-      "key": "🍁[影¹⁸]18jspa",
-      "name": "🍁[影¹⁸]18jspa",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[影¹⁸]18jspa.py"
-    },
-    {
-
-      "key": "🍁[影¹⁸]338TV",
-      "name": "🍁[影¹⁸]338TV",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[影¹⁸]338TV.py"
-    },
-    {
-
-      "key": "🍁[影¹⁸]4k日本动漫",
-      "name": "🍁[影¹⁸]4k日本动漫",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[影¹⁸]4k日本动漫.py"
-    },
-    {
-
-      "key": "🍁[影¹⁸]51吃瓜",
-      "name": "🍁[影¹⁸]51吃瓜",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[影¹⁸]51吃瓜.py"
-    },
-    {
-
-      "key": "🍁[影¹⁸]51吸瓜",
-      "name": "🍁[影¹⁸]51吸瓜",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[影¹⁸]51吸瓜.py"
-    },
-    {
-
-      "key": "🍁[影¹⁸]911爆料",
-      "name": "🍁[影¹⁸]911爆料",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[影¹⁸]911爆料.py"
-    },
-    {
-
-      "key": "🍁[影¹⁸]91PornA",
-      "name": "🍁[影¹⁸]91PornA",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[影¹⁸]91PornA.py"
-    },
-    {
-
-      "key": "🍁[影¹⁸]BadNews",
-      "name": "🍁[影¹⁸]BadNews",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[影¹⁸]BadNews.py"
-    },
-    {
-
-      "key": "🍁[影¹⁸]BestJavPorn",
-      "name": "🍁[影¹⁸]BestJavPorn",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[影¹⁸]BestJavPorn.py"
-    },
-    {
-
-      "key": "🍁[影¹⁸]久久网",
-      "name": "🍁[影¹⁸]久久网",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[影¹⁸]久久网.py"
-    },
-    {
-
-      "key": "🍁[影¹⁸]乱伦淫窝",
-      "name": "🍁[影¹⁸]乱伦淫窝",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[影¹⁸]乱伦淫窝.py"
-    },
-    {
-
-
 
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
@@ -373,17 +13,6 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
-    },
-    {
-      "key": "电影侠",
-      "name": "🍁电影侠",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/dyxia.py"
     },
     {
       "key": "xb6v修护",
@@ -1266,6 +895,50 @@
       },
       "ext": "http://pglblb.test.upcdn.net/2026py/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.py",
       "api": "http://pglblb.test.upcdn.net/2026py/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.py"
+    },
+    {
+      "key": "🍁[Aure][影¹⁸]SUPJAV",
+      "name": "🍁[Aure][影¹⁸]SUPJAV",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]SUPJAV.py"
+    },
+    {
+      "key": "🍁[Aure][影¹⁸]SupjavWP",
+      "name": "🍁[Aure][影¹⁸]SupjavWP",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]SupjavWP.py"
+    },
+    {
+      "key": "🍁[Aure][影¹⁸]57吃瓜网",
+      "name": "🍁[Aure][影¹⁸]57吃瓜网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]57吃瓜网.py"
+    },
+    {
+      "key": "🍁[Aure][影¹⁸]Hubff",
+      "name": "🍁[Aure][影¹⁸]Hubff",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]Hubff.py"
     },
     {
       "key": "csp_xbpq_mylust",
