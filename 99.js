@@ -1,5 +1,5 @@
 {
-  "spider": "https://raw.githubusercontent.com/tvbw/2026/main/fm.jar",
+  "spider": "http://pglblb.test.upcdn.net/custom_spider.jar",
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {

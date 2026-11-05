@@ -3,7 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
@@ -91,17 +90,6 @@
         "ratio": 1.66
       },
       "api": "http://pglblb.test.upcdn.net/2026py/test/rouav.py"
-    },
-    {
-      "key": "🔞AV123",
-      "name": "🔞AV123",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/av123.py"
     },
     {
       "key": "🔞好色TV",
