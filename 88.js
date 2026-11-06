@@ -3,6 +3,17 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "🔞骚女汇",
+      "name": "🔞骚女汇",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/202610SS/main/saonhui7.py"
+    },
+    {
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
