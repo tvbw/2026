@@ -15,8 +15,8 @@ except Exception:
 
 class Spider(_BaseSpider):
     # 域名池：该站域名频繁轮换，首页带"新网址/立即跳转"公告
-    # 2026-10-19 实测：vfbai.snnvh82.sbs 首页公告跳转 y8ke0.snnvh99.top
-    HOSTS = ["https://y8ke0.snnvh99.top", "https://vfbai.snnvh82.sbs"]
+    # 2026-10-19 实测：vfbai.snnvh82.sbs 首页公告跳转 https://tfxlm.snnvh102.lol/
+    HOSTS = ["https://tfxlm.snnvh102.lol/", "https://vfbai.snnvh82.sbs"]
     UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
           "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
     # 内容屏蔽：偷拍自拍 / 网曝事件 / 强奸乱伦 / 少女萝莉 四类不进目录
