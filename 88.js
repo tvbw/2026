@@ -3,30 +3,8 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "🔞591AV1",
-      "name": "🔞591AV(动态自愈版1)",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/yamazaki1412/woshishiq1-hipy-drpy2/37edf40485661866fb6f688ba7d6134f76a56aaf/tenrecha/py/Zaka%C2%B7591AV(%E5%8A%A8%E6%80%81%E8%87%AA%E6%84%88%E7%89%88).py#L30"
-    },
-    {
-      "key": "🔞591AV2",
-      "name": "🔞591AV(动态自愈版2)",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/jsjhshs/sjzkn/5b2c08ac6783372de633521e68fba08fd767a2ec/py/js/%E6%88%90%E4%BA%BA/591av.py#L66"
-    },
-    {
       "key": "🔞591AV3",
-      "name": "🔞591AV(动态自愈版3)",
+      "name": "🔞591AV(动态自愈版)",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -36,7 +14,6 @@
       "api": "https://raw.githubusercontent.com/yamazaki1412/woshishiq1-hipy-drpy2/37edf40485661866fb6f688ba7d6134f76a56aaf/tenrecha/py/%E8%9D%B4%E8%9D%B6%C2%B7591AV(%E5%8A%A8%E6%80%81%E8%87%AA%E6%84%88%E7%89%88).py#L66"
     },
     {
-
       "key": "🔞骚女汇",
       "name": "🔞骚女汇(动态自愈版)",
       "type": 3,
