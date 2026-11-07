@@ -3,6 +3,41 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "591av-js",
+      "name": "591av-js【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/bbnotcode/ph_js/d29379205c9b0a8729f9a9abdddd630876bd3bda/591av-mini-library.js"
+    },
+    {
+
+      "key": "madou8--js",
+      "name": "madou8--js【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/bbnotcode/ph_js/d29379205c9b0a8729f9a9abdddd630876bd3bda/madou8-domestic-mini-library.js"
+    },
+    {
+      "key": "🔞591AV",
+      "name": "🔞591AV(动态自愈版)",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/yamazaki1412/woshishiq1-hipy-drpy2/37edf40485661866fb6f688ba7d6134f76a56aaf/tenrecha/py/Zaka%C2%B7591AV(%E5%8A%A8%E6%80%81%E8%87%AA%E6%84%88%E7%89%88).py#L30"
+    },
+    {
+
       "key": "🔞骚女汇",
       "name": "🔞骚女汇",
       "type": 3,
@@ -11,7 +46,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/202610SS/main/saonhui7.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/saonhui7.py"
     },
     {
       "key": "🍁正宗聚合",
