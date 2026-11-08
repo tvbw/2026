@@ -3,28 +3,836 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "🔞591AV3",
-      "name": "🔞591AV(动态自愈版)",
+      "key": "🔞123AV",
+      "name": "🔞123AV",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/yamazaki1412/woshishiq1-hipy-drpy2/37edf40485661866fb6f688ba7d6134f76a56aaf/tenrecha/py/%E8%9D%B4%E8%9D%B6%C2%B7591AV(%E5%8A%A8%E6%80%81%E8%87%AA%E6%84%88%E7%89%88).py#L66"
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/123AV.py"
     },
     {
-      "key": "🔞骚女汇",
-      "name": "🔞骚女汇(动态自愈版)",
+      "key": "🔞18jtv",
+      "name": "🔞18jtv",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/saonhui7.py"
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/18jtv.py"
     },
     {
+      "key": "🔞51吃瓜",
+      "name": "🔞51吃瓜",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51吃瓜.py"
+    },
+    {
+      "key": "🔞51吃瓜修复v2",
+      "name": "🔞51吃瓜修复v2",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51吃瓜修复v2.py"
+    },
+    {
+      "key": "🔞51大赛",
+      "name": "🔞51大赛",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51大赛.py"
+    },
+    {
+      "key": "🔞51暗网",
+      "name": "🔞51暗网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51暗网.py"
+    },
+    {
+      "key": "🔞51木瓜",
+      "name": "🔞51木瓜",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51木瓜.py"
+    },
+    {
+      "key": "🔞51爆料",
+      "name": "🔞51爆料",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51爆料.py"
+    },
+    {
+      "key": "🔞51短剧",
+      "name": "🔞51短剧",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51短剧.py"
+    },
+    {
+      "key": "🔞51视频",
+      "name": "🔞51视频",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51视频.py"
+    },
+    {
+      "key": "🔞777午夜影院",
+      "name": "🔞777午夜影院",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/777午夜影院.py"
+    },
+    {
+      "key": "🔞818黑料网",
+      "name": "🔞818黑料网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/818黑料网.py"
+    },
+    {
+      "key": "🔞8X8X",
+      "name": "🔞8X8X",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/8X8X.py"
+    },
+    {
+      "key": "🔞911爆料",
+      "name": "🔞911爆料",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/911爆料.py"
+    },
+    {
+      "key": "🔞91吃瓜中心",
+      "name": "🔞91吃瓜中心",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91吃瓜中心.py"
+    },
+    {
+      "key": "🔞91大赛",
+      "name": "🔞91大赛",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91大赛.py"
+    },
+    {
+      "key": "🔞91爆料",
+      "name": "🔞91爆料",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91爆料.py"
+    },
+    {
+      "key": "🔞AV星球",
+      "name": "🔞AV星球",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/AV星球.py"
+    },
+    {
+      "key": "🔞Chaturbate",
+      "name": "🔞Chaturbate",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/Chaturbate.py"
+    },
+    {
+      "key": "🔞FullHD",
+      "name": "🔞FullHD",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/FullHD.py"
+    },
+    {
+      "key": "🔞JAV36",
+      "name": "🔞JAV36",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/JAV36.py"
+    },
+    {
+      "key": "🔞JAVMove",
+      "name": "🔞JAVMove",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/JAVMove.py"
+    },
+    {
+      "key": "🔞Jable",
+      "name": "🔞Jable",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/Jable.py"
+    },
+    {
+      "key": "🔞Javmenu",
+      "name": "🔞Javmenu",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/Javmenu.py"
+    },
+    {
+      "key": "🔞MSAVX",
+      "name": "🔞MSAVX",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/MSAVX.py"
+    },
+    {
+      "key": "🔞ThumbzillaTop",
+      "name": "🔞ThumbzillaTop",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/ThumbzillaTop.py"
+    },
+    {
+
+      "key": "🔞TnAflix",
+      "name": "🔞TnAflix",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/TnAflix.py"
+    },
+    {
+      "key": "🔞hqg",
+      "name": "🔞hqg",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/hqg.py"
+    },
+    {
+      "key": "🔞hubff",
+      "name": "🔞hubff",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/hubff.py"
+    },
+    {
+      "key": "🔞javGG",
+      "name": "🔞javGG",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/javGG.py"
+    },
+    {
+      "key": "🔞juzi",
+      "name": "🔞juzi",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/juzi.py"
+    },
+    {
+      "key": "🔞myfreecams直播",
+      "name": "🔞myfreecams直播",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/myfreecams直播.py"
+    },
+    {
+      "key": "🔞okxxx",
+      "name": "🔞okxxx",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/okxxx.py"
+    },
+    {
+      "key": "🔞one点播",
+      "name": "🔞one点播",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/one点播.py"
+    },
+    {
+      "key": "🔞owoav",
+      "name": "🔞owoav",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/owoav.py"
+    },
+    {
+
+      "key": "🔞pmvhaven",
+      "name": "🔞pmvhaven",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/pmvhaven.py"
+    },
+    {
+      "key": "🔞pomo",
+      "name": "🔞pomo",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/pomo.py"
+    },
+    {
+      "key": "🔞stripchatTG",
+      "name": "🔞stripchatTG",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/stripchatTG.py"
+    },
+    {
+      "key": "🔞youav",
+      "name": "🔞youav",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/youav.py"
+    },
+    {
+      "key": "🔞三流视频",
+      "name": "🔞三流视频",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/三流视频.py"
+    },
+    {
+      "key": "🔞优质粉嫩鲍",
+      "name": "🔞优质粉嫩鲍",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/优质粉嫩鲍.py"
+    },
+    {
+      "key": "🔞儿子上穴",
+      "name": "🔞儿子上穴",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/儿子上穴.py"
+    },
+    {
+      "key": "🔞共和国动漫",
+      "name": "🔞共和国动漫",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/共和国动漫.py"
+    },
+    {
+      "key": "🔞善良的小姨子-c57d1022f244",
+      "name": "🔞善良的小姨子-c57d1022f244",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/善良的小姨子-c57d1022f244.py"
+    },
+    {
+      "key": "🔞大象短剧",
+      "name": "🔞大象短剧",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/大象短剧.py"
+    },
+    {
+      "key": "🔞大马猴",
+      "name": "🔞大马猴",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/大马猴.py"
+    },
+    {
+      "key": "🔞寂寞阿姨-f425d37f703b",
+      "name": "🔞寂寞阿姨-f425d37f703b",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/寂寞阿姨-f425d37f703b.py"
+    },
+    {
+      "key": "🔞小涩界",
+      "name": "🔞小涩界",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/小涩界.py"
+    },
+    {
+      "key": "🔞房中术",
+      "name": "🔞房中术",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/房中术.py"
+    },
+    {
+      "key": "🔞换母俱乐部-9b643e1186d",
+      "name": "🔞换母俱乐部-9b643e1186d",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/换母俱乐部-9b643e1186d.py"
+    },
+    {
+      "key": "🔞推特涩涩",
+      "name": "🔞推特涩涩",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/推特涩涩.py"
+    },
+    {
+      "key": "🔞撸壮元-34290e78277a",
+      "name": "🔞撸壮元-34290e78277a",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/撸壮元-34290e78277a.py"
+    },
+    {
+      "key": "🔞撸王宝典-3a0eb802dffa",
+      "name": "🔞撸王宝典-3a0eb802dffa",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/撸王宝典-3a0eb802dffa.py"
+    },
+    {
+      "key": "🔞智能加载-v7.0默壳版",
+      "name": "🔞智能加载-v7.0默壳版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/智能加载-v7.0默壳版.py"
+    },
+    {
+      "key": "🔞果冻传媒",
+      "name": "🔞果冻传媒",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/果冻传媒.py"
+    },
+    {
+      "key": "🔞淫母原味-b11f34fb0c01",
+      "name": "🔞淫母原味-b11f34fb0c01",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/淫母原味-b11f34fb0c01.py"
+    },
+    {
+      "key": "🔞清纯富婆-fef36bd8f202",
+      "name": "🔞清纯富婆-fef36bd8f202",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/清纯富婆-fef36bd8f202.py"
+    },
+    {
+      "key": "🔞爆瓜网",
+      "name": "🔞爆瓜网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/爆瓜网.py"
+    },
+    {
+      "key": "🔞爱微社区",
+      "name": "🔞爱微社区",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/爱微社区.py"
+    },
+    {
+      "key": "🔞男同网-a1a156a683a7",
+      "name": "🔞男同网-a1a156a683a7",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/男同网-a1a156a683a7.py"
+    },
+    {
+      "key": "🔞百合TV",
+      "name": "🔞百合TV",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/百合TV.py"
+    },
+    {
+      "key": "🔞直播录屏",
+      "name": "🔞直播录屏",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/直播录屏.py"
+    },
+    {
+      "key": "🔞真实人妻",
+      "name": "🔞真实人妻",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/真实人妻.py"
+    },
+    {
+      "key": "🔞笔盒",
+      "name": "🔞笔盒",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/笔盒.py"
+    },
+    {
+      "key": "🔞精英突击-0bccd83a9ee7",
+      "name": "🔞精英突击-0bccd83a9ee7",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/精英突击-0bccd83a9ee7.py"
+    },
+    {
+      "key": "🔞糖心Vlog网页2",
+      "name": "🔞糖心Vlog网页2",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/糖心Vlog网页2.py"
+    },
+    {
+      "key": "🔞红果短剧(弹幕+显季版)-b6008f4d5d24",
+      "name": "🔞红果短剧(弹幕+显季版)-b6008f4d5d24",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/红果短剧(弹幕+显季版)-b6008f4d5d24.py"
+    },
+    {
+      "key": "🔞色吧资源-1f4fd2a443a9",
+      "name": "🔞色吧资源-1f4fd2a443a9",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/色吧资源-1f4fd2a443a9.py"
+    },
+    {
+      "key": "🔞花都影视",
+      "name": "🔞花都影视",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/花都影视.py"
+    },
+    {
+      "key": "🔞萝莉AV-bbdb742a30ee",
+      "name": "🔞萝莉AV-bbdb742a30ee",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/萝莉AV-bbdb742a30ee.py"
+    },
+    {
+      "key": "🔞萝莉岛APP-c504f2816c96",
+      "name": "🔞萝莉岛APP-c504f2816c96",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/萝莉岛APP-c504f2816c96.py"
+    },
+    {
+      "key": "🔞野马中文-fdd1e87f3adb",
+      "name": "🔞野马中文-fdd1e87f3adb",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/野马中文-fdd1e87f3adb.py"
+    },
+    {
+      "key": "🔞魔色365-e431548dcaff",
+      "name": "🔞魔色365-e431548dcaff",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/魔色365-e431548dcaff.py"
+    },
+    {
+      "key": "🔞麻豆影院-a354cf68196c",
+      "name": "🔞麻豆影院-a354cf68196c",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/麻豆影院-a354cf68196c.py"
+    },
+    {
+      "key": "🔞黄色仓库动态版-272194e6b624",
+      "name": "🔞黄色仓库动态版-272194e6b624",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/黄色仓库动态版-272194e6b624.py"
+    },
+    {
+
+
+
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
@@ -80,7 +888,28 @@
       "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播18AV.py"
     },
     {
-
+      "key": "🔞591AV3",
+      "name": "🔞591AV(动态自愈版)",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/yamazaki1412/woshishiq1-hipy-drpy2/37edf40485661866fb6f688ba7d6134f76a56aaf/tenrecha/py/%E8%9D%B4%E8%9D%B6%C2%B7591AV(%E5%8A%A8%E6%80%81%E8%87%AA%E6%84%88%E7%89%88).py#L66"
+    },
+    {
+      "key": "🔞骚女汇",
+      "name": "🔞骚女汇(动态自愈版)",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/saonhui7.py"
+    },
+    {
       "key": "🔞lissavcn",
       "name": "🔞lissavcn",
       "type": 3,
@@ -138,7 +967,6 @@
       "changeable": 1
     },
     {
-
       "key": "🔞PY-[瑟]618-cf84fc00",
       "name": "🔞香蕉一区新版",
       "type": 3,
@@ -172,18 +1000,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-Hanime1（免翻）-a40c0174.py"
     },
     {
-      "key": "🔞PY-Missav（免翻）-049cd28d",
-      "name": "🔞Missav日优排行",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-Missav（免翻）-049cd28d.py"
-    },
-    {
-
       "key": "mrdld",
       "name": "❤️每日大乱斗🔞",
       "type": 3,
