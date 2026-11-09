@@ -1,34 +1,38 @@
 #!/usr/bin/python
 # coding=utf-8
-# 蜜桃视频（honeypeach.cc）TVBox 蜘蛛框架版
+# 蜜桃视频（honeypeach.cc）TVBox 蜘蛛框架版（修复版）
 # 站点：自研 JSON API + HMAC 签名；7 个模块（蜜桃直播/短剧/擦边/视频/动漫/国产/黑料）。
-# 鉴权（已按站方 /web/hpsign.js 复现）：/api/handshake 先过 PoW 人机挑战（FNV-1a 变体，
-#   解出 chal.nonce 后同连接提交换 sid/skey，24h 有效）-> 后续接口 HMAC-SHA256 签名
-#   （canon = "GET\\npath\\nquery\\nbodyHash\\nts\\nnonce\\nsid"）。
-# 接口：/api/home 取模块；/api/cats?key=&v=4 取分类；/api/module 取列表；
-#   /api/detail/{key}/{id} 取详情分集；/api/play/{key}/{id}/{ep} 取播放票据（180s 有效）；
-#   /api/search 搜索。封面 /cover/ 与播放 /hls/ 均为票据直链。
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'zh-CN,zh;q=0.9',
-        'Referer': 'https://honeypeach.cc/',
-    }
+# 鉴权：/api/handshake 先过 PoW 人机挑战（FNV-1a 变体），后续接口 HMAC-SHA256 签名。
+# 调试：init 传入 {"debug": true} 可在控制台看到关键日志与 _last_error。
 import re, json, time, base64, hashlib, random, string, threading
+
 try:
     from urllib.parse import quote as _quote, unquote as _unquote
 except ImportError:
     from urllib import quote as _quote, unquote as _unquote
+
 try:
     import requests as _rq
 except Exception:
     _rq = None
+
 try:
     from concurrent.futures import ThreadPoolExecutor as _Pool
 except Exception:
     _Pool = None
+
+try:
+    import http.cookiejar as _cookiejar
+except ImportError:
+    try:
+        import cookielib as _cookiejar
+    except ImportError:
+        _cookiejar = None
+
 _BASE = "https://honeypeach.cc/"
-_TIMEOUT =10
+_UA = "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+_TIMEOUT = 15
+
 _G_LOCK = threading.Lock()
 _G = {"sid": None, "skey": None, "exp": 0.0}
 
@@ -89,6 +93,21 @@ def _b64d(s):
         return str(s or "")
 
 
+def _skey_bytes(skey):
+    """兼容十六进制 / base64 / 原始字符串三种 skey 编码。"""
+    s = str(skey or "")
+    if not s:
+        return b""
+    try:
+        return bytes.fromhex(s)
+    except Exception:
+        pass
+    try:
+        return base64.b64decode(s + "=" * (-len(s) % 4))
+    except Exception:
+        return s.encode("utf-8", "replace")
+
+
 class Spider:
     def __init__(self):
         self.site = _BASE
@@ -96,18 +115,25 @@ class Spider:
         self.header = {"User-Agent": _UA, "Accept": "application/json"}
         self.s = self.session = self.sess = _rq.Session() if _rq else None
         self._extend = {}
-        self.cat_scope = None
-        self.cat_href_re = None
-        self.list_scope = None
-        self.detail_tpl = None
-        self.play_tpl = None
-        self.m3u8_var = None
-        self.search_tpl = None
-        self.page_mode = None
         self._dev = None
         self._mods = []
         self._mods_at = 0.0
+        self._debug = False
+        self._last_error = ""
 
+    # ---------- 日志 ----------
+    def _log(self, msg):
+        if self._debug:
+            try:
+                print("[蜜桃] " + str(msg))
+            except Exception:
+                pass
+
+    def _err(self, msg):
+        self._last_error = str(msg)
+        self._log(self._last_error)
+
+    # ---------- 框架约定 ----------
     def getDependence(self):
         return []
 
@@ -118,11 +144,17 @@ class Spider:
         return bool(url) and re.search(r"(?i)\.(mp4|m3u8|flv|mkv|avi|ts|mov|mpd)(\?.*)?$", str(url)) is not None
 
     def destroy(self):
-        pass
+        try:
+            if self.s is not None:
+                self.s.close()
+        except Exception:
+            pass
+        self.s = None
 
     def action(self, action):
         return {}
 
+    # ---------- 设备 / 鉴权 ----------
     def _dev_id(self):
         if not self._dev:
             self._dev = "".join(random.choice(string.ascii_lowercase + string.digits) for _ in range(12)) \
@@ -133,47 +165,100 @@ class Spider:
         if d and d.get("sid") and d.get("skey"):
             _G["sid"] = d["sid"]
             _G["skey"] = d["skey"]
-            _G["exp"] = float(d.get("exp") or 0)
+            exp = float(d.get("exp") or 0)
+            if exp > 1e12:  # 服务端若返回毫秒时间戳则换算
+                exp = exp / 1000.0
+            _G["exp"] = exp
+            self._log("handshake ok sid=%s exp=%s" % (d["sid"], exp))
             return True
         return False
 
     def _shake_once(self):
-        if _rq is None:
-            return False
-        s = None
-        try:
-            s = _rq.Session()
-            url0 = _BASE + "/api/handshake?dev=" + _quote(self._dev_id())
-            h = {"User-Agent": _UA, "Accept": "application/json"}
-            kw = {"headers": h, "timeout": _TIMEOUT}
-            r = s.get(url0, **kw)
-            if r.status_code != 200:
-                return False
+        url0 = _BASE + "/api/handshake?dev=" + _quote(self._dev_id())
+        h = {"User-Agent": _UA, "Accept": "application/json"}
+
+        # 优先 requests（保留 Cookie 会话）
+        if _rq is not None:
+            s = None
             try:
-                d = r.json()
+                s = _rq.Session()
+                r = s.get(url0, headers=h, timeout=_TIMEOUT)
+                if r.status_code != 200:
+                    self._err("shake http %s" % r.status_code)
+                    return False
+                try:
+                    d = r.json()
+                except Exception:
+                    self._err("shake json err: %r" % (r.text[:200],))
+                    return False
+                if not d.get("need_chal"):
+                    return self._shake_done(d)
+                self._log("shake chal=%s bits=%s solving..." % (d.get("need_chal"), d.get("bits")))
+                tok = _hp_solve(str(d["need_chal"]), d.get("bits") or 16)
+                if not tok:
+                    self._err("shake pow fail chal=%s bits=%s" % (d.get("need_chal"), d.get("bits")))
+                    return False
+                self._log("shake pow solved: %s" % tok[:40])
+                r = s.get(url0 + "&c=" + _quote(tok), headers=h, timeout=_TIMEOUT)
+                if r.status_code != 200:
+                    self._err("shake2 http %s" % r.status_code)
+                    return False
+                try:
+                    d = r.json()
+                except Exception:
+                    self._err("shake2 json err: %r" % (r.text[:200],))
+                    return False
+                return self._shake_done(d)
+            except Exception as e:
+                self._err("shake requests err: %r" % (e,))
+            finally:
+                try:
+                    if s is not None:
+                        s.close()
+                except Exception:
+                    pass
+
+        # urllib fallback（带 CookieJar 维持会话）
+        try:
+            import urllib.request
+            if _cookiejar is not None:
+                cj = _cookiejar.CookieJar()
+                opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
+            else:
+                opener = urllib.request.build_opener()
+            req = urllib.request.Request(url0, headers=h)
+            with opener.open(req, timeout=_TIMEOUT) as resp:
+                if resp.getcode() != 200:
+                    self._err("shake urllib http %s" % resp.getcode())
+                    return False
+                body = resp.read().decode("utf-8", "replace")
+            try:
+                d = json.loads(body)
             except Exception:
+                self._err("shake urllib json err: %r" % (body[:200],))
                 return False
             if not d.get("need_chal"):
                 return self._shake_done(d)
+            self._log("shake urllib chal=%s bits=%s solving..." % (d.get("need_chal"), d.get("bits")))
             tok = _hp_solve(str(d["need_chal"]), d.get("bits") or 16)
             if not tok:
+                self._err("shake urllib pow fail chal=%s bits=%s" % (d.get("need_chal"), d.get("bits")))
                 return False
-            r = s.get(url0 + "&c=" + _quote(tok), **kw)
-            if r.status_code != 200:
-                return False
+            req = urllib.request.Request(url0 + "&c=" + _quote(tok), headers=h)
+            with opener.open(req, timeout=_TIMEOUT) as resp:
+                if resp.getcode() != 200:
+                    self._err("shake2 urllib http %s" % resp.getcode())
+                    return False
+                body = resp.read().decode("utf-8", "replace")
             try:
-                d = r.json()
+                d = json.loads(body)
             except Exception:
+                self._err("shake2 urllib json err: %r" % (body[:200],))
                 return False
             return self._shake_done(d)
-        except Exception:
+        except Exception as e:
+            self._err("shake urllib err: %r" % (e,))
             return False
-        finally:
-            try:
-                if s is not None:
-                    s.close()
-            except Exception:
-                pass
 
     def _ensure_auth(self):
         now = time.time()
@@ -186,8 +271,26 @@ class Spider:
             for _ in range(3):
                 if self._shake_once():
                     return True
+            self._err("ensure_auth failed after 3 tries")
             return False
 
+    def _sign_headers(self, path, query):
+        sid, skey = _G["sid"], _G["skey"]
+        if not sid or not skey:
+            return {}
+        ts = str(int(time.time()))
+        nonce = "".join(random.choice(string.ascii_lowercase + string.digits) for _ in range(8)) \
+            + format(int(time.time() * 1000), "x")
+        bh = hashlib.sha256(b"").hexdigest()
+        canon = "GET\n%s\n%s\n%s\n%s\n%s\n%s" % (path, query, bh, ts, nonce, sid)
+        return {
+            "X-Hp-Sid": sid,
+            "X-Hp-Ts": ts,
+            "X-Hp-Nonce": nonce,
+            "X-Hp-Sign": _hmac_sha256(_skey_bytes(skey), canon.encode()),
+        }
+
+    # ---------- 网络 ----------
     def _raw_get(self, url, headers=None, timeout=_TIMEOUT):
         h = dict(self.header)
         if headers:
@@ -196,44 +299,41 @@ class Spider:
             try:
                 r = self.s.get(url, headers=h, timeout=timeout)
                 return r.status_code, r.text
-            except Exception:
-                pass
+            except Exception as e:
+                self._log("requests get err: %r" % (e,))
         try:
             import urllib.request
             req = urllib.request.Request(url, headers=h)
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 return resp.getcode(), resp.read().decode("utf-8", "replace")
-        except Exception:
+        except Exception as e:
+            self._err("urllib get err: %r url=%s" % (e, url))
             return 0, ""
 
     def _api(self, path, query=""):
         try:
-            self._ensure_auth()
+            if not self._ensure_auth():
+                self._log("api %s without auth, last_error=%s" % (path, self._last_error))
             url = _BASE + path + (("?" + query) if query else "")
-            h = {}
-            sid, skey = _G["sid"], _G["skey"]
-            if sid and skey:
-                ts = str(int(time.time()))
-                nonce = "".join(random.choice(string.ascii_lowercase + string.digits) for _ in range(8)) \
-                    + format(int(time.time() * 1000), "x")
-                bh = hashlib.sha256(b"").hexdigest()
-                canon = "GET\n%s\n%s\n%s\n%s\n%s\n%s" % (path, query, bh, ts, nonce, sid)
-                h = {"X-Hp-Sid": sid, "X-Hp-Ts": ts, "X-Hp-Nonce": nonce,
-                     "X-Hp-Sign": _hmac_sha256(bytes.fromhex(skey), canon.encode())}
+            h = self._sign_headers(path, query)
             st, txt = self._raw_get(url, h)
             if st == 401:
                 with _G_LOCK:
                     _G["sid"] = _G["skey"] = None
                     _G["exp"] = 0.0
-                self._ensure_auth()
-                st, txt = self._raw_get(url, h)
+                if self._ensure_auth():
+                    h = self._sign_headers(path, query)  # 重新签名，避免旧 nonce 复用
+                    st, txt = self._raw_get(url, h)
             try:
                 return st, json.loads(txt) if txt else {}
             except Exception:
+                self._err("api json parse %s -> %r" % (path, txt[:200] if txt else ""))
                 return st, {}
-        except Exception:
+        except Exception as e:
+            self._err("api %s err: %r" % (path, e))
             return 0, {}
 
+    # ---------- 编码 / 解包 ----------
     def _full(self, u):
         if not u:
             return ""
@@ -275,6 +375,9 @@ class Spider:
                     mods.append((str(m["key"]), str(m.get("name") or m["key"])))
         if mods:
             self._mods, self._mods_at = mods, now
+        else:
+            self._log("_get_modules empty: st=%s type=%s keys=%s" %
+                      (st, type(d).__name__, list(d.keys()) if isinstance(d, dict) else ""))
         return self._mods or mods
 
     def _cats(self, key):
@@ -286,10 +389,15 @@ class Spider:
                     continue
                 if (c.get("kind") or "vod") not in ("vod", "tags"):
                     continue
-                cats.append({"code": str(c.get("code") or ""), "name": str(c.get("name") or c.get("code") or ""),
-                             "src": str(c.get("src") or ""), "sub": c.get("sub")})
+                cats.append({"code": str(c.get("code") or ""),
+                             "name": str(c.get("name") or c.get("code") or ""),
+                             "src": str(c.get("src") or ""),
+                             "sub": c.get("sub")})
+        else:
+            self._log("_cats %s empty st=%s" % (key, st))
         return cats
 
+    # ---------- 框架接口 ----------
     def init(self, extend=""):
         self._extend = {}
         if isinstance(extend, dict):
@@ -301,10 +409,13 @@ class Spider:
                     self._extend = e
             except Exception:
                 pass
+        self._debug = bool(self._extend.get("debug"))
+        self._log("init debug=%s" % self._debug)
 
     def homeContent(self, filter=None):
         try:
-            self._ensure_auth()
+            if not self._ensure_auth():
+                self._log("homeContent auth failed: %s" % self._last_error)
             mods = self._get_modules()
             classes = []
 
@@ -323,26 +434,31 @@ class Spider:
                     with _Pool(max_workers=min(7, len(mods))) as ex:
                         for out in ex.map(one, mods):
                             classes.extend(out)
-                except Exception:
+                except Exception as e:
+                    self._err("homeContent pool err: %r" % (e,))
                     for km in mods:
                         classes.extend(one(km))
             else:
                 for km in mods:
                     classes.extend(one(km))
+            self._log("homeContent mods=%d classes=%d" % (len(mods), len(classes)))
             return {"class": classes, "filters": {}}
-        except Exception:
+        except Exception as e:
+            self._err("homeContent err: %r" % (e,))
             return {"class": [], "filters": {}}
 
     def homeVideoContent(self):
         try:
-            self._ensure_auth()
+            if not self._ensure_auth():
+                self._log("homeVideoContent auth failed")
             for key, _ in self._get_modules():
                 st, d = self._api("/api/module", "key=%s&page=1" % key)
                 if isinstance(d, dict) and d.get("list"):
                     return {"list": [v for v in
                                      (self._vod(it, key) for it in d["list"][:12]) if v]}
             return {"list": []}
-        except Exception:
+        except Exception as e:
+            self._err("homeVideoContent err: %r" % (e,))
             return {"list": []}
 
     def categoryContent(self, tid, pg=1, filter=None, extend=None):
@@ -353,6 +469,7 @@ class Spider:
         try:
             key, cat, src, sub = self._dec_id(tid)
             if not key or not cat:
+                self._log("categoryContent bad tid=%s" % tid)
                 return {"list": [], "page": pg, "pagecount": 1, "limit": 20, "total": 0}
             q = "key=%s&cat=%s&page=%d" % (key, _quote(cat), pg)
             if src:
@@ -360,7 +477,7 @@ class Spider:
             if sub not in ("", None):
                 q += "&sub=" + _quote(str(sub))
             st, d = self._api("/api/module", q)
-            lst = []
+            lst, pc = [], 1
             if isinstance(d, dict):
                 for it in d.get("list") or []:
                     v = self._vod(it, key, src, sub)
@@ -368,9 +485,11 @@ class Spider:
                         lst.append(v)
                 pc = int(d.get("pages") or 1)
             else:
-                pc = 1
+                self._log("categoryContent %s empty st=%s" % (tid, st))
+            self._log("categoryContent %s pg=%s -> %d items pages=%s" % (tid, pg, len(lst), pc))
             return {"list": lst, "page": pg, "pagecount": pc, "limit": 20, "total": len(lst)}
-        except Exception:
+        except Exception as e:
+            self._err("categoryContent err: %r" % (e,))
             return {"list": [], "page": pg, "pagecount": 1, "limit": 20, "total": 0}
 
     def detailContent(self, ids):
@@ -386,6 +505,7 @@ class Spider:
                 vid = vid.split("$")[-1].strip()
             key, iid, src, sub = self._dec_id(_unquote(vid))
             if not key or not iid:
+                self._log("detailContent bad vid=%s" % vid)
                 return {"list": []}
             q = ""
             if src:
@@ -395,6 +515,7 @@ class Spider:
             st, d = self._api("/api/detail/%s/%s" % (key, _quote(str(iid))), q)
             det = (d.get("detail") or {}) if isinstance(d, dict) else {}
             if not det:
+                self._log("detailContent empty key=%s iid=%s st=%s" % (key, iid, st))
                 return {"list": []}
             eps = det.get("episodes") or [{"ep": 1, "name": "正片"}]
             lines = []
@@ -404,6 +525,7 @@ class Spider:
                 ep = e.get("ep", 1)
                 name = re.sub(r"[$#]", " ", str(e.get("name") or "第%s集" % ep)).strip() or str(ep)
                 lines.append("%s$%s" % (name, self._enc_play(key, iid, ep, src, sub)))
+            self._log("detailContent ok %s eps=%d" % (det.get("title"), len(lines)))
             return {"list": [{"vod_id": vid, "vod_name": str(det.get("title") or ""),
                                "vod_pic": self._full(det.get("cover") or ""),
                                "vod_year": str(det.get("date") or ""),
@@ -412,7 +534,8 @@ class Spider:
                                "type_name": str(det.get("code") or ""),
                                "vod_play_from": "蜜桃",
                                "vod_play_url": "#".join(lines)}]}
-        except Exception:
+        except Exception as e:
+            self._err("detailContent err: %r" % (e,))
             return {"list": []}
 
     def searchContent(self, key, quick=False, pg="1"):
@@ -442,7 +565,8 @@ class Spider:
                 try:
                     with _Pool(max_workers=min(6, len(mods))) as ex:
                         results = list(ex.map(one, mods))
-                except Exception:
+                except Exception as e:
+                    self._err("searchContent pool err: %r" % (e,))
                     results = [one(k) for k in mods]
             else:
                 results = [one(k) for k in mods]
@@ -451,8 +575,10 @@ class Spider:
                     if v["vod_id"] not in seen:
                         seen.add(v["vod_id"])
                         items.append(v)
+            self._log("searchContent kw=%s -> %d items" % (kw, len(items)))
             return {"list": items, "page": pg, "pagecount": 1, "limit": len(items), "total": len(items)}
-        except Exception:
+        except Exception as e:
+            self._err("searchContent err: %r" % (e,))
             return {"list": [], "page": pg}
 
     def playerContent(self, flag, ids, vipFlags=None):
@@ -463,7 +589,8 @@ class Spider:
                 u = u.split("$")[-1].strip()
             key, iid, ep, src, sub = self._dec_play(_unquote(u))
             if not key or not iid:
-                return {"parse": 0, "url": "", "header": {}}
+                self._log("playerContent bad ids=%s" % ids)
+                return {"parse": 0, "url": "", "header": "{}"}
             q = ""
             if src:
                 q += "src=" + _quote(src)
@@ -473,10 +600,17 @@ class Spider:
             pl = (d.get("play") or {}) if isinstance(d, dict) else {}
             url = str(pl.get("src") or "")
             if not url or pl.get("locked"):
-                return {"parse": 0, "url": "", "header": {}}
-            return {"parse": 0, "url": self._full(url), "header": {"User-Agent": _UA, "Referer": _BASE + "/"}}
-        except Exception:
-            return {"parse": 0, "url": "", "header": {}}
+                self._log("playerContent empty key=%s iid=%s ep=%s st=%s locked=%s"
+                          % (key, iid, ep, st, pl.get("locked")))
+                return {"parse": 0, "url": "", "header": "{}"}
+            full_url = self._full(url)
+            is_direct = bool(re.search(r"(?i)\.(mp4|m3u8|flv|mkv|avi|ts|mov|mpd)(\?.*)?$", full_url))
+            hdr = json.dumps({"User-Agent": _UA, "Referer": _BASE + "/"})
+            self._log("playerContent ok parse=%s url=%s" % (0 if is_direct else 1, full_url[:120]))
+            return {"parse": 0 if is_direct else 1, "url": full_url, "header": hdr}
+        except Exception as e:
+            self._err("playerContent err: %r" % (e,))
+            return {"parse": 0, "url": "", "header": "{}"}
 
     def localProxy(self, param):
         try:
@@ -484,11 +618,17 @@ class Spider:
             u = _unquote(p.get("url", ""))
             if not u:
                 return [502, "text/plain", b"", {}]
-            code, txt = self._raw_get(u if u.startswith("http") else self._full(u),
-                                      dict(p.get("header") or {}), 20)
+            hdr = p.get("header") or {}
+            if isinstance(hdr, str):
+                try:
+                    hdr = json.loads(hdr)
+                except Exception:
+                    hdr = {}
+            code, txt = self._raw_get(u if u.startswith("http") else self._full(u), hdr, 20)
             body = txt.encode("utf-8", "replace") if isinstance(txt, str) else b""
             if code != 200:
                 return [502, "text/plain", b"", {}]
             return [200, "application/octet-stream", body, {"Content-Length": str(len(body))}]
-        except Exception:
+        except Exception as e:
+            self._err("localProxy err: %r" % (e,))
             return [502, "text/plain", b"", {}]
