@@ -28,9 +28,7 @@ except Exception:
         'Referer': 'https://honeypeach.cc/',
     }
 _BASE = "https://honeypeach.cc/"
-_UA = "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
-_TIMEOUT = 15
-
+_TIMEOUT =10
 _G_LOCK = threading.Lock()
 _G = {"sid": None, "skey": None, "exp": 0.0}
 
