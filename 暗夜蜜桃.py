@@ -8,6 +8,12 @@
 # 接口：/api/home 取模块；/api/cats?key=&v=4 取分类；/api/module 取列表；
 #   /api/detail/{key}/{id} 取详情分集；/api/play/{key}/{id}/{ep} 取播放票据（180s 有效）；
 #   /api/search 搜索。封面 /cover/ 与播放 /hls/ 均为票据直链。
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Referer': 'https://honeypeach.cc/',
+    }
 import re, json, time, base64, hashlib, random, string, threading
 try:
     from urllib.parse import quote as _quote, unquote as _unquote
@@ -21,12 +27,6 @@ try:
     from concurrent.futures import ThreadPoolExecutor as _Pool
 except Exception:
     _Pool = None
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'zh-CN,zh;q=0.9',
-        'Referer': 'https://honeypeach.cc/',
-    }
 _BASE = "https://honeypeach.cc/"
 _TIMEOUT =10
 _G_LOCK = threading.Lock()
