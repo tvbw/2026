@@ -3,53 +3,19 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "🍁草榴社区",
-      "name": "🍁草榴社区",
+      "key": "🍁暗夜蜜桃中文版",
+      "name": "🍁暗夜蜜桃中文版",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/草榴社区.py"
-    },
-    {
-      "key": "🍁草榴社区 (1)",
-      "name": "🍁草榴社区 (1)",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/草榴社区 (1).py"
-    },
-    {
-
-      "key": "🍁采花大盗",
-      "name": "🍁采花大盗",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/采花大盗.py"
-    },
-    {
-      "key": "🍁爆色",
-      "name": "🍁爆色",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/爆色.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/暗夜蜜桃中文版.py"
     },
     {
       "key": "🍁暗夜蜜桃",
-      "name": "🍁暗夜蜜桃",
+      "name": "🍁蜜桃直播",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -59,7 +25,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/暗夜蜜桃.py"
     },
     {
-
       "key": "🔞红果短剧(弹幕+显季版)-b6008f4d5d24",
       "name": "🔞红果短剧(弹幕+显季版)",
       "type": 3,
@@ -236,6 +201,40 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-Hanime1（免翻）-a40c0174.py"
+    },
+    {
+      "key": "🍁草榴社区",
+      "name": "🍁草榴社区",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/草榴社区.py"
+    },
+    {
+
+      "key": "🍁采花大盗",
+      "name": "🍁采花大盗",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/采花大盗.py"
+    },
+    {
+      "key": "🍁爆色",
+      "name": "🍁爆色",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/爆色.py"
     },
     {
       "key": "mrdld",
