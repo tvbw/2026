@@ -119,7 +119,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/yamazaki1412/woshishiq1-hipy-drpy2/37edf40485661866fb6f688ba7d6134f76a56aaf/tenrecha/py/%E8%9D%B4%E8%9D%B6%C2%B7591AV(%E5%8A%A8%E6%80%81%E8%87%AA%E6%84%88%E7%89%88).py#L66"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/591av.py"
     },
     {
       "key": "🔞骚女汇",
@@ -141,7 +141,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/2026py/test/lissavcn.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/lissavcn.py"
     },
     {
       "key": "🔞lissavjp",
