@@ -170,7 +170,6 @@ class Spider(BaseSpider):
         self.options = {}
 
     # [FIX] 先解析配置拿到 host，再创建 session，并在 session 上带 Referer/Origin。
-    # 之前先建 session 后改 host，导致 m3u8 请求没有 Referer，被 CDN 防盗链拦截 → 转圈。
     def init(self, extend=""):
         if isinstance(extend, dict):
             cfg = extend
@@ -296,7 +295,7 @@ class Spider(BaseSpider):
         items, totalpages = self._posts({"search": kw}, pg)
         return self._page_result(items, pg, totalpages)
 
-    # [FIX] playerContent：补 Referer / Origin；同时把 m3u8 里相对路径补全为绝对 URL。
+    # [FIX] playerContent：补 Referer / Origin；返回的 m3u8 已是媒体列表（方案 A 解析过）。
     def playerContent(self, flag, id, vipFlags):
         pid = str(id or "").strip()
         if not pid:
@@ -321,8 +320,7 @@ class Spider(BaseSpider):
     def liveContent(self, url):
         return "[]"
 
-    # [FIX] 增加 use_cache 参数：播放地址必须实时取，不能吃 CACHE_TTL 的 120s 缓存，
-    # 否则 token 过期就表现为"转圈超时"。
+    # [FIX] 增加 use_cache 参数：播放地址必须实时取。
     def _api(self, path, params=None, use_cache=True):
         path = "/" + str(path).lstrip("/")
         ck = path + json.dumps(params or {}, sort_keys=True)
@@ -401,9 +399,10 @@ class Spider(BaseSpider):
 
     # [FIX] 完整重写 _fetch_play：
     # 1) 不再走缓存（use_cache=False）
-    # 2) 还原 JS/JSON/HTML 转义：\/ \u0026 \u003d \u003f &amp; &#038; 等
-    # 3) 多模式正则，兼容 {"url":"..."} / url: '...' / 裸 URL / 相对路径
-    # 4) 补全协议与 host（//xxx → https://xxx；/xxx → host/xxx）
+    # 2) 还原 JS/JSON/HTML 转义
+    # 3) 多模式正则
+    # 4) 补全协议与 host
+    # 5) [方案A] 调用 _resolve_m3u8，若为主播放列表则解析出媒体播放列表
     def _fetch_play(self, pid):
         obj, _ = self._api("/wp-json/fb/v1/player/", {"id": pid}, use_cache=False)
         if not isinstance(obj, dict) or not obj.get("success"):
@@ -438,13 +437,14 @@ class Spider(BaseSpider):
                 found = m.group(1)
                 break
         if not found:
-            # 最后在原始 data 上兜底再找一次
             m = re.search(r"""(https?://[^\s"'<>]+?\.m3u8[^\s"'<>]*)""", data, re.I)
             if m:
                 found = m.group(1)
         if not found:
             return ""
-        return self._normalize_media_url(found)
+        url = self._normalize_media_url(found)
+        # [方案A] 若为主播放列表，解析出媒体播放列表，让播放器跳过选码率的 RTT
+        return self._resolve_m3u8(url)
 
     # [FIX] 新增：把 m3u8 地址规范化（补协议、补 host、去转义残留）
     def _normalize_media_url(self, url):
@@ -457,6 +457,68 @@ class Spider(BaseSpider):
         elif url.startswith("/"):
             url = self.host.rstrip("/") + url
         return url
+
+    # [方案A] 若 m3u8 是 Master Playlist（含 #EXT-X-STREAM-INF），
+    # 解析出第一条（带宽最低）媒体播放列表 URL 直接返回，避免播放器多一次 RTT。
+    # 解析失败则原样返回，退化为原行为。
+    def _resolve_m3u8(self, url, depth=0):
+        if depth > 2:
+            return url
+        try:
+            r = self.session.get(url, timeout=8)
+            if r.status_code != 200:
+                return url
+            text = r.text
+        except Exception:
+            return url
+
+        if "#EXT-X-STREAM-INF" not in text:
+            return url
+
+        from urllib.parse import urljoin, urlparse, urlunparse
+
+        lines = text.splitlines()
+        candidates = []  # [(bandwidth, uri)]
+        for i, line in enumerate(lines):
+            s = line.strip()
+            if s.startswith("#EXT-X-STREAM-INF"):
+                bw = 0
+                m = re.search(r"BANDWIDTH=(\d+)", s)
+                if m:
+                    try:
+                        bw = int(m.group(1))
+                    except Exception:
+                        bw = 0
+                for j in range(i + 1, len(lines)):
+                    nxt = lines[j].strip()
+                    if nxt and not nxt.startswith("#"):
+                        candidates.append((bw, nxt))
+                        break
+        if not candidates:
+            return url
+
+        # 优先选带宽最低的，起播最快；无 BANDWIDTH 的排最后
+        candidates.sort(key=lambda x: x[0] if x[0] > 0 else 999999999)
+        media_url = candidates[0][1]
+
+        if media_url.startswith("//"):
+            media_url = "https:" + media_url
+        else:
+            media_url = urljoin(url, media_url)
+
+        # 部分站点 token 在 master URL 的 query 上，媒体列表相对路径不带 query，
+        # 这里把原 query 附加到媒体 URL 上做兜底（若媒体 URL 自身已有 query 则不覆盖）
+        mu = urlparse(media_url)
+        if not mu.query:
+            ou = urlparse(url)
+            if ou.query:
+                media_url = urlunparse((mu.scheme, mu.netloc, mu.path, mu.params, ou.query, mu.fragment))
+
+        if DEBUG:
+            print("[SUPJAV RESOLVE] master -> %s" % media_url)
+
+        # 极少数站点媒体列表又套了一层 master，递归处理
+        return self._resolve_m3u8(media_url, depth + 1)
 
     def _vod(self, post):
         post = post or {}
