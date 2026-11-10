@@ -24,7 +24,12 @@ except ImportError:
         def delCache(self, key): return "fail"
 
 
-_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+_UA = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Referer': 'https://618962.xyz/',}
+
 _IMG_KEY_589 = b"2019ysapp7527"
 _CN_NUM = {"1": "一", "2": "二", "3": "三", "4": "四",
            "5": "五", "6": "六", "7": "七", "8": "八", "9": "九"}
@@ -354,12 +359,12 @@ class Spider(SpiderBase):
         m = _RE_M3U8_MAIN.search(raw_url)
         if m:
             sub_path = m.group(1)
-            target = "https://6180013.xyz" if "bktappup" in sub_path else "https://6180023.xyz"
+            target = "https://618401.xyz" if "bktappup" in sub_path else "https://618744.xyz"
             return "%s/m3u8/%s" % (target, sub_path)
         m = _RE_M3U8_FALLBACK.search(raw_url)
         if m:
             sub_path = m.group(1)
-            target = "https://6180013.xyz" if "bktappup" in sub_path else "https://6180023.xyz"
+            target = "https://618401.xyz" if "bktappup" in sub_path else "https://618744.xyz"
             return "%s/m3u8/%s" % (target, sub_path)
         return raw_url
 
@@ -389,7 +394,7 @@ class Spider(SpiderBase):
                     v_url = "z1_mk://" + v_url
                 if zone_slug == "z4" and v_url.endswith(".m3u8"):
                     if not v_url.startswith("http"):
-                        v_url = "https://618799.xyz/web" + ("/" if not v_url.startswith("/") else "") + v_url
+                        v_url = "https://618401.xyz/web" + ("/" if not v_url.startswith("/") else "") + v_url
                 if zone_slug in ("z5", "z8", "z9"):
                     v_url = self._map_m3u8_url(v_url)
 
@@ -583,7 +588,7 @@ class Spider(SpiderBase):
                 "User-Agent": self._ua,
                 "Accept": "*/*",
                 "Accept-Language": "zh,en;q=0.9,zh-CN;q=0.8",
-                "Origin": "https://6182117.xyz",
+                "Origin": "https://618401.xyz",
                 "Connection": "keep-alive"
             }
             res_m3u8 = self._fetch(play_url, custom_headers=z7_headers)
@@ -633,7 +638,7 @@ class Spider(SpiderBase):
                             "url": "data:application/vnd.apple.mpegurl;base64," + m3u8_b64
                         }
 
-        origin_val = "https://6182321.xyz" if ("6182321" in origin_host or "618799" in play_url) else "null"
+        origin_val = "https://618401.xyz" if ("618401" in origin_host or "618744" in play_url) else "null"
         return {
             "parse": 0,
             "jx": 0,
@@ -659,7 +664,7 @@ class Spider(SpiderBase):
         origin_host = unquote(params.get("host", self._default_host))
 
         if zone_flag == "z4" or "0734.la" in target_url:
-            res = self._fetch(target_url, "https://6182321.xyz", raw_bytes=True)
+            res = self._fetch(target_url, "https://618401.xyz", raw_bytes=True)
             raw = res.get("bytes", b"")
             if not raw: return [404, "text/plain", "Empty Body"]
             mime = _detect_mime(raw)
@@ -672,8 +677,8 @@ class Spider(SpiderBase):
             k in target_url for k in ("6182231", "6182063", "6182275", "lkkwip.cn")
         )
         if is_decrypt_589:
-            site_map = {"z8": "https://6182063.xyz", "z9": "https://6182275.xyz"}
-            origin_site = site_map.get(zone_flag, "https://6182231.xyz")
+            site_map = {"z8": "https://618401.xyz", "z9": "https://618744.xyz"}
+            origin_site = site_map.get(zone_flag, "https://618045.xyz/")
             res = self._fetch(target_url, custom_headers={"Origin": origin_site}, raw_bytes=True)
             raw = res.get("bytes", b"")
             if not raw: return [404, "text/plain", "Empty Body"]
