@@ -9,14 +9,15 @@ import urllib.parse
 from Crypto.Cipher import ARC4
 from Crypto.Util.Padding import unpad
 import binascii
-
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Referer': 'https://www.fullhd.to/br/',
+    }
 sys.path.append('..')
 
 xurl = "https://www.fullhd.to/br/"
-
-headerx = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36'
-          }
 
 pm = ''
 
