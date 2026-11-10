@@ -37,15 +37,44 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-      "key": "香蕉9合1最终优化版目录版",
-      "name": "❤️香蕉9合1最终优化目录版【🔞】",
+
+      "key": "香蕉9合2",
+      "name": "❤️香蕉9合1原版【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化目录版.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
+    },
+    {
+      "key": "香蕉9合1最终优化版",
+      "name": "❤️香蕉9合1最终优化版全目录【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
+    },
+    {
+      "key": "香蕉1区",
+      "name": "5❤️香蕉1区【🔞】",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
+      "playerType": 2,
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "changeable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 1.6
+      }
     },
     {
       "key": "91JAV最终版",
@@ -68,6 +97,17 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/18av.py"
+    },
+    {
+      "key": "Missav(2)",
+      "name": "❤️Missav",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
     },
     {
       "key": "🔞591AV3",
@@ -418,56 +458,6 @@
       },
       "ext": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py",
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/ru.py"
-    },
-    {
-      "key": "Missav(2)",
-      "name": "❤️Missav",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
-    },
-    {
-      "key": "香蕉9合2",
-      "name": "❤️香蕉9合1原版【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
-    },
-    {
-      "key": "香蕉9合1最终优化版",
-      "name": "❤️香蕉9合1最终优化版全目录【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
-    },
-    {
-      "key": "香蕉1区",
-      "name": "5❤️香蕉1区【🔞】",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
-      "playerType": 2,
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.6
-      }
     },
     {
       "key": "香蕉2区",
