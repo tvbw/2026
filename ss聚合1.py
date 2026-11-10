@@ -35,11 +35,11 @@ class Spider(BaseSpider):
         's32': {'name': '🍃百花', 'api': 'https://bhziyuan.com/api.php/provide/vod/at/m3u8'},
         's55': {'name': '🌸杏吧', 'api': 'https://json.xingba222.com/api.php/provide/vod/at/m3u8'},
         's31': {'name': '👑桃花', 'api': 'https://thzy1.me/api.php/provide/vod/at/m3u8'},
-        's25': {'name': '🌸黄仓', 'api': 'https://hsckzy888.com/api.php/provide/vod/from/hsckm3u8/'},
         's29': {'name': '🦅乐播', 'api': 'https://lbapi9.com/api.php/provide/vod/at/m3u8'},
         's45': {'name': '🐾滴滴', 'api': 'https://api.ddapi.cc/api.php/provide/vod/at/m3u8'},
         's18': {'name': '📺155', 'api': 'https://155api.com/api.php/provide/vod/at/m3u8'},
         's50': {'name': '🧸动漫', 'api': 'https://api.heiapi.cc/api.php/provide/vod/at/m3u8'},
+        's25': {'name': '🌸仓库', 'api': 'https://hsckzy888.com/api.php/provide/vod/from/hsckm3u8/'},
         's23': {'name': '📺豆豆', 'api': 'https://api.douapi.cc/api.php/provide/vod/at/m3u8'},
         's24': {'name': '📺黑料', 'api': 'https://heiliaozyapi.com/api.php/provide/vod/at/m3u8'},
         's21': {'name': '📺小鸡', 'api': 'https://api.xjzyapi.com/provide/vod'},
@@ -826,3 +826,32 @@ class Spider(BaseSpider):
             'parse': 1, 'jx': 1, 'url': play_url,
             'header': {'User-Agent': self.UA},
         }
+# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
+_PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
+
+def _cover_fallback(self, pic_url):
+    import urllib.parse
+    raw = pic_url or ''
+    parent_impl = getattr(super(Spider, self), '_cover_fallback', None)
+    if callable(parent_impl):
+        try:
+            raw = parent_impl(pic_url) or raw
+        except Exception:
+            pass
+    if not raw:
+        return ''
+    url = raw
+    for cdn in _PIC_CDN_POOL:
+        if cdn in raw:
+            url = raw.replace(cdn, _PIC_CDN_POOL[0])
+            break
+    proxy_base = getattr(self, 'proxy_base', None)
+    if proxy_base:
+        url = f'{proxy_base}{urllib.parse.quote(url)}'
+    return url
+
+Spider._cover_fallback = _cover_fallback
+# 注册爬虫
+if __name__ == '__main__':
+    from base.spider import Spider as BaseSpider
+    BaseSpider.register(Spider())
