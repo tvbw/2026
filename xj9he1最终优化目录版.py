@@ -23,6 +23,8 @@ except ImportError:
         def setCache(self, key, value): return "fail"
         def delCache(self, key): return "fail"
 
+
+_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 _IMG_KEY_589 = b"2019ysapp7527"
 _CN_NUM = {"1": "一", "2": "二", "3": "三", "4": "四",
            "5": "五", "6": "六", "7": "七", "8": "八", "9": "九"}
@@ -53,15 +55,19 @@ def _detect_mime(b):
     if len(b) >= 12 and b[:4] == b"RIFF" and b[8:12] == b"WEBP": return "image/webp"
     return None
 
+
 class Spider(SpiderBase):
+    POOL_TTL = 1800
+    KEY_CACHE_MAX = 50
+
     def __init__(self):
         super(Spider, self).__init__()
         self.tgGroup = "https://t.me/tvshare23"
         self.brandActor = "🦋 TG群: @tvshare23"
         self.brandDirector = "🦋 蝴蝶影视"
-        self._ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        self.img_key_589 = b"2019ysapp7527"
-        
+        self._ua = _UA
+        self.img_key_589 = _IMG_KEY_589
+
         self.remote_pool_js = "https://webimgg.jiekrrj.cn/cf230705/image/2n8/108/18d/2pz/440fca8bd2f8b9b6342e412746428d85.jpg"
         self.zone_order = ["z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"]
         self.domain_pools = {zid: [] for zid in self.zone_order}
