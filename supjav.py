@@ -45,6 +45,19 @@ PAGE_SIZE = 30
 CACHE_TTL = 120
 DEBUG = False
 
+# [方案B] 本地代理配置
+# ---------------------------------------------------------------
+# 不同壳的本地代理端口和参数格式不同，请根据实际情况修改：
+#   TVBox / 影视仓 常见: http://127.0.0.1:9978/proxy?do=py&url=
+#   部分壳:              http://127.0.0.1:9978/proxy?url=
+#   若端口不是 9978，改成实际端口（可在壳的日志/设置里找到）
+# 验证方法：浏览器访问 PROXY_BASE + urlencode(任意可访问的 http URL)，
+#          能返回内容说明格式正确。
+# 若 PROXY_ENABLED = False，则回退到方案 A 的直链播放。
+# ---------------------------------------------------------------
+PROXY_ENABLED = True
+PROXY_BASE = "http://127.0.0.1:9978/proxy?do=py&url="
+
 STYLE = {"type": "rect", "ratio": 1.33}
 
 _CLS_KEY = "__cls"
@@ -295,7 +308,7 @@ class Spider(BaseSpider):
         items, totalpages = self._posts({"search": kw}, pg)
         return self._page_result(items, pg, totalpages)
 
-    # [FIX] playerContent：补 Referer / Origin；返回的 m3u8 已是媒体列表（方案 A 解析过）。
+    # [方案B] playerContent：返回本地代理 URL。所有 m3u8/key/ts 请求经代理统一带 header。
     def playerContent(self, flag, id, vipFlags):
         pid = str(id or "").strip()
         if not pid:
@@ -303,22 +316,161 @@ class Spider(BaseSpider):
         m3u8 = self._fetch_play(pid)
         if not m3u8:
             return {"parse": 0, "msg": "无法获取播放地址"}
+
+        base = self.host.rstrip("/")
+        header = {
+            "User-Agent": UA,
+            "Referer": base + "/",
+            "Origin": base,
+        }
+
+        if PROXY_ENABLED:
+            proxy_url = PROXY_BASE + quote(m3u8, safe="")
+            if DEBUG:
+                print("[SUPJAV PROXY] %s -> %s" % (m3u8, proxy_url))
+            return {"parse": 0, "jx": 0, "url": proxy_url, "header": header}
+
         if DEBUG:
             print("[SUPJAV PLAY] %s" % m3u8)
-        base = self.host.rstrip("/")
-        return {
-            "parse": 0,
-            "jx": 0,
-            "url": m3u8,
-            "header": {
-                "User-Agent": UA,
-                "Referer": base + "/",
-                "Origin": base,
-            },
-        }
+        return {"parse": 0, "jx": 0, "url": m3u8, "header": header}
 
     def liveContent(self, url):
         return "[]"
+
+    # [方案B] 代理入口：框架拦截 /proxy 请求后调用此方法。
+    # 返回 [status_code, content_type, content]。
+    def localProxy(self, params):
+        try:
+            url = self._extract_proxy_url(params)
+            if not url:
+                return [400, "text/plain", "missing url"]
+            if DEBUG:
+                print("[SUPJAV LOCALPROXY] %s" % url)
+
+            base = self.host.rstrip("/")
+            headers = {
+                "User-Agent": UA,
+                "Referer": base + "/",
+                "Origin": base,
+            }
+            # session 可能未初始化（极少数壳顺序异常），走临时请求兜底
+            if self.session is None:
+                self.session = _NetSession(getattr(self, 'net', None))
+                self.session.headers.update(headers)
+
+            r = self.session.get(url, headers=headers, timeout=25)
+            if r.status_code >= 400:
+                if DEBUG:
+                    print("[SUPJAV LOCALPROXY] HTTP %s for %s" % (r.status_code, url))
+                return [r.status_code, "text/plain", b""]
+
+            # 判断是否是 m3u8：优先 Content-Type，其次看 URL 后缀
+            ct = (r.headers.get("Content-Type") or "").lower()
+            path_lower = url.split("?")[0].lower()
+            is_m3u8 = ("mpegurl" in ct) or path_lower.endswith(".m3u8") or path_lower.endswith(".m3u")
+
+            if is_m3u8:
+                # 若被 gzip 压缩过，先解压
+                text = r.text
+                if text.startswith("\x1f\x8b") or text[:2] == "\x1f\x8b":
+                    try:
+                        import gzip as _g
+                        text = _g.decompress(text.encode("latin-1")).decode("utf-8", "ignore")
+                    except Exception:
+                        pass
+                rewritten = self._rewrite_m3u8(text, url)
+                if DEBUG:
+                    print("[SUPJAV LOCALPROXY] m3u8 rewritten, %d -> %d bytes"
+                          % (len(text), len(rewritten)))
+                return [200, "application/vnd.apple.mpegurl", rewritten.encode("utf-8")]
+
+            # ts / key / 其他二进制：直接透传 bytes
+            return [r.status_code, ct or "application/octet-stream", r.content]
+
+        except Exception as e:
+            if DEBUG:
+                print("[SUPJAV LOCALPROXY] ERR %s" % e)
+            return [500, "text/plain", str(e)]
+
+    # [方案B] 兼容某些壳走 proxy() 入口
+    def proxy(self, params):
+        return self.localProxy(params)
+
+    # [方案B] 从 params 里提取真实 URL，兼容 dict / query string / 裸 URL 多种传入形式
+    def _extract_proxy_url(self, params):
+        raw = ""
+        if isinstance(params, dict):
+            for k in ("url", "u", "src", "link", "target"):
+                v = params.get(k)
+                if v:
+                    raw = str(v)
+                    break
+            if not raw:
+                for v in params.values():
+                    if isinstance(v, str) and ("http" in v or "%3A%2F%2F" in v.upper()):
+                        raw = v
+                        break
+        else:
+            s = str(params or "").strip()
+            if s.startswith("http") or "%3A%2F%2F" in s.upper():
+                raw = s
+            elif "=" in s:
+                import urllib.parse as _up
+                q = _up.parse_qs(s.lstrip("?"))
+                for k in ("url", "u", "src", "link"):
+                    if q.get(k):
+                        raw = q[k][0]
+                        break
+        if not raw:
+            return ""
+        # 幂等 unquote：只有当结果出现 :// 才认为确实被编码过
+        if "://" not in raw and "%3A" in raw.upper():
+            try:
+                raw = unquote(raw)
+            except Exception:
+                pass
+        return raw
+
+    # [方案B] 代理前缀（保证末尾能直接拼 encoded url）
+    @staticmethod
+    def _proxy_prefix():
+        p = PROXY_BASE or ""
+        if p.endswith("=") or p.endswith("&"):
+            return p
+        return p + ("&" if "?" in p else "?")
+
+    # [方案B] 重写 m3u8：非注释行（子列表/ts）和 URI="..." 属性全部改写为代理 URL
+    def _rewrite_m3u8(self, text, base_url):
+        from urllib.parse import urljoin, quote as _q
+        prefix = self._proxy_prefix()
+        out_lines = []
+
+        def _is_special(u):
+            return bool(re.match(r"^(data:|skd:|blob:|about:)", u or "", re.I))
+
+        for line in (text or "").splitlines():
+            stripped = line.strip()
+            if not stripped:
+                out_lines.append("")
+                continue
+            if stripped.startswith("#"):
+                # 处理 URI="..."：EXT-X-KEY / EXT-X-MAP / EXT-X-MEDIA / EXT-X-I-FRAME-STREAM-INF
+                def _attr_sub(m):
+                    raw = m.group(2) or ""
+                    if not raw or _is_special(raw):
+                        return m.group(0)
+                    abs_url = urljoin(base_url, raw)
+                    return '%s="%s%s"' % (m.group(1), prefix, _q(abs_url, safe=""))
+                line2 = re.sub(r'(URI)="([^"]*)"', _attr_sub, line)
+                out_lines.append(line2)
+            else:
+                if _is_special(stripped):
+                    out_lines.append(stripped)
+                else:
+                    abs_url = urljoin(base_url, stripped)
+                    out_lines.append(prefix + _q(abs_url, safe=""))
+
+        return "\n".join(out_lines)
 
     # [FIX] 增加 use_cache 参数：播放地址必须实时取。
     def _api(self, path, params=None, use_cache=True):
@@ -397,12 +549,8 @@ class Spider(BaseSpider):
         obj, _ = self._api("/wp-json/wp/v2/posts/" + quote(vid, safe=""), {"_embed": "true"})
         return obj if isinstance(obj, dict) else {}
 
-    # [FIX] 完整重写 _fetch_play：
-    # 1) 不再走缓存（use_cache=False）
-    # 2) 还原 JS/JSON/HTML 转义
-    # 3) 多模式正则
-    # 4) 补全协议与 host
-    # 5) [方案A] 调用 _resolve_m3u8，若为主播放列表则解析出媒体播放列表
+    # [FIX] 完整重写 _fetch_play：实时取地址 + 还原转义 + 多模式正则 + 规范 URL
+    # [方案A] 解析主播放列表，直接返回媒体列表，省一次选码率 RTT。
     def _fetch_play(self, pid):
         obj, _ = self._api("/wp-json/fb/v1/player/", {"id": pid}, use_cache=False)
         if not isinstance(obj, dict) or not obj.get("success"):
@@ -443,10 +591,8 @@ class Spider(BaseSpider):
         if not found:
             return ""
         url = self._normalize_media_url(found)
-        # [方案A] 若为主播放列表，解析出媒体播放列表，让播放器跳过选码率的 RTT
         return self._resolve_m3u8(url)
 
-    # [FIX] 新增：把 m3u8 地址规范化（补协议、补 host、去转义残留）
     def _normalize_media_url(self, url):
         url = str(url or "").strip()
         if not url:
@@ -458,9 +604,7 @@ class Spider(BaseSpider):
             url = self.host.rstrip("/") + url
         return url
 
-    # [方案A] 若 m3u8 是 Master Playlist（含 #EXT-X-STREAM-INF），
-    # 解析出第一条（带宽最低）媒体播放列表 URL 直接返回，避免播放器多一次 RTT。
-    # 解析失败则原样返回，退化为原行为。
+    # [方案A] 若是 Master Playlist，解析出带宽最低的媒体列表直接返回；失败原样返回
     def _resolve_m3u8(self, url, depth=0):
         if depth > 2:
             return url
@@ -478,7 +622,7 @@ class Spider(BaseSpider):
         from urllib.parse import urljoin, urlparse, urlunparse
 
         lines = text.splitlines()
-        candidates = []  # [(bandwidth, uri)]
+        candidates = []
         for i, line in enumerate(lines):
             s = line.strip()
             if s.startswith("#EXT-X-STREAM-INF"):
@@ -497,7 +641,6 @@ class Spider(BaseSpider):
         if not candidates:
             return url
 
-        # 优先选带宽最低的，起播最快；无 BANDWIDTH 的排最后
         candidates.sort(key=lambda x: x[0] if x[0] > 0 else 999999999)
         media_url = candidates[0][1]
 
@@ -506,8 +649,6 @@ class Spider(BaseSpider):
         else:
             media_url = urljoin(url, media_url)
 
-        # 部分站点 token 在 master URL 的 query 上，媒体列表相对路径不带 query，
-        # 这里把原 query 附加到媒体 URL 上做兜底（若媒体 URL 自身已有 query 则不覆盖）
         mu = urlparse(media_url)
         if not mu.query:
             ou = urlparse(url)
@@ -517,7 +658,6 @@ class Spider(BaseSpider):
         if DEBUG:
             print("[SUPJAV RESOLVE] master -> %s" % media_url)
 
-        # 极少数站点媒体列表又套了一层 master，递归处理
         return self._resolve_m3u8(media_url, depth + 1)
 
     def _vod(self, post):
