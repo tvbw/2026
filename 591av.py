@@ -27,7 +27,7 @@ class Spider(SpiderBase):
     def __init__(self):
         super(Spider, self).__init__()
         self.navUrls = ["https://x99dh.cc", "https://x99dh.one"]
-        self.defaultHost = "https://591av6.ws"
+        self.defaultHost = "https://591av.ws"
         self.siteUrl = self.defaultHost
         self._ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
         self.options = {}
