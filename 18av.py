@@ -16,12 +16,6 @@ urllib3.disable_warnings()
 sys.path.append('..')
 from base.spider import Spider
 
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'zh-CN,zh;q=0.9',
-        'Referer': 'https://mjv011.com/zh/',
-    }
 # ===== 纯 Python AES-128 工具 =====
 _sbox = bytes([
     0x63,0x7c,0x77,0x7b,0xf2,0x6b,0x6f,0xc5,0x30,0x01,0x67,0x2b,0xfe,0xd7,0xab,0x76,
@@ -162,7 +156,7 @@ _proxy_session = requests.Session()
 _proxy_session.verify = False
 _proxy_headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Referer': 'https://mjv011.com/zh/',
+    'Referer': 'https://mjv011.com/',
 }
 
 class _ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
@@ -218,7 +212,14 @@ def _is_image(tid_or_vid):
 # ===== Spider =====
 class Spider(Spider):
     session = requests.Session()
-    host = 'https://mjv011.com/zh/'
+    host = 'https://mjv011.com'
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Referer': 'https://mjv011.com/',
+    }
+
     def getName(self): return "mjv011"
 
     def isVideoFormat(self, url):
