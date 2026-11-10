@@ -3,28 +3,7 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "🍁暗夜蜜桃中文版",
-      "name": "🍁暗夜蜜桃中文版",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/暗夜蜜桃中文版.py"
-    },
-    {
-      "key": "🍁暗夜蜜桃",
-      "name": "🍁蜜桃直播",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/暗夜蜜桃.py"
-    },
-    {
+
       "key": "🔞红果短剧(弹幕+显季版)-b6008f4d5d24",
       "name": "🔞红果短剧(弹幕+显季版)",
       "type": 3,
@@ -88,7 +67,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/atv2025/main/YJL/py1/连播18AV.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/18av.py"
     },
     {
       "key": "🔞591AV3",
@@ -1129,6 +1108,17 @@
       "quickSearch": 1,
       "filterable": 0,
       "changeable": 0
+    },
+    {
+      "key": "🍁暗夜蜜桃中文版",
+      "name": "🍁暗夜蜜桃中文版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/暗夜蜜桃中文版.py"
     },
     {
       "key": "py_ko4",
