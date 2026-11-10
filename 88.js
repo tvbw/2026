@@ -110,17 +110,7 @@
       "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
     },
     {
-      "key": "🔞SUPJAV1",
-      "name": "🔞SUPJAV1",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/supjav.py"
-    },
-    {
+
       "key": "🔞591AV3",
       "name": "🔞591AV(动态自愈版)",
       "type": 3,
@@ -940,28 +930,7 @@
       "api": "http://pglblb.test.upcdn.net/2026py/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.py"
     },
     {
-      "key": "🍁[Aure][影¹⁸]SUPJAV",
-      "name": "🍁[Aure][影¹⁸]SUPJAV",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]SUPJAV.py"
-    },
-    {
-      "key": "🍁[Aure][影¹⁸]SupjavWP",
-      "name": "🍁[Aure][影¹⁸]SupjavWP",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]SupjavWP.py"
-    },
-    {
+
       "key": "🍁[Aure][影¹⁸]57吃瓜网",
       "name": "🍁[Aure][影¹⁸]57吃瓜网",
       "type": 3,
@@ -1892,6 +1861,39 @@
         "ratio": 1.66
       },
       "api": "http://pglblb.test.upcdn.net/2026py/202610-test/麻豆影院-a354cf68196c.py"
+    },
+    {
+      "key": "🔞SUPJAV1",
+      "name": "🔞SUPJAV1",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/supjav.py"
+    },
+    {
+      "key": "🍁[Aure][影¹⁸]SUPJAV",
+      "name": "🍁[Aure][影¹⁸]SUPJAV",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]SUPJAV.py"
+    },
+    {
+      "key": "🍁[Aure][影¹⁸]SupjavWP",
+      "name": "🍁[Aure][影¹⁸]SupjavWP",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]SupjavWP.py"
     },
     {
       "key": "push_agent",
