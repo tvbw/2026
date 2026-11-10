@@ -24,7 +24,11 @@ from uav_downloader.sites.missav import _unpack_js_eval
 from bs4 import BeautifulSoup
 from uav_downloader.i18n import sites as site_i18n
 from uav_downloader.core import config
-
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+    }
 
 SUPREMEJAV = 'https://lk1.supremejav.com/supjav.php?c={}'
 _BLOCKED_MSG = "所有鏡像都被 Cloudflare 阻擋（可能是你的網路/IP 信譽問題，請改用 VPN 或不同網路）"
