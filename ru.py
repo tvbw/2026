@@ -16,13 +16,8 @@ try:
 except Exception:
     class BaseSpider(object):
         pass
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'zh-CN,zh;q=0.9',
-        'Referer': 'https://se.sweetpornos.com',
-    }
-HOST = "https://se.sweetpornos.com"
+
+HOST = "https://sa.sweetpornos.com/"
 CATEGORIES = [
     {"type_id": "hd-porno", "type_name": "高清视界"},
     {"type_id": "russian", "type_name": "俄罗斯风"},
