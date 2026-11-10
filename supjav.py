@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# [SUPJAV¹⁸  更新于:2026-10-31 13:23]
+# [SUPJAV¹⁸  更新于:2026-11-11]
 import sys
 import json
 import re
@@ -44,12 +44,16 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like 
 PAGE_SIZE = 30
 CACHE_TTL = 120
 
-# [FIX] 打开 DEBUG 以便看到 API 真实返回内容；确认修好后改回 False
+# ============================================================
+# [核心配置] 这一版请保持 DEBUG 和 DIAGNOSTIC 打开，重启后点一个视频，
+#           把日志里 [SUPJAV DIAG] 段落的内容贴给我。
+# ============================================================
 DEBUG = True
+DIAGNOSTIC = True              # 打印 m3u8 前 3000 字符 + API 响应
+PARSE_MODE = 0                 # 0=返回 m3u8 直链（默认）；1=交给壳内置解析器（parse=1）
+RESOLVE_MASTER = False         # 是否把 Master Playlist 解析成媒体列表。默认 False，交给播放器自选
+                               # 浏览器默认选 720p，我们改成最低码率是上一版错误，这次关掉
 
-# [FIX] 关闭方案 B 的本地代理：
-# Python urllib/requests 的 TLS 指纹不像浏览器，在 Cloudflare 后面可能反被限速，
-# 反而拖慢起播。改为播放器直连 + 完整 header（方案 A），效果更好。
 PROXY_ENABLED = False
 PROXY_BASE = "http://127.0.0.1:9978/proxy?do=py&url="
 
@@ -302,6 +306,7 @@ class Spider(BaseSpider):
         items, totalpages = self._posts({"search": kw}, pg)
         return self._page_result(items, pg, totalpages)
 
+    # [关键] playerContent 现在支持 parse 模式切换
     def playerContent(self, flag, id, vipFlags):
         pid = str(id or "").strip()
         if not pid:
@@ -324,8 +329,52 @@ class Spider(BaseSpider):
             return {"parse": 0, "jx": 0, "url": proxy_url, "header": header}
 
         if DEBUG:
-            print("[SUPJAV PLAY] %s" % m3u8)
-        return {"parse": 0, "jx": 0, "url": m3u8, "header": header}
+            print("[SUPJAV PLAY] url=%s parse=%d" % (m3u8, PARSE_MODE))
+
+        # [DIAGNOSTIC] 主动探测一次 m3u8 内容，但不修改返回值
+        if DIAGNOSTIC:
+            self._diagnose_m3u8(m3u8)
+
+        return {"parse": PARSE_MODE, "jx": 0, "url": m3u8, "header": header}
+
+    # [DIAGNOSTIC] 打印 m3u8 的 HTTP 状态和内容前 3000 字符
+    def _diagnose_m3u8(self, url):
+        try:
+            base = self.host.rstrip("/")
+            h = {"User-Agent": UA, "Referer": base + "/", "Origin": base}
+            r = self.session.get(url, headers=h, timeout=10)
+            ct = r.headers.get("Content-Type", "")
+            print("[SUPJAV DIAG] m3u8 GET status=%s content-type=%s len=%s"
+                  % (r.status_code, ct, len(r.text or "")))
+            text = r.text or ""
+            if not text:
+                print("[SUPJAV DIAG] (empty body)")
+                return
+            head = text[:3000]
+            print("[SUPJAV DIAG] ---------- BEGIN m3u8 ----------")
+            print(head)
+            if len(text) > 3000:
+                print("... (truncated, total %d bytes)" % len(text))
+            print("[SUPJAV DIAG] ----------- END m3u8 -----------")
+            # 额外统计分片/加密信息
+            if "#EXT-X-KEY" in text:
+                print("[SUPJAV DIAG] has #EXT-X-KEY (encrypted)")
+            if "#EXT-X-STREAM-INF" in text:
+                print("[SUPJAV DIAG] is Master Playlist (has #EXT-X-STREAM-INF)")
+            else:
+                print("[SUPJAV DIAG] is Media Playlist")
+            # 提取前 3 个非注释行（分片/子列表 URL），方便一眼看到路径格式
+            samples = []
+            for line in text.splitlines():
+                s = line.strip()
+                if s and not s.startswith("#"):
+                    samples.append(s)
+                    if len(samples) >= 3:
+                        break
+            if samples:
+                print("[SUPJAV DIAG] first URIs: %s" % samples)
+        except Exception as e:
+            print("[SUPJAV DIAG] probe failed: %s" % e)
 
     def liveContent(self, url):
         return "[]"
@@ -339,19 +388,13 @@ class Spider(BaseSpider):
                 print("[SUPJAV LOCALPROXY] %s" % url)
 
             base = self.host.rstrip("/")
-            headers = {
-                "User-Agent": UA,
-                "Referer": base + "/",
-                "Origin": base,
-            }
+            headers = {"User-Agent": UA, "Referer": base + "/", "Origin": base}
             if self.session is None:
                 self.session = _NetSession(getattr(self, 'net', None))
                 self.session.headers.update(headers)
 
             r = self.session.get(url, headers=headers, timeout=25)
             if r.status_code >= 400:
-                if DEBUG:
-                    print("[SUPJAV LOCALPROXY] HTTP %s for %s" % (r.status_code, url))
                 return [r.status_code, "text/plain", b""]
 
             ct = (r.headers.get("Content-Type") or "").lower()
@@ -367,16 +410,10 @@ class Spider(BaseSpider):
                     except Exception:
                         pass
                 rewritten = self._rewrite_m3u8(text, url)
-                if DEBUG:
-                    print("[SUPJAV LOCALPROXY] m3u8 rewritten, %d -> %d bytes"
-                          % (len(text), len(rewritten)))
                 return [200, "application/vnd.apple.mpegurl", rewritten.encode("utf-8")]
 
             return [r.status_code, ct or "application/octet-stream", r.content]
-
         except Exception as e:
-            if DEBUG:
-                print("[SUPJAV LOCALPROXY] ERR %s" % e)
             return [500, "text/plain", str(e)]
 
     def proxy(self, params):
@@ -390,11 +427,6 @@ class Spider(BaseSpider):
                 if v:
                     raw = str(v)
                     break
-            if not raw:
-                for v in params.values():
-                    if isinstance(v, str) and ("http" in v or "%3A%2F%2F" in v.upper()):
-                        raw = v
-                        break
         else:
             s = str(params or "").strip()
             if s.startswith("http") or "%3A%2F%2F" in s.upper():
@@ -529,9 +561,7 @@ class Spider(BaseSpider):
         obj, _ = self._api("/wp-json/wp/v2/posts/" + quote(vid, safe=""), {"_embed": "true"})
         return obj if isinstance(obj, dict) else {}
 
-    # [FIX] 关键改动 1：按 server=1,2,3,None 依次尝试 player API。
-    # HTML 中 .videoWrapper 上写死了 data-server="1"，浏览器一定带了 server 参数，
-    # 不带可能拿到备用源 → 起播慢。
+    # [关键] _fetch_play：多 server 尝试 + 打印 API 完整响应
     def _fetch_play(self, pid):
         servers = [1, 2, 3, None]
         for server in servers:
@@ -539,24 +569,23 @@ class Spider(BaseSpider):
             if server is not None:
                 params["server"] = server
             obj, _ = self._api("/wp-json/fb/v1/player/", params, use_cache=False)
-            if DEBUG:
-                preview = ""
+            if DIAGNOSTIC:
                 try:
-                    preview = json.dumps(obj, ensure_ascii=False)[:500]
+                    preview = json.dumps(obj, ensure_ascii=False)
                 except Exception:
-                    preview = str(obj)[:500]
-                print("[SUPJAV API] params=%s -> %s" % (params, preview))
+                    preview = str(obj)
+                print("[SUPJAV API] params=%s -> %s" % (params, preview[:2000]))
             if not isinstance(obj, dict) or not obj.get("success"):
                 continue
             url = self._parse_player_data(obj.get("data"))
             if url:
                 if DEBUG:
                     print("[SUPJAV API] picked server=%s url=%s" % (server, url))
-                return self._resolve_m3u8(url)
+                if RESOLVE_MASTER:
+                    return self._resolve_m3u8(url)
+                return url
         return ""
 
-    # [FIX] 关键改动 2：对 player API 的 data 字段做多重解码尝试
-    # （原样 / base64 / URL 编码），再按多种模式正则提取 m3u8。
     def _parse_player_data(self, data):
         import base64
         texts = []
@@ -616,7 +645,8 @@ class Spider(BaseSpider):
             url = self.host.rstrip("/") + url
         return url
 
-    # [方案A] 主播放列表 → 媒体播放列表（保留此逻辑，无害且有收益）
+    # [关键] 方案 A 保留，但默认不启用（RESOLVE_MASTER=False）。
+    # 若启用，选带宽最低的策略保留（下次再根据诊断结果调整）。
     def _resolve_m3u8(self, url, depth=0):
         if depth > 2:
             return url
