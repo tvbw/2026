@@ -72,14 +72,9 @@ class Spider(SpiderBase):
         self.zone_order = ["z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"]
         self.domain_pools = {zid: [] for zid in self.zone_order}
 
-        # =====================================================================
-        # 9 个区全部写死，保证一级目录一定显示 9 个。
-        # z5~z8 目前是占位配置（host=""，点进去空列表），你只需把 host 和 subs
-        # 换成真实数据即可，其余代码一行都不用动。
-        # =====================================================================
         self.zoneMatrix = {
             "z1": {
-                "name": "一区", "host": "https://618026.xyz", "mod": "vod", "default": "1",
+                "name": "一区", "host": "https://6182094.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部视频", "v": "1"}, {"n": "香蕉精品", "v": "13"}, {"n": "制服诱惑", "v": "22"},
                     {"n": "国产视频", "v": "6"}, {"n": "清纯少女", "v": "8"}, {"n": "辣妹大奶", "v": "9"},
@@ -89,7 +84,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z2": {
-                "name": "二区", "host": "https://618325.xyz", "mod": "vod", "default": "1",
+                "name": "二区", "host": "https://6182190.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"},{"n": "无码", "v": "56"},
                     {"n": "动漫", "v": "9"},{"n": "热门", "v": "5"}, {"n": "黑料", "v": "31"}, 
@@ -98,7 +93,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z3": {
-                "name": "三区", "host": "https://6180141.xyz", "mod": "vod", "default": "1",
+                "name": "三区", "host": "https://6182028.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部", "v": "1"}, {"n": "二区", "v": "66"}, {"n": "日欧", "v": "11"},
                     {"n": "动漫", "v": "26"}, {"n": "无码", "v": "8"}, {"n": "字幕", "v": "7"},
@@ -107,14 +102,14 @@ class Spider(SpiderBase):
                 ]
             },
             "z4": {
-                "name": "四区", "host": "https://618170.xyz", "mod": "art", "default": "44",
+                "name": "四区", "host": "https://6182321.xyz", "mod": "art", "default": "44",
                 "subs": [
                     {"n": "欧美视频", "v": "44"},{"n": "无码破解", "v": "18"}, 
                     {"n": "中文字幕2", "v": "40"},{"n": "中文字幕", "v": "17"}
                 ]
             },
             "z5": {
-                "name": "五区", "host": "https://618401.xyz", "mod": "vod", "default": "2",
+                "name": "五区", "host": "https://6182231.xyz", "mod": "vod", "default": "2",
                 "subs": [
                     {"n": "全部", "v": "2"}, {"n": "无码", "v": "16"}, {"n": "直播", "v": "23"},
                     {"n": "传媒", "v": "58"}, {"n": "欧美", "v": "11"}, {"n": "JK", "v": "61"}, 
@@ -124,7 +119,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z6": {
-                "name": "六区", "host": "https://618243.xyz", "mod": "vod", "default": "43",
+                "name": "六区", "host": "https://6182240.xyz", "mod": "vod", "default": "43",
                 "subs": [
                     {"n": "全部", "v": "43"}, {"n": "二区", "v": "1"}, {"n": "韩国", "v": "48"},
                     {"n": "网黄", "v": "59"}, {"n": "中文", "v": "46"}, {"n": "无码", "v": "45"},
@@ -132,7 +127,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z7": {
-                "name": "七区", "host": "https://618607.xyz", "mod": "vod", "default": "40",
+                "name": "七区", "host": "https://6182117.xyz", "mod": "vod", "default": "40",
                 "subs": [
                     {"n": "网黄UP主", "v": "40"}, {"n": "国产AV", "v": "37"}, {"n": "探花AV", "v": "43"},
                     {"n": "绿帽淫妻", "v": "49"}, {"n": "国产传媒", "v": "44"}, {"n": "福利姬", "v": "41"},
@@ -142,7 +137,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z8": {
-                "name": "八区", "host": "https://618697.xyz", "mod": "vod", "default": "66",
+                "name": "八区", "host": "https://6182063.xyz", "mod": "vod", "default": "66",
                 "subs": [
                     {"n": "全部", "v": "66"}, {"n": "二区", "v": "1"}, {"n": "日欧", "v": "63"},
                     {"n": "动漫", "v": "64"}, {"n": "无码", "v": "65"}, {"n": "字幕", "v": "69"},
@@ -151,7 +146,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z9": {
-                "name": "九区", "host": "https://618743.xyz", "mod": "vod", "default": "35",
+                "name": "九区", "host": "https://6182275.xyz", "mod": "vod", "default": "35",
                 "subs": [
                     {"n": "全部", "v": "35"}, {"n": "二区", "v": "2"}, {"n": "韩国", "v": "30"},
                     {"n": "欧美", "v": "27"}, {"n": "无码", "v": "40"}, {"n": "字幕", "v": "39"},
@@ -160,6 +155,7 @@ class Spider(SpiderBase):
                 ]
             }
         }
+
         self._key_cache = {}
         self._errors = []
         self._pool_synced_at = 0
@@ -174,7 +170,6 @@ class Spider(SpiderBase):
             urllib.request.HTTPSHandler(context=self.ctx)
         )
 
-        # 在 __init__ 末尾就初始化，不依赖框架是否调用 init()
         self.sync_remote_domain_pools()
         self._ensure_zones()
 
@@ -192,7 +187,6 @@ class Spider(SpiderBase):
             del self._errors[:len(self._errors) - 20]
 
     def _ensure_zones(self):
-        """给 zone_order 里有但 zoneMatrix 里没有的区，自动补一份最小配置（兜底用）"""
         for idx, zid in enumerate(self.zone_order):
             if zid in self.zoneMatrix:
                 continue
@@ -326,26 +320,24 @@ class Spider(SpiderBase):
 
         return {"code": -1, "text": "", "bytes": b"", "err": last_err, "final_url": safe_url}
 
+    # =====================================================================
+    # 一级目录：平铺所有区所有分类，带“区名·”前缀，滑动即预览
+    # =====================================================================
     def homeContent(self, filter):
-        classes, filters = [], {}
+        classes = []
         for zid in self.zone_order:
             zone = self.zoneMatrix.get(zid)
             if not zone:
                 self._log_error("missing_zone", zid)
                 continue
-            classes.append({"type_name": zone["name"], "type_id": zid})
-            filters[zid] = [{
-                "key": "sub",
-                "name": "分类",
-                "init": zone["default"],
-                "value": zone["subs"]
-            }]
-        # 诊断：把本次返回的区数写进错误日志（可通过 action("status") 查看）
-        self._log_error("homeContent_classes", len(classes), "zoneMatrix_keys", list(self.zoneMatrix.keys()))
-        result = {"class": classes}
-        if filter:
-            result["filters"] = filters
-        return result
+            for sub in zone.get("subs", []):
+                classes.append({
+                    "type_name": "%s·%s" % (zone["name"], sub["n"]),
+                    "type_id": "%s::%s" % (zid, sub["v"]),
+                })
+        self._log_error("homeContent_classes", len(classes))
+        # 不再返回 filters：分类已全部展开到一级目录
+        return {"class": classes}
 
     def homeVideoContent(self): return {"list": []}
 
@@ -438,10 +430,19 @@ class Spider(SpiderBase):
                 continue
         return vod_list
 
+    # =====================================================================
+    # 解析 "z2::57" 得到 (z2, 57)，其余逻辑与之前完全一致
+    # =====================================================================
     def categoryContent(self, tid, pg, filter, extend):
         del filter
         extend = extend if isinstance(extend, dict) else {}
-        slug = str(tid).strip("/")
+
+        raw_tid = str(tid).strip("/")
+        if "::" in raw_tid:
+            slug, subv = raw_tid.split("::", 1)
+        else:
+            slug, subv = raw_tid, ""
+
         if slug not in self.zoneMatrix:
             slug = "z1"
         target_zone = self.zoneMatrix[slug]
@@ -454,7 +455,7 @@ class Spider(SpiderBase):
             self._log_error("empty_host", slug)
             return {"page": 1, "pagecount": 1, "limit": 20, "total": 0, "list": []}
 
-        cur_id = str(extend.get("sub", default_sub) or default_sub)
+        cur_id = str(subv or extend.get("sub") or default_sub)
         valid_ids = [str(s["v"]) for s in target_zone["subs"]]
         if cur_id not in valid_ids:
             cur_id = default_sub
@@ -703,6 +704,7 @@ class Spider(SpiderBase):
                 "zone_order": list(self.zone_order),
                 "zoneMatrix_keys": list(self.zoneMatrix.keys()),
                 "zoneMatrix_count": len(self.zoneMatrix),
+                "total_classes": sum(len(z.get("subs", [])) for z in self.zoneMatrix.values()),
                 "zones": {
                     zid: {
                         "name": z.get("name"),
