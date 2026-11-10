@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# 骚女汇 vfbai.snnvh82.sbs - TVBox/FongMi type=3
+# - TVBox/FongMi type=3
 # MacCMS v10 saonvhui 模板; 全站文本 document.write(d(base64)) 混淆, 清洗=删 span 垃圾
 import base64, json, re, threading, time
 try:
@@ -19,6 +19,8 @@ class Spider(_BaseSpider):
     HOSTS = ["https://tfxlm.snnvh102.lol/", "https://vfbai.snnvh82.sbs"]
     UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
           "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    # 内容屏蔽：偷拍自拍 / 网曝事件 / 强奸乱伦 / 少女萝莉 四类不进目录
+    BLOCK_CIDS = {"9530846", "9610856", "9710866", "9760866"}
     BLOCK_KW = ("小孩子", "门事件")
     _PICS = {}
     PNG_1X1 = base64.b64decode(
