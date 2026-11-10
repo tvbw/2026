@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# [SUPJAV¹⁸ 借鉴 supjav.com 分片防护思路, 更新于:2026-11-11]
+# [SUPJAV¹⁸  更新于:2026-10-31 13:23]
 import sys
 import json
 import re
 import time
 import threading
-from urllib.parse import quote, unquote, urljoin, urlparse, urlunparse
+from urllib.parse import quote, unquote
 
 try:
     from base.spider import Spider as BaseSpider
@@ -43,42 +43,12 @@ HOST = "https://supjav.pics"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 PAGE_SIZE = 30
 CACHE_TTL = 120
-
-# ============================================================
-# 播放模式配置
-#   auto   - 探测分片可用性, 自动选择直连或代理 (推荐)
-#   direct - 强制直连, 播放器自己处理分片
-#   proxy  - 强制走本地代理, 代理层自动处理 PNG 伪装/Referer 等
-# ============================================================
-PLAYBACK_MODE = "auto"
-
-# 本地代理地址。不同壳端口/参数不同, 常见:
-#   TVBox/影视仓:  http://127.0.0.1:9978/proxy?do=py&url=
-#   部分壳:        http://127.0.0.1:9978/proxy?url=
-# 浏览器验证: 访问 PROXY_BASE + urlencode(https://www.baidu.com/) 能返回内容即正确。
-PROXY_BASE = "http://127.0.0.1:9978/proxy?do=py&url="
-
-# 播放地址解析缓存 (秒)
-PLAY_CACHE_TTL = 120
-
-# 诊断开关 (调试阶段保持 True, 修好后改 False)
-DEBUG = True
-DIAGNOSTIC = True
+DEBUG = False
 
 STYLE = {"type": "rect", "ratio": 1.33}
+
 _CLS_KEY = "__cls"
 
-# ============================================================
-# 类级别缓存 (线程安全)
-# ============================================================
-_PLAY_CACHE = {}       # pid -> (ts, m3u8_url)
-_PROBE_CACHE = {}      # m3u8_url -> (ts, {"direct_ok": bool, "kind": "ts"|"png"|"fail"})
-_CACHE_LOCK = threading.RLock()
-
-
-# ============================================================
-# 网络层
-# ============================================================
 class _NetResp(object):
     def __init__(self, resp_dict, url):
         self._d = resp_dict or {}
@@ -102,7 +72,6 @@ class _NetResp(object):
             raise Exception("HTTP %s" % self.status_code)
     def __repr__(self):
         return "<_NetResp %s %d>" % (self.url, self.status_code)
-
 
 class _NetSession(object):
     def __init__(self, net, headers=None, default_headers=None):
@@ -188,10 +157,6 @@ class _NetSession(object):
         except Exception as e:
             return _NetResp({"code": 0, "content": b"", "headers": {}, "error": str(e)}, full)
 
-
-# ============================================================
-# 主类
-# ============================================================
 class Spider(BaseSpider):
 
     def __init__(self):
@@ -204,6 +169,7 @@ class Spider(BaseSpider):
         self._lock = threading.Lock()
         self.options = {}
 
+    # [FIX] 先解析配置拿到 host，再创建 session，并在 session 上带 Referer/Origin。
     def init(self, extend=""):
         if isinstance(extend, dict):
             cfg = extend
@@ -237,6 +203,7 @@ class Spider(BaseSpider):
         with self._lock:
             self._cache.clear()
             self._cache_time.clear()
+        self.options = {}
 
     def isVideoFormat(self, url):
         return bool(re.search(r"\.(m3u8|mp4|flv|mkv|ts)(\?|$)", str(url)))
@@ -246,8 +213,6 @@ class Spider(BaseSpider):
 
     def action(self, action):
         return {"msg": "不支持此操作"}
-
-    # ---------------- TVBox 接口 ----------------
 
     def homeContent(self, filter):
         classes = self._classes()
@@ -330,441 +295,32 @@ class Spider(BaseSpider):
         items, totalpages = self._posts({"search": kw}, pg)
         return self._page_result(items, pg, totalpages)
 
-    # ---------------- 核心: playerContent ----------------
-
+    # [FIX] playerContent：补 Referer / Origin；返回的 m3u8 已是媒体列表（方案 A 解析过）。
     def playerContent(self, flag, id, vipFlags):
         pid = str(id or "").strip()
         if not pid:
             return {"parse": 0, "msg": "无法获取播放地址"}
-
-        # 1) 拿 m3u8 (带缓存)
-        m3u8 = self._get_cached_m3u8(pid)
+        m3u8 = self._fetch_play(pid)
         if not m3u8:
             return {"parse": 0, "msg": "无法获取播放地址"}
-
-        base = self.host.rstrip("/")
-        header = {
-            "User-Agent": UA,
-            "Referer": base + "/",
-            "Origin": base,
-        }
-
-        # 2) 决定模式
-        mode = PLAYBACK_MODE
-        probe = None
-        if mode == "auto":
-            probe = self._probe_playback(m3u8, header)
-            if probe["direct_ok"]:
-                mode = "direct"
-            else:
-                mode = "proxy"
-
         if DEBUG:
-            print("[SUPJAV PLAY] pid=%s mode=%s probe=%s url=%s"
-                  % (pid, mode, probe, m3u8[:200]))
-
-        # 3) 根据模式返回
-        if mode == "direct":
-            return {"parse": 0, "jx": 0, "url": m3u8, "header": header}
-
-        # proxy 模式
-        proxy_url = self._build_proxy_url(m3u8)
-        if not proxy_url:
-            # 壳的代理不熟, 降级直连
-            if DEBUG:
-                print("[SUPJAV PLAY] proxy url build failed, fallback to direct")
-            return {"parse": 0, "jx": 0, "url": m3u8, "header": header}
-
-        return {"parse": 0, "jx": 0, "url": proxy_url, "header": header}
-
-    # ---------------- 播放探测 ----------------
-
-    def _probe_playback(self, m3u8_url, header):
-        """探测: 拉 m3u8 → 拉第一个分片 → 判断特征
-
-        返回 {"direct_ok": bool, "kind": "ts"|"png"|"fail"|"unknown"}
-        """
-        with _CACHE_LOCK:
-            hit = _PROBE_CACHE.get(m3u8_url)
-            if hit and time.time() - hit[0] < 300:
-                if DEBUG:
-                    print("[SUPJAV PROBE] cache hit: %s" % (hit[1],))
-                return hit[1]
-
-        result = {"direct_ok": False, "kind": "fail"}
-
-        # 1) 拉 m3u8
-        try:
-            r = self.session.get(m3u8_url, headers=header, timeout=12)
-            if r.status_code != 200:
-                if DIAGNOSTIC:
-                    print("[DIAG] m3u8 GET status=%d" % r.status_code)
-                return result
-            text = r.text or ""
-            if DIAGNOSTIC:
-                print("=" * 60)
-                print("[DIAG] m3u8 GET 200 len=%d" % len(text))
-                print("[DIAG] ----- m3u8 head -----")
-                print(text[:1500])
-                print("[DIAG] ----- m3u8 head end -----")
-        except Exception as e:
-            if DIAGNOSTIC:
-                print("[DIAG] m3u8 GET FAILED: %s" % e)
-            return result
-
-        # 2) 若是 master, 解析第一个 media
-        media_url = m3u8_url
-        if "#EXT-X-STREAM-INF" in text:
-            if DIAGNOSTIC:
-                print("[DIAG] is Master Playlist")
-            lines = text.splitlines()
-            for i, ln in enumerate(lines):
-                if ln.strip().startswith("#EXT-X-STREAM-INF"):
-                    for j in range(i + 1, len(lines)):
-                        nxt = lines[j].strip()
-                        if nxt and not nxt.startswith("#"):
-                            media_url = urljoin(m3u8_url, nxt)
-                            break
-                    break
-            # 拉 media playlist
-            try:
-                r2 = self.session.get(media_url, headers=header, timeout=12)
-                if r2.status_code != 200:
-                    return result
-                text = r2.text or ""
-                if DIAGNOSTIC:
-                    print("[DIAG] media GET 200 len=%d" % len(text))
-                    print("[DIAG] ----- media head -----")
-                    print(text[:1200])
-                    print("[DIAG] ----- media head end -----")
-            except Exception as e:
-                if DIAGNOSTIC:
-                    print("[DIAG] media GET FAILED: %s" % e)
-                return result
-        else:
-            if DIAGNOSTIC:
-                print("[DIAG] is Media Playlist")
-
-        # 3) 提取第一个分片 URL
-        first_seg = ""
-        for ln in text.splitlines():
-            s = ln.strip()
-            if not s or s.startswith("#"):
-                continue
-            first_seg = urljoin(media_url, s)
-            break
-
-        if not first_seg:
-            if DIAGNOSTIC:
-                print("[DIAG] no segment URI found")
-            return result
-
-        if DIAGNOSTIC:
-            print("[DIAG] first segment: %s" % first_seg[:300])
-
-        # 4) 请求分片, 判断 magic bytes
-        try:
-            r3 = self.session.get(first_seg, headers=header, timeout=12)
-            if r3.status_code != 200:
-                if DIAGNOSTIC:
-                    print("[DIAG] segment GET status=%d -> need proxy" % r3.status_code)
-                result = {"direct_ok": False, "kind": "fail"}
-            else:
-                data = r3.content[:16] if hasattr(r3, 'content') else b""
-                if not data:
-                    # 有时 content 返回空但 text 有内容, 兼容
-                    data = (r3.text or "")[:16].encode("utf-8", "ignore")
-                if DIAGNOSTIC:
-                    print("[DIAG] segment GET 200 hex=%s ct=%s"
-                          % (data.hex(), r3.headers.get("Content-Type", "")))
-                if data[:4] == b"\x89PNG":
-                    if DIAGNOSTIC:
-                        print("[DIAG] >>> segment is PNG-disguised, need strip proxy <<<")
-                    result = {"direct_ok": False, "kind": "png"}
-                elif data[:1] == b"\x47":
-                    if DIAGNOSTIC:
-                        print("[DIAG] >>> segment is native TS, direct OK <<<")
-                    result = {"direct_ok": True, "kind": "ts"}
-                else:
-                    if DIAGNOSTIC:
-                        print("[DIAG] >>> segment unknown magic, use proxy <<<")
-                    result = {"direct_ok": False, "kind": "unknown"}
-        except Exception as e:
-            if DIAGNOSTIC:
-                print("[DIAG] segment GET FAILED: %s" % e)
-            result = {"direct_ok": False, "kind": "fail"}
-
-        if DIAGNOSTIC:
-            print("=" * 60)
-
-        with _CACHE_LOCK:
-            _PROBE_CACHE[m3u8_url] = (time.time(), result)
-        return result
-
-    # ---------------- 代理层 ----------------
-
-    def _build_proxy_url(self, real_url):
-        """生成壳兼容的本地代理 URL"""
-        if not PROXY_BASE:
-            return ""
-        p = PROXY_BASE
-        if not p.endswith("=") and not p.endswith("&"):
-            p += "&" if "?" in p else "?"
-        return p + quote(real_url, safe="")
-
-    def localProxy(self, params):
-        """本地代理入口: 拉取真实 URL → 若 m3u8 重写, 若 ts 剥 PNG 头
-
-        返回 [status, content_type, content]
-        """
-        try:
-            url = self._extract_proxy_url(params)
-            if not url:
-                return [400, "text/plain", "missing url"]
-
-            if DEBUG:
-                print("[SUPJAV PROXY] %s" % url)
-
-            base = self.host.rstrip("/")
-            headers = {
+            print("[SUPJAV PLAY] %s" % m3u8)
+        base = self.host.rstrip("/")
+        return {
+            "parse": 0,
+            "jx": 0,
+            "url": m3u8,
+            "header": {
                 "User-Agent": UA,
                 "Referer": base + "/",
                 "Origin": base,
-            }
-            if self.session is None:
-                self.session = _NetSession(getattr(self, 'net', None))
-                self.session.headers.update(headers)
+            },
+        }
 
-            r = self.session.get(url, headers=headers, timeout=25)
-            if r.status_code >= 400:
-                if DEBUG:
-                    print("[SUPJAV PROXY] real GET status=%d" % r.status_code)
-                return [r.status_code, "text/plain", b""]
+    def liveContent(self, url):
+        return "[]"
 
-            ct = (r.headers.get("Content-Type") or "").lower()
-            path_lower = url.split("?")[0].lower()
-            is_m3u8 = ("mpegurl" in ct) or path_lower.endswith(".m3u8") or path_lower.endswith(".m3u")
-
-            if is_m3u8:
-                text = r.text
-                rewritten = self._rewrite_m3u8(text, url)
-                if DEBUG:
-                    print("[SUPJAV PROXY] m3u8 rewritten %d -> %d bytes"
-                          % (len(text), len(rewritten)))
-                return [200, "application/vnd.apple.mpegurl", rewritten.encode("utf-8")]
-
-            # 分片: 检查 PNG 伪装
-            data = r.content
-            if data[:4] == b"\x89PNG":
-                # PNG magic 后通常有 8 字节 PNG 头, 之后是 TS 数据
-                # 通用做法: 找到第一个 TS sync byte (0x47) 位置
-                stripped = self._strip_png_header(data)
-                if DEBUG:
-                    print("[SUPJAV PROXY] PNG-disguised segment, stripped %d -> %d bytes"
-                          % (len(data), len(stripped)))
-                return [200, "video/mp2t", stripped]
-
-            return [r.status_code, ct or "application/octet-stream", data]
-        except Exception as e:
-            if DEBUG:
-                print("[SUPJAV PROXY] ERR %s" % e)
-            return [500, "text/plain", str(e)]
-
-    def proxy(self, params):
-        return self.localProxy(params)
-
-    @staticmethod
-    def _strip_png_header(data):
-        """剥掉 PNG 头, 返回 TS 数据
-
-        PNG 头固定 8 字节: 89 50 4E 47 0D 0A 1A 0A
-        但有些站点在前面又加了 chunk (如 IHDR), 需要扫描到第一个 0x47 (TS sync byte)
-        """
-        if not data or data[:4] != b"\x89PNG":
-            return data
-        # 简单做法: 跳过 8 字节 PNG magic, 再扫到第一个 0x47
-        start = 8
-        # 最多扫 200 字节, 找到第一个 0x47 作为 TS 起点
-        for i in range(start, min(len(data), start + 200)):
-            if data[i] == 0x47:
-                return data[i:]
-        # 找不到 0x47, 保守返回跳过 PNG magic 后的数据
-        return data[start:]
-
-    def _rewrite_m3u8(self, text, base_url):
-        """m3u8 内所有分片/子列表/key URI 重写为本地代理 URL"""
-        if not text:
-            return ""
-        prefix = self._build_proxy_url("").rstrip("=") if False else ""
-        # 直接复用 _build_proxy_url 的拼接逻辑
-        p = PROXY_BASE
-        if p and not p.endswith("=") and not p.endswith("&"):
-            p += "&" if "?" in p else "?"
-        out_lines = []
-
-        def _is_special(u):
-            return bool(re.match(r"^(data:|skd:|blob:|about:)", u or "", re.I))
-
-        for line in text.splitlines():
-            s = line.strip()
-            if not s:
-                out_lines.append("")
-                continue
-            if s.startswith("#"):
-                # 处理 URI="..." 属性
-                def _attr_sub(m):
-                    raw = m.group(2) or ""
-                    if not raw or _is_special(raw):
-                        return m.group(0)
-                    abs_url = urljoin(base_url, raw)
-                    return '%s="%s%s"' % (m.group(1), p, quote(abs_url, safe=""))
-                line2 = re.sub(r'(URI)="([^"]*)"', _attr_sub, line)
-                out_lines.append(line2)
-            else:
-                if _is_special(s):
-                    out_lines.append(s)
-                else:
-                    abs_url = urljoin(base_url, s)
-                    out_lines.append(p + quote(abs_url, safe=""))
-
-        return "\n".join(out_lines)
-
-    def _extract_proxy_url(self, params):
-        raw = ""
-        if isinstance(params, dict):
-            for k in ("url", "u", "src", "link", "target"):
-                v = params.get(k)
-                if v:
-                    raw = str(v)
-                    break
-        else:
-            s = str(params or "").strip()
-            if s.startswith("http") or "%3A%2F%2F" in s.upper():
-                raw = s
-            elif "=" in s:
-                import urllib.parse as _up
-                q = _up.parse_qs(s.lstrip("?"))
-                for k in ("url", "u", "src", "link"):
-                    if q.get(k):
-                        raw = q[k][0]
-                        break
-        if not raw:
-            return ""
-        if "://" not in raw and "%3A" in raw.upper():
-            try:
-                raw = unquote(raw)
-            except Exception:
-                pass
-        return raw
-
-    # ---------------- 播放地址解析 ----------------
-
-    def _get_cached_m3u8(self, pid):
-        """拿 m3u8, 带缓存"""
-        with _CACHE_LOCK:
-            hit = _PLAY_CACHE.get(pid)
-            if hit and time.time() - hit[0] < PLAY_CACHE_TTL:
-                if DEBUG:
-                    print("[SUPJAV M3U8] cache hit pid=%s" % pid)
-                return hit[1]
-
-        m3u8 = self._fetch_play(pid)
-        if m3u8:
-            with _CACHE_LOCK:
-                _PLAY_CACHE[pid] = (time.time(), m3u8)
-                # 控制缓存大小
-                if len(_PLAY_CACHE) > 60:
-                    old = sorted(_PLAY_CACHE.items(), key=lambda x: x[1][0])[:20]
-                    for k, _ in old:
-                        _PLAY_CACHE.pop(k, None)
-        return m3u8
-
-    def _fetch_play(self, pid):
-        """按 server=1 → 无 server 顺序尝试, 拿 m3u8"""
-        for server in [1, None]:
-            params = {"id": pid}
-            if server is not None:
-                params["server"] = server
-            obj, _ = self._api("/wp-json/fb/v1/player/", params, use_cache=False)
-            if DIAGNOSTIC:
-                try:
-                    preview = json.dumps(obj, ensure_ascii=False)[:1500]
-                except Exception:
-                    preview = str(obj)[:1500]
-                print("[SUPJAV API] params=%s -> %s" % (params, preview))
-            if not isinstance(obj, dict) or not obj.get("success"):
-                continue
-            url = self._parse_player_data(obj.get("data"))
-            if url:
-                if DEBUG:
-                    print("[SUPJAV API] picked server=%s url=%s" % (server, url[:300]))
-                return url
-        return ""
-
-    def _parse_player_data(self, data):
-        """解析 player API 的 data 字段, 支持多种编码"""
-        import base64
-        texts = []
-        if isinstance(data, (dict, list)):
-            texts.append(json.dumps(data, ensure_ascii=False))
-        elif isinstance(data, str):
-            texts.append(data)
-            # base64
-            for decoder in (base64.b64decode, base64.urlsafe_b64decode):
-                try:
-                    padded = data + "=" * (-len(data) % 4)
-                    d = decoder(padded)
-                    s = d.decode("utf-8", "ignore")
-                    if ".m3u8" in s or "http" in s:
-                        texts.append(s)
-                except Exception:
-                    pass
-            # url decode
-            try:
-                u = unquote(data)
-                if u != data:
-                    texts.append(u)
-            except Exception:
-                pass
-
-        unescape_pairs = (
-            ("\\/", "/"),
-            ("\\u0026", "&"), ("\\u003d", "="), ("\\u003f", "?"), ("\\u002F", "/"),
-            ("\\u003D", "="), ("\\u003F", "?"),
-            ("&amp;", "&"), ("&#038;", "&"), ("&#x26;", "&"),
-            ('\\"', '"'),
-        )
-        patterns = (
-            r"""url["']?\s*[:=]\s*["']([^"']+?\.m3u8[^"']*)["']""",
-            r"""["'](https?://[^"']+?\.m3u8[^"']*)["']""",
-            r"""["']([^"']+?\.m3u8[^"']*)["']""",
-            r"""(https?://[^\s"'<>]+?\.m3u8[^\s"'<>]*)""",
-        )
-
-        for text in texts:
-            if not text:
-                continue
-            for a, b in unescape_pairs:
-                text = text.replace(a, b)
-            for pat in patterns:
-                m = re.search(pat, text, re.I)
-                if m:
-                    return self._normalize_media_url(m.group(1))
-        return ""
-
-    def _normalize_media_url(self, url):
-        url = str(url or "").strip()
-        if not url:
-            return ""
-        url = url.replace("\\/", "/").replace("&amp;", "&")
-        if url.startswith("//"):
-            url = "https:" + url
-        elif url.startswith("/"):
-            url = self.host.rstrip("/") + url
-        return url
-
-    # ---------------- 站内 API 与工具 ----------------
-
+    # [FIX] 增加 use_cache 参数：播放地址必须实时取。
     def _api(self, path, params=None, use_cache=True):
         path = "/" + str(path).lstrip("/")
         ck = path + json.dumps(params or {}, sort_keys=True)
@@ -784,6 +340,8 @@ class Spider(BaseSpider):
                 tp = int(r.headers.get("X-WP-TotalPages", "0") or 0)
             except Exception:
                 tp = 0
+            if DEBUG:
+                print("[SUPJAV DEBUG] %s -> %d bytes, totalpages=%s" % (r.url, len(r.text), tp))
             result = (obj, tp)
             if use_cache:
                 with self._lock:
@@ -791,6 +349,8 @@ class Spider(BaseSpider):
                     self._cache_time[ck] = time.time()
             return result
         except Exception:
+            if DEBUG:
+                print("[SUPJAV DEBUG] FAIL %s?%s" % (url, params))
             return ({}, 0)
 
     def _classes(self):
@@ -836,6 +396,129 @@ class Spider(BaseSpider):
             return {}
         obj, _ = self._api("/wp-json/wp/v2/posts/" + quote(vid, safe=""), {"_embed": "true"})
         return obj if isinstance(obj, dict) else {}
+
+    # [FIX] 完整重写 _fetch_play：
+    # 1) 不再走缓存（use_cache=False）
+    # 2) 还原 JS/JSON/HTML 转义
+    # 3) 多模式正则
+    # 4) 补全协议与 host
+    # 5) [方案A] 调用 _resolve_m3u8，若为主播放列表则解析出媒体播放列表
+    def _fetch_play(self, pid):
+        obj, _ = self._api("/wp-json/fb/v1/player/", {"id": pid}, use_cache=False)
+        if not isinstance(obj, dict) or not obj.get("success"):
+            return ""
+
+        data = obj.get("data")
+        if isinstance(data, (dict, list)):
+            data = json.dumps(data, ensure_ascii=False)
+        if not isinstance(data, str):
+            data = str(data or "")
+
+        text = data
+        for a, b in (
+            ("\\/", "/"),
+            ("\\u0026", "&"), ("\\u003d", "="), ("\\u003f", "?"), ("\\u002F", "/"),
+            ("\\u003D", "="), ("\\u003F", "?"),
+            ("&amp;", "&"), ("&#038;", "&"), ("&#x26;", "&"),
+            ('\\"', '"'),
+        ):
+            text = text.replace(a, b)
+
+        candidates = (
+            r"""url["']?\s*[:=]\s*["']([^"']+?\.m3u8[^"']*)["']""",
+            r"""["'](https?://[^"']+?\.m3u8[^"']*)["']""",
+            r"""["']([^"']+?\.m3u8[^"']*)["']""",
+            r"""(https?://[^\s"'<>]+?\.m3u8[^\s"'<>]*)""",
+        )
+        found = ""
+        for pat in candidates:
+            m = re.search(pat, text, re.I)
+            if m:
+                found = m.group(1)
+                break
+        if not found:
+            m = re.search(r"""(https?://[^\s"'<>]+?\.m3u8[^\s"'<>]*)""", data, re.I)
+            if m:
+                found = m.group(1)
+        if not found:
+            return ""
+        url = self._normalize_media_url(found)
+        # [方案A] 若为主播放列表，解析出媒体播放列表，让播放器跳过选码率的 RTT
+        return self._resolve_m3u8(url)
+
+    # [FIX] 新增：把 m3u8 地址规范化（补协议、补 host、去转义残留）
+    def _normalize_media_url(self, url):
+        url = str(url or "").strip()
+        if not url:
+            return ""
+        url = url.replace("\\/", "/").replace("&amp;", "&")
+        if url.startswith("//"):
+            url = "https:" + url
+        elif url.startswith("/"):
+            url = self.host.rstrip("/") + url
+        return url
+
+    # [方案A] 若 m3u8 是 Master Playlist（含 #EXT-X-STREAM-INF），
+    # 解析出第一条（带宽最低）媒体播放列表 URL 直接返回，避免播放器多一次 RTT。
+    # 解析失败则原样返回，退化为原行为。
+    def _resolve_m3u8(self, url, depth=0):
+        if depth > 2:
+            return url
+        try:
+            r = self.session.get(url, timeout=8)
+            if r.status_code != 200:
+                return url
+            text = r.text
+        except Exception:
+            return url
+
+        if "#EXT-X-STREAM-INF" not in text:
+            return url
+
+        from urllib.parse import urljoin, urlparse, urlunparse
+
+        lines = text.splitlines()
+        candidates = []  # [(bandwidth, uri)]
+        for i, line in enumerate(lines):
+            s = line.strip()
+            if s.startswith("#EXT-X-STREAM-INF"):
+                bw = 0
+                m = re.search(r"BANDWIDTH=(\d+)", s)
+                if m:
+                    try:
+                        bw = int(m.group(1))
+                    except Exception:
+                        bw = 0
+                for j in range(i + 1, len(lines)):
+                    nxt = lines[j].strip()
+                    if nxt and not nxt.startswith("#"):
+                        candidates.append((bw, nxt))
+                        break
+        if not candidates:
+            return url
+
+        # 优先选带宽最低的，起播最快；无 BANDWIDTH 的排最后
+        candidates.sort(key=lambda x: x[0] if x[0] > 0 else 999999999)
+        media_url = candidates[0][1]
+
+        if media_url.startswith("//"):
+            media_url = "https:" + media_url
+        else:
+            media_url = urljoin(url, media_url)
+
+        # 部分站点 token 在 master URL 的 query 上，媒体列表相对路径不带 query，
+        # 这里把原 query 附加到媒体 URL 上做兜底（若媒体 URL 自身已有 query 则不覆盖）
+        mu = urlparse(media_url)
+        if not mu.query:
+            ou = urlparse(url)
+            if ou.query:
+                media_url = urlunparse((mu.scheme, mu.netloc, mu.path, mu.params, ou.query, mu.fragment))
+
+        if DEBUG:
+            print("[SUPJAV RESOLVE] master -> %s" % media_url)
+
+        # 极少数站点媒体列表又套了一层 master，递归处理
+        return self._resolve_m3u8(media_url, depth + 1)
 
     def _vod(self, post):
         post = post or {}
