@@ -4,6 +4,7 @@
 # 站点：自研 JSON API + HMAC 签名；7 个模块（蜜桃直播/短剧/擦边/视频/动漫/国产/黑料）。
 # 鉴权：/api/handshake 先过 PoW 人机挑战（FNV-1a 变体），后续接口 HMAC-SHA256 签名。
 # 调试：init 传入 {"debug": true} 可在控制台看到关键日志与 _last_error。
+# 注意：playerContent 必须保持 parse=0、header=dict，否则 /hls/ 票据直链会被 TVBox 当嗅探源处理，导致有声无画。
 import re, json, time, base64, hashlib, random, string, threading
 
 try:
@@ -590,7 +591,7 @@ class Spider:
             key, iid, ep, src, sub = self._dec_play(_unquote(u))
             if not key or not iid:
                 self._log("playerContent bad ids=%s" % ids)
-                return {"parse": 0, "url": "", "header": "{}"}
+                return {"parse": 0, "url": "", "header": {}}
             q = ""
             if src:
                 q += "src=" + _quote(src)
@@ -602,15 +603,14 @@ class Spider:
             if not url or pl.get("locked"):
                 self._log("playerContent empty key=%s iid=%s ep=%s st=%s locked=%s"
                           % (key, iid, ep, st, pl.get("locked")))
-                return {"parse": 0, "url": "", "header": "{}"}
+                return {"parse": 0, "url": "", "header": {}}
             full_url = self._full(url)
-            is_direct = bool(re.search(r"(?i)\.(mp4|m3u8|flv|mkv|avi|ts|mov|mpd)(\?.*)?$", full_url))
-            hdr = json.dumps({"User-Agent": _UA, "Referer": _BASE + "/"})
-            self._log("playerContent ok parse=%s url=%s" % (0 if is_direct else 1, full_url[:120]))
-            return {"parse": 0 if is_direct else 1, "url": full_url, "header": hdr}
+            self._log("playerContent ok url=%s" % full_url[:120])
+            return {"parse": 0, "url": full_url,
+                    "header": {"User-Agent": _UA, "Referer": _BASE + "/"}}
         except Exception as e:
             self._err("playerContent err: %r" % (e,))
-            return {"parse": 0, "url": "", "header": "{}"}
+            return {"parse": 0, "url": "", "header": {}}
 
     def localProxy(self, param):
         try:
