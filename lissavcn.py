@@ -28,7 +28,7 @@ class Spider(SpiderBase):
         super(Spider, self).__init__()
         # 发布导航站双活入口与默认兜底主站
         self.navUrls = ["https://x99dh.cc", "https://x99dh.one"]
-        self.defaultHost = "https://madou9.pw"
+        self.defaultHost = "https://madou8.pw"
         self.siteUrl = self.defaultHost
         self._ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
         self.options = {}
