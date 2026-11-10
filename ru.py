@@ -17,7 +17,10 @@ except Exception:
     class BaseSpider(object):
         pass
 
-HOST = "https://sa.sweetpornos.com/"
+HOST = "https://se.sweetpornos.com"
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
+# 中文化分类列表
 CATEGORIES = [
     {"type_id": "hd-porno", "type_name": "高清视界"},
     {"type_id": "russian", "type_name": "俄罗斯风"},
@@ -65,27 +68,10 @@ CATEGORIES = [
     {"type_id": "beautiful", "type_name": "唯美写真"},
 ]
 
+# 翻译缓存
 _translation_cache = {}
 _translation_last_call = 0
 _translation_throttle = 0.3
-
-
-def _quality_rank(name):
-    """给画质名打分，数字越大越优先"""
-    s = str(name).lower()
-    if "1080" in s:
-        return 1080
-    if "720" in s:
-        return 720
-    if "hd" in s or "高清" in s:
-        return 700
-    if "480" in s:
-        return 480
-    if "360" in s:
-        return 360
-    if "240" in s:
-        return 240
-    return 100
 
 
 class Spider(BaseSpider):
@@ -94,8 +80,7 @@ class Spider(BaseSpider):
         return "sweetpornos"
 
     def init(self, extend=""):
-        self._video_cache = {}    # 视频数据缓存
-        self._loc_cache = {}      # 重定向URL缓存，加速二次播放
+        self._video_cache = {}  # 视频缓存，解决seek问题
         return {}
 
     def _req(self, url, retry=3, timeout=12, referer=None):
@@ -127,31 +112,6 @@ class Spider(BaseSpider):
                     return ""
         return ""
 
-    def _extract_pic(self, block):
-        """按懒加载优先级提取图片URL，避免取到占位图"""
-        # 优先级：data-src > data-original > data-lazy-src > data-echo > data-url > src
-        for attr in ("data-src", "data-original", "data-lazy-src", "data-echo", "data-url", "src"):
-            cands = re.findall(attr + r'="([^"]+)"', block, re.IGNORECASE)
-            for cand in cands:
-                if not cand:
-                    continue
-                low = cand.lower()
-                # 过滤占位图 / base64 / 透明gif
-                if ("base64" in low or low.endswith(".gif")
-                        or "blank." in low or "loading." in low
-                        or "placeholder" in low or "/1x1." in low
-                        or "pixel." in low):
-                    continue
-                if (re.search(r'\.(?:jpg|png|webp|jpeg)(?:\?|$)', cand, re.IGNORECASE)
-                        or "/get_file/" in cand or "/img/" in cand
-                        or "/contents/" in cand):
-                    return cand
-        # 兜底：正则抓任意图片链接
-        fallback_m = re.search(r'https?://[^"\s<>]+\.(?:jpg|png|webp|jpeg)', block, re.IGNORECASE)
-        if fallback_m:
-            return fallback_m.group(0)
-        return ""
-
     def _parse_items(self, html_text):
         items = []
         if not html_text:
@@ -175,7 +135,19 @@ class Spider(BaseSpider):
             href_m = re.search(r'href="([^"]+)"', block)
             title_m = re.search(r'title="([^"]+)"', block)
 
-            pic = self._extract_pic(block)
+            pic = ""
+            img_candidates = re.findall(r'(?:src|data-src|data-original)="([^"]+)"', block, re.IGNORECASE)
+            for cand in img_candidates:
+                if "base64" in cand or cand.endswith(".gif"):
+                    continue
+                if re.search(r'\.(?:jpg|png|webp|jpeg)', cand, re.IGNORECASE):
+                    pic = cand
+                    break
+
+            if not pic:
+                fallback_m = re.search(r'https?://[^"]+\.(?:jpg|png|webp|jpeg)', block, re.IGNORECASE)
+                if fallback_m:
+                    pic = fallback_m.group(0)
 
             vals = re.findall(r'<span\s+class="value">([^<]*)</span>', block)
             dur = vals[2].strip() if len(vals) >= 3 else ""
@@ -189,11 +161,8 @@ class Spider(BaseSpider):
             elif v_url.startswith("/"):
                 v_url = HOST + v_url
 
-            if pic:
-                if pic.startswith("//"):
-                    pic = "https:" + pic
-                elif pic.startswith("/"):
-                    pic = HOST + pic
+            if pic.startswith("//"):
+                pic = "https:" + pic
 
             title = html.unescape(title_m.group(1).strip())
             remarks = ("蝴蝶影视 | %s" % dur) if dur else "蝴蝶影视"
@@ -224,11 +193,13 @@ class Spider(BaseSpider):
         return iso_str
 
     def _translate(self, text, lang_from="ru", lang_to="zh-CN"):
+        """翻译文本，使用MyMemory免费API"""
         if not text or len(text) < 2:
             return text
         cache_key = f"{text}|{lang_from}|{lang_to}"
         if cache_key in _translation_cache:
             return _translation_cache[cache_key]
+        # 限流
         global _translation_last_call
         now = time.time()
         elapsed = now - _translation_last_call
@@ -252,7 +223,7 @@ class Spider(BaseSpider):
                 if result:
                     _translation_cache[cache_key] = result
                     return result
-        except Exception:
+        except Exception as e:
             pass
         return text
 
@@ -337,9 +308,8 @@ class Spider(BaseSpider):
         pic = ""
         duration = ""
         desc = ""
-        qualities = []  # (画质名, URL)
+        qualities = []
 
-        # 1) 从 JSON-LD 提取
         jsonld_m = re.search(r'<script\s+type="application/ld\+json">(.*?)</script>', html_text, re.DOTALL)
         if jsonld_m:
             try:
@@ -350,15 +320,9 @@ class Spider(BaseSpider):
                 desc = data.get("description", "")
                 cu = data.get("contentUrl", "").rstrip("/")
                 if cu:
-                    cu = cu + "/"
-                    # 从 URL 里推断画质名
-                    q_name = "默认"
-                    low = cu.lower()
-                    for kw in ("1080", "720", "480", "360", "240"):
-                        if kw in low:
-                            q_name = kw + "P"
-                            break
-                    qualities.append((q_name, cu))
+                    if not cu.endswith("/"):
+                        cu = cu + "/"
+                    qualities.append(("480P", cu))
             except Exception:
                 pass
 
@@ -367,38 +331,21 @@ class Spider(BaseSpider):
             if t_m:
                 title = t_m.group(1).strip()
 
-        # 2) 抓取页面里所有 get_file 直链
         direct_mp4s = re.findall(r'href="(https?://[^"]+/get_file/[^"]+)"', html_text)
         for link in direct_mp4s:
             q_name = "HD"
-            low = link.lower()
-            if "1080p" in low or "1080" in low:
-                q_name = "1080P"
-            elif "720p" in low or "720" in low:
+            if "720p" in link:
                 q_name = "720P"
-            elif "480p" in low or "480" in low:
+            elif "480p" in link:
                 q_name = "480P"
-            elif "360p" in low or "360" in low:
+            elif "360p" in link:
                 q_name = "360P"
-            elif "240p" in low or "240" in low:
-                q_name = "240P"
+            elif "1080p" in link:
+                q_name = "1080P"
 
             clean_link = link.split("?")[0].rstrip("/") + "/"
-            qualities.append((q_name, clean_link))
-
-        # 3) 按 URL 去重（保留画质分最高的标签）
-        url_to_best = {}
-        for q_name, q_url in qualities:
-            key = q_url.rstrip("/")
-            if key not in url_to_best:
-                url_to_best[key] = (q_name, q_url)
-            else:
-                if _quality_rank(q_name) > _quality_rank(url_to_best[key][0]):
-                    url_to_best[key] = (q_name, q_url)
-        qualities = list(url_to_best.values())
-
-        # 4) 按画质从高到低排序 —— 列表第一个就是默认播放的最高画质
-        qualities.sort(key=lambda x: _quality_rank(x[0]), reverse=True)
+            if not any(clean_link == q[1] for q in qualities):
+                qualities.append((q_name, clean_link))
 
         if not qualities:
             qualities.append(("默认", target_url))
@@ -406,6 +353,7 @@ class Spider(BaseSpider):
         play_url = "#".join(["%s$%s" % (q[0], q[1]) for q in qualities])
         remarks = ("蝴蝶影视 | %s" % duration) if duration else "蝴蝶影视"
 
+        # 翻译标题和描述为中文
         if title:
             title = self._translate(title)
         if desc:
@@ -440,29 +388,33 @@ class Spider(BaseSpider):
             "header": json.dumps(headers)
         }
 
-    def _resolve_location(self, vid_url, ctx, req_headers):
-        """解析 get_file URL 的重定向目标，带缓存，加速二次播放"""
-        cache_key = hashlib.md5(vid_url.encode()).hexdigest() + "_loc"
-        if cache_key in self._loc_cache:
-            return self._loc_cache[cache_key]
+    def searchContent(self, key, quick=False, pg="1"):
+        p = int(pg) if str(pg).isdigit() else 1
+        kw = urllib.parse.quote(key)
+        if p > 1:
+            url = "%s/search/%s/%s/" % (HOST, kw, p)
+        else:
+            url = "%s/search/%s/" % (HOST, kw)
 
-        parsed = urlparse(vid_url)
-        path = parsed.path + (('?' + parsed.query) if parsed.query else '')
-        conn = http.client.HTTPSConnection(parsed.hostname, context=ctx, timeout=10)
-        conn.request('GET', path, headers=req_headers)
-        resp = conn.getresponse()
-        resp.read(512)  # 只读少量，触发响应即可
-        loc = resp.getheader('Location')
-        conn.close()
+        html_text = self._req(url)
+        items = self._parse_items(html_text)
+        if p > 1 and not items:
+            alt_url = "%s/search/%s/?from=%s" % (HOST, kw, p)
+            alt_html = self._req(alt_url)
+            items = self._parse_items(alt_html)
 
-        if loc:
-            loc = unquote(loc)
-            self._loc_cache[cache_key] = loc
-            return loc
-        return ""
+        return {
+            "list": items,
+            "page": p,
+            "pagecount": 999,
+            "limit": 24,
+            "total": 9999,
+            "class_flag": 0,
+            "style": {"type": "rect", "ratio": 1.78}
+        }
 
     def localProxy(self, params):
-        """视频代理：下载完整视频并缓存，支持任意 seek"""
+        """视频代理：下载完整视频并缓存，支持任意seek"""
         import sys as _sys
         _sys.stderr.write(f"[sweetpornos] localProxy called: {params}\n")
 
@@ -476,20 +428,24 @@ class Spider(BaseSpider):
             if not vid_url:
                 return [200, "text/plain; charset=utf-8", b"", None]
 
+            # 去掉 function/0/ 前缀
             if vid_url.startswith("function/0/"):
                 vid_url = vid_url[11:]
 
+            # 确保有 trailing slash
             if not vid_url.endswith('/'):
                 vid_url = vid_url.rstrip('/') + '/'
 
+            # 生成缓存key
             cache_key = hashlib.md5(vid_url.encode()).hexdigest()
 
-            # 缓存命中
+            # 检查缓存
             if cache_key in self._video_cache:
                 body = self._video_cache[cache_key]
                 _sys.stderr.write(f"[sweetpornos] localProxy cache hit: {len(body)} bytes\n")
                 return [200, "video/mp4", body, None]
 
+            # 缓存未命中，从CDN下载完整视频
             ctx = ssl.create_default_context()
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE
@@ -499,27 +455,25 @@ class Spider(BaseSpider):
                 'Referer': HOST + '/video/',
             }
 
-            # Step 1: 获取重定向URL（带缓存）
-            cdn_url = self._resolve_location(vid_url, ctx, req_headers)
-            if not cdn_url:
-                _sys.stderr.write(f"[sweetpornos] localProxy no redirect\n")
+            # Step 1: 获取重定向URL
+            parsed = urlparse(vid_url)
+            conn = http.client.HTTPSConnection(parsed.hostname, context=ctx, timeout=15)
+            conn.request('GET', parsed.path, headers=req_headers)
+            resp = conn.getresponse()
+            loc = resp.getheader('Location')
+            conn.close()
+
+            if resp.status != 302 or not loc:
+                _sys.stderr.write(f"[sweetpornos] localProxy no redirect: status={resp.status}\n")
                 return [200, "text/plain; charset=utf-8", b"", None]
 
-            # Step 2: 从 CDN 下载完整视频
+            # Step 2: 从CDN下载完整视频
+            cdn_url = unquote(loc)
             cdn_parsed = urlparse(cdn_url)
             _sys.stderr.write(f"[sweetpornos] localProxy downloading from CDN: {cdn_parsed.netloc}{cdn_parsed.path[:50]}\n")
 
-            cdn_headers = {
-                'User-Agent': UA,
-                'Referer': "%s://%s/" % (cdn_parsed.scheme, cdn_parsed.netloc),
-            }
-
             conn2 = http.client.HTTPSConnection(cdn_parsed.hostname, context=ctx, timeout=300)
-            conn2.request(
-                'GET',
-                cdn_parsed.path + ('?' + cdn_parsed.query if cdn_parsed.query else ''),
-                headers=cdn_headers
-            )
+            conn2.request('GET', cdn_parsed.path + ('?' + cdn_parsed.query if cdn_parsed.query else ''), headers=req_headers)
             resp2 = conn2.getresponse()
             body = resp2.read()
             conn2.close()
@@ -528,6 +482,7 @@ class Spider(BaseSpider):
                 _sys.stderr.write(f"[sweetpornos] localProxy empty body from CDN\n")
                 return [200, "text/plain; charset=utf-8", b"", None]
 
+            # 存入缓存
             self._video_cache[cache_key] = body
             _sys.stderr.write(f"[sweetpornos] localProxy downloaded {len(body)} bytes, cached\n")
             return [200, "video/mp4", body, None]
@@ -547,35 +502,6 @@ class Spider(BaseSpider):
 
     def isVideoFormat(self, url):
         return False
-# ==============  万能一键加速（2026-10五星无探测双 CDN 版）  ==============
-_PIC_CDN_POOL = ('lib.baomitu.com', 'open.oppomobile.com')
-
-def _cover_fallback(self, pic_url):
-    import urllib.parse
-    raw = pic_url or ''
-    parent_impl = getattr(super(Spider, self), '_cover_fallback', None)
-    if callable(parent_impl):
-        try:
-            raw = parent_impl(pic_url) or raw
-        except Exception:
-            pass
-    if not raw:
-        return ''
-    url = raw
-    for cdn in _PIC_CDN_POOL:
-        if cdn in raw:
-            url = raw.replace(cdn, _PIC_CDN_POOL[0])
-            break
-    proxy_base = getattr(self, 'proxy_base', None)
-    if proxy_base:
-        url = f'{proxy_base}{urllib.parse.quote(url)}'
-    return url
-
-Spider._cover_fallback = _cover_fallback
-# 注册爬虫
-if __name__ == '__main__':
-    from base.spider import Spider as BaseSpider
-    BaseSpider.register(Spider())
 
     def destroy(self):
         pass
