@@ -169,12 +169,9 @@ class Spider(BaseSpider):
         self._lock = threading.Lock()
         self.options = {}
 
+    # [FIX] 先解析配置拿到 host，再创建 session，并在 session 上带 Referer/Origin。
+    # 之前先建 session 后改 host，导致 m3u8 请求没有 Referer，被 CDN 防盗链拦截 → 转圈。
     def init(self, extend=""):
-        self.session = _NetSession(getattr(self, 'net', None))
-        self.session.headers.update({
-            "User-Agent": UA,
-            "Accept": "application/json, text/plain, */*",
-        })
         if isinstance(extend, dict):
             cfg = extend
         elif extend:
@@ -184,12 +181,21 @@ class Spider(BaseSpider):
                 cfg = {}
         else:
             cfg = {}
-        if not isinstance(cfg, dict):
-            return
-        site = (cfg.get("site") or cfg.get("url") or "").strip().rstrip("/")
-        if site and site.startswith("http"):
-            self.host = site
-        self.options = cfg
+
+        if isinstance(cfg, dict):
+            site = (cfg.get("site") or cfg.get("url") or "").strip().rstrip("/")
+            if site and site.startswith("http"):
+                self.host = site
+            self.options = cfg
+
+        base = self.host.rstrip("/")
+        self.session = _NetSession(getattr(self, 'net', None))
+        self.session.headers.update({
+            "User-Agent": UA,
+            "Accept": "application/json, text/plain, */*",
+            "Referer": base + "/",
+            "Origin": base,
+        })
 
     def getDependence(self):
         return []
@@ -233,7 +239,6 @@ class Spider(BaseSpider):
         items, totalpages = self._posts({"categories": tid}, pg)
         return self._page_result(items, pg, totalpages)
 
-
     def detailContent(self, ids):
         if not ids:
             return {"list": []}
@@ -241,6 +246,7 @@ class Spider(BaseSpider):
         merged = {k: v for k, v in (responses[0] or {}).items() if k != "list"} if responses[0] else {}
         merged["list"] = [item for response in responses if response for item in (response.get("list") or [])]
         return merged
+
     def _detail(self, vid):
         vid = str(vid or "")
         post = self._post_detail(vid)
@@ -290,6 +296,7 @@ class Spider(BaseSpider):
         items, totalpages = self._posts({"search": kw}, pg)
         return self._page_result(items, pg, totalpages)
 
+    # [FIX] playerContent：补 Referer / Origin；同时把 m3u8 里相对路径补全为绝对 URL。
     def playerContent(self, flag, id, vipFlags):
         pid = str(id or "").strip()
         if not pid:
@@ -297,23 +304,33 @@ class Spider(BaseSpider):
         m3u8 = self._fetch_play(pid)
         if not m3u8:
             return {"parse": 0, "msg": "无法获取播放地址"}
+        if DEBUG:
+            print("[SUPJAV PLAY] %s" % m3u8)
+        base = self.host.rstrip("/")
         return {
             "parse": 0,
             "jx": 0,
             "url": m3u8,
-            "header": {"User-Agent": UA},
+            "header": {
+                "User-Agent": UA,
+                "Referer": base + "/",
+                "Origin": base,
+            },
         }
 
     def liveContent(self, url):
         return "[]"
 
-    def _api(self, path, params=None):
+    # [FIX] 增加 use_cache 参数：播放地址必须实时取，不能吃 CACHE_TTL 的 120s 缓存，
+    # 否则 token 过期就表现为"转圈超时"。
+    def _api(self, path, params=None, use_cache=True):
         path = "/" + str(path).lstrip("/")
         ck = path + json.dumps(params or {}, sort_keys=True)
-        with self._lock:
-            hit = self._cache.get(ck)
-            if hit and time.time() - self._cache_time.get(ck, 0) < CACHE_TTL:
-                return hit
+        if use_cache:
+            with self._lock:
+                hit = self._cache.get(ck)
+                if hit and time.time() - self._cache_time.get(ck, 0) < CACHE_TTL:
+                    return hit
 
         url = self.host.rstrip("/") + path
         try:
@@ -328,9 +345,10 @@ class Spider(BaseSpider):
             if DEBUG:
                 print("[SUPJAV DEBUG] %s -> %d bytes, totalpages=%s" % (r.url, len(r.text), tp))
             result = (obj, tp)
-            with self._lock:
-                self._cache[ck] = result
-                self._cache_time[ck] = time.time()
+            if use_cache:
+                with self._lock:
+                    self._cache[ck] = result
+                    self._cache_time[ck] = time.time()
             return result
         except Exception:
             if DEBUG:
@@ -381,16 +399,64 @@ class Spider(BaseSpider):
         obj, _ = self._api("/wp-json/wp/v2/posts/" + quote(vid, safe=""), {"_embed": "true"})
         return obj if isinstance(obj, dict) else {}
 
+    # [FIX] 完整重写 _fetch_play：
+    # 1) 不再走缓存（use_cache=False）
+    # 2) 还原 JS/JSON/HTML 转义：\/ \u0026 \u003d \u003f &amp; &#038; 等
+    # 3) 多模式正则，兼容 {"url":"..."} / url: '...' / 裸 URL / 相对路径
+    # 4) 补全协议与 host（//xxx → https://xxx；/xxx → host/xxx）
     def _fetch_play(self, pid):
-        obj, _ = self._api("/wp-json/fb/v1/player/", {"id": pid})
+        obj, _ = self._api("/wp-json/fb/v1/player/", {"id": pid}, use_cache=False)
         if not isinstance(obj, dict) or not obj.get("success"):
             return ""
-        data = obj.get("data") or ""
-        m = re.search(r"url\s*:\s*['\"]([^'\"]+\.m3u8[^'\"]*)['\"]", data)
-        if m:
-            return m.group(1).strip()
-        m = re.search(r'(https?://[^\s"\']+\.m3u8[^\s"\']*)', data)
-        return m.group(1).strip() if m else ""
+
+        data = obj.get("data")
+        if isinstance(data, (dict, list)):
+            data = json.dumps(data, ensure_ascii=False)
+        if not isinstance(data, str):
+            data = str(data or "")
+
+        text = data
+        for a, b in (
+            ("\\/", "/"),
+            ("\\u0026", "&"), ("\\u003d", "="), ("\\u003f", "?"), ("\\u002F", "/"),
+            ("\\u003D", "="), ("\\u003F", "?"),
+            ("&amp;", "&"), ("&#038;", "&"), ("&#x26;", "&"),
+            ('\\"', '"'),
+        ):
+            text = text.replace(a, b)
+
+        candidates = (
+            r"""url["']?\s*[:=]\s*["']([^"']+?\.m3u8[^"']*)["']""",
+            r"""["'](https?://[^"']+?\.m3u8[^"']*)["']""",
+            r"""["']([^"']+?\.m3u8[^"']*)["']""",
+            r"""(https?://[^\s"'<>]+?\.m3u8[^\s"'<>]*)""",
+        )
+        found = ""
+        for pat in candidates:
+            m = re.search(pat, text, re.I)
+            if m:
+                found = m.group(1)
+                break
+        if not found:
+            # 最后在原始 data 上兜底再找一次
+            m = re.search(r"""(https?://[^\s"'<>]+?\.m3u8[^\s"'<>]*)""", data, re.I)
+            if m:
+                found = m.group(1)
+        if not found:
+            return ""
+        return self._normalize_media_url(found)
+
+    # [FIX] 新增：把 m3u8 地址规范化（补协议、补 host、去转义残留）
+    def _normalize_media_url(self, url):
+        url = str(url or "").strip()
+        if not url:
+            return ""
+        url = url.replace("\\/", "/").replace("&amp;", "&")
+        if url.startswith("//"):
+            url = "https:" + url
+        elif url.startswith("/"):
+            url = self.host.rstrip("/") + url
+        return url
 
     def _vod(self, post):
         post = post or {}
