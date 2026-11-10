@@ -110,6 +110,17 @@
       "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
     },
     {
+      "key": "🔞SUPJAV1",
+      "name": "🔞SUPJAV1",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/supjav.py"
+    },
+    {
       "key": "🔞591AV3",
       "name": "🔞591AV(动态自愈版)",
       "type": 3,
