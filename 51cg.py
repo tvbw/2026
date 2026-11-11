@@ -74,7 +74,7 @@ class SiteConfig:
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "51bl_host"             # 必须唯一
+    HOST_CACHE_KEY = "51cg_host"             # 必须唯一
     HOST_CACHE_TTL = 6 * 3600
 
     # ---- 探测参数（宽松，避免误判）----
@@ -85,7 +85,7 @@ class SiteConfig:
     PROBE_MAX_CANDIDATES = 30
 
     # ---- 站点特征（多个关键词，任一命中即可）----
-    SITE_KEYWORDS    = ["51吃瓜", "51CG", "51cg", "51爆料", "51cgw"]
+    SITE_KEYWORDS    = "51吃瓜v5"
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
     # ---- 导航页/发布页特征词（命中 3 个以上且无内容结构 → 判为导航页）----
