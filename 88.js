@@ -37,10 +37,10 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-      "key": "每日大赛",
-      "name": "❤️每日大赛🔞",
+      "key": "每日大赛_v9自愈版",
+      "name": "❤️每日大赛v9自愈版🔞",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds_v9.py",
       "searchable": 1,
       "quickSearch": 1,
       "style": {
@@ -48,28 +48,6 @@
         "ratio": 1.66
       },
       "changeable": 1
-    },
-    {
-      "key": "mrdld",
-      "name": "❤️每日大乱斗🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld.py"
-    },
-    {
-      "key": "51吃瓜V7",
-      "name": "❤️51吃瓜V7自愈版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cgv6.py"
     },
     {
       "key": "51吃瓜V9",
@@ -94,6 +72,29 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
     },
     {
+      "key": "mrdld_v7自愈版",
+      "name": "❤️每日大乱斗v7自愈版🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v7.py"
+    },
+    {
+      "key": "51吃瓜V7",
+      "name": "❤️51吃瓜V7自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cgv6.py"
+    },
+    {
+
       "key": "香蕉9合2",
       "name": "❤️香蕉9合1原版【🔞】",
       "type": 3,
