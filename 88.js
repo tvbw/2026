@@ -37,7 +37,19 @@
       "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-
+      "key": "每日大赛",
+      "name": "❤️每日大赛🔞",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "changeable": 1
+    },
+    {
       "key": "香蕉9合2",
       "name": "❤️香蕉9合1原版【🔞】",
       "type": 3,
@@ -177,19 +189,7 @@
       "api": "http://pglblb.test.upcdn.net/2026py/test/好色TV.py"
     },
     {
-      "key": "每日大赛",
-      "name": "❤️每日大赛🔞",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "changeable": 1
-    },
-    {
+
       "key": "🔞PY-[瑟]618-cf84fc00",
       "name": "🔞香蕉一区新版",
       "type": 3,
