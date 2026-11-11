@@ -69,7 +69,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/51cg/51cg.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cgv6.py"
     },
     {
       "key": "51爆料v7",
@@ -80,7 +80,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/51cg/51bl.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
     },
     {
       "key": "香蕉9合2",
