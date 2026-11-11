@@ -50,24 +50,25 @@ LOG = logging.getLogger(__name__)
 # ==================================================================
 class SiteConfig:
     NAV_URLS = [
+        "https://51cge26.com",
+        "https://51cge23.com",
         "https://51cgo20.com",
         "https://51cgo21.com",
         "https://51cge20.com",
         "https://51cge21.com",
         "https://51cge22.com",
-        "https://51cge23.com",
         "https://51cge24.com",
         "https://51cge25.com",
-        "https://51cge26.com",
+
     ]
 
     PUBLISH_URLS = [
+        "https://51cgf25.com",
         "https://51cgo22.com",
         "https://51cgo23.com",
         "https://51cgo24.com",
         "https://51cgo25.com",
         "https://51cgf24.com",
-        "https://51cgf25.com",
         "https://51cgf26.com",
         "https://gitlab.com/i51cg1/51cg1",
     ]
