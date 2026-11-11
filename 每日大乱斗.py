@@ -47,16 +47,16 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 导航页（一级域名：mrdsv4/v5/v6.com → 302 到 ojfoznub.cc 导航 HTML）----
     NAV_URLS = [
-        "https://mrdld4.com",
         "https://mrdld5.com",
         "https://mrdld6.com",
+        "https://mrdld4.com",
     ]
 
     # ---- 发布页 / APP 页（往往挂最新导航地址，导航页全挂时作二级保险）----
     PUBLISH_URLS = [
+        "https://mrdld3.com",
         "https://mrdld1.com",
         "https://mrdld2.com",
-        "https://mrdld3.com",
         "https://idld66.com/",
         "https://mrdld1.app",
     ]
