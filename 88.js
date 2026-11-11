@@ -72,7 +72,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cgv6.py"
     },
     {
-      "key": "51吃瓜V7",
+      "key": "51吃瓜V9",
       "name": "❤️51吃瓜V9自愈版｜🔞",
       "type": 3,
       "playerType": 2,
@@ -83,7 +83,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg.py"
     },
     {
-      "key": "51爆料v7",
+      "key": "51爆料v9",
       "name": "❤️51爆料V9自愈版｜🔞",
       "type": 3,
       "playerType": 2,
