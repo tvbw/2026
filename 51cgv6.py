@@ -83,7 +83,7 @@ class SiteConfig:
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "51bl_host"
+    HOST_CACHE_KEY = "51cgv6_host"
     HOST_CACHE_TTL = 6 * 3600
 
     # ---- 探测参数 ----
@@ -94,7 +94,7 @@ class SiteConfig:
     PROBE_MAX_CANDIDATES = 35
 
     # ---- 站点特征 ----
-    SITE_KEYWORDS    = ["51吃瓜", "51CG", "51cg", "51爆料", "51cgw"]
+    SITE_KEYWORDS    = "51吃瓜v6"
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
     # ---- 导航页识别词 ----
