@@ -50,6 +50,18 @@
       "changeable": 1
     },
     {
+      "key": "mrdld",
+      "name": "❤️每日大乱斗🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
+    },
+    {
+
       "key": "香蕉9合2",
       "name": "❤️香蕉9合1原版【🔞】",
       "type": 3,
@@ -257,18 +269,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/爆色.py"
     },
     {
-      "key": "mrdld",
-      "name": "❤️每日大乱斗🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
-    },
-    {
-
       "key": "91吃瓜",
       "name": "❤️91吃瓜",
       "type": 3,
