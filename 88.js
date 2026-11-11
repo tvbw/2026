@@ -40,7 +40,7 @@
       "key": "每日大赛",
       "name": "❤️每日大赛🔞",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds.py",
+      "api": "http://pglblb.test.upcdn.net/51cg/mrds.py",
       "searchable": 1,
       "quickSearch": 1,
       "style": {
@@ -58,7 +58,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
+      "api": "http://pglblb.test.upcdn.net/51cg/mrdld.py"
     },
     {
       "key": "51吃瓜V7",
@@ -69,7 +69,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cgv6.py"
+      "api": "http://pglblb.test.upcdn.net/51cg/51cg.py"
     },
     {
       "key": "51爆料v7",
@@ -80,7 +80,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51bl.py"
+      "api": "http://pglblb.test.upcdn.net/51cg/51bl.py"
     },
     {
       "key": "香蕉9合2",
