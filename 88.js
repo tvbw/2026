@@ -61,7 +61,17 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
     },
     {
-
+      "key": "51吃瓜",
+      "name": "❤️51吃瓜｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cg.py"
+    },
+    {
       "key": "香蕉9合2",
       "name": "❤️香蕉9合1原版【🔞】",
       "type": 3,
@@ -302,17 +312,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/91hl.py"
     },
     {
-      "key": "51吃瓜",
-      "name": "❤️51吃瓜｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cg.py"
-    },
-    {
+
       "key": "51大赛",
       "name": "❤️51大赛｜🔞",
       "type": 3,
