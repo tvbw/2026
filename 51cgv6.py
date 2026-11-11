@@ -74,8 +74,6 @@ class SiteConfig:
     ]
 
     SEED_HOSTS = [
-        "https://chigua.com/",
-        "https://cg51.com/",
         "https://belt.wxxqhhht.cc/",
         "https://capture.wxxqhhht.cc/",
         "https://both.wxxqhhht.cc/",
