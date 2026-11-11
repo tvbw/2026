@@ -50,42 +50,54 @@ LOG = logging.getLogger(__name__)
 # ① 配置层（51系列标准，换站只改这一段）
 # ==================================================================
 class SiteConfig:
-    # ---- 导航页：navone.cloud 描述 51 爆料的页面，从中提取主站域名 ----
+    # 导航页：navone.cloud 上的51爆料描述页，其中包含了官方网址线索
     NAV_URLS = [
-        "https://www.navone.cloud/html/20260915_175813_5f733d6d10",
-        "https://www.navone.cloud/html/20260915_082833_7565d8c5ff",
+        "https://www.navone.cloud/html/20260915_145837_0d0452ed07",  # 指向 www.51blw.online
+        "https://www.navone.cloud/html/20260915_082833_7565d8c5ff",  # 指向 www.51bl.online
+        "https://www.navone.cloud/html/20260916_081953_8c0235d88e",  # 指向 www.51-baoliao.cloud
+        "https://www.navone.cloud/html/20260915_111827_2d0fcb9232",  # 指向 www.51new.cloud
     ]
 
-    # ---- 发布页 / 永久锚点：GitLab 是当前确认活跃的锚点 ----
+    # ★ 核心锚点：这些是已知的二级发布页/主站，它们会302跳转到三级主页
+    # 程序探测它们时，会自动跟随跳转，并将最终的三级域名作为主站地址
     PUBLISH_URLS = [
-        "https://gitlab.com/51blw/web",          # ★ 最可靠
-        "https://www.51blw.cloud/",
-        "https://www.51blw.online/",
-        "https://www.51new.cloud/",
-        "https://www.51baoliao01.com/",
+        "https://www.51blw.online",
+        "https://www.51bl.online",
+        "https://www.51-baoliao.cloud",
+        "https://www.51new.cloud",
+        "https://51baoliao01.com",
+        "https://51bl.lol",
+        "https://ymlkq.com",
     ]
 
-    # ---- 种子：只保留可能承载 HTML 主站的域名 ----
+    # 种子：保留一些可能直接解析出HTML的已知域名，作为额外保险
     SEED_HOSTS = [
-        "https://www.51blw.cloud/",
-        "https://www.51blw.online/",
-        "https://www.51new.cloud/",
-        "https://www.51baoliao01.com/",
-        "https://ymlkq.com/",
+        "https://www.51blw.online",
+        "https://www.51bl.online",
+        "https://www.51-baoliao.cloud",
+        "https://www.51new.cloud",
+        "https://51baoliao01.com",
+        "https://51bl.lol",
+        "https://ymlkq.com",
+        "https://apps-wybaoliao.cloud",
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "51bl_host_v9"              # 换 key，强制清旧缓存
+    HOST_CACHE_KEY = "51bl_host_v10"  # 再次更新key，强制清空旧缓存
     HOST_CACHE_TTL = 6 * 3600
 
     PROBE_TIMEOUT        = 10
     PROBE_MIN_HTML       = 2000
     PROBE_MIN_ARTICLE    = 1
     PROBE_MAX_ROUNDS     = 3
-    PROBE_MAX_CANDIDATES = 30
+    PROBE_MAX_CANDIDATES = 35
 
-    SITE_KEYWORDS    = ["51爆料", "51bl", "51吃瓜", "51网爆料"]
+    # ★ 关键：将“51bl”加入关键词，以覆盖51blw.online等域名
+    SITE_KEYWORDS    = ["51爆料", "51bl", "51吃瓜", "51网爆料", "51baoliao"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
+
+    # 其余选择器和常量保持 v9 不变（此处省略，请直接沿用你文件中已有的定义）
+    # ... (SEL_ARTICLE, SEL_NAV, LINK_KEYWORDS等所有其他配置项保持不变) ...
 
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "推荐访问", "线路正常",
