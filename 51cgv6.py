@@ -94,7 +94,7 @@ class SiteConfig:
     PROBE_MAX_CANDIDATES = 35
 
     # ---- 站点特征 ----
-    SITE_KEYWORDS    = "51吃瓜v6"
+    SITE_KEYWORDS    = ["51CG", "51cg", "51爆料", "51cgw"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
     # ---- 导航页识别词 ----
