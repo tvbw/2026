@@ -85,7 +85,7 @@ class SiteConfig:
     PROBE_MAX_CANDIDATES = 30
 
     # ---- 站点特征（多个关键词，任一命中即可）----
-    SITE_KEYWORDS    = "51吃瓜v5"
+    SITE_KEYWORDS    = ["51吃瓜", "51CG", "51cg", "51爆料", "51cgw"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
     # ---- 导航页/发布页特征词（命中 3 个以上且无内容结构 → 判为导航页）----
