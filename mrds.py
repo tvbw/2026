@@ -54,7 +54,9 @@ class SiteConfig:
 
     # ---- 发布页 / APP 页（往往挂最新导航地址，导航页全挂时作二级保险）----
     PUBLISH_URLS = [
-        "https://ceo.unaydvxst.cc/",
+        "https://mrdsv1.com",
+        "https://mrdsv2.com",
+        "https://mrdsv3.app",
         "https://mrds1.app",
     ]
 
