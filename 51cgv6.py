@@ -67,9 +67,9 @@ class SiteConfig:
         "https://belt.wxxqhhht.cc/",
         "https://capture.wxxqhhht.cc/",
         "https://both.wxxqhhht.cc/",
-        "https://brain.smingrvwa.cc/",
-        "https://battle.smingrvwa.cc/",
-        "https://butter.smingrvwa.cc/",
+        "https://attract.wxxqhhht.cc/",
+        "https://achieve.wxxqhhht.cc/",
+        "https://bridge.wxxqhhht.cc/",
     ]
 
     FALLBACK_HOST  = None
