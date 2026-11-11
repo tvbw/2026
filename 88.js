@@ -61,8 +61,19 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
     },
     {
-      "key": "51吃瓜",
-      "name": "❤️51吃瓜｜🔞",
+      "key": "51吃瓜V6",
+      "name": "❤️51吃瓜V6｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cgv6.py"
+    },
+    {
+      "key": "51吃瓜V5",
+      "name": "❤️51吃瓜V5｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
