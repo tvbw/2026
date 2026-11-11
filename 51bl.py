@@ -50,54 +50,43 @@ LOG = logging.getLogger(__name__)
 # ① 配置层（51系列标准，换站只改这一段）
 # ==================================================================
 class SiteConfig:
-    # 导航页：navone.cloud 上的51爆料描述页，其中包含了官方网址线索
+    # ★ 你提供的 51爆料导航页/发布页
     NAV_URLS = [
-        "https://www.navone.cloud/html/20260915_145837_0d0452ed07",  # 指向 www.51blw.online
-        "https://www.navone.cloud/html/20260915_082833_7565d8c5ff",  # 指向 www.51bl.online
-        "https://www.navone.cloud/html/20260916_081953_8c0235d88e",  # 指向 www.51-baoliao.cloud
-        "https://www.navone.cloud/html/20260915_111827_2d0fcb9232",  # 指向 www.51new.cloud
+        "https://51blk1.com",
+        "https://51blk2.com",
+        "https://51blk3.com",
+        "https://51blk4.com",
+        "https://51blk5.com",
+        "https://51blk6.com",
     ]
 
-    # ★ 核心锚点：这些是已知的二级发布页/主站，它们会302跳转到三级主页
-    # 程序探测它们时，会自动跟随跳转，并将最终的三级域名作为主站地址
-    PUBLISH_URLS = [
-        "https://www.51blw.online",
-        "https://www.51bl.online",
-        "https://www.51-baoliao.cloud",
-        "https://www.51new.cloud",
-        "https://51baoliao01.com",
-        "https://51bl.lol",
-        "https://ymlkq.com",
-    ]
+    # 发布页留空，因为导航页本身承担了这个角色；如果有单独的二级发布页可加在这里
+    PUBLISH_URLS = []
 
-    # 种子：保留一些可能直接解析出HTML的已知域名，作为额外保险
+    # ★ 你提供的兜底三级域名
     SEED_HOSTS = [
-        "https://www.51blw.online",
-        "https://www.51bl.online",
-        "https://www.51-baoliao.cloud",
-        "https://www.51new.cloud",
-        "https://51baoliao01.com",
-        "https://51bl.lol",
-        "https://ymlkq.com",
-        "https://apps-wybaoliao.cloud",
+        "https://anxiety.ttiaqryf.cc",
+        "https://at.ttiaqryf.cc",
+        "https://actual.ttiaqryf.cc",
+        "https://adviser.ttiaqryf.cc",
+        "https://basket.ttiaqryf.cc",
+        "https://campus.ttiaqryf.cc",
+        "https://d2gt333ro578y4.cloudfront.net",
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "51bl_host_v10"  # 再次更新key，强制清空旧缓存
+    HOST_CACHE_KEY = "51bl_host_v12"          # ★ 再次换 Key，强制丢弃所有旧缓存
     HOST_CACHE_TTL = 6 * 3600
 
     PROBE_TIMEOUT        = 10
-    PROBE_MIN_HTML       = 2000
+    PROBE_MIN_HTML       = 1500               # 略降低，适应可能较简单的导航页
     PROBE_MIN_ARTICLE    = 1
-    PROBE_MAX_ROUNDS     = 3
-    PROBE_MAX_CANDIDATES = 35
+    PROBE_MAX_ROUNDS     = 3                  # 三轮回流，给“导航→三级”的链路更多机会
+    PROBE_MAX_CANDIDATES = 30
 
-    # ★ 关键：将“51bl”加入关键词，以覆盖51blw.online等域名
-    SITE_KEYWORDS    = ["51爆料", "51bl", "51吃瓜", "51网爆料", "51baoliao"]
+    # ★ 关键词覆盖 51爆料 及可能出现的变体
+    SITE_KEYWORDS    = ["51爆料"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
-
-    # 其余选择器和常量保持 v9 不变（此处省略，请直接沿用你文件中已有的定义）
-    # ... (SEL_ARTICLE, SEL_NAV, LINK_KEYWORDS等所有其他配置项保持不变) ...
 
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "推荐访问", "线路正常",
@@ -124,11 +113,11 @@ class SiteConfig:
         'yahoo','protonmail','qq.com','163.com','126.com','sina.com','weibo.com',
         'statcounter','google-analytics','umeng','cnzz','beian.miit.gov.cn',
         'wordpress.org','wix.com','weebly','shopify','51.la','cnzz.com','51yes',
-        'navone.cloud',
     )
 
     EXTRA_BLACKLIST = ('beian.miit.gov.cn','w3.org','example.com')
 
+    # ===== 以下选择器/常量与 v9 完全一致，直接沿用 =====
     SEL_ARTICLE      = "#index article, #archive article, article"
     SEL_ARTICLE_HOME = "#index article, article"
     SEL_PLAYER       = ".dplayer"
@@ -136,7 +125,6 @@ class SiteConfig:
     SEL_TAGS         = ".post-tags a, .tags a, .keywords a"
     SEL_SUMMARY      = ".post-content"
     SEL_TITLE        = ".post-title, h1"
-
     SEL_NAV = [
         "ul.navbar-nav.mr-auto > li.nav-item > a.nav-link",
         "ul.navbar-nav > li.nav-item > a.nav-link",
@@ -156,7 +144,6 @@ class SiteConfig:
         ".dropdown-menu a",
     ]
     DEFAULT_CATEGORY = {"type_name": "首页", "type_id": "/"}
-
     LINK_KEYWORDS = (
         "点击观看","点击播放","观看","播放","视频",
         "第一弹","第二弹","第三弹","第四弹","第五弹",
@@ -164,12 +151,10 @@ class SiteConfig:
         "第1集","第2集","第3集","第4集","第5集",
     )
     LINK_URL_PATTERNS = (r"/vodplay/", r"/v/\d+", r"/play/", r"/video/", r"\.m3u8")
-
     IMG_AES_KEYS = [
         (b"f5d965df75336270", b"97b60394abc2fbe1"),
         (b"75336270f5d965df", b"abc2fbe197b60394"),
     ]
-
     HEADERS = {
         "User-Agent": ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
