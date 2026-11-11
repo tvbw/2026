@@ -40,7 +40,7 @@
       "key": "每日大赛",
       "name": "❤️每日大赛🔞",
       "type": 3,
-      "api": "http://pglblb.test.upcdn.net/51cg/mrds.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds.py",
       "searchable": 1,
       "quickSearch": 1,
       "style": {
@@ -58,7 +58,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "http://pglblb.test.upcdn.net/51cg/mrdld.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld.py"
     },
     {
       "key": "51吃瓜V7",
