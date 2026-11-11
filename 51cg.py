@@ -81,7 +81,7 @@ class SiteConfig:
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "51cg_host_v12"          # ★ 再次换 Key，强制丢弃所有旧缓存
+    HOST_CACHE_KEY = "51cg_host_v9"          # ★ 再次换 Key，强制丢弃所有旧缓存
     HOST_CACHE_TTL = 6 * 3600
 
     PROBE_TIMEOUT        = 10
@@ -91,7 +91,7 @@ class SiteConfig:
     PROBE_MAX_CANDIDATES = 30
 
     # ★ 关键词覆盖 51爆料 及可能出现的变体
-    SITE_KEYWORDS    = ["51吃瓜"]
+    SITE_KEYWORDS    = ["51吃瓜v9"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
     NAV_PAGE_KEYWORDS = (
