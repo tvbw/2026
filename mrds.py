@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-多域名自愈模板（导航增强版 v3）
+多域名自愈模板（导航增强 v4 · 两轮回流版）
 ================================
-链路：导航页/发布页/种子域名 → 解析候选 → 并发探测(302跟随) → 主站
+链路：导航页/发布页/种子域名 → 解析候选 → 并发探测(302跟随)
+      → 失败响应中继续挖新域名 → 第二轮探测（最多两轮）
       → 取 response.url 最终域名作为 self.host
       → 6 小时缓存，失效自动重探
       → 探测全部失败时回退到种子域名/缓存，避免全空白
@@ -51,9 +52,10 @@ class SiteConfig:
         "https://mrdsv6.com",
     ]
 
-    # ---- 发布页（可能直接 302 到主站）----
+    # ---- 发布页 / APP 页（往往挂最新导航地址，导航页全挂时作二级保险）----
     PUBLISH_URLS = [
         "https://ceo.unaydvxst.cc/",
+        "https://mrds1.app",
     ]
 
     # ---- 种子三级域名（旧域名，访问时往往 302 到新域名）----
@@ -73,13 +75,15 @@ class SiteConfig:
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host_v3"          # 每个站点必须唯一
+    HOST_CACHE_KEY = "mrds_host_v4"          # 每个站点必须唯一
     HOST_CACHE_TTL = 6 * 3600
 
     # ---- 探测参数 ----
     PROBE_TIMEOUT        = 8
     PROBE_MIN_HTML       = 2500
     PROBE_MIN_ARTICLE    = 3
+    PROBE_MAX_ROUNDS     = 2                 # 最多探测轮数（含回流）
+    PROBE_MAX_CANDIDATES = 24                # 候选域名总量上限，防爆量
 
     # ---- 站点特征（务必带引号！）----
     SITE_KEYWORDS    = ["每日大赛"]
@@ -150,7 +154,7 @@ class SiteConfig:
 
 
 # ==================================================================
-# ② 域名解析器（导航页明文解析 + 并发探测 + 302跟随 + 兜底）
+# ② 域名解析器（导航页明文/JS跳转双挖掘 + 两轮回流探测 + 302跟随 + 兜底）
 # ==================================================================
 class DomainResolver:
     # href 兜底时排除的链接（导航页子页/APP/第三方）
@@ -242,12 +246,45 @@ class DomainResolver:
         except Exception:
             pass
 
-    # ---------- ★核心修复：从导航页 HTML 提取候选主站域名 ----------
+    # ---------- ★ 薄弱点1 修复：从 JS/Meta/中文公告中挖跳转新域名 ----------
+    def _extract_js_redirects(self, html):
+        """三级域名失效后如果只返回一段 JS/Meta 跳转或中文迁移公告，
+        requests 跟不到 302，但新域名就写在这段 HTML 里。必须挖出来。"""
+        if not html:
+            return []
+        out = []
+        pats = [
+            # window.location = "https://xxx" / location.href = "xxx"
+            r'''(?:window\.|document\.)?location(?:\.href)?\s*=\s*["'](https?://[^"']+)["']''',
+            # location.replace("https://xxx")
+            r'''location\.replace\(\s*["'](https?://[^"']+)["']''',
+            # <meta http-equiv="refresh" content="0;url=https://xxx">
+            r'''<meta[^>]+http-equiv=["']refresh["'][^>]+url=([^"'\s>]+)''',
+            # 中文公告兜底："迁移到 xxx.com" / "新地址：xxx" / "永久域名 xxx"
+            r'(?:迁移到|迁移至|新地址|新网址|永久域名|最新域名|请访问)[：:\s]*([a-zA-Z0-9][a-zA-Z0-9.\-]{3,}\.[a-zA-Z]{2,})',
+        ]
+        for p in pats:
+            for m in re.finditer(p, html, re.I):
+                u = m.group(1).strip().rstrip('/.,;')
+                if not u:
+                    continue
+                if u.startswith("http"):
+                    h = self._final_host(u)
+                elif "." in u and " " not in u:
+                    h = self._final_host("https://" + u)
+                else:
+                    continue
+                if h and h not in out:
+                    out.append(h)
+        return out
+
+    # ---------- ★核心修复：从导航页/跳转页 HTML 提取候选主站域名 ----------
     def _extract_hosts_from_html(self, html):
-        """支持三种格式：
+        """支持四种格式：
            1) 明文 data-base="https://xxx" （每日大赛导航页）
-           2) Base64 加密 JSON 站点列表（lissavcn 风格）
-           3) href 兜底（排除子页/APP/第三方）
+           2) JS/Meta/中文公告跳转（三级域名失效后的迁移页）
+           3) Base64 加密 JSON 站点列表（lissavcn 风格）
+           4) href 兜底（排除子页/APP/第三方）
         """
         if not html:
             return []
@@ -261,7 +298,10 @@ class DomainResolver:
             else:
                 primary.append(base)
 
-        # --- 2) Base64 加密块（兼容 lissavcn 风格导航）---
+        # --- 2) JS/Meta/中文公告（薄弱点1修复：失效域名的迁移页也走这里）---
+        primary.extend(self._extract_js_redirects(html))
+
+        # --- 3) Base64 加密块（兼容 lissavcn 风格导航）---
         for b in re.findall(r'["\']([A-Za-z0-9+/=]{100,})["\']', html):
             try:
                 decoded = base64.b64decode(b).decode("utf-8", errors="ignore")
@@ -284,7 +324,7 @@ class DomainResolver:
             except Exception:
                 continue
 
-        # --- 3) href 兜底（严格过滤）---
+        # --- 4) href 兜底（严格过滤）---
         for m in re.finditer(r'<a\b[^>]+href="(https?://[^"]+)"[^>]*>', html):
             tag, href = m.group(0), m.group(1)
             if any(skip in href for skip in self.SKIP_HREF):
@@ -302,7 +342,7 @@ class DomainResolver:
                 out.append(base)
         return out
 
-    # ---------- ★核心修复：收集所有候选域名（并发抓导航页/发布页）----------
+    # ---------- 收集所有候选域名（并发抓导航页/发布页）----------
     def _collect_candidates(self, cached):
         candidates = []
         all_src = list(self.cfg.NAV_URLS) + list(getattr(self.cfg, "PUBLISH_URLS", []))
@@ -318,13 +358,14 @@ class DomainResolver:
                     except Exception:
                         continue
                     if r is None:
+                        print(f"导航页抓取失败: {src}")
                         continue
                     # r.url = 302 跟随后的最终 URL（导航页会跳到 ojfoznub.cc）
                     if r.url:
                         h = self._final_host(r.url)
                         if h:
                             candidates.append(h)
-                    # 从 HTML 里提取线路三级域名
+                    # 从 HTML 里提取线路三级域名 / 迁移新域名
                     extracted = self._extract_hosts_from_html(r.text or "")
                     if extracted:
                         print(f"导航页 {src} 解析到 {len(extracted)} 个候选: {extracted[:3]}...")
@@ -344,9 +385,9 @@ class DomainResolver:
             if u and u not in seen:
                 seen.add(u)
                 urls.append(u)
-        return urls
+        return urls[:self.cfg.PROBE_MAX_CANDIDATES]
 
-    # ---------- 主解析流程 ----------
+    # ---------- ★ 主解析流程：两轮回流探测（薄弱点2修复）----------
     def resolve(self):
         cached = self._read_cache()
 
@@ -363,50 +404,95 @@ class DomainResolver:
             LOG.info("缓存失效: %s", cached["host"])
             print(f"缓存失效: {cached['host']}")
 
-        # 2) 收集所有候选（导航页 + 发布页 + 种子 + 缓存）
-        urls = self._collect_candidates(cached)
-        if not urls:
+        # 2) 收集初始候选
+        queue = self._collect_candidates(cached)
+        if not queue:
             return self._fallback(cached, "无任何候选域名")
 
-        print(f"候选域名池: {len(urls)} 个，开始并发探测...")
+        print(f"初始候选域名: {len(queue)} 个")
 
-        # 3) 并发探测（★ allow_redirects=True 由 requests 默认提供，取 r.url 锁新域名）
-        with ThreadPoolExecutor(max_workers=min(8, len(urls))) as ex:
-            futs = {ex.submit(self._safe_fetch, u + "/", self.cfg.PROBE_TIMEOUT): u
-                    for u in urls}
-            try:
-                for f in as_completed(futs, timeout=self.cfg.PROBE_TIMEOUT + 12):
-                    u = futs[f]
-                    try:
-                        r = f.result()
-                    except Exception as e:
-                        print(f"探测异常 {u}: {e}")
-                        continue
-                    if r is None:
-                        print(f"探测无响应: {u}")
-                        continue
-                    if r.status_code != 200:
-                        print(f"探测 HTTP {r.status_code}: {u}")
-                        continue
-                    if not self._site_ok(r.text):
-                        kws = self.cfg.SITE_KEYWORDS or '结构判断'
-                        print(f"探测内容不匹配: {u} (len={len(r.text or '')}, 关键词={kws})")
-                        continue
-                    # ★ 用 r.url（302 后的最终 URL）锁新域名
-                    final = self._final_host(r.url or u)
-                    if not final:
-                        continue
-                    self._write_cache(final)
-                    if final != u:
-                        print(f"探测成功（含跳转）: {u} → {final}")
-                    else:
-                        print(f"探测成功: {final}")
-                    return final
-            except Exception as e:
-                LOG.debug("并发探测异常: %s", e)
+        # 3) 多轮探测（每轮从失败响应中挖新域名，回流到下一轮）
+        tried = set()
+        for round_no in range(1, int(self.cfg.PROBE_MAX_ROUNDS) + 1):
+            # 过滤掉已试过的
+            cur = [u for u in queue if u not in tried]
+            if not cur:
+                print(f"第 {round_no} 轮无新候选，提前结束")
+                break
+
+            print(f"=== 第 {round_no} 轮探测: {len(cur)} 个候选 ===")
+            next_queue = []
+
+            with ThreadPoolExecutor(max_workers=min(8, len(cur))) as ex:
+                futs = {ex.submit(self._safe_fetch, u + "/", self.cfg.PROBE_TIMEOUT): u
+                        for u in cur}
+                try:
+                    for f in as_completed(futs, timeout=self.cfg.PROBE_TIMEOUT + 12):
+                        u = futs[f]
+                        tried.add(u)
+                        try:
+                            r = f.result()
+                        except Exception as e:
+                            print(f"  [失败] {u} 异常: {e}")
+                            continue
+                        if r is None:
+                            print(f"  [失败] {u} 无响应")
+                            continue
+                        if r.status_code != 200:
+                            print(f"  [失败] {u} HTTP {r.status_code}")
+                            # 非 200 也可能通过 Location 头给新域名
+                            loc = (r.headers or {}).get("Location", "")
+                            if loc:
+                                nh = self._final_host(loc)
+                                if nh and nh not in tried and nh not in next_queue:
+                                    next_queue.append(nh)
+                                    print(f"    ↳ Location 发现新域名: {nh}")
+                            # 即使状态码异常，若响应 HTML 中有迁移公告也挖一下
+                            for d in self._extract_hosts_from_html(r.text or ""):
+                                if d not in tried and d not in next_queue:
+                                    next_queue.append(d)
+                                    print(f"    ↳ 响应HTML发现新域名: {d}")
+                            continue
+
+                        # 状态 200，先判断是不是真正的主站
+                        if self._site_ok(r.text):
+                            final = self._final_host(r.url or u)
+                            if not final:
+                                continue
+                            self._write_cache(final)
+                            if final != u:
+                                print(f"  [成功-跳转] {u} → {final}")
+                            else:
+                                print(f"  [成功] {final}")
+                            return final
+
+                        # 状态 200 但不是主站 → 挖里面的新域名
+                        print(f"  [不匹配] {u} len={len(r.text or '')}")
+                        found_any = False
+                        for d in self._extract_hosts_from_html(r.text or ""):
+                            if d not in tried and d not in next_queue:
+                                next_queue.append(d)
+                                print(f"    ↳ 响应中发现新域名: {d}")
+                                found_any = True
+                        # 302 跟随后的最终域也可能不同于 u（虽然 _site_ok 失败，可能这个域本身是导航页）
+                        if r.url and self._final_host(r.url) != u:
+                            nh = self._final_host(r.url)
+                            if nh and nh not in tried and nh not in next_queue:
+                                next_queue.append(nh)
+                                print(f"    ↳ 最终 URL 域: {nh}")
+                                found_any = True
+                except Exception as e:
+                    LOG.debug("并发探测异常: %s", e)
+
+            # 合并下一轮候选（去掉已试过的、去重）
+            for d in next_queue:
+                if d not in tried and d not in queue:
+                    queue.append(d)
+            if round_no < self.cfg.PROBE_MAX_ROUNDS:
+                print(f"第 {round_no} 轮结束，新增候选 {len(next_queue)} 个，准备下一轮")
 
         # 4) 全部失败 → 多级兜底
-        return self._fallback(cached, "所有候选域名探测失败")
+        return self._fallback(cached, "所有轮次探测均失败")
 
     def _fallback(self, cached, reason):
         if cached:
@@ -457,7 +543,7 @@ class BaseMultiDomainSpider(BaseSpider):
             self.headers.update({"Origin": self.host, "Referer": self.host + "/"})
         print(f"使用站点: {self.host}")
 
-    def getName(self):          return "🌈 每日系列自愈版（导航增强）"
+    def getName(self):          return "🌈 每日系列自愈版（两轮回流）"
     def manualVideoCheck(self): return False
     def isVideoFormat(self, u): return any(e in (u or "") for e in (".m3u8", ".mp4", ".ts"))
     def destroy(self):          self._img_cache.clear()
@@ -872,7 +958,7 @@ class Spider(BaseMultiDomainSpider):
     CONFIG = SiteConfig
 
     def getName(self):
-        return "❇️ 每日系列导航自愈版"
+        return "❇️ 每日系列导航自愈版（两轮回流）"
 
 
 # ==================================================================
