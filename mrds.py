@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-多域名自愈模板（通用版·导航增强）
+多域名自愈模板（导航增强版 v3）
 ================================
-链路：导航页/种子域名 → 解析候选 → 并发探测(302跟随) → 主站
+链路：导航页/发布页/种子域名 → 解析候选 → 并发探测(302跟随) → 主站
       → 取 response.url 最终域名作为 self.host
       → 6 小时缓存，失效自动重探
-      → 探测全部失败时回退到种子域名或历史有效域名，避免全空白
+      → 探测全部失败时回退到种子域名/缓存，避免全空白
 """
 import json
 import re
@@ -13,10 +13,8 @@ import sys
 import time
 import hashlib
 import base64
-import gzip
-import zlib
 import logging
-from urllib.parse import quote, unquote
+from urllib.parse import quote, unquote, urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
@@ -46,28 +44,41 @@ LOG = logging.getLogger(__name__)
 # ① 配置层（套用新站时主要修改此处）
 # ==================================================================
 class SiteConfig:
-    # ---- 导航页/发布页（用于动态解析最新三级域名）----
+    # ---- 导航页（一级域名：mrdsv4/v5/v6.com → 302 到 ojfoznub.cc 导航 HTML）----
     NAV_URLS = [
         "https://mrdsv4.com",
         "https://mrdsv5.com",
         "https://mrdsv6.com",
+    ]
+
+    # ---- 发布页（可能直接 302 到主站）----
+    PUBLISH_URLS = [
         "https://ceo.unaydvxst.cc/",
     ]
 
-    # ---- 种子三级域名（旧域名，通常可302到新域名）----
+    # ---- 种子三级域名（旧域名，访问时往往 302 到新域名）----
     SEED_HOSTS = [
+        # 导航页实测的「主线路」
+        "https://adapt.unaydvxst.cc/",
+        "https://adjust.unaydvxst.cc/",
+        "https://cap.unaydvxst.cc/",
+        # 导航页实测的「备用线路」
+        "https://bench.sezupttrb.cc/",
+        "https://beyond.sezupttrb.cc/",
+        "https://cast.sezupttrb.cc/",
+        # 旧种子（历史域名，一般仍可 302 到新域名）
         "https://ceo.kludlvje.cc/",
         "https://cause.kludlvje.cc/",
         "https://amazing.kludlvje.cc/",
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host_v2"          # 每个站点必须唯一
+    HOST_CACHE_KEY = "mrds_host_v3"          # 每个站点必须唯一
     HOST_CACHE_TTL = 6 * 3600
 
     # ---- 探测参数 ----
     PROBE_TIMEOUT        = 8
-    PROBE_MIN_HTML       = 3000
+    PROBE_MIN_HTML       = 2500
     PROBE_MIN_ARTICLE    = 3
 
     # ---- 站点特征（务必带引号！）----
@@ -139,28 +150,59 @@ class SiteConfig:
 
 
 # ==================================================================
-# ② 域名解析器（集成导航页解析 + 并发探测 + 302跟随 + 兜底）
+# ② 域名解析器（导航页明文解析 + 并发探测 + 302跟随 + 兜底）
 # ==================================================================
 class DomainResolver:
+    # href 兜底时排除的链接（导航页子页/APP/第三方）
+    SKIP_HREF = (
+        '.js', '.css', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.ico',
+        'twitter.com', 'x.com/', 'google.com', 'facebook.com', 't.me/',
+        'youtube', 'cdn.', 'mailto:', 'javascript:',
+        '/sese.html', '/ybml.html', '/qun.html', '/github.html', '/telegram.html',
+        'mrds1.app',
+    )
+
     def __init__(self, cfg, fetcher, cache_get=None, cache_set=None):
         self.cfg, self.fetch = cfg, fetcher
         self.cache_get, self.cache_set = cache_get, cache_set
 
+    # ---------- 站点有效性判定（★核心修复：排除导航页）----------
     def _site_ok(self, html):
         if not html or len(html) < self.cfg.PROBE_MIN_HTML:
             return False
-        if self.cfg.SITE_KEYWORDS:
-            return any(kw in html for kw in self.cfg.SITE_KEYWORDS)
+        # 明确是导航页（线路列表页，不是视频列表）
+        if 'data-group="primary"' in html and (
+                'id="list-wrap"' in html or '每日大赛官方导航' in html):
+            return False
+        # 必须有内容结构（article 或 post-title 等）
         low = html.lower()
-        if low.count("<article") >= self.cfg.PROBE_MIN_ARTICLE:
-            return True
-        return any(m in low for m in self.cfg.SITE_MARKERS) and len(html) > 20000
+        has_article = low.count("<article") >= self.cfg.PROBE_MIN_ARTICLE
+        has_marker = any(m in low for m in self.cfg.SITE_MARKERS)
+        if not (has_article or has_marker):
+            return False
+        # 站点关键词
+        if self.cfg.SITE_KEYWORDS and not any(kw in html for kw in self.cfg.SITE_KEYWORDS):
+            return False
+        return True
 
     def _safe_fetch(self, url, timeout):
         try:
             return self.fetch(url, timeout=timeout)
         except Exception:
             return None
+
+    @staticmethod
+    def _final_host(url):
+        """把任意 URL 归一为 scheme://netloc 根域名"""
+        if not url:
+            return ""
+        try:
+            p = urlparse(url)
+            if p.scheme in ("http", "https") and p.netloc:
+                return "%s://%s" % (p.scheme, p.netloc)
+        except Exception:
+            pass
+        return url.rstrip("/")
 
     # ---------- 缓存读写 ----------
     def _read_cache(self):
@@ -200,52 +242,109 @@ class DomainResolver:
         except Exception:
             pass
 
-    # ---------- 导航页解析（核心新增）----------
-    def _parse_nav_page(self, nav_url):
-        """从导航页提取 Base64 加密的站点列表，返回候选域名列表"""
-        try:
-            r = self._safe_fetch(nav_url, self.cfg.PROBE_TIMEOUT)
-            if r is None or r.status_code != 200:
-                return []
-            text = r.text
-            # 扫描长 Base64 块
-            b64_blocks = re.findall(r'["\']([A-Za-z0-9+/=]{100,})["\']', text)
-            hosts = []
-            for b in b64_blocks:
-                try:
-                    decoded = base64.b64decode(b).decode("utf-8", errors="ignore")
-                    unquoted = unquote(decoded)
-                    if "每日大赛" not in unquoted:
-                        continue
-                    # 尝试解析为 JSON 数组
-                    if unquoted.strip().startswith("["):
-                        site_list = json.loads(unquoted)
-                        for item in site_list:
-                            if "每日大赛" not in str(item.get("name", "")):
-                                continue
-                            main_url = item.get("url", "")
-                            if main_url:
-                                hosts.append(main_url.rstrip("/"))
-                            for u_obj in item.get("urls", []):
-                                u = u_obj.get("url", "")
-                                if u:
-                                    hosts.append(u.rstrip("/"))
-                except Exception:
-                    continue
-            # 去重并只保留 http(s) 根域名
-            unique = []
-            seen = set()
-            for h in hosts:
-                if not h.startswith("http"):
-                    continue
-                parsed = requests.utils.urlparse(h)
-                base = f"{parsed.scheme}://{parsed.netloc}"
-                if base not in seen:
-                    seen.add(base)
-                    unique.append(base)
-            return unique
-        except Exception:
+    # ---------- ★核心修复：从导航页 HTML 提取候选主站域名 ----------
+    def _extract_hosts_from_html(self, html):
+        """支持三种格式：
+           1) 明文 data-base="https://xxx" （每日大赛导航页）
+           2) Base64 加密 JSON 站点列表（lissavcn 风格）
+           3) href 兜底（排除子页/APP/第三方）
+        """
+        if not html:
             return []
+        primary, backup, others = [], [], []
+
+        # --- 1) 明文 data-base（导航页真实格式）---
+        for m in re.finditer(r'<a\b[^>]*\bdata-base="(https?://[^"]+)"[^>]*>', html):
+            tag, base = m.group(0), m.group(1)
+            if 'data-group="backup"' in tag or "备用" in tag:
+                backup.append(base)
+            else:
+                primary.append(base)
+
+        # --- 2) Base64 加密块（兼容 lissavcn 风格导航）---
+        for b in re.findall(r'["\']([A-Za-z0-9+/=]{100,})["\']', html):
+            try:
+                decoded = base64.b64decode(b).decode("utf-8", errors="ignore")
+                unquoted = unquote(decoded)
+                if "[" not in unquoted:
+                    continue
+                if not any(kw in unquoted for kw in self.cfg.SITE_KEYWORDS):
+                    continue
+                site_list = json.loads(unquoted)
+                for item in site_list:
+                    if not any(kw in str(item.get("name", "")) for kw in self.cfg.SITE_KEYWORDS):
+                        continue
+                    u = item.get("url", "")
+                    if u:
+                        primary.append(u)
+                    for u_obj in item.get("urls", []):
+                        u2 = u_obj.get("url", "")
+                        if u2:
+                            primary.append(u2)
+            except Exception:
+                continue
+
+        # --- 3) href 兜底（严格过滤）---
+        for m in re.finditer(r'<a\b[^>]+href="(https?://[^"]+)"[^>]*>', html):
+            tag, href = m.group(0), m.group(1)
+            if any(skip in href for skip in self.SKIP_HREF):
+                continue
+            if 'data-page=' in tag:      # 导航页里的子页（sese.html 等）
+                continue
+            others.append(href)
+
+        # 归一为根域名，去重，primary 优先，backup 次之，others 最后
+        out, seen = [], set()
+        for h in primary + backup + others:
+            base = self._final_host(h)
+            if base and base not in seen:
+                seen.add(base)
+                out.append(base)
+        return out
+
+    # ---------- ★核心修复：收集所有候选域名（并发抓导航页/发布页）----------
+    def _collect_candidates(self, cached):
+        candidates = []
+        all_src = list(self.cfg.NAV_URLS) + list(getattr(self.cfg, "PUBLISH_URLS", []))
+
+        if all_src:
+            with ThreadPoolExecutor(max_workers=min(6, len(all_src))) as ex:
+                futs = {ex.submit(self._safe_fetch, u, self.cfg.PROBE_TIMEOUT): u
+                        for u in all_src}
+                for f in as_completed(futs, timeout=self.cfg.PROBE_TIMEOUT + 10):
+                    src = futs[f]
+                    try:
+                        r = f.result()
+                    except Exception:
+                        continue
+                    if r is None:
+                        continue
+                    # r.url = 302 跟随后的最终 URL（导航页会跳到 ojfoznub.cc）
+                    if r.url:
+                        h = self._final_host(r.url)
+                        if h:
+                            candidates.append(h)
+                    # 从 HTML 里提取线路三级域名
+                    extracted = self._extract_hosts_from_html(r.text or "")
+                    if extracted:
+                        print(f"导航页 {src} 解析到 {len(extracted)} 个候选: {extracted[:3]}...")
+                        candidates.extend(extracted)
+
+        # 种子域名兜底
+        candidates.extend([u.rstrip("/") for u in self.cfg.SEED_HOSTS])
+
+        # 缓存（即使过期也作为候选，因为旧域名往往会 302 到新域名）
+        if cached:
+            candidates.insert(0, cached["host"].rstrip("/"))
+
+        # 去重
+        seen, urls = set(), []
+        for u in candidates:
+            u = (u or "").rstrip("/")
+            if u and u not in seen:
+                seen.add(u)
+                urls.append(u)
+        return urls
 
     # ---------- 主解析流程 ----------
     def resolve(self):
@@ -255,7 +354,7 @@ class DomainResolver:
         if cached and self._cache_fresh(cached):
             r = self._safe_fetch(cached["host"] + "/", self.cfg.PROBE_TIMEOUT)
             if r is not None and r.status_code == 200 and self._site_ok(r.text):
-                final = (r.url or cached["host"]).rstrip("/")
+                final = self._final_host(r.url or cached["host"])
                 LOG.info("缓存有效: %s → %s", cached["host"], final)
                 print(f"缓存有效: {cached['host']} → {final}")
                 if final != cached["host"]:
@@ -264,39 +363,19 @@ class DomainResolver:
             LOG.info("缓存失效: %s", cached["host"])
             print(f"缓存失效: {cached['host']}")
 
-        # 2) 收集所有候选域名
-        candidates = []
-
-        # 2a) 从导航页解析
-        for nav_url in self.cfg.NAV_URLS:
-            nav_hosts = self._parse_nav_page(nav_url)
-            if nav_hosts:
-                print(f"导航页解析成功 {nav_url}: {len(nav_hosts)} 个候选")
-                candidates.extend(nav_hosts)
-
-        # 2b) 加入种子三级域名
-        candidates.extend([u.rstrip("/") for u in self.cfg.SEED_HOSTS])
-
-        # 2c) 加入缓存域名（即使过期也作为候选）
-        if cached:
-            candidates.insert(0, cached["host"].rstrip("/"))
-
-        # 去重
-        seen = set()
-        urls = []
-        for u in candidates:
-            if u not in seen:
-                seen.add(u)
-                urls.append(u)
-
+        # 2) 收集所有候选（导航页 + 发布页 + 种子 + 缓存）
+        urls = self._collect_candidates(cached)
         if not urls:
             return self._fallback(cached, "无任何候选域名")
 
-        # 3) 并发探测（带302跟随）
+        print(f"候选域名池: {len(urls)} 个，开始并发探测...")
+
+        # 3) 并发探测（★ allow_redirects=True 由 requests 默认提供，取 r.url 锁新域名）
         with ThreadPoolExecutor(max_workers=min(8, len(urls))) as ex:
-            futs = {ex.submit(self._safe_fetch, u + "/", self.cfg.PROBE_TIMEOUT): u for u in urls}
+            futs = {ex.submit(self._safe_fetch, u + "/", self.cfg.PROBE_TIMEOUT): u
+                    for u in urls}
             try:
-                for f in as_completed(futs, timeout=self.cfg.PROBE_TIMEOUT + 10):
+                for f in as_completed(futs, timeout=self.cfg.PROBE_TIMEOUT + 12):
                     u = futs[f]
                     try:
                         r = f.result()
@@ -313,25 +392,24 @@ class DomainResolver:
                         kws = self.cfg.SITE_KEYWORDS or '结构判断'
                         print(f"探测内容不匹配: {u} (len={len(r.text or '')}, 关键词={kws})")
                         continue
-                    final = (r.url or u).rstrip("/")
+                    # ★ 用 r.url（302 后的最终 URL）锁新域名
+                    final = self._final_host(r.url or u)
+                    if not final:
+                        continue
                     self._write_cache(final)
-                    if final.rstrip("/") != u.rstrip("/"):
-                        LOG.info("探测成功（含跳转）: %s → %s", u, final)
+                    if final != u:
                         print(f"探测成功（含跳转）: {u} → {final}")
                     else:
-                        LOG.info("探测成功: %s", final)
                         print(f"探测成功: {final}")
                     return final
             except Exception as e:
                 LOG.debug("并发探测异常: %s", e)
 
-        # 4) 全部失败，执行兜底
+        # 4) 全部失败 → 多级兜底
         return self._fallback(cached, "所有候选域名探测失败")
 
     def _fallback(self, cached, reason):
-        """多级兜底：过期缓存 > FALLBACK_HOST > SEED_HOSTS[0]"""
         if cached:
-            LOG.warning("使用过期缓存 (%s): %s", reason, cached["host"])
             print(f"使用过期缓存 ({reason}): {cached['host']}")
             return cached["host"]
 
@@ -352,7 +430,7 @@ class DomainResolver:
 
 
 # ==================================================================
-# ③ 主爬虫基类（保持原有模板结构，仅适配新解析器）
+# ③ 主爬虫基类（保持模板结构）
 # ==================================================================
 class BaseMultiDomainSpider(BaseSpider):
     CONFIG = SiteConfig
@@ -798,7 +876,7 @@ class Spider(BaseMultiDomainSpider):
 
 
 # ==================================================================
-# ⑤ 播放源聚合扩展（保持原样）
+# ⑤ 播放源聚合扩展（保持原样，无改动）
 # ==================================================================
 def _install_playlist_extension(_C):
     if getattr(_C, "_pl_patched", False):
