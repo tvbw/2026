@@ -61,8 +61,8 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/每日大乱斗.py"
     },
     {
-      "key": "51吃瓜V6",
-      "name": "❤️51吃瓜V6自愈版｜🔞",
+      "key": "51吃瓜V7",
+      "name": "❤️51吃瓜V7自愈版｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -70,6 +70,17 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51cgv6.py"
+    },
+    {
+      "key": "51爆料v7",
+      "name": "❤️51爆料V7自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51bl.py"
     },
     {
       "key": "香蕉9合2",
@@ -144,7 +155,95 @@
       "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
     },
     {
+      "key": "py_4K_fullhd-fullhd3",
+      "name": "❤️FHD老僧世界【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
+      "key": "csp_xbpq_禁片天堂",
+      "name": "❤️禁片天堂【🔞】",
+      "type": 3,
+      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
+      "playerType": 2,
+      "api": "csp_XBPQ",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/jptt.json",
+      "style": {
+        "type": "rect",
+        "ratio": 1.65
+      }
+    },
+    {
+      "key": "py_4K_fullhd-fullhd2",
+      "name": "❤️FHD书生中国【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
 
+    },
+    {
+      "key": "csp_xbpq_s直播【🔞】",
+      "name": "❤️StripChat直播1【🔞】",
+      "type": 3,
+      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
+      "playerType": 2,
+      "api": "csp_XBPQ",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
+      "style": {
+        "type": "rect",
+        "ratio": 1.65
+      }
+    },
+    {
+      "key": "Cam4直播",
+      "name": "5🍓Cam4直播｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Cam4.py"
+    },
+    {
+      "key": "ss直播3",
+      "name": "❤️国货【🔞直播】-3",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
       "key": "🔞591AV3",
       "name": "🔞591AV(动态自愈版)",
       "type": 3,
@@ -324,17 +423,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51ds.py"
     },
     {
-      "key": "51爆料",
-      "name": "❤️51爆料｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51bl.py"
-    },
-    {
 
       "key": "18av",
       "name": "5❤️18av【🔞】",
@@ -348,95 +436,7 @@
       "api": "http://pglblb.test.upcdn.net/2026py/18av.py"
     },
     {
-      "key": "py_4K_fullhd-fullhd3",
-      "name": "❤️FHD老僧世界【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "csp_xbpq_禁片天堂",
-      "name": "❤️禁片天堂【🔞】",
-      "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
-      "playerType": 2,
-      "api": "csp_XBPQ",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/jptt.json",
-      "style": {
-        "type": "rect",
-        "ratio": 1.65
-      }
-    },
-    {
-      "key": "py_4K_fullhd-fullhd2",
-      "name": "❤️FHD书生中国【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
 
-    },
-    {
-      "key": "csp_xbpq_s直播【🔞】",
-      "name": "❤️StripChat直播1【🔞】",
-      "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
-      "playerType": 2,
-      "api": "csp_XBPQ",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
-      "style": {
-        "type": "rect",
-        "ratio": 1.65
-      }
-    },
-    {
-      "key": "Cam4直播",
-      "name": "5🍓Cam4直播｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/Cam4.py"
-    },
-    {
-      "key": "ss直播3",
-      "name": "❤️国货【🔞直播】-3",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
       "key": "爆色",
       "name": "5❤️ss采集聚合1｜🔞",
       "type": 3,
