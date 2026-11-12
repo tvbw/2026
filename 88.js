@@ -3,6 +3,20 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+  "key": "Nostr",
+  "name": "Nostr推荐",
+  "type": 3,
+  "api": "csp_Nostr",
+  "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
+    },
+    {
+  "key": "cctv",
+  "name": "cctv直播",
+  "type": 3,
+  "api": "csp_cctv",
+  "homePage": "https://raw.githubusercontent.com/tvbw/2026/main/cctv.html"
+    },
+    {
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
