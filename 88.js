@@ -164,6 +164,22 @@
       "changeable": 1
     },
     {
+      "key": "csp_xbpq_missav",
+      "name": "🔞missav【json】",
+      "type": 3,
+      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
+      "playerType": 2,
+      "api": "csp_XBPQ",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/missav-%E6%BA%90.json",
+      "style": {
+        "type": "rect",
+        "ratio": 1.65
+      }
+    },
+    {
       "key": "csp_xbpq_禁片天堂",
       "name": "❤️禁片天堂【🔞】",
       "type": 3,
@@ -1901,21 +1917,21 @@
   ],
   "lives": [
     {
-      "name": "AI直播",
+      "name": "宽屏短剧",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/aa123jg/tvbox-FL/main/wyykFL/txt/AI%E9%BB%84%E8%B1%86%E7%9F%AD%E5%89%A7.txt",
+      "url": "https://raw.githubusercontent.com/tvbw/18Y/main/wyykFL/txt/%E5%AE%BD%E5%B1%8FAI%E7%9F%AD%E5%89%A7.txt",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
-      "name": "央视直播",
+      "name": "色途日本",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/tvbw/tbox2025/main/live/live_ipv4.txt",
+      "url": "https://raw.githubusercontent.com/tvbw/20261001-18/main/%E8%89%B2%E9%80%94%E6%97%A5%E6%9C%AC%E7%84%A1%E7%A0%81.m3u",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
-      "name": "易发直播",
+      "name": "电视直播",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/fafa002/yf2025/main/yiyifafa.txt",
+      "url": "https://raw.githubusercontent.com/tvbw/202611-ss/main/zheng1976/tv/%E7%94%B5%E8%A7%86%E7%9B%B4%E6%92%AD.txt",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
