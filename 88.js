@@ -11,7 +11,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://fwd.uou.qzz.io/widgets/Javxx_TuT.js"
+      "api": "https://fwd.uou.qzz.io/widgets/SupJAV_TuT.js"
     },
     {
       "key": "🍁正宗聚合",
