@@ -3,17 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "123AV",
-      "name": "❤️123AV【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://fwd.uou.qzz.io/widgets/SupJAV_TuT.js"
-    },
-    {
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
