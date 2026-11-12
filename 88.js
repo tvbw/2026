@@ -76,7 +76,7 @@
     },
     {
       "key": "Missav(2)",
-      "name": "❤️Missav",
+      "name": "❤️Missav目录",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -86,7 +86,6 @@
       "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
     },
     {
-
       "key": "香蕉9合2",
       "name": "❤️香蕉9合1原版【🔞】",
       "type": 3,
@@ -148,7 +147,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/18av.py"
     },
     {
-
       "key": "py_4K_fullhd-fullhd3",
       "name": "❤️FHD老僧世界【🔞】",
       "type": 3,
@@ -164,20 +162,19 @@
       "changeable": 1
     },
     {
-      "key": "csp_xbpq_missav",
-      "name": "🔞missav【json】",
+      "key": "py_4K_fullhd-fullhd2",
+      "name": "❤️FHD书生中国【🔞】",
       "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
       "playerType": 2,
-      "api": "csp_XBPQ",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/20261001-18/main/missav-%E6%BA%90.json",
       "style": {
         "type": "rect",
-        "ratio": 1.65
-      }
+        "ratio": 1.33
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
     },
     {
       "key": "csp_xbpq_禁片天堂",
@@ -196,20 +193,19 @@
       }
     },
     {
-      "key": "py_4K_fullhd-fullhd2",
-      "name": "❤️FHD书生中国【🔞】",
+      "key": "ss直播3",
+      "name": "❤️国货【🔞直播】-3",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
-        "ratio": 1.33
+        "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd2.py",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
-
     },
     {
       "key": "csp_xbpq_s直播【🔞】",
@@ -237,21 +233,6 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/Cam4.py"
-    },
-    {
-      "key": "ss直播3",
-      "name": "❤️国货【🔞直播】-3",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
     },
     {
       "key": "51吃瓜V9",
@@ -342,7 +323,6 @@
       "api": "http://pglblb.test.upcdn.net/2026py/test/好色TV.py"
     },
     {
-
       "key": "🔞PY-[瑟]618-cf84fc00",
       "name": "🔞香蕉一区新版",
       "type": 3,
@@ -387,7 +367,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/草榴社区.py"
     },
     {
-
       "key": "🍁采花大盗",
       "name": "🍁采花大盗",
       "type": 3,
@@ -410,8 +389,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/爆色.py"
     },
     {
-
-
       "key": "18av",
       "name": "5❤️18av【🔞】",
       "type": 3,
@@ -424,7 +401,6 @@
       "api": "http://pglblb.test.upcdn.net/2026py/18av.py"
     },
     {
-
       "key": "爆色",
       "name": "5❤️ss采集聚合1｜🔞",
       "type": 3,
@@ -524,7 +500,6 @@
       "filterable": 1
     },
     {
-
       "key": "py_4K_93合1",
       "name": "❤️93合1【🔞】",
       "type": 3,
@@ -564,7 +539,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/叔叔和侄女.py"
     },
     {
-
       "key": "🔞bpwz3",
       "name": "🔞bpwz3",
       "type": 3,
@@ -576,7 +550,7 @@
       "api": "https://raw.githubusercontent.com/hahaha2500/sjzkn/main/bpwz3.py"
     },
     {
-       "key": "🔞madouai3",
+      "key": "🔞madouai3",
       "name": "🔞madouai3",
       "type": 3,
       "playerType": 2,
@@ -767,7 +741,6 @@
       ]
     },
     {
-
       "key": "白嫖之王-封面修复第二版",
       "name": "❤️白嫖之王【🔞】",
       "type": 3,
@@ -894,7 +867,6 @@
       "api": "http://pglblb.test.upcdn.net/2026py/%E8%89%B2%E6%92%AD%E8%81%9A%E5%90%88.py"
     },
     {
-
       "key": "🍁[Aure][影¹⁸]57吃瓜网",
       "name": "🍁[Aure][影¹⁸]57吃瓜网",
       "type": 3,
@@ -1477,7 +1449,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/LumeBox18/main/sources/video/PY-[瑟]怦然心动-39efc998.py"
     },
     {
-
       "key": "VF四级老片",
       "name": "VF四级老片｜🔞",
       "type": 3,
@@ -1704,7 +1675,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/Zaka影院·动态发布自愈版.py"
     },
     {
-
       "key": "🔞777午夜影院",
       "name": "🔞777午夜影院",
       "type": 3,
@@ -1738,7 +1708,6 @@
       "api": "http://pglblb.test.upcdn.net/2026py/202610-test/hubff.py"
     },
     {
-
       "key": "🔞优质粉嫩鲍",
       "name": "🔞优质粉嫩鲍",
       "type": 3,
@@ -1750,7 +1719,6 @@
       "api": "http://pglblb.test.upcdn.net/2026py/202610-test/优质粉嫩鲍.py"
     },
     {
-
       "key": "🔞麻豆影院-a354cf68196c",
       "name": "🔞麻豆影院1",
       "type": 3,
@@ -1894,7 +1862,6 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/91hl.py"
     },
     {
-
       "key": "51大赛",
       "name": "❤️51大赛｜🔞",
       "type": 3,
@@ -1923,19 +1890,18 @@
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
-      "name": "色途日本",
+      "name": "易发直播",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/tvbw/20261001-18/main/%E8%89%B2%E9%80%94%E6%97%A5%E6%9C%AC%E7%84%A1%E7%A0%81.m3u",
+      "url": "https://raw.githubusercontent.com/fafa002/yf2025/main/yiyifafa.txt",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
-      "name": "电视直播",
+      "name": "午夜直播",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/tvbw/202611-ss/main/zheng1976/tv/%E7%94%B5%E8%A7%86%E7%9B%B4%E6%92%AD.txt",
+      "url": "https://newrecha.neocities.org/live/xxx%E8%A7%86%E9%A2%91%E8%B5%84%E6%BA%90.txt",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
-
       "name": "欧美剧场",
       "type": 0,
       "url": "https://raw.githubusercontent.com/natasha520/FGBLH/main/%E8%A7%86%E9%A2%91.txt",
