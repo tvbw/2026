@@ -3,18 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-
-      "key": "🔞红果短剧(弹幕+显季版)-b6008f4d5d24",
-      "name": "🔞红果短剧(弹幕+显季版)",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/红果短剧(弹幕+显季版)-b6008f4d5d24.py"
-    },
-    {
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
@@ -61,28 +49,44 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
     },
     {
-      "key": "51吃瓜V9",
-      "name": "❤️51吃瓜V9自愈版｜🔞",
+      "key": "missav666",
+      "name": "5❤️missav666【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/missav666.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/missav666.py"
     },
     {
-      "key": "51爆料v9",
-      "name": "❤️51爆料V9自愈版｜🔞",
+      "key": "py_missav免翻全分类版",
+      "name": "5❤️missav免翻【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/missav免翻全分类版.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
+      "key": "Missav(2)",
+      "name": "❤️Missav",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
     },
     {
+
       "key": "香蕉9合2",
       "name": "❤️香蕉9合1原版【🔞】",
       "type": 3,
@@ -144,17 +148,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/18av.py"
     },
     {
-      "key": "Missav(2)",
-      "name": "❤️Missav",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
-    },
-    {
+
       "key": "py_4K_fullhd-fullhd3",
       "name": "❤️FHD老僧世界【🔞】",
       "type": 3,
@@ -242,6 +236,28 @@
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
+    },
+    {
+      "key": "51吃瓜V9",
+      "name": "❤️51吃瓜V9自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg.py"
+    },
+    {
+      "key": "51爆料v9",
+      "name": "❤️51爆料V9自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
     },
     {
       "key": "🔞591AV3",
@@ -378,51 +394,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/爆色.py"
     },
     {
-      "key": "91吃瓜",
-      "name": "❤️91吃瓜",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
-    },
-    {
-      "key": "91大赛",
-      "name": "❤️91大赛",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91ds.py"
-    },
-    {
-      "key": "91黑料",
-      "name": "❤️91黑料",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91hl.py"
-    },
-    {
 
-      "key": "51大赛",
-      "name": "❤️51大赛｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51ds.py"
-    },
-    {
 
       "key": "18av",
       "name": "5❤️18av【🔞】",
@@ -536,18 +508,7 @@
       "filterable": 1
     },
     {
-      "key": "missav666",
-      "name": "5❤️missav666【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/missav666.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/missav666.py"
-    },
-    {
+
       "key": "py_4K_93合1",
       "name": "❤️93合1【🔞】",
       "type": 3,
@@ -790,20 +751,7 @@
       ]
     },
     {
-      "key": "py_missav免翻全分类版",
-      "name": "5❤️missav免翻【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/missav免翻全分类版.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
+
       "key": "白嫖之王-封面修复第二版",
       "name": "❤️白嫖之王【🔞】",
       "type": 3,
@@ -1740,72 +1688,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/Zaka影院·动态发布自愈版.py"
     },
     {
-      "key": "17黑料",
-      "name": "❤️17黑料｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/17hl.py"
-    },
-    {
-      "key": "🔞91吃瓜中心",
-      "name": "🔞91吃瓜中心",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91吃瓜中心.py"
-    },
-    {
-      "key": "🔞91大赛",
-      "name": "🔞91大赛",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91大赛.py"
-    },
-    {
-      "key": "🔞51暗网",
-      "name": "🔞51暗网",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51暗网.py"
-    },
-    {
-      "key": "🔞51爆料",
-      "name": "🔞51爆料",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51爆料.py"
-    },
-    {
-      "key": "🔞51视频",
-      "name": "🔞51视频",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51视频.py"
-    },
-    {
+
       "key": "🔞777午夜影院",
       "name": "🔞777午夜影院",
       "type": 3,
@@ -1894,6 +1777,117 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/Film-TV/main/File/py/Abalone/[Aure][影¹⁸]SupjavWP.py"
+    },
+    {
+      "key": "17黑料",
+      "name": "❤️17黑料｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/17hl.py"
+    },
+    {
+      "key": "🔞91吃瓜中心",
+      "name": "🔞91吃瓜中心",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91吃瓜中心.py"
+    },
+    {
+      "key": "🔞91大赛",
+      "name": "🔞91大赛",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/91大赛.py"
+    },
+    {
+      "key": "🔞51暗网",
+      "name": "🔞51暗网",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51暗网.py"
+    },
+    {
+      "key": "🔞51爆料",
+      "name": "🔞51爆料",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51爆料.py"
+    },
+    {
+      "key": "🔞51视频",
+      "name": "🔞51视频",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/202610-test/51视频.py"
+    },
+    {
+      "key": "91吃瓜",
+      "name": "❤️91吃瓜",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
+    },
+    {
+      "key": "91大赛",
+      "name": "❤️91大赛",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91ds.py"
+    },
+    {
+      "key": "91黑料",
+      "name": "❤️91黑料",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91hl.py"
+    },
+    {
+
+      "key": "51大赛",
+      "name": "❤️51大赛｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51ds.py"
     },
     {
       "key": "push_agent",
