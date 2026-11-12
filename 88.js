@@ -1884,9 +1884,9 @@
   ],
   "lives": [
     {
-      "name": "裤佬央视",
+      "name": "央视直播",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/pyapk/1/main/zby",
+      "url": "https://raw.githubusercontent.com/110COM/repo/main/rn/mut8.png",
       "ua": "okHttp/Mod-1.4.0.0"
     },
     {
