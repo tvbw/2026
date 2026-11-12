@@ -1884,6 +1884,12 @@
   ],
   "lives": [
     {
+      "name": "裤佬央视",
+      "type": 0,
+      "url": "https://raw.githubusercontent.com/pyapk/1/main/zby",
+      "ua": "okHttp/Mod-1.4.0.0"
+    },
+    {
       "name": "宽屏短剧",
       "type": 0,
       "url": "https://raw.githubusercontent.com/tvbw/18Y/main/wyykFL/txt/%E5%AE%BD%E5%B1%8FAI%E7%9F%AD%E5%89%A7.txt",
