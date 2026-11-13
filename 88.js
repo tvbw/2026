@@ -215,21 +215,6 @@
       }
     },
     {
-      "key": "csp_XYQHiker_11he1",
-      "name": "❤️11合一【🔞】",
-      "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
-      "api": "csp_XYQHiker",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/11he1.json",
-      "style": {
-        "type": "rect",
-        "ratio": 1.6
-      }
-    },
-    {
       "key": "csp_XYQHiker_javffm",
       "name": "4❤️JAVFFM【🔞】",
       "type": 3,
