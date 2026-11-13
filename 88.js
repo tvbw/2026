@@ -238,7 +238,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/javffm.json",
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/javffm1.json",
       "style": {
         "type": "rect",
         "ratio": 1.6
