@@ -3,20 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-  "key": "Nostr",
-  "name": "Nostr推荐",
-  "type": 3,
-  "api": "csp_Nostr",
-  "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
-    },
-    {
-  "key": "cctv",
-  "name": "cctv直播",
-  "type": 3,
-  "api": "csp_cctv",
-  "homePage": "https://raw.githubusercontent.com/tvbw/2026/main/cctv.html"
-    },
-    {
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
@@ -191,6 +177,28 @@
       "changeable": 1
     },
     {
+      "key": "51吃瓜V9",
+      "name": "❤️51吃瓜V9自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg.py"
+    },
+    {
+      "key": "51爆料v9",
+      "name": "❤️51爆料V9自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
+    },
+    {
       "key": "csp_xbpq_禁片天堂",
       "name": "❤️禁片天堂【🔞】",
       "type": 3,
@@ -207,19 +215,68 @@
       }
     },
     {
-      "key": "ss直播3",
-      "name": "❤️国货【🔞直播】-3",
+      "key": "csp_XYQHiker_11he1",
+      "name": "❤️11合一【🔞】",
+      "type": 3,
+      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
+      "api": "csp_XYQHiker",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/11he1.json",
+      "style": {
+        "type": "rect",
+        "ratio": 1.6
+      }
+    },
+    {
+      "key": "csp_XYQHiker_javffm",
+      "name": "4❤️JAVFFM【🔞】",
+      "type": 3,
+      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
+      "api": "csp_XYQHiker",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/javffm.json",
+      "style": {
+        "type": "rect",
+        "ratio": 1.6
+      }
+    },
+    {
+      "key": "🍁采花大盗",
+      "name": "🍁采花大盗",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/采花大盗.py"
+    },
+    {
+      "key": "🍁爆色",
+      "name": "🍁爆色",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/爆色.py"
+    },
+    {
+      "key": "溏心次元",
+      "name": "4❤️溏心次元｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py",
+      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py"
     },
     {
       "key": "csp_xbpq_s直播【🔞】",
@@ -249,28 +306,22 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/Cam4.py"
     },
     {
-      "key": "51吃瓜V9",
-      "name": "❤️51吃瓜V9自愈版｜🔞",
+      "key": "ss直播3",
+      "name": "❤️国货【🔞直播】-3",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg.py"
+      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/sebojuhe.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
     },
     {
-      "key": "51爆料v9",
-      "name": "❤️51爆料V9自愈版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
-    },
-    {
+
       "key": "🔞591AV3",
       "name": "🔞591AV(动态自愈版)",
       "type": 3,
@@ -381,28 +432,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/草榴社区.py"
     },
     {
-      "key": "🍁采花大盗",
-      "name": "🍁采花大盗",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/采花大盗.py"
-    },
-    {
-      "key": "🍁爆色",
-      "name": "🍁爆色",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/爆色.py"
-    },
-    {
+
       "key": "18av",
       "name": "5❤️18av【🔞】",
       "type": 3,
@@ -587,18 +617,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/成人卡通.py"
     },
     {
-      "key": "溏心次元",
-      "name": "4❤️溏心次元｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py",
-      "api": "https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py"
-    },
-    {
+
       "key": "日日撸.py",
       "name": "4❤️日日撸【🔞】",
       "type": 3,
@@ -636,123 +655,6 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/duanju202610.js"
-    },
-    {
-      "key": "py_2048成人短剧",
-      "name": "❤️2048成人短剧【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/2048%E6%88%90%E4%BA%BA%E7%9F%AD%E5%89%A7%5B18%5D.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "py_野果短剧",
-      "name": "❤️野果短剧【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/%E9%87%8E%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "py_禁果短剧",
-      "name": "❤️禁果短剧【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/%E7%A6%81%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "57短剧",
-      "name": "5❤️57短剧🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/57%E7%9F%AD%E5%89%A7.py"
-    },
-    {
-      "key": "黄果短剧 融合版",
-      "name": "5❤️黄果短剧融合版🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "api": "http://pglblb.test.upcdn.net/2026py/%E9%BB%84%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "黄色仓库",
-      "name": "🔞黄仓采集【🔞】",
-      "type": 1,
-      "playUrl": "https://jx.bfhsck.com/m3u8/?url=",
-      "ext": "https://hsckzy888.com/api.php/provide/vod/from/hsckm3u8/at/xmlsea/",
-      "api": "https://hsckzy888.com/api.php/provide/vod/from/hsckm3u8/at/xmlsea/",
-      "categories": [
-        "网红主播",
-        "国产传媒",
-        "探花系列",
-        "人妻熟女",
-        "日本无码",
-        "美乳巨乳",
-        "强制侵犯",
-        "制服诱惑",
-        "绝色佳人",
-        "风俗泡泡浴",
-        "家庭乱伦",
-        "AV解说",
-        "三级电影",
-        "少女萝莉",
-        "SM调教",
-        "绝顶潮吹",
-        "魔镜系列",
-        "时间停止",
-        "催眠洗脑",
-        "漫改系列",
-        "电车痴汉",
-        "淫欲痴女",
-        "AI换脸",
-        "网爆门",
-        "TS专区",
-        "女性向系列",
-        "女同性恋",
-        "男同性恋",
-        "欧美精品",
-        "国产自拍",
-        "日本动漫",
-        "3D动漫",
-        "韩国主播",
-        "泰国风情",
-        "OnlyFans"
-      ]
     },
     {
       "key": "白嫖之王-封面修复第二版",
@@ -933,21 +835,7 @@
       }
     },
     {
-      "key": "csp_XYQHiker_javffm",
-      "name": "4❤️JAVFFM【🔞】",
-      "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
-      "api": "csp_XYQHiker",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://raw.githubusercontent.com/tvbw/18-/main/tv/XYQHiker/javffm.json",
-      "style": {
-        "type": "rect",
-        "ratio": 1.6
-      }
-    },
-    {
+
       "key": "原创乱伦",
       "name": "5🍓原创乱伦｜🔞",
       "type": 3,
