@@ -52,12 +52,13 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ★ 你提供的 51爆料导航页/发布页
     NAV_URLS = [
+        "https://51cgo25.com",
+        "https://51cge23.com",
         "https://51cge26.com",
         "https://51cgf25.com",
         "https://51cgo22.com",
         "https://51cgo23.com",
         "https://51cgo24.com",
-        "https://51cge23.com",
         "https://51cgo20.com",
         "https://51cgo21.com",
         "https://51cge20.com",
