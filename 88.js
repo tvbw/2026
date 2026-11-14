@@ -49,6 +49,17 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
     },
     {
+      "key": "51大赛v9.9",
+      "name": "❤️51大赛V9.9超级自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds_v9.py"
+    },
+    {
       "key": "51爆料v9.9",
       "name": "❤️51爆料V9.9超级自愈版｜🔞",
       "type": 3,
@@ -1760,17 +1771,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/91hl.py"
     },
     {
-      "key": "51大赛",
-      "name": "❤️51大赛｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/refs/heads/main/51ds.py"
-    },
-    {
+
       "key": "push_agent",
       "name": "手机｜推送",
       "type": 3,
