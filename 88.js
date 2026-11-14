@@ -49,8 +49,8 @@
       "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
     },
     {
-      "key": "51吃瓜new_V自愈版1",
-      "name": "❤️51吃瓜V自愈版1｜🔞",
+      "key": "51吃瓜new_V9.9超级自愈版",
+      "name": "❤️51吃瓜V9.9超级自愈版｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -60,17 +60,7 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg_v9.py"
     },
     {
-      "key": "51吃瓜new_V自愈版2",
-      "name": "❤️51吃瓜V自愈版2｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg_v10.py"
-    },
-    {
+
       "key": "51大赛v9.9",
       "name": "❤️51大赛V9.9超级自愈版｜🔞",
       "type": 3,
