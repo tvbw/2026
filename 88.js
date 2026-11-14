@@ -49,6 +49,17 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
     },
     {
+      "key": "51爆料v9.9",
+      "name": "❤️51爆料V9.9超级自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl_v9.py"
+    },
+    {
       "key": "missav666",
       "name": "5❤️missav666【🔞】",
       "type": 3,
