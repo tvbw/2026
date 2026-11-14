@@ -39,11 +39,13 @@ except Exception:
     _CTX = None
 
 DOMAINS = [
-    'https://at.aygsjxzi.cc',
-    'https://chigua.com',
-    'https://51cg1.com',
-    'https://b79kj.avsedgssg.cc',
-    'https://amazing.mmxpvspw.cc',
+        "https://51cgo25.com",
+        "https://51cge23.com",
+        "https://51cge26.com",
+        "https://51cgf25.com",
+        "https://51cgo22.com",
+        "https://51cgo23.com",
+        "https://51cgo24.com",
 ]
 
 # 分类表: (slug, 名称)
