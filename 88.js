@@ -49,15 +49,15 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
     },
     {
-      "key": "51吃瓜new_v9",
-      "name": "❤️51吃瓜V9.9自愈版new写法｜🔞",
+      "key": "51吃瓜new_v9.9",
+      "name": "❤️51吃瓜V9.9超级自愈版｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg_new_v9.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg_v9.py"
     },
     {
       "key": "51大赛v9.9",
@@ -211,14 +211,14 @@
     },
     {
       "key": "51吃瓜V9",
-      "name": "❤️51吃瓜V9.9超级自愈版｜🔞",
+      "name": "❤️51吃瓜V9自愈版｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg_v9.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg.py"
     },
     {
       "key": "51爆料v9",
