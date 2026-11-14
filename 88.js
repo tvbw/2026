@@ -11,7 +11,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
     },
     {
       "key": "xb6v修护",
@@ -22,13 +22,13 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
       "key": "每日大赛_v9自愈版",
       "name": "❤️每日大赛v9自愈版🔞",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds_v9.py",
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/mrds_v9.py",
       "searchable": 1,
       "quickSearch": 1,
       "style": {
@@ -46,11 +46,11 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
     },
     {
-      "key": "51吃瓜new_v9.9",
-      "name": "❤️51吃瓜V9.9超级自愈版｜🔞",
+      "key": "51吃瓜new_V自愈版1",
+      "name": "❤️51吃瓜V自愈版1｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -58,6 +58,17 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg_v9.py"
+    },
+    {
+      "key": "51吃瓜new_V自愈版2",
+      "name": "❤️51吃瓜V自愈版2｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg_v10.py"
     },
     {
       "key": "51大赛v9.9",
@@ -68,7 +79,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds_v9.py"
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/51ds_v9.py"
     },
     {
       "key": "51爆料v9.9",
@@ -79,7 +90,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl_v9.py"
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/51bl_v9.py"
     },
     {
       "key": "missav666",
@@ -90,8 +101,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/missav666.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/missav666.py"
+      "ext": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/missav666.py",
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/missav666.py"
     },
     {
       "key": "py_missav免翻全分类版",
@@ -102,7 +113,7 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/missav免翻全分类版.py",
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/missav免翻全分类版.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
@@ -127,8 +138,8 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
+      "ext": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
     },
     {
       "key": "香蕉9合1最终优化版",
@@ -139,14 +150,14 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
     },
     {
       "key": "香蕉1区",
       "name": "5❤️香蕉1区【🔞】",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
+      "ext": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
       "playerType": 2,
       "searchable": 1,
       "quickSearch": 1,
@@ -166,7 +177,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91av.py"
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/91av.py"
     },
     {
       "key": "连播18AV",
@@ -177,7 +188,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/18av.py"
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/18av.py"
     },
     {
       "key": "py_4K_fullhd-fullhd3",
@@ -188,8 +199,8 @@
         "type": "rect",
         "ratio": 1.33
       },
-      "ext": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "ext": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
