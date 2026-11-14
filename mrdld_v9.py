@@ -57,11 +57,8 @@ class SiteConfig:
 
     # ---- 发布页 / APP 页 ----
     PUBLISH_URLS = [
-        "https://mrdld3.com",
         "https://mrdld1.com",
-        "https://mrdld2.com",
         "https://idld66.com/",
-        "https://mrdld1.app",
     ]
 
     # ---- 种子三级域名 ----
