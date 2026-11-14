@@ -52,14 +52,14 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 导航页：navone.cloud 描述 51 爆料的页面，从中提取主站域名 ----
     NAV_URLS = [
-        "https://gitlab.com/51blw/web",
         "https://51blk5.com",
+        "https://gitlab.com/51blw/web",
     ]
 
     # ---- 发布页 / 永久锚点：GitLab 是当前确认活跃的锚点 ----
     PUBLISH_URLS = [
-        "https://gitlab.com/51blw/web",          # ★ 最可靠
         "https://51blk6.com",
+        "https://gitlab.com/51blw/web",         # ★ 最可靠
         "https://51blk1.com",
         "https://51blk2.com",
         "https://51blk3.com",
