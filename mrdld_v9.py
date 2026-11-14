@@ -50,6 +50,7 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 导航页 ----
     NAV_URLS = [
+        "https://idld66.com/",
         "https://mrdld5.com",
         "https://mrdld6.com",
         "https://mrdld4.com",
@@ -57,22 +58,18 @@ class SiteConfig:
 
     # ---- 发布页 / APP 页 ----
     PUBLISH_URLS = [
-        "https://mrdld1.com",
         "https://idld66.com/",
+        "https://mrdld1.com",
     ]
 
     # ---- 种子三级域名 ----
     SEED_HOSTS = [
-        # 主线路
-        "https://admit.gmxuvdmp.cc/",
-        "https://affair.gmxuvdmp.cc/",
-        "https://agenda.gmxuvdmp.cc/",
-        # 备用线路
-        "https://d3c29opnva0hft.cloudfront.net/",
-        "https://beach.gmxuvdmp.cc/",
-        "https://bed.gmxuvdmp.cc/",
-        # 历史域名
-        "https://below.gmxuvdmp.cc/",
+        "https://doiwu1w2ofwf9.cloudfront.net/",
+        "https://admit.pvmqrajv.cc/",
+        "https://affair.pvmqrajv.cc/",
+        "https://agenda.pvmqrajv.cc/",
+        "https://balance.pvmqrajv.ccc/",
+        "https://bean.pvmqrajv.cc/",
     ]
 
     FALLBACK_HOST  = None
