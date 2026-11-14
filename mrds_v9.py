@@ -64,18 +64,14 @@ class SiteConfig:
 
     # ---- 种子三级域名（旧域名，访问时往往 302 到新域名）----
     SEED_HOSTS = [
-        # 导航页实测「主线路」
-        "https://adapt.unaydvxst.cc/",
-        "https://adjust.unaydvxst.cc/",
-        "https://cap.unaydvxst.cc/",
-        # 导航页实测「备用线路」
-        "https://bench.sezupttrb.cc/",
-        "https://beyond.sezupttrb.cc/",
-        "https://cast.sezupttrb.cc/",
-        # 旧种子（历史域名，一般仍可 302 到新域名）
-        "https://ceo.kludlvje.cc/",
-        "https://cause.kludlvje.cc/",
-        "https://amazing.kludlvje.cc/",
+        "https://always.orrjitqen.cc/",
+        "https://because.orrjitqen.cc/",
+        "https://certain.orrjitqen.cc/",
+        "https://alone.orrjitqen.cc/",
+        "https://after.orrjitqen.cc/",
+        "https://accuse.orrjitqen.cc/",
+        "https://animal.orrjitqen.cc/",
+        "https://adjust.orrjitqen.cc/",
     ]
 
     FALLBACK_HOST  = None
