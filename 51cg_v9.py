@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-51大赛 · 多域名自愈版（v9.9发布页自愈模板）
-================================
-锚点优先级：
-  1) GitLab 发布页 gitlab.com/51blw/web（README 明确更新至 2026-11-09，最可靠）
-  2) navone.cloud 描述页 → 从中提取 51blw.cloud / 51blw.online 主站域名
-  3) 51blw.cloud / 51blw.online / 51new.cloud / 51baoliao01.com / ymlkq.com 主站候选
-  4) 三轮探测回流（失败响应里继续挖新域名）
-  5) 全挂 → 过期缓存 → SEED[0] → 空
+51吃瓜 · 多域自愈 + 播放页关联推荐 融合版
+=========================================
+整合来源：
+  - 51new.txt：多域名自愈探测链（导航页 → 发布页 → 种子 → 回流）
+  - 51old.txt：站点抓取与播放解析逻辑（列表、详情、DPlayer、图片 AES）
 
-换站改 SiteConfig 四段：NAV_URLS / PUBLISH_URLS / SEED_HOSTS / SITE_KEYWORDS
+新增：
+  - 播放页关联推荐：将详情页中的相关文章作为“线路”挂入播放列表，
+    在播放器选集/线路弹窗中可直接切换，无需退出播放画面。
+
+换站只需修改 SiteConfig 中的四段：
+  NAV_URLS / PUBLISH_URLS / SEED_HOSTS / SITE_KEYWORDS
 """
 import json
 import re
@@ -47,10 +49,10 @@ LOG = logging.getLogger(__name__)
 
 
 # ==================================================================
-# ① 配置层（51系列标准，换站只改这一段）
+# ① 配置层（换站只改这一段）
 # ==================================================================
 class SiteConfig:
-    # ---- 导航页：navone.cloud 描述 51 爆料的页面，从中提取主站域名 ----
+    # ---- 导航页（从 51new 保留） ----
     NAV_URLS = [
         "https://51cgo25.com",
         "https://51cge23.com",
@@ -61,7 +63,7 @@ class SiteConfig:
         "https://51cgo24.com",
     ]
 
-    # ---- 发布页 / 永久锚点：GitLab 是当前确认活跃的锚点 ----
+    # ---- 发布页 / 永久锚点（从 51new 保留） ----
     PUBLISH_URLS = [
         "https://51cgo20.com",
         "https://51cgo21.com",
@@ -72,7 +74,7 @@ class SiteConfig:
         "https://51cge25.com",
     ]
 
-    # ---- 种子：只保留可能承载 HTML 主站的域名 ----
+    # ---- 种子域名（从 51new 保留） ----
     SEED_HOSTS = [
         "https://belt.wxxqhhht.cc/",
         "https://capture.wxxqhhht.cc/",
@@ -83,16 +85,16 @@ class SiteConfig:
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "51cg_host_v9.9"              # 换 key，强制清旧缓存
+    HOST_CACHE_KEY = "51cg_host_v10.0"
     HOST_CACHE_TTL = 6 * 3600
 
     PROBE_TIMEOUT        = 10
-    PROBE_MIN_HTML       = 2000
+    PROBE_MIN_HTML       = 1500
     PROBE_MIN_ARTICLE    = 1
     PROBE_MAX_ROUNDS     = 3
     PROBE_MAX_CANDIDATES = 30
 
-    SITE_KEYWORDS    = ["51吃瓜V9.9"]
+    SITE_KEYWORDS    = ["51吃瓜"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
     NAV_PAGE_KEYWORDS = (
@@ -125,13 +127,27 @@ class SiteConfig:
 
     EXTRA_BLACKLIST = ('beian.miit.gov.cn','w3.org','example.com')
 
+    # ---- 列表 / 详情选择器（融合 51old 的字段提取习惯） ----
     SEL_ARTICLE      = "#index article, #archive article, article"
     SEL_ARTICLE_HOME = "#index article, article"
     SEL_PLAYER       = ".dplayer"
     SEL_CONTENT      = ".post-content, article"
-    SEL_TAGS         = ".post-tags a, .tags a, .keywords a"
+    SEL_TAGS         = ".tags .keywords a, .post-tags a, .tags a"
     SEL_SUMMARY      = ".post-content"
     SEL_TITLE        = ".post-title, h1"
+
+    # ---- 相关推荐区域选择器（按优先级尝试） ----
+    RELATED_SELECTORS = [
+        ".related-posts article",
+        ".yarpp-related article",
+        ".post-content + .related article",
+        ".related article",
+        "#related article",
+        ".recommend-list article",
+        "aside article",
+        ".sidebar article",
+        ".post-content ~ .navigation article",
+    ]
 
     SEL_NAV = [
         "ul.navbar-nav.mr-auto > li.nav-item > a.nav-link",
@@ -169,7 +185,7 @@ class SiteConfig:
     HEADERS = {
         "User-Agent": ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
-                       "Chrome/120.0.0.0 Safari/537.36"),
+                       "Chrome/134.0.0.0 Safari/537.36"),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "zh-CN,zh;q=0.9",
         "Connection": "keep-alive",
@@ -178,7 +194,7 @@ class SiteConfig:
 
 
 # ==================================================================
-# ② 域名解析器（v7 完整逻辑，未改动）
+# ② 域名解析器（保留 51new 的完整逻辑，微调）
 # ==================================================================
 class DomainResolver:
     SKIP_HREF = (
@@ -642,11 +658,6 @@ class DomainResolver:
                 print(f"第 {round_no} 轮结束，新增 {len(next_queue)} 个，进下一轮")
 
         print(f"[诊断] 已试 {len(tried)} 个域名，全部失败")
-        print(f"[诊断] 排查：")
-        print(f"  1) 日志里 [源失败] → 该源无法访问（网络/DNS/需梯子）")
-        print(f"  2) 日志里 [拦截] → CloudFlare 5秒盾，需换源")
-        print(f"  3) 日志里 [提取为空] → 抓到了但没提取到域名，看打印的HTML片段")
-        print(f"  4) 日志里 [不匹配] → 候选域名有效但不是主站，改 SITE_KEYWORDS")
         return self._fallback(cached, "所有轮失败")
 
     def _fallback(self, cached, reason):
@@ -664,7 +675,7 @@ class DomainResolver:
 
 
 # ==================================================================
-# ③ 主爬虫基类
+# ③ 主爬虫基类（融合 51new 的域名自愈 + 51old 的抓取/播放）
 # ==================================================================
 class BaseMultiDomainSpider(BaseSpider):
     CONFIG = SiteConfig
@@ -714,7 +725,7 @@ class BaseMultiDomainSpider(BaseSpider):
             self.headers.update({"Origin": self.host, "Referer": self.host + "/"})
         print(f"使用站点: {self.host}")
 
-    def getName(self):          return "🌈 51爆料|多域自愈版"
+    def getName(self):          return "🌈 51爆料|多域自愈+关联推荐"
     def manualVideoCheck(self): return False
     def isVideoFormat(self, u): return any(e in (u or "") for e in (".m3u8", ".mp4", ".ts"))
     def destroy(self):          self._img_cache.clear()
@@ -768,92 +779,7 @@ class BaseMultiDomainSpider(BaseSpider):
         seen.add(new)
         return new
 
-    def homeContent(self, filter=False):
-        if not self.host:
-            print("[homeContent] self.host 为空，直接返回空列表")
-            return {"class": [], "list": []}
-        r, data = self._get_soup(self.host)
-        if data is None:
-            print(f"[homeContent] 抓取 {self.host} 失败")
-            return {"class": [], "list": []}
-        lst = self._parse_list(data(self.CONFIG.SEL_ARTICLE_HOME))
-        if not lst:
-            print(f"[homeContent] 列表解析为空，HTML长度={len(r.text or '')}，检查 SEL_ARTICLE_HOME")
-        return {
-            "class": self._parse_classes(data),
-            "list":  lst,
-        }
-
-    def homeVideoContent(self):
-        if not self.host:
-            return {"list": []}
-        r, data = self._get_soup(self.host)
-        if data is None:
-            return {"list": []}
-        return {"list": self._parse_list(data(self.CONFIG.SEL_ARTICLE_HOME))}
-
-    def _parse_classes(self, data):
-        classes, seen = [], set()
-        def _add(href, name):
-            href = (href or "").strip()
-            name = (name or "").strip()
-            if not href or not name or href == "#":
-                return
-            if href.startswith(("javascript:", "mailto:", "tel:")):
-                return
-            if not href.startswith("http"):
-                href = "/" + href.lstrip("/")
-            if href in seen:
-                return
-            seen.add(href)
-            classes.append({"type_name": name, "type_id": href})
-        for sel in self.CONFIG.SEL_NAV:
-            for k in data(sel).items():
-                a = k if k.is_("a") else k("a").eq(0)
-                _add(a.attr("href"), a.text())
-            if classes:
-                break
-        for sel in self.CONFIG.SEL_SUB_NAV:
-            for a in data(sel).items():
-                _add(a.attr("href"), a.attr("title") or a.text())
-            if classes:
-                break
-        if not classes:
-            classes = [dict(self.CONFIG.DEFAULT_CATEGORY)]
-        return classes
-
-    def categoryContent(self, tid, pg=1, filter=False, extend=None):
-        if not self.host:
-            return {"list": [], "page": 1, "pagecount": 1, "limit": 90, "total": 0}
-        pg = int(pg or 1)
-        if "@folder" in tid:
-            v = self._parse_folder(tid.replace("@folder", ""))
-            return {"list": v, "page": 1, "pagecount": 1, "limit": 90, "total": len(v)}
-        url = self._build_page_url(tid, pg)
-        r, data = self._get_soup(url)
-        if data is None:
-            return {"list": [], "page": pg, "pagecount": 9999, "limit": 90, "total": 0}
-        return {
-            "list": self._parse_list(data(self.CONFIG.SEL_ARTICLE), tid),
-            "page": pg, "pagecount": 9999, "limit": 90, "total": 999999,
-        }
-
-    def _build_page_url(self, tid, pg):
-        if tid.startswith("http"):
-            base = tid.rstrip("/")
-        else:
-            base = (self.host + "/" + tid.lstrip("/")).rstrip("/")
-        if pg == 1:
-            return base + "/"
-        host_ns = self.host.rstrip("/")
-        if base == host_ns:
-            return "%s/page/%d/" % (host_ns, pg)
-        if "/category/" in base or "/tag/" in base:
-            return "%s/%d/" % (base, pg)
-        if "/page/" in base:
-            return "%s/%d/" % (base, pg)
-        return "%s/page/%d/" % (base, pg)
-
+    # ---------------- 列表解析（融合 51old 的 getlist 习惯） ----------------
     def _parse_list(self, data, tid=""):
         is_folder = "/mrdg" in (tid or "")
         videos = []
@@ -865,42 +791,71 @@ class BaseMultiDomainSpider(BaseSpider):
                 title = (k.text() or "").strip()
             if not href or not title:
                 continue
+            # 日期：优先 datePublished，其次 time / post-meta
+            remarks = (k('span[itemprop="datePublished"]').text()
+                       or k("time").text()
+                       or k(".post-meta, .entry-meta").text() or "").strip()
+            if not remarks:
+                m = re.search(r"(\d{4}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日)", k.text())
+                if not m:
+                    m = re.search(r"(\d{4}-\d{1,2}-\d{1,2})", k.text())
+                remarks = m.group(1) if m else ""
             videos.append({
                 "vod_id":      "%s%s" % (href, "@folder" if is_folder else ""),
-                "vod_name":    title,
+                "vod_name":    title.replace("\n", " "),
                 "vod_pic":     self._parse_pic(k),
-                "vod_remarks": self._parse_date(k),
+                "vod_remarks": remarks,
                 "vod_tag":     "folder" if is_folder else "",
                 "style":       {"type": "rect", "ratio": 1.33},
             })
         return videos
 
-    def _parse_folder(self, id):
-        r, data = self._get_soup(self._abs(id))
-        if data is None:
-            return []
-        out = []
-        for i, h2 in enumerate(data(".post-content h2").items()):
-            p_txt = data(".post-content p").eq(i * 2)
-            p_img = data(".post-content p").eq(i * 2 + 1)
-            out.append({
-                "vod_id":      p_txt("a").attr("href"),
-                "vod_name":    p_txt.text().strip(),
-                "vod_pic":     self._parse_pic(p_img),
-                "vod_remarks": h2.text().strip(),
-            })
-        return out
+    def _parse_pic(self, k):
+        # 沿用 51old 的 loadBannerDirect，同时回退到 51new 的 _extract_img
+        script_text = k("script").text()
+        m = re.search(r"loadBannerDirect\('([^']+)'", script_text or "")
+        if m:
+            return self._proc_url(m.group(1))
+        return self._extract_img(script_text, k)
 
-    def searchContent(self, key, quick=False, pg=1):
-        if not self.host:
-            return {"list": [], "page": 1, "pagecount": 1}
-        pg = int(pg or 1)
-        url = "%s/search/%s/%s" % (self.host, key, ("%d/" % pg) if pg > 1 else "")
-        r, data = self._get_soup(url)
-        if data is None:
-            return {"list": [], "page": pg, "pagecount": 9999}
-        return {"list": self._parse_list(data("article")), "page": pg, "pagecount": 9999}
+    # ---------------- 相关推荐提取（新功能） ----------------
+    def _extract_related(self, data, current_href=""):
+        """
+        从详情页提取相关推荐/相邻文章。
+        返回 [(title, href), ...]
+        """
+        out, seen = [], {current_href.rstrip("/")}
+        for sel in self.CONFIG.RELATED_SELECTORS:
+            items = data(sel)
+            if not items:
+                continue
+            for k in items.items():
+                a = k("a").eq(0)
+                href = a.attr("href") or k.attr("href")
+                title = (k("h2").text() or k(".entry-title").text()
+                         or k(".post-title").text() or a.text() or "").strip()
+                if not href or not title:
+                    continue
+                href = self._abs(href)
+                if href.rstrip("/") in seen:
+                    continue
+                seen.add(href.rstrip("/"))
+                out.append((title, href))
+            if out:
+                break
+        # 如果没命中专用选择器，尝试从文章底部的“上一篇/下一篇”或相邻 article 补
+        if not out:
+            for sel in (".post-navigation a", ".nav-links a", "a[rel='prev'], a[rel='next']"):
+                for a in data(sel).items():
+                    href, title = a.attr("href"), a.text().strip()
+                    if href and title:
+                        href = self._abs(href)
+                        if href.rstrip("/") not in seen:
+                            seen.add(href.rstrip("/"))
+                            out.append((title, href))
+        return out[:12]  # 限制数量，避免播放列表过长
 
+    # ---------------- 详情页 ----------------
     def detailContent(self, ids):
         vid = str(ids[0] if isinstance(ids, (list, tuple)) else ids)
         if not self.host:
@@ -909,11 +864,25 @@ class BaseMultiDomainSpider(BaseSpider):
         r, data = self._get_soup(url)
         if data is None:
             return {"list": [{"vod_play_from": "51爆料", "vod_play_url": "获取失败"}]}
+
+        # 1) 当前视频播放列表
         playlist = self._extract_playlist(data)
-        play_url = "#".join(playlist) or "未找到视频源，请访问网页$%s" % url
+
+        # 2) 相关推荐（作为额外线路）
+        related = self._extract_related(data, current_href=url)
+        related_lines_from, related_lines_url = [], []
+        for idx, (title, href) in enumerate(related, 1):
+            related_lines_from.append(f"📌 相关推荐 {idx}")
+            related_lines_url.append(f"{title}${href}")
+
+        # 3) 合并：当前播放线路 + 相关推荐线路
+        play_from_list = ["51爆料"] + related_lines_from
+        play_url_list = ["#".join(playlist) if playlist else f"未找到视频源，请访问网页${url}"]
+        play_url_list.extend(related_lines_url)
+
         return {"list": [{
-            "vod_play_from": "51爆料",
-            "vod_play_url":  play_url,
+            "vod_play_from": "$$$".join(play_from_list),
+            "vod_play_url":  "$$$".join(play_url_list),
             "vod_content":   self._extract_content(data),
         }]}
 
@@ -974,19 +943,7 @@ class BaseMultiDomainSpider(BaseSpider):
             return " ".join(tags) + "\n\n" + (data(self.CONFIG.SEL_SUMMARY).text() or "")[:150]
         return data(self.CONFIG.SEL_TITLE).text() or "未命名"
 
-    def _parse_pic(self, k):
-        return self._extract_img(k("script").text(), k)
-
-    def _parse_date(self, k):
-        t = k("time").text()
-        if t:
-            return t.strip()
-        full = k.text()
-        m = re.search(r"(\d{4}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日)", full)
-        if not m:
-            m = re.search(r"(\d{4}-\d{1,2}-\d{1,2})", full)
-        return m.group(1) if m else ""
-
+    # ---------------- 图片 / 播放代理（沿用 51new，补充 51old 的 AES） ----------------
     def _extract_img(self, text, elem=None):
         if m := re.search(r"loadBannerDirect\('([^']+)'", text or ""):
             return self._proc_url(m.group(1))
@@ -1097,6 +1054,114 @@ class BaseMultiDomainSpider(BaseSpider):
         res = self._get(real)
         return [200, "video/mp2t", res.content] if res else [404, "text/plain", b""]
 
+    # ---------------- 首页 / 分类 / 搜索（保持 51new 骨架，列表用融合后的 _parse_list） ----------------
+    def homeContent(self, filter=False):
+        if not self.host:
+            return {"class": [], "list": []}
+        r, data = self._get_soup(self.host)
+        if data is None:
+            return {"class": [], "list": []}
+        return {
+            "class": self._parse_classes(data),
+            "list":  self._parse_list(data(self.CONFIG.SEL_ARTICLE_HOME)),
+        }
+
+    def homeVideoContent(self):
+        if not self.host:
+            return {"list": []}
+        r, data = self._get_soup(self.host)
+        if data is None:
+            return {"list": []}
+        return {"list": self._parse_list(data(self.CONFIG.SEL_ARTICLE_HOME))}
+
+    def _parse_classes(self, data):
+        classes, seen = [], set()
+        def _add(href, name):
+            href = (href or "").strip()
+            name = (name or "").strip()
+            if not href or not name or href == "#":
+                return
+            if href.startswith(("javascript:", "mailto:", "tel:")):
+                return
+            if not href.startswith("http"):
+                href = "/" + href.lstrip("/")
+            if href in seen:
+                return
+            seen.add(href)
+            classes.append({"type_name": name, "type_id": href})
+        for sel in self.CONFIG.SEL_NAV:
+            for k in data(sel).items():
+                a = k if k.is_("a") else k("a").eq(0)
+                _add(a.attr("href"), a.text())
+            if classes:
+                break
+        for sel in self.CONFIG.SEL_SUB_NAV:
+            for a in data(sel).items():
+                _add(a.attr("href"), a.attr("title") or a.text())
+            if classes:
+                break
+        if not classes:
+            classes = [dict(self.CONFIG.DEFAULT_CATEGORY)]
+        return classes
+
+    def categoryContent(self, tid, pg=1, filter=False, extend=None):
+        if not self.host:
+            return {"list": [], "page": 1, "pagecount": 1, "limit": 90, "total": 0}
+        pg = int(pg or 1)
+        if "@folder" in tid:
+            v = self._parse_folder(tid.replace("@folder", ""))
+            return {"list": v, "page": 1, "pagecount": 1, "limit": 90, "total": len(v)}
+        url = self._build_page_url(tid, pg)
+        r, data = self._get_soup(url)
+        if data is None:
+            return {"list": [], "page": pg, "pagecount": 9999, "limit": 90, "total": 0}
+        return {
+            "list": self._parse_list(data(self.CONFIG.SEL_ARTICLE), tid),
+            "page": pg, "pagecount": 9999, "limit": 90, "total": 999999,
+        }
+
+    def _build_page_url(self, tid, pg):
+        if tid.startswith("http"):
+            base = tid.rstrip("/")
+        else:
+            base = (self.host + "/" + tid.lstrip("/")).rstrip("/")
+        if pg == 1:
+            return base + "/"
+        host_ns = self.host.rstrip("/")
+        if base == host_ns:
+            return "%s/page/%d/" % (host_ns, pg)
+        if "/category/" in base or "/tag/" in base:
+            return "%s/%d/" % (base, pg)
+        if "/page/" in base:
+            return "%s/%d/" % (base, pg)
+        return "%s/page/%d/" % (base, pg)
+
+    def _parse_folder(self, id):
+        r, data = self._get_soup(self._abs(id))
+        if data is None:
+            return []
+        out = []
+        for i, h2 in enumerate(data(".post-content h2").items()):
+            p_txt = data(".post-content p").eq(i * 2)
+            p_img = data(".post-content p").eq(i * 2 + 1)
+            out.append({
+                "vod_id":      p_txt("a").attr("href"),
+                "vod_name":    p_txt.text().strip(),
+                "vod_pic":     self._parse_pic(p_img),
+                "vod_remarks": h2.text().strip(),
+            })
+        return out
+
+    def searchContent(self, key, quick=False, pg=1):
+        if not self.host:
+            return {"list": [], "page": 1, "pagecount": 1}
+        pg = int(pg or 1)
+        url = "%s/search/%s/%s" % (self.host, key, ("%d/" % pg) if pg > 1 else "")
+        r, data = self._get_soup(url)
+        if data is None:
+            return {"list": [], "page": pg, "pagecount": 9999}
+        return {"list": self._parse_list(data("article")), "page": pg, "pagecount": 9999}
+
 
 # ==================================================================
 # ④ 具体站点类
@@ -1105,311 +1170,4 @@ class Spider(BaseMultiDomainSpider):
     CONFIG = SiteConfig
 
     def getName(self):
-        return "🌈 51爆料|多域自愈版"
-
-
-# ==================================================================
-# ⑤ 播放源聚合扩展（v7 原样保留）
-# ==================================================================
-def _install_playlist_extension(_C):
-    if getattr(_C, "_pl_patched", False):
-        return _C
-    _C._pl_patched = True
-    _orig_init   = getattr(_C, "init", None)
-    _orig_home   = getattr(_C, "homeContent", None)
-    _orig_homev  = getattr(_C, "homeVideoContent", None)
-    _orig_cate   = getattr(_C, "categoryContent", None)
-    _orig_detail = getattr(_C, "detailContent", None)
-    _orig_search = getattr(_C, "searchContent", None)
-    _orig_searchp= getattr(_C, "searchContentPage", None)
-    _orig_player = getattr(_C, "playerContent", None)
-
-    def _ensure(self):
-        if not hasattr(self, "page_cache"):
-            self.page_cache, self.page_index, self.page_keys, self._src_cache = {}, {}, [], {}
-
-    def _clean(s): return str(s or "").replace("$", " ").replace("#", " ").strip()
-
-    def _enc(s):
-        try: return quote(str(s or ""), safe="")
-        except Exception: return str(s or "")
-
-    def _dec(s):
-        try: return unquote(str(s or ""))
-        except Exception: return str(s or "")
-
-    def _cache_page(self, key, items):
-        _ensure(self)
-        out = [x for x in (items or []) if isinstance(x, dict) and x.get("vod_id")]
-        if not out:
-            return
-        self.page_cache[key] = out
-        if key in self.page_keys:
-            self.page_keys.remove(key)
-        self.page_keys.append(key)
-        for it in out:
-            self.page_index[str(it["vod_id"])] = key
-        while len(self.page_keys) > 30:
-            self.page_cache.pop(self.page_keys.pop(0), None)
-
-    def _page_of(self, vid):
-        _ensure(self)
-        key = self.page_index.get(str(vid))
-        return list(self.page_cache.get(key, [])) if key in self.page_cache else []
-
-    def _as_result(r):
-        if r is None:
-            return {}
-        if isinstance(r, dict):
-            return r
-        if isinstance(r, (bytes, bytearray)):
-            r = r.decode("utf-8", "ignore")
-        if isinstance(r, str):
-            s = r.strip()
-            if s[:1] in "{[": 
-                try:
-                    return json.loads(s)
-                except Exception:
-                    return {}
-        return {}
-
-    def _split_sources(vod):
-        fr = str((vod or {}).get("vod_play_from") or "").split("$$$")
-        ur = str((vod or {}).get("vod_play_url") or "").split("$$$")
-        while len(ur) < len(fr):
-            ur.append("")
-        src = []
-        for i, name in enumerate(fr):
-            parts = []
-            for p in (ur[i] or "").split("#"):
-                if not p:
-                    continue
-                n, u = p.split("$", 1) if "$" in p else (str(i + 1), p)
-                parts.append((_clean(n), u))
-            src.append((_clean(name) or "线路%d" % (i + 1), parts))
-        return [x for x in src if x[1]]
-
-    def _call_detail(self, vid):
-        if not _orig_detail:
-            return {}
-        try:
-            return _as_result(_orig_detail(self, [vid]))
-        except TypeError:
-            try:
-                return _as_result(_orig_detail(self, vid))
-            except Exception:
-                return {}
-        except Exception:
-            return {}
-
-    def _load_src(self, vid):
-        _ensure(self)
-        vid = str(vid)
-        if vid in self._src_cache:
-            return self._src_cache[vid]
-        r = self._pl_call_detail(vid)
-        vod = ((r.get("list") or [None])[0]) or {}
-        src = _split_sources(vod)
-        self._src_cache[vid] = src
-        return src
-
-    def _item_parts(self, it, src_idx, current_sources, current_vid):
-        iid = str(it.get("vod_id") or "")
-        if not iid:
-            return []
-        name = _clean(it.get("vod_name") or iid) or iid
-        if iid == str(current_vid):
-            eps = []
-            if current_sources:
-                eps = (current_sources[src_idx][1]
-                       if src_idx < len(current_sources) and current_sources[src_idx][1]
-                       else current_sources[0][1])
-            if len(eps) > 1:
-                out = []
-                for i, (en, u) in enumerate(eps):
-                    out.append("%s$%s" % (_clean("%s %s" % (name, en or "%02d" % (i + 1))), u))
-                return out
-            if eps:
-                return ["%s$%s" % (name, eps[0][1])]
-            return ["%s$nid:%s" % (name, _enc(iid))]
-        return ["%s$nid:%s" % (name, _enc(iid))]
-
-    def _apply_playlist(self, vid, vod, items):
-        sources = _split_sources(vod)
-        _ensure(self)
-        self._src_cache[str(vid)] = sources
-        if not items:
-            return vod
-        ordered = [x for x in items if str(x.get("vod_id")) == str(vid)]
-        ordered += [x for x in items if str(x.get("vod_id")) != str(vid)]
-        plist, seen = [], set()
-        for it in ordered:
-            iid = str(it.get("vod_id") or "")
-            if not iid or iid in seen:
-                continue
-            seen.add(iid)
-            plist.append(it)
-        if not plist:
-            return vod
-        if not sources:
-            sources = [("线路1", [("播放", "nid:%s" % _enc(vid))])]
-        pf, pu = [], []
-        for i, (sname, _e) in enumerate(sources):
-            parts = []
-            for it in plist:
-                parts.extend(self._pl_item_parts(it, i, sources, vid))
-            if not parts:
-                continue
-            pf.append(sname or "线路%d" % (i + 1))
-            pu.append("#".join(parts))
-        if not pf:
-            return vod
-        vod = dict(vod)
-        vod["vod_play_from"] = "$$$".join(pf)
-        vod["vod_play_url"]  = "$$$".join(pu)
-        return vod
-
-    def init(self, *a, **kw):
-        _ensure(self)
-        if _orig_init:
-            return _orig_init(self, *a, **kw)
-
-    def homeContent(self, *a, **kw):
-        _ensure(self)
-        r = _orig_home(self, *a, **kw) if _orig_home else {}
-        try: _cache_page(self, ("home",), _as_result(r).get("list"))
-        except Exception: pass
-        return r
-
-    def homeVideoContent(self, *a, **kw):
-        _ensure(self)
-        r = _orig_homev(self, *a, **kw) if _orig_homev else {"list": []}
-        try: _cache_page(self, ("homev",), _as_result(r).get("list"))
-        except Exception: pass
-        return r
-
-    def categoryContent(self, *a, **kw):
-        _ensure(self)
-        r = _orig_cate(self, *a, **kw) if _orig_cate else {"list": []}
-        try:
-            tid = a[0] if a else kw.get("tid", "")
-            pg  = a[1] if len(a) > 1 else kw.get("pg", "1")
-            ext = a[3] if len(a) > 3 else kw.get("extend", "")
-            _cache_page(self, ("cate", str(tid), str(pg), str(ext)),
-                        _as_result(r).get("list"))
-        except Exception: pass
-        return r
-
-    def searchContent(self, *a, **kw):
-        _ensure(self)
-        if not _orig_search:
-            return {"list": []}
-        r = _orig_search(self, *a, **kw)
-        try:
-            key = a[0] if a else kw.get("key", "")
-            pg  = a[2] if len(a) > 2 else kw.get("pg", "1")
-            _cache_page(self, ("search", str(key), str(pg)), _as_result(r).get("list"))
-        except Exception: pass
-        return r
-
-    def searchContentPage(self, *a, **kw):
-        _ensure(self)
-        if not _orig_searchp:
-            return {"list": []}
-        r = _orig_searchp(self, *a, **kw)
-        try:
-            key = a[0] if a else kw.get("key", "")
-            pg  = a[2] if len(a) > 2 else kw.get("page", kw.get("pg", "1"))
-            _cache_page(self, ("searchp", str(key), str(pg)), _as_result(r).get("list"))
-        except Exception: pass
-        return r
-
-    def detailContent(self, ids, *a, **kw):
-        _ensure(self)
-        if isinstance(ids, (list, tuple)):
-            vid = str(ids[0]) if ids else ""
-            call_ids = list(ids)
-        else:
-            vid = str(ids)
-            call_ids = [vid]
-        if vid.startswith("nid:"):
-            vid = _dec(vid[4:])
-            call_ids[0] = vid
-        cached = _page_of(self, vid)
-        if _orig_detail:
-            try:
-                r = _orig_detail(self, call_ids, *a, **kw)
-            except TypeError:
-                r = _orig_detail(self, call_ids)
-        else:
-            r = {"list": []}
-        try:
-            rr = _as_result(r)
-            lst = rr.get("list") or []
-            if not lst or not isinstance(lst[0], dict):
-                return r
-            vod = dict(lst[0])
-            vod["vod_id"] = str(vod.get("vod_id") or vid)
-            if not vod.get("vod_name") and cached:
-                hit = next((x for x in cached if str(x.get("vod_id")) == vid), None)
-                if hit:
-                    vod["vod_name"] = hit.get("vod_name") or vid
-            if cached:
-                vod = self._pl_apply_playlist(vid, vod, cached)
-            rr = dict(rr)
-            rr["list"] = [vod]
-            if isinstance(r, dict) or r is None:
-                return rr
-            try:
-                return json.dumps(rr, ensure_ascii=False)
-            except Exception:
-                return rr
-        except Exception:
-            return r
-
-    def playerContent(self, flag, id, vipFlags=None, *a, **kw):
-        _ensure(self)
-        s = str(id)
-        if s.startswith("nid:"):
-            vid = _dec(s[4:])
-            sources = self._pl_load_src(vid)
-            real = ""
-            if sources:
-                picked = None
-                for name, eps in sources:
-                    if str(name) == str(flag) and eps:
-                        picked = eps
-                        break
-                if not picked:
-                    picked = sources[0][1]
-                if picked:
-                    real = picked[0][1]
-            id = real if real and not str(real).startswith("nid:") else vid
-        if not _orig_player:
-            return {"parse": 0, "url": id}
-        try:
-            return _orig_player(self, flag, id, vipFlags, *a, **kw)
-        except TypeError:
-            try:
-                return _orig_player(self, flag, id, vipFlags)
-            except TypeError:
-                return _orig_player(self, flag, id)
-
-    _C._pl_call_detail    = _call_detail
-    _C._pl_load_src       = _load_src
-    _C._pl_item_parts     = _item_parts
-    _C._pl_apply_playlist = _apply_playlist
-    if _orig_init:    _C.init              = init
-    if _orig_home:    _C.homeContent       = homeContent
-    if _orig_homev:   _C.homeVideoContent  = homeVideoContent
-    if _orig_cate:    _C.categoryContent   = categoryContent
-    if _orig_search:  _C.searchContent     = searchContent
-    if _orig_searchp: _C.searchContentPage = searchContentPage
-    if _orig_detail:  _C.detailContent     = detailContent
-    if _orig_player:  _C.playerContent     = playerContent
-    return _C
-
-try:
-    _install_playlist_extension(Spider)
-except Exception:
-    pass
+        return "🌈 51爆料|多域自愈+关联推荐"
