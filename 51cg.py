@@ -85,7 +85,7 @@ class SiteConfig:
     HOST_CACHE_KEY = "51cg_host_v9"          # ★ 再次换 Key，强制丢弃所有旧缓存
     HOST_CACHE_TTL = 6 * 3600
     # ★ 关键词覆盖 51爆料 及可能出现的变体
-    SITE_KEYWORDS    = ["51吃瓜v9"]
+    SITE_KEYWORDS    = ["51吃瓜v99"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
       # ---- 探测参数 ----
