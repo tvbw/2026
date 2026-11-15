@@ -45,13 +45,6 @@ except Exception:
 
 LOG = logging.getLogger(__name__)
 
-    # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 10
-    PROBE_MIN_HTML       = 1000              # 略降低，适应可能较简单的导航页
-    PROBE_MIN_ARTICLE    = 1
-    PROBE_MAX_ROUNDS     = 2                 # 三轮回流，给“导航→三级”的链路更多机会
-    PROBE_MAX_CANDIDATES = 30
-
 # ==================================================================
 # ① 配置层（51系列标准，换站只改这一段）
 # ==================================================================
@@ -87,6 +80,13 @@ class SiteConfig:
     SITE_KEYWORDS    = ["51爆料"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
+      # ---- 探测参数 ----
+    PROBE_TIMEOUT        = 10
+    PROBE_MIN_HTML       = 1000              # 略降低，适应可能较简单的导航页
+    PROBE_MIN_ARTICLE    = 1
+    PROBE_MAX_ROUNDS     = 2                 # 三轮回流，给“导航→三级”的链路更多机会
+    PROBE_MAX_CANDIDATES = 30
+  
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "推荐访问", "线路正常",
         "官方导航", "发布页", "备用线路", "地址发布页", "永久地址", "最新地址",
