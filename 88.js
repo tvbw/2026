@@ -57,7 +57,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg_v9.py"
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/51cg_v9.py"
     },
     {
 
@@ -69,7 +69,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/51ds_v9.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds_v9.py"
     },
     {
       "key": "51爆料v9.9",
@@ -80,7 +80,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/51bl_v9.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl_v9.py"
     },
     {
       "key": "missav666",
