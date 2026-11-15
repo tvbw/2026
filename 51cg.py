@@ -83,16 +83,16 @@ class SiteConfig:
 
     FALLBACK_HOST  = None
     HOST_CACHE_KEY = "51cg_host_v9"          # ★ 再次换 Key，强制丢弃所有旧缓存
-    HOST_CACHE_TTL = 6 * 3600
+    HOST_CACHE_TTL = 25000
     # ★ 关键词覆盖 51爆料 及可能出现的变体
     SITE_KEYWORDS    = ["51吃瓜v99"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
       # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 10
-    PROBE_MIN_HTML       = 1000              # 略降低，适应可能较简单的导航页
+    PROBE_TIMEOUT        = 15
+    PROBE_MIN_HTML       = 4000           # 略降低，适应可能较简单的导航页
     PROBE_MIN_ARTICLE    = 1
-    PROBE_MAX_ROUNDS     = 2                 # 三轮回流，给“导航→三级”的链路更多机会
+    PROBE_MAX_ROUNDS     = 2              # 三轮回流，给“导航→三级”的链路更多机会
     PROBE_MAX_CANDIDATES = 30
   
     NAV_PAGE_KEYWORDS = (
