@@ -82,11 +82,11 @@ class SiteConfig:
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
       # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 10
-    PROBE_MIN_HTML       = 1000              # 略降低，适应可能较简单的导航页
-    PROBE_MIN_ARTICLE    = 1                 # 1宽松，2严格
-    PROBE_MAX_ROUNDS     = 2                 # 两轮回流，给“导航→三级”的链路更多机会
-    PROBE_MAX_CANDIDATES = 30     
+    PROBE_TIMEOUT        = 10               # 原8，给慢站留余量
+    PROBE_MIN_HTML       = 2000             # 原 2500，略降低避免误判
+    PROBE_MIN_ARTICLE    = 1                # 原2，改为 1（宽松）
+    PROBE_MAX_ROUNDS     = 2                # 原1，增加一轮回流
+    PROBE_MAX_CANDIDATES = 30    
     
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "推荐访问", "线路正常",
