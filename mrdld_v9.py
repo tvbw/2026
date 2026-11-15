@@ -50,7 +50,7 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 导航页 ----
     NAV_URLS = [
-        "https://mrdld3.com",
+        "https://mrdld7.com",
         "https://mrdld6.com",
         "https://mrdld4.com",
     ]
