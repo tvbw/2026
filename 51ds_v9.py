@@ -52,18 +52,15 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 导航页：navone.cloud 描述 51 爆料的页面，从中提取主站域名 ----
     NAV_URLS = [
-        "https://51dsa38.com",
-        "https://51dsa39.com/",
-        "https://51dsa40.com",
+        "https://51dsa33.com",
+        "https://51dsa36.com/",
     ]
 
     # ---- 发布页 / 永久锚点：GitLab 是当前确认活跃的锚点 ----
     PUBLISH_URLS = [
-        "https://51dsa30.com/",
-        "https://51dsa31.com/",
-        "https://51dsa32.com/",
-        "https://51dsa33.com/",
-        "https://51dsa36.com/",
+        "https://51dsa38.com/",
+        "https://51dsa39.com/",
+        "https://51dsa40.com/",
     ]
 
     # ---- 种子：只保留可能承载 HTML 主站的域名 ----
@@ -82,8 +79,8 @@ class SiteConfig:
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
       # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 10               # 原8，给慢站留余量
-    PROBE_MIN_HTML       = 2000             # 原 2500，略降低避免误判
+    PROBE_TIMEOUT        = 15               # 原8，给慢站留余量
+    PROBE_MIN_HTML       = 2500             # 原 2500，略降低避免误判
     PROBE_MIN_ARTICLE    = 1                # 原2，改为 1（宽松）
     PROBE_MAX_ROUNDS     = 2                # 原1，增加一轮回流
     PROBE_MAX_CANDIDATES = 30
