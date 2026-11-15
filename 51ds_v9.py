@@ -54,6 +54,10 @@ class SiteConfig:
     NAV_URLS = [
         "https://51dsa33.com",
         "https://51dsa36.com/",
+        "https://51dsa1.com",
+        "https://51dsa2.com/",
+        "https://51dsa3.com",
+        "https://51dsa4.com/",
     ]
 
     # ---- 发布页 / 永久锚点：GitLab 是当前确认活跃的锚点 ----
@@ -61,6 +65,10 @@ class SiteConfig:
         "https://51dsa38.com/",
         "https://51dsa39.com/",
         "https://51dsa40.com/",
+        "https://51dsa5.com",
+        "https://51dsa6.com/",
+        "https://51dsa7.com",
+        "https://51dsa8.com/",
     ]
 
     # ---- 种子：只保留可能承载 HTML 主站的域名 ----
