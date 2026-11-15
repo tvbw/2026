@@ -72,15 +72,20 @@ class SiteConfig:
         "https://bean.pvmqrajv.cc/",
     ]
 
-    FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrdld_host_v12"          # ★ 再次换 Key，强制丢弃所有旧缓存
-    HOST_CACHE_TTL = 6 * 3600
+class SiteConfig:
+    # —— 探测速度相关 ——
+    PROBE_TIMEOUT        = 4      # 单请求超时，4s 足够判死活
+    PROBE_MAX_ROUNDS     = 2      # 轮数：2 是平衡点，只求快可设 1
+    PROBE_MAX_CANDIDATES = 15     # 候选上限，配合 WORKERS=12 约 2 批
+    PROBE_WORKERS        = 12     # 并发线程（原硬编码 8）
+    PROBE_AS_COMPLETED   = 4      # as_completed 整体超时余量（原 +12）
 
-    PROBE_TIMEOUT        = 10
-    PROBE_MIN_HTML       = 1500               # 略降低，适应可能较简单的导航页
-    PROBE_MIN_ARTICLE    = 1
-    PROBE_MAX_ROUNDS     = 3                  # 三轮回流，给“导航→三级”的链路更多机会
-    PROBE_MAX_CANDIDATES = 30
+    # —— 判定阈值（与速度无关，只影响准确率）——
+    PROBE_MIN_HTML       = 1500   # 保持
+    PROBE_MIN_ARTICLE    = 1      # 放宽到 1，减少无效轮次
+
+    # —— 日常页面抓取（与探测超时解耦）——
+    FETCH_TIMEOUT        = 15     # 建议把 _get_soup/_get 默认超时改为这个
 
     # ★ 关键词覆盖 51爆料 及可能出现的变体
     SITE_KEYWORDS    = ["每日大乱斗"]
