@@ -50,6 +50,7 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 导航页（一级域名：mrdsv1/v2/v3.com → 302 到导航 HTML）----
     NAV_URLS = [
+        "https://mrdsv7.com",
         "https://mrdsv2.com",
         "https://mrdsv3.com",
         "https://mrdsv1.com",
@@ -57,6 +58,7 @@ class SiteConfig:
 
     # ---- 发布页（mrdsv4/v5/v6.com 往往跳转到导航页，作为二级保险）----
     PUBLISH_URLS = [
+        "https://mrdsv8.com",
         "https://mrdsv5.com",
         "https://mrdsv6.com",
         "https://mrdsv4.com",
