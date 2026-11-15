@@ -49,17 +49,6 @@
       "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
     },
     {
-      "key": "mrdld_v10自愈版",
-      "name": "❤️每日大乱斗v10自愈版🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v10.py"
-    },
-    {
       "key": "51吃瓜new_V9.9超级自愈版",
       "name": "❤️51吃瓜V9.9超级自愈版｜🔞",
       "type": 3,
