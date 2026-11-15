@@ -80,7 +80,7 @@ class SiteConfig:
 
     FALLBACK_HOST  = None
     HOST_CACHE_KEY = "mrds_host_v9"           # 升级版本号，强制清旧缓存
-    HOST_CACHE_TTL = 6 * 3600
+    HOST_CACHE_TTL = 25000
 
     # ---- 探测参数 ----
     PROBE_TIMEOUT        = 15      # 原 8，给慢站留余量
