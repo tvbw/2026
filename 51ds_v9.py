@@ -82,10 +82,10 @@ class SiteConfig:
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
       # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 6            # 原 8，给慢站留余量
-    PROBE_MIN_HTML       = 1500              # 原 2500，略降低避免误判
-    PROBE_MIN_ARTICLE    = 2               # 原 3，改为 1（宽松）
-    PROBE_MAX_ROUNDS     = 2                # 原 2，增加一轮回流
+    PROBE_TIMEOUT        = 10               # 原8，给慢站留余量
+    PROBE_MIN_HTML       = 2000             # 原 2500，略降低避免误判
+    PROBE_MIN_ARTICLE    = 1                # 原2，改为 1（宽松）
+    PROBE_MAX_ROUNDS     = 2                # 原1，增加一轮回流
     PROBE_MAX_CANDIDATES = 30
 
     NAV_PAGE_KEYWORDS = (
