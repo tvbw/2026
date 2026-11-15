@@ -52,16 +52,13 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 导航页：navone.cloud 描述 51 爆料的页面，从中提取主站域名 ----
     NAV_URLS = [
-        "https://51blk5.com",
-        "https://gitlab.com/51blw/web",
+        "https://51blk1.com",
+        "https://51blk2.com",
     ]
 
     # ---- 发布页 / 永久锚点：GitLab 是当前确认活跃的锚点 ----
     PUBLISH_URLS = [
         "https://51blk6.com",
-        "https://gitlab.com/51blw/web",         # ★ 最可靠
-        "https://51blk1.com",
-        "https://51blk2.com",
         "https://51blk3.com",
         "https://51blk4.com",
     ]
@@ -82,8 +79,8 @@ class SiteConfig:
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
       # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 10               # 原8，给慢站留余量
-    PROBE_MIN_HTML       = 2000             # 原 2500，略降低避免误判
+    PROBE_TIMEOUT        = 12               # 原8，给慢站留余量
+    PROBE_MIN_HTML       = 2500       # 原 2500，略降低避免误判
     PROBE_MIN_ARTICLE    = 1                # 原2，改为 1（宽松）
     PROBE_MAX_ROUNDS     = 2                # 原1，增加一轮回流
     PROBE_MAX_CANDIDATES = 30    
