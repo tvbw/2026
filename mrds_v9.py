@@ -57,9 +57,9 @@ class SiteConfig:
 
     # ---- 发布页（mrdsv4/v5/v6.com 往往跳转到导航页，作为二级保险）----
     PUBLISH_URLS = [
-        "https://mrdsv4.com",
         "https://mrdsv5.com",
         "https://mrdsv6.com",
+        "https://mrdsv4.com",
     ]
 
     # ---- 种子三级域名（旧域名，访问时往往 302 到新域名）----
@@ -79,18 +79,18 @@ class SiteConfig:
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host_v5"           # 升级版本号，强制清旧缓存
+    HOST_CACHE_KEY = "mrds_host_v9"           # 升级版本号，强制清旧缓存
     HOST_CACHE_TTL = 6 * 3600
 
     # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 10           # 原 8，给慢站留余量
-    PROBE_MIN_HTML       = 2000         # 原 2500，略降低避免误判
+    PROBE_TIMEOUT        = 15      # 原 8，给慢站留余量
+    PROBE_MIN_HTML       = 2500         # 原 2500，略降低避免误判
     PROBE_MIN_ARTICLE    = 1            # 原 3，改为 1（宽松）
     PROBE_MAX_ROUNDS     = 2            # 原1，增加一轮回流
     PROBE_MAX_CANDIDATES = 30
 
     # ---- 站点特征 ----
-    SITE_KEYWORDS    = ["每日大赛"]
+    SITE_KEYWORDS    = ["每日大赛v9"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
     # ---- 导航页识别词（用于排除导航页，避免误判为主站）----
