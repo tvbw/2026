@@ -78,15 +78,15 @@ class SiteConfig:
     FALLBACK_HOST  = None
     HOST_CACHE_KEY = "51ds_host_v9"              # 换 key，强制清旧缓存
     HOST_CACHE_TTL = 6 * 3600
-
-    PROBE_TIMEOUT        = 10
-    PROBE_MIN_HTML       = 2000
-    PROBE_MIN_ARTICLE    = 1
-    PROBE_MAX_ROUNDS     = 3
-    PROBE_MAX_CANDIDATES = 30
-
     SITE_KEYWORDS    = ["51大赛V9"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
+
+      # ---- 探测参数 ----
+    PROBE_TIMEOUT        = 6            # 原 8，给慢站留余量
+    PROBE_MIN_HTML       = 1500              # 原 2500，略降低避免误判
+    PROBE_MIN_ARTICLE    = 2               # 原 3，改为 1（宽松）
+    PROBE_MAX_ROUNDS     = 2                # 原 2，增加一轮回流
+    PROBE_MAX_CANDIDATES = 30
 
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "推荐访问", "线路正常",
