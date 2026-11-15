@@ -88,11 +88,11 @@ class SiteConfig:
     SITE_KEYWORDS    = ["51吃瓜v9"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
-    # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 6            # 原 8，给慢站留余量
-    PROBE_MIN_HTML       = 1500              # 原 2500，略降低避免误判
-    PROBE_MIN_ARTICLE    = 2               # 原 3，改为 1（宽松）
-    PROBE_MAX_ROUNDS     = 2                # 原 2，增加一轮回流
+      # ---- 探测参数 ----
+    PROBE_TIMEOUT        = 10
+    PROBE_MIN_HTML       = 1000              # 略降低，适应可能较简单的导航页
+    PROBE_MIN_ARTICLE    = 1
+    PROBE_MAX_ROUNDS     = 2                 # 三轮回流，给“导航→三级”的链路更多机会
     PROBE_MAX_CANDIDATES = 30
   
     NAV_PAGE_KEYWORDS = (
