@@ -72,24 +72,21 @@ class SiteConfig:
         "https://bean.pvmqrajv.cc/",
     ]
 
-class SiteConfig:
-    # —— 探测速度相关 ——
-    PROBE_TIMEOUT        = 4      # 单请求超时，4s 足够判死活
-    PROBE_MAX_ROUNDS     = 2      # 轮数：2 是平衡点，只求快可设 1
-    PROBE_MAX_CANDIDATES = 15     # 候选上限，配合 WORKERS=12 约 2 批
-    PROBE_WORKERS        = 12     # 并发线程（原硬编码 8）
-    PROBE_AS_COMPLETED   = 4      # as_completed 整体超时余量（原 +12）
-
-    # —— 判定阈值（与速度无关，只影响准确率）——
-    PROBE_MIN_HTML       = 1500   # 保持
-    PROBE_MIN_ARTICLE    = 1      # 放宽到 1，减少无效轮次
-
-    # —— 日常页面抓取（与探测超时解耦）——
-    FETCH_TIMEOUT        = 15     # 建议把 _get_soup/_get 默认超时改为这个
-
     # ★ 关键词覆盖 51爆料 及可能出现的变体
     SITE_KEYWORDS    = ["每日大乱斗"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
+
+    FALLBACK_HOST  = None
+    HOST_CACHE_KEY = "mrdld_host_v10"           # 升级版本号，强制清旧缓存
+    HOST_CACHE_TTL = 6 * 3600
+
+    # ---- 探测参数 ----
+    PROBE_TIMEOUT        = 6            # 原 8，给慢站留余量
+    PROBE_MIN_HTML       = 1500              # 原 2500，略降低避免误判
+    PROBE_MIN_ARTICLE    = 2               # 原 3，改为 1（宽松）
+    PROBE_MAX_ROUNDS     = 2                # 原 2，增加一轮回流
+    PROBE_MAX_CANDIDATES = 30
+
 
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "推荐访问", "线路正常",
