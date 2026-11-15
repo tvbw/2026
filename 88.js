@@ -1,7 +1,18 @@
 {
-  "spider": "http://pglblb.test.upcdn.net/fm.jar",
+  "spider": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar",
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
+    {
+      "key": "51吃瓜new_py",
+      "name": "❤️51吃瓜py新语法测试｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/2026/main/51cg_new_v9.py"
+    },
     {
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
