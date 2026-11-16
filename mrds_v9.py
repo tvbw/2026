@@ -50,6 +50,7 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 导航页（一级域名：mrdsv1/v2/v3.com → 302 到导航 HTML）----
     NAV_URLS = [
+        "https://www.liyaplzf.cc/",
         "https://mrdsv2.com",
         "https://mrdsv3.com",
         "https://mrdsv1.com",
@@ -64,34 +65,28 @@ class SiteConfig:
 
     # ---- 种子三级域名（旧域名，访问时往往 302 到新域名）----
     SEED_HOSTS = [
-        # 导航页实测「主线路」
-        "https://adapt.unaydvxst.cc/",
         "https://adjust.unaydvxst.cc/",
-        "https://cap.unaydvxst.cc/",
-        # 导航页实测「备用线路」
-        "https://bench.sezupttrb.cc/",
-        "https://beyond.sezupttrb.cc/",
-        "https://cast.sezupttrb.cc/",
-        # 旧种子（历史域名，一般仍可 302 到新域名）
-        "https://ceo.kludlvje.cc/",
-        "https://cause.kludlvje.cc/",
-        "https://amazing.kludlvje.cc/",
+        "https://bank.xkwncfeyk.cc/",
+        "https://always.xkwncfeyk.cc/",
+        "https://attend.xkwncfeyk.cc/",
+        "https://bake.xkwncfeyk.cc/",
+        "https://arab.xkwncfeyk.cc/",
+        "https://bond.xkwncfeyk.cc/",
     ]
 
-    FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host_v9"           # 升级版本号，强制清旧缓存
-    HOST_CACHE_TTL = 6 * 3600
-
-    # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 15      # 原 8，给慢站留余量
-    PROBE_MIN_HTML       = 2500         # 原 2500，略降低避免误判
+      # ---- 探测参数 ----
+    PROBE_TIMEOUT        = 12     # 原 8，给慢站留余量
+    PROBE_MIN_HTML       = 3000        # 原 2500，略降低避免误判
     PROBE_MIN_ARTICLE    = 1            # 原 3，改为 1（宽松）
     PROBE_MAX_ROUNDS     = 2            # 原1，增加一轮回流
     PROBE_MAX_CANDIDATES = 30
-
-    # ---- 站点特征 ----
+  
+      # ---- 站点特征 ----
     SITE_KEYWORDS    = ["每日大赛v9"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
+    FALLBACK_HOST  = None
+    HOST_CACHE_KEY = "mrds_host_v9"           # 升级版本号，强制清旧缓存
+    HOST_CACHE_TTL = 25000
 
     # ---- 导航页识别词（用于排除导航页，避免误判为主站）----
     NAV_PAGE_KEYWORDS = (
