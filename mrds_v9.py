@@ -2,13 +2,21 @@
 """
 每日大赛 · 多域名自愈版（v9系列引擎移植版）
 ================================
-继承自每日大赛业务层，域名解析引擎升级为 51 v9/v10 的增强版：
+继承自每日大赛业务层，域名解析引擎升级为v10 的增强版：
   - 6 源提取（data-base / JS / 同域姊妹 / Base64 / href / 裸域名扫描）
   - 三轮回流探测（失败响应里继续挖新域名）
-  - CloudFlare/验证页识别
-  - 分源详细诊断日志
-  - extend={"host":"https://xxx"} 手动指定跳过探测
-  - 多级兜底：过期缓存 → FALLBACK → SEED[0]
+# -*- coding: utf-8 -*-
+"""
+每日系列 · 多域名自愈版（v9.9发布页自愈模板）
+================================
+锚点优先级：
+  1) GitLab 发布页提取域名
+  2) 发布页提取域名
+  3) 主站候选
+  4) 三轮探测回流（失败响应里继续挖新域名）
+  5) 全挂 → 过期缓存 → SEED[0] → 空
+
+换站改 SiteConfig 四段：NAV_URLS / PUBLISH_URLS / SEED_HOSTS / SITE_KEYWORDS
 """
 import json
 import re
@@ -17,6 +25,7 @@ import time
 import base64
 import hashlib
 import logging
+from base64 import b64decode, b64encode
 from urllib.parse import quote, unquote, urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -45,50 +54,45 @@ LOG = logging.getLogger(__name__)
 
 
 # ==================================================================
-# ① 配置层（每日大赛站点，引擎升级为 51 v9/v10）
+# ① 配置层（每日系列标准，换站只改这一段）
 # ==================================================================
 class SiteConfig:
-    # ---- 导航页（一级域名：mrdsv1/v2/v3.com → 302 到导航 HTML）----
+    # ---- 导航页：navone.cloud 从中提取主站域名 ----
     NAV_URLS = [
-        "https://mrdsv7.com",
-        "https://mrdsv2.com",
-        "https://mrdsv3.com",
-        "https://mrdsv1.com",
-    ]
-
-    # ---- 发布页（mrdsv4/v5/v6.com 往往跳转到导航页，作为二级保险）----
-    PUBLISH_URLS = [
-        "https://mrdsv8.com",
         "https://mrdsv5.com",
         "https://mrdsv6.com",
         "https://mrdsv4.com",
     ]
 
-    # ---- 种子三级域名（旧域名，访问时往往 302 到新域名）----
+    # ---- 发布页 / 永久锚点：GitLab 是当前确认活跃的锚点 ----
+    PUBLISH_URLS = [
+        "https://mrdsv2.com",
+        "https://mrdsv3.com",
+        "https://mrdsv1.com",
+    ]
+
+    # ---- 种子：只保留可能承载 HTML 主站的域名 ----
     SEED_HOSTS = [
-        # 导航页实测「主线路」
         "https://adapt.unaydvxst.cc/",
         "https://adjust.unaydvxst.cc/",
         "https://cap.unaydvxst.cc/",
-        # 导航页实测「备用线路」
         "https://bench.sezupttrb.cc/",
         "https://beyond.sezupttrb.cc/",
         "https://cast.sezupttrb.cc/",
-        # 旧种子（历史域名，一般仍可 302 到新域名）
-        "https://ceo.kludlvje.cc/",
-        "https://cause.kludlvje.cc/",
-        "https://amazing.kludlvje.cc/",
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host_v9"           # 升级版本号，强制清旧缓存
-    HOST_CACHE_TTL = 25000
+    HOST_CACHE_KEY = "mrds_host_v9.9"              # 换 key，强制清旧缓存
+    HOST_CACHE_TTL = 6 * 3600
 
-    # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 15      # 原 8，给慢站留余量
-    PROBE_MIN_HTML       = 2500         # 原 2500，略降低避免误判
-    PROBE_MIN_ARTICLE    = 1            # 原 3，改为 1（宽松）
-    PROBE_MAX_ROUNDS     = 2            # 原1，增加一轮回流
+    SITE_KEYWORDS    = ["每日大赛V9.9"]
+    SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
+
+      # ---- 探测参数 ----
+    PROBE_TIMEOUT        = 15            # 原8，给慢站留余量
+    PROBE_MIN_HTML       = 3000           # 原 2500，略降低避免误判
+    PROBE_MIN_ARTICLE    = 1                # 原2，改为 1（宽松）
+    PROBE_MAX_ROUNDS     = 2                # 原1，增加一轮回流
     PROBE_MAX_CANDIDATES = 30
 
     # ---- 站点特征 ----
