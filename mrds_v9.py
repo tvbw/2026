@@ -82,11 +82,11 @@ class SiteConfig:
     HOST_CACHE_KEY = "mrds_host_v9"           # 升级版本号，强制清旧缓存
     HOST_CACHE_TTL = 6 * 3600
 
-      # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 15            # 原8，给慢站留余量
-    PROBE_MIN_HTML       = 3000           # 原 2500，略降低避免误判
-    PROBE_MIN_ARTICLE    = 1                # 原2，改为 1（宽松）
-    PROBE_MAX_ROUNDS     = 3                # 原1，增加一轮回流
+    # ---- 探测参数 ----
+    PROBE_TIMEOUT        = 15      # 原 8，给慢站留余量
+    PROBE_MIN_HTML       = 2500         # 原 2500，略降低避免误判
+    PROBE_MIN_ARTICLE    = 1            # 原 3，改为 1（宽松）
+    PROBE_MAX_ROUNDS     = 2            # 原1，增加一轮回流
     PROBE_MAX_CANDIDATES = 30
 
     # ---- 站点特征 ----
