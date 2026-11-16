@@ -960,6 +960,17 @@
       "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
     },
     {
+      "key": "Missav3",
+      "name": "❤️Missav新源",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/tvbw/20261001-18/main/missav-%E6%BA%90.json"
+    },
+    {
       "key": "香蕉9合2",
       "name": "❤️香蕉9合1原版【🔞】",
       "type": 3,
