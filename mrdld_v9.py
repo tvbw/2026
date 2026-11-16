@@ -63,18 +63,13 @@ class SiteConfig:
 
     # ---- 种子三级域名 ----
     SEED_HOSTS = [
-        "https://doiwu1w2ofwf9.cloudfront.net/",
-        "https://admit.pvmqrajv.cc/",
-        "https://affair.pvmqrajv.cc/",
-        "https://agenda.pvmqrajv.cc/",
-        "https://balance.pvmqrajv.ccc/",
-        "https://bean.pvmqrajv.cc/",
+        "https://dwatg7dnnvd2f.cloudfront.net",
+        "https://among.mturgjfv.cc/",
+        "https://annual.mturgjfv.cc/",
+        "https://alone.mturgjfv.cc/",
+        "https://admit.mturgjfv.cc/",
+        "https://affair.mturgjfv.cc/",
     ]
-
-    FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrdld_host_v9"           # 升级版本号，强制清旧缓存
-    HOST_CACHE_TTL = 25000                     # 缓存保存时间约6小时
-
     # ---- 探测参数 ----
     PROBE_TIMEOUT        = 15         # 原 8，给慢站留余量
     PROBE_MIN_HTML       = 3000       # 原 3500，略降低避免误判
@@ -85,6 +80,10 @@ class SiteConfig:
     # ---- ★ 站点特征：每日大乱斗 ----
     SITE_KEYWORDS    = ["每日大乱斗v9"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
+  
+    FALLBACK_HOST  = None
+    HOST_CACHE_KEY = "mrdld_host_v9"           # 升级版本号，强制清旧缓存
+    HOST_CACHE_TTL = 25000                     # 缓存保存时间约6小时
 
     # ---- 导航页识别词 ----
     NAV_PAGE_KEYWORDS = (
