@@ -52,7 +52,7 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 导航页：navone.cloud 描述 51 爆料的页面，从中提取主站域名 ----
     NAV_URLS = [
-        "https://51cgo24.com",
+        "https://www.gugvyepf.cc/",
         "https://51cgo25.com",
         "https://51cge23.com",
         "https://51cge26.com",
@@ -76,27 +76,27 @@ class SiteConfig:
 
     # ---- 种子：只保留可能承载 HTML 主站的域名 ----
     SEED_HOSTS = [
-        "https://belt.wxxqhhht.cc/",
-        "https://capture.wxxqhhht.cc/",
-        "https://both.wxxqhhht.cc/",
-        "https://attract.wxxqhhht.cc/",
-        "https://achieve.wxxqhhht.cc/",
-        "https://bridge.wxxqhhht.cc/",
+        "https://be.gadoatcl.cc/",
+        "https://awful.gadoatcl.cc/",
+        "https://baby.gadoatcl.cc/",
+        "https://case.gadoatcl.cc/",
+        "https://believe.gadoatcl.cc/",
+        "https://arrest.gadoatcl.cc/",
     ]
 
-    FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "51cg_host_v9.9"              # 换 key，强制清旧缓存
-    HOST_CACHE_TTL = 6 * 3600
-
-    SITE_KEYWORDS    = ["51吃瓜V9.9"]
-    SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
-
       # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 15            # 原8，给慢站留余量
+    PROBE_TIMEOUT        = 12        # 原8，给慢站留余量
     PROBE_MIN_HTML       = 3000           # 原 2500，略降低避免误判
     PROBE_MIN_ARTICLE    = 1                # 原2，改为 1（宽松）
     PROBE_MAX_ROUNDS     = 2                # 原1，增加一轮回流
     PROBE_MAX_CANDIDATES = 30
+  
+    SITE_KEYWORDS    = ["51吃瓜V9.9"]
+    SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
+
+    FALLBACK_HOST  = None
+    HOST_CACHE_KEY = "51cg_host_v9.9"              # 换 key，强制清旧缓存
+    HOST_CACHE_TTL =25000
 
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "推荐访问", "线路正常",
