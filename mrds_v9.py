@@ -50,7 +50,6 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ---- 导航页（一级域名：mrdsv1/v2/v3.com → 302 到导航 HTML）----
     NAV_URLS = [
-        "https://www.liyaplzf.cc/",
         "https://mrdsv2.com",
         "https://mrdsv3.com",
         "https://mrdsv1.com",
@@ -58,6 +57,7 @@ class SiteConfig:
 
     # ---- 发布页（mrdsv4/v5/v6.com 往往跳转到导航页，作为二级保险）----
     PUBLISH_URLS = [
+        "https://www.liyaplzf.cc/",
         "https://mrdsv5.com",
         "https://mrdsv6.com",
         "https://mrdsv4.com",
@@ -82,7 +82,7 @@ class SiteConfig:
     PROBE_MAX_CANDIDATES = 30
   
       # ---- 站点特征 ----
-    SITE_KEYWORDS    = ["每日大赛v9"]
+    SITE_KEYWORDS    = ["每日大赛"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
     FALLBACK_HOST  = None
     HOST_CACHE_KEY = "mrds_host_v9"           # 升级版本号，强制清旧缓存
