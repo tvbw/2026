@@ -75,14 +75,14 @@ class SiteConfig:
 
     FALLBACK_HOST  = None
     HOST_CACHE_KEY = "51bl_host_v12"          # ★ 再次换 Key，强制丢弃所有旧缓存
-    HOST_CACHE_TTL = 6 * 3600
+    HOST_CACHE_TTL = 25000
     # ★ 关键词覆盖 51爆料 及可能出现的变体
     SITE_KEYWORDS    = ["51爆料v12"]
     SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
 
       # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 15
-    PROBE_MIN_HTML       = 6000           # 略降低，适应可能较简单的导航页
+    PROBE_TIMEOUT        = 12
+    PROBE_MIN_HTML       = 2000           # 略降低，适应可能较简单的导航页
     PROBE_MIN_ARTICLE    = 1
     PROBE_MAX_ROUNDS     = 2              # 三轮回流，给“导航→三级”的链路更多机会
     PROBE_MAX_CANDIDATES = 30
