@@ -90,7 +90,7 @@ class SiteConfig:
 
       # ---- 探测参数 ----
     PROBE_TIMEOUT        = 15
-    PROBE_MIN_HTML       = 4000           # 略降低，适应可能较简单的导航页
+    PROBE_MIN_HTML       = 2000           # 略降低，适应可能较简单的导航页
     PROBE_MIN_ARTICLE    = 1
     PROBE_MAX_ROUNDS     = 2              # 三轮回流，给“导航→三级”的链路更多机会
     PROBE_MAX_CANDIDATES = 30
