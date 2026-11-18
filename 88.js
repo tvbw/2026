@@ -1,5 +1,5 @@
 {
-  "spider": "https://hk.gh-proxy.org/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar",
+  "spider": "http://pglblb.test.upcdn.net/custom_spider.jar",
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
