@@ -200,6 +200,17 @@
       "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
     },
     {
+      "key": "91吃瓜new_V9.9超级自愈版",
+      "name": "❤️91吃瓜V9.9超级自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/91cg_v9.py"
+    },
+    {
       "key": "51吃瓜new_V9.9超级自愈版",
       "name": "❤️51吃瓜V9.9超级自愈版｜🔞",
       "type": 3,
