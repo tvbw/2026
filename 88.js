@@ -1,5 +1,5 @@
 {
-  "spider": "http://pglblb.test.upcdn.net/wex.jpg",
+  "spider": "http://pglblb.test.upcdn.net/custom_spider.jar",
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
