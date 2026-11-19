@@ -1,22 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-每日大赛 · 快速跳转 + 自愈抓取（mrds 修复版）
+每日大赛 · 快速跳转 + 自愈抓取 + 播放相关推荐聚合（完整版）
 =========================================================================
-修复思路
--------------------------------------------------------------------------
-1) 【保留】mrds 原有的 dynamic_urls 快速跳转（先试已知域名，快）
-2) 【修复】“200 即成功”的误判：很多域名返回 200，但其实是
-   CloudFlare 5 秒盾 / 导航页 / 空壳跳转页，旧代码直接采用 → 后续
-   homeContent / categoryContent 全部解析为空。
-   现在快速跳转必须通过内容校验（article / post-title / 关键字）。
-3) 【修复】host 末尾斜杠导致 `https://host/` + `/path` = `//path` 404
-   全站统一 host 去尾斜杠，统一走 _abs()。
-4) 【修复】分页 URL 规则错误（旧代码根目录拼 /2/，实际是 /page/2/）
-5) 【修复】详情页 / 目录页相对链接拼接、日期解析、m3u8 KEY URI 未重写
-6) 【增强】快速跳转全部失败时，自动回落 01.txt 的
-   六源提取（data-base / JS / 同域姊妹 / Base64 / href / 裸域名扫描）
-   + 三轮回流探测 + CF 识别 + 分源诊断
-7) 【增强】host 结果缓存，二次启动只花 1 个请求
+在前一版基础之上补回 01.txt 的「播放源聚合扩展」，并做了兼容性适配：
+  - 列表接口（首页 / 分类 / 搜索）缓存当前页 items，并建 vid → page 索引
+  - 详情页自动把当前页的其他视频作为"相关推荐"追加到播放列表
+    · 当前视频保留真实集数（dplayer / 内容区链接）
+    · 推荐视频以 nid:base64(vid) 伪集形式出现，点开跳到对应视频
+  - playerContent 识别 nid: 编码，还原到真实 vid，再取第一条真实播放地址
+  - 详情抓取带 LRU 缓存，避免点推荐时重复请求
 =========================================================================
 """
 import json
@@ -57,28 +49,24 @@ LOG = logging.getLogger(__name__)
 # ① 配置
 # ==================================================================
 class Config:
-    # ---- 快路径：mrds 原有快速跳转域名（顺序即优先级）----
     FAST_HOSTS = [
         "https://www.lfntptwv.cc/",
         "https://cast.wgbfdjfgk.cc/",
         "https://basic.wgbfdjfgk.cc/",
     ]
 
-    # ---- 慢路径：导航页（01 引擎，用于挖新域名）----
     NAV_URLS = [
         "https://mrdsv2.com",
         "https://mrdsv3.com",
         "https://mrdsv1.com",
     ]
 
-    # ---- 慢路径：发布页 ----
     PUBLISH_URLS = [
         "https://mrdsv5.com",
         "https://mrdsv6.com",
         "https://mrdsv4.com",
     ]
 
-    # ---- 慢路径：种子域名（含 01 的历史种子 + mrds 已知域名）----
     SEED_HOSTS = [
         "https://www.lfntptwv.cc/",
         "https://cast.wgbfdjfgk.cc/",
@@ -97,19 +85,16 @@ class Config:
     HOST_CACHE_KEY = "mrds_host_fix_v1"
     HOST_CACHE_TTL = 6 * 3600
 
-    # ---- 探测参数 ----
-    FAST_TIMEOUT         = 6      # 快路径超时（保持"快速跳转"手感）
-    PROBE_TIMEOUT        = 12     # 慢路径超时
+    FAST_TIMEOUT         = 6
+    PROBE_TIMEOUT        = 12
     PROBE_MIN_HTML       = 2000
     PROBE_MIN_ARTICLE    = 1
     PROBE_MAX_ROUNDS     = 2
     PROBE_MAX_CANDIDATES = 30
 
-    # ---- 站点特征 ----
     SITE_KEYWORDS = ["每日大赛"]
     SITE_MARKERS  = ["post-title", "entry-title", "<article", 'class="post']
 
-    # ---- 导航页识别词（用于排除导航页，避免误判为主站）----
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "线路四", "线路五",
         "线路1", "线路2", "线路3",
@@ -117,7 +102,6 @@ class Config:
         "地址发布页", "永久地址", "最新地址",
     )
 
-    # ---- TLD 白名单（裸域名扫描用）----
     VALID_TLDS = {
         'com', 'net', 'org', 'cc', 'xyz', 'lol', 'vip', 'app', 'top', 'cn', 'co', 'io', 'me',
         'tv', 'club', 'site', 'online', 'info', 'biz', 'pro', 'link', 'live', 'shop', 'fun',
@@ -127,7 +111,6 @@ class Config:
         'sbs', 'bet', 'cam', 'one', 'plus', 'now', 'today', 'pub', 'dev', 'cool', 'cloud',
     }
 
-    # ---- 硬黑名单 ----
     DOMAIN_BLACKLIST = (
         'google', 'gstatic', 'googleusercontent', 'bing.com', 'baidu.com',
         'so.com', 'sogou.com', 'yandex', 'facebook', 'fbcdn', 'instagram',
@@ -145,7 +128,6 @@ class Config:
 
     EXTRA_BLACKLIST = ('beian.miit.gov.cn', 'w3.org', 'example.com')
 
-    # ---- 列表 / 详情选择器 ----
     SEL_ARTICLE      = "#index article, #archive article, article"
     SEL_ARTICLE_HOME = "#index article, article"
     SEL_PLAYER       = ".dplayer"
@@ -210,7 +192,7 @@ class Config:
 
 
 # ==================================================================
-# ② 慢路径域名解析器（01.txt 引擎移植）
+# ② 慢路径域名解析器（01.txt 引擎移植，原样保留）
 # ==================================================================
 class DomainResolver:
     SKIP_HREF = (
@@ -250,7 +232,6 @@ class DomainResolver:
     def __init__(self, cfg, fetcher):
         self.cfg, self.fetch = cfg, fetcher
 
-    # ---- 基础工具 ----
     def _safe_fetch(self, url, timeout):
         try:
             return self.fetch(url, timeout=timeout)
@@ -318,7 +299,6 @@ class DomainResolver:
                 "Y" if has_keyword else "N")
         return True, "OK"
 
-    # ---- 六源提取 ----
     def _seed_suffixes(self):
         out = set()
         for u in self.cfg.SEED_HOSTS:
@@ -398,18 +378,13 @@ class DomainResolver:
             return []
         primary, backup, others = [], [], []
 
-        # 1) data-base 明文
         for m in re.finditer(r'<a\b[^>]*\bdata-base="(https?://[^"]+)"[^>]*>', html):
             tag, base = m.group(0), m.group(1)
             (backup if ('data-group="backup"' in tag or "备用" in tag) else primary).append(base)
 
-        # 2) JS / Meta / 中文公告
         primary.extend(self._extract_js_redirects(html))
-
-        # 3) 同域姊妹
         primary.extend(self._extract_sibling_domains(html))
 
-        # 4) Base64 加密块
         for b in re.findall(r'["\']([A-Za-z0-9+/=]{100,})["\']', html):
             try:
                 decoded = base64.b64decode(b).decode("utf-8", errors="ignore")
@@ -432,7 +407,6 @@ class DomainResolver:
             except Exception:
                 continue
 
-        # 5) href 兜底
         for m in re.finditer(r'<a\b[^>]+href="(https?://[^"]+)"[^>]*>', html):
             tag, href = m.group(0), m.group(1)
             if any(skip in href for skip in self.SKIP_HREF):
@@ -441,7 +415,6 @@ class DomainResolver:
                 continue
             others.append(href)
 
-        # 6) 裸域名扫描
         primary.extend(self._extract_bare_domains(html, trusted=trusted))
 
         out, seen = [], set()
@@ -452,7 +425,6 @@ class DomainResolver:
                 out.append(base)
         return out
 
-    # ---- 源抓取 & 诊断 ----
     def _fetch_and_report(self, src, is_publish):
         tag = "发布" if is_publish else "导航"
         r = self._safe_fetch(src, self.cfg.PROBE_TIMEOUT)
@@ -628,10 +600,18 @@ class Spider(BaseSpider):
         self.proxies = {}
         self.host = ""
         self._img_cache = {}
+        self._page_cache = {}
+        self._page_index = {}
+        self._page_keys = []
+        self._detail_cache = {}
 
     # -------------------- 生命周期 --------------------
     def init(self, extend=""):
         self._img_cache = {}
+        self._page_cache = {}
+        self._page_index = {}
+        self._page_keys = []
+        self._detail_cache = {}
         self.proxies = {}
 
         raw_extend = {}
@@ -643,14 +623,12 @@ class Spider(BaseSpider):
             except Exception:
                 raw_extend = {}
 
-        # 只保留合法的代理键，避免 {"host": "..."} 混入 proxies 报错
         if raw_extend:
             self.proxies = {k: v for k, v in raw_extend.items()
                             if k in ("http", "https", "all")}
 
         self.headers = dict(self.CONFIG.HEADERS)
 
-        # ---- extend 手动指定 host（跳过探测）----
         manual = ""
         if isinstance(raw_extend, dict):
             manual = raw_extend.get("host", "") or ""
@@ -681,6 +659,10 @@ class Spider(BaseSpider):
 
     def destroy(self):
         self._img_cache.clear()
+        self._page_cache.clear()
+        self._page_index.clear()
+        self._page_keys.clear()
+        self._detail_cache.clear()
 
     # -------------------- 基础请求 --------------------
     def _request(self, url, timeout=None, **kw):
@@ -762,7 +744,6 @@ class Spider(BaseSpider):
         return hits >= 3
 
     def _is_site(self, html, min_len=None):
-        """内容校验：排除 CF 挑战页 / 导航页 / 空壳页"""
         if not html:
             return False, "空响应"
         if self._is_blocked_page(html):
@@ -813,7 +794,6 @@ class Spider(BaseSpider):
             pass
 
     def _verify_host(self, host, timeout=None):
-        """快速校验一个 host 是否真的是主站，返回最终 host 或空"""
         if not host:
             return ""
         host = host.rstrip("/")
@@ -826,7 +806,6 @@ class Spider(BaseSpider):
         return self._final_host(r.url) or host
 
     def _fast_probe(self):
-        """mrds 原有快速跳转：并发探测，按优先级取第一个通过内容校验的"""
         urls = [u.rstrip("/") for u in self.CONFIG.FAST_HOSTS if u]
         if not urls:
             return ""
@@ -844,7 +823,7 @@ class Spider(BaseSpider):
         except Exception as e:
             LOG.debug("快路径并发异常: %s", e)
 
-        for u in urls:                       # 严格按优先级顺序判定
+        for u in urls:
             r = results.get(u)
             if r is None:
                 print(f"  [快路径] {u} 无响应")
@@ -867,7 +846,6 @@ class Spider(BaseSpider):
         return resolver.resolve()
 
     def get_working_host(self):
-        # 1) 缓存（1 个请求即可确认，站点换域名也能自动纠正）
         cached = self._read_host_cache()
         if cached:
             final = self._verify_host(cached)
@@ -878,24 +856,62 @@ class Spider(BaseSpider):
                 return final
             print(f"缓存失效: {cached}")
 
-        # 2) 快路径（保留 mrds 手感）
         host = self._fast_probe()
         if host:
             self._write_host_cache(host)
             return host
 
-        # 3) 慢路径（01 引擎）
         host = self._slow_probe()
         if host:
             host = host.rstrip("/")
             self._write_host_cache(host)
             return host
 
-        # 4) 兜底
         host = (self.CONFIG.FAST_HOSTS[0] if self.CONFIG.FAST_HOSTS else "").rstrip("/")
         if host:
             print(f"【警告】全部探测失败，回退 {host}")
         return host
+
+    # -------------------- 页面级 items 缓存（供相关推荐使用）--------------------
+    def _cache_items(self, key, items):
+        out = [x for x in (items or []) if isinstance(x, dict) and x.get("vod_id")]
+        if not out:
+            return
+        self._page_cache[key] = out
+        if key in self._page_keys:
+            self._page_keys.remove(key)
+        self._page_keys.append(key)
+        for it in out:
+            self._page_index[str(it["vod_id"])] = key
+        while len(self._page_keys) > 30:
+            self._page_cache.pop(self._page_keys.pop(0), None)
+
+    def _items_of(self, vid):
+        key = self._page_index.get(str(vid))
+        if key is None or key not in self._page_cache:
+            return []
+        return list(self._page_cache.get(key, []))
+
+    # -------------------- nid 编解码 --------------------
+    @staticmethod
+    def _encode_nid(vid):
+        try:
+            return base64.b64encode(str(vid).encode("utf-8")).decode("ascii").rstrip("=")
+        except Exception:
+            return ""
+
+    @staticmethod
+    def _decode_nid(s):
+        s = str(s or "")
+        if s.startswith("nid:"):
+            s = s[4:]
+        if not s:
+            return ""
+        pad = "=" * (-len(s) % 4)
+        try:
+            return base64.b64decode(s + pad).decode("utf-8", "ignore")
+        except Exception:
+            return ""
 
     # -------------------- 首页 / 分类 --------------------
     def homeContent(self, filter=False):
@@ -906,6 +922,8 @@ class Spider(BaseSpider):
             print(f"[homeContent] 抓取 {self.host} 失败")
             return {"class": [], "list": []}
         lst = self._getlist(data(self.CONFIG.SEL_ARTICLE_HOME))
+        if lst:
+            self._cache_items(("home",), lst)
         if not lst:
             print(f"[homeContent] 列表解析为空，检查 SEL_ARTICLE_HOME")
         return {"class": self._parse_classes(data), "list": lst}
@@ -916,7 +934,10 @@ class Spider(BaseSpider):
         data = self._soup(self.host + "/")
         if data is None:
             return {"list": []}
-        return {"list": self._getlist(data(self.CONFIG.SEL_ARTICLE_HOME))}
+        lst = self._getlist(data(self.CONFIG.SEL_ARTICLE_HOME))
+        if lst:
+            self._cache_items(("homev",), lst)
+        return {"list": lst}
 
     def _parse_classes(self, data):
         classes, seen = [], set()
@@ -977,13 +998,11 @@ class Spider(BaseSpider):
         if base == host_ns:
             return "%s/page/%d/" % (host_ns, pg)
 
-        # /category/xxx/  /tag/xxx/  →  追加 /N/
         if "/category/" in base or "/tag/" in base:
             if "/page/" in base:
                 base = base.split("/page/")[0]
             return "%s/%d/" % (base, pg)
 
-        # 已经带 /page/ 的，替换页码
         if "/page/" in base:
             base = base.split("/page/")[0]
             return "%s/page/%d/" % (base, pg)
@@ -1010,10 +1029,10 @@ class Spider(BaseSpider):
             print(f"[categoryContent] 抓取失败: {url}")
             return {"list": [], "page": pg, "pagecount": 9999, "limit": 90, "total": 0}
 
-        return {
-            "list": self._getlist(data(self.CONFIG.SEL_ARTICLE), tid),
-            "page": pg, "pagecount": 9999, "limit": 90, "total": 999999,
-        }
+        lst = self._getlist(data(self.CONFIG.SEL_ARTICLE), tid)
+        if lst:
+            self._cache_items(("cate", tid, str(pg)), lst)
+        return {"list": lst, "page": pg, "pagecount": 9999, "limit": 90, "total": 999999}
 
     # -------------------- 列表 / 目录 --------------------
     def _getlist(self, data, tid=""):
@@ -1066,28 +1085,92 @@ class Spider(BaseSpider):
             LOG.debug("目录解析异常: %s", e)
         return out
 
-    # -------------------- 详情 --------------------
-    def detailContent(self, ids):
-        vid = str(ids[0] if isinstance(ids, (list, tuple)) else ids)
-        if not self.host:
-            return {"list": [{"vod_play_from": "每日大乱斗", "vod_play_url": "获取失败"}]}
-
+    # -------------------- 详情：核心抓取 + 相关推荐聚合 --------------------
+    def _raw_detail(self, vid):
+        """抓详情页，返回 (playlist, content, url)"""
+        vid = str(vid or "")
+        if vid.endswith("@folder"):
+            vid = vid[:-7]
         url = self._abs(vid)
         data = self._soup(url)
         if data is None:
-            print(f"[detailContent] 抓取失败: {url}")
+            print(f"[detail] 抓取失败: {url}")
+            return [], "", url
+        playlist = self._extract_playlist(data)
+        content = self._extract_content(data) or "每日大乱斗"
+        return playlist, content, url
+
+    def _raw_detail_cached(self, vid):
+        key = str(vid or "")
+        if key in self._detail_cache:
+            return self._detail_cache[key]
+        result = self._raw_detail(key)
+        self._detail_cache[key] = result
+        while len(self._detail_cache) > 60:
+            first = next(iter(self._detail_cache))
+            self._detail_cache.pop(first, None)
+        return result
+
+    def detailContent(self, ids):
+        orig_vid = str(ids[0] if isinstance(ids, (list, tuple)) else ids)
+        if not self.host:
             return {"list": [{"vod_play_from": "每日大乱斗", "vod_play_url": "获取失败"}]}
 
-        playlist = self._extract_playlist(data)
-        play_url = "#".join(playlist) or ("未找到视频源，请访问网页$" + url)
+        vid = orig_vid
+        if vid.startswith("nid:"):
+            decoded = self._decode_nid(vid)
+            if decoded:
+                vid = decoded
+                orig_vid = decoded
 
-        content = self._extract_content(data) or "每日大乱斗"
+        playlist, content, url = self._raw_detail_cached(vid)
+
+        related = self._items_of(orig_vid)
+        if related:
+            play_url = self._build_playlist_with_related(orig_vid, playlist, related)
+        else:
+            play_url = "#".join(playlist) or ("未找到视频源，请访问网页$" + url)
+
         return {"list": [{
             "vod_play_from": "每日大乱斗",
             "vod_play_url":  play_url,
             "vod_content":   content,
         }]}
 
+    def _build_playlist_with_related(self, vid, own_playlist, related):
+        """当前视频保留真实集；当前页其他视频以 nid: 伪集追加到播放列表"""
+        parts, used = [], set()
+
+        for p in (own_playlist or []):
+            name = (p.split("$", 1)[0] if "$" in p else p).strip()
+            if not name or name in used:
+                continue
+            used.add(name)
+            parts.append(p)
+
+        if not parts:
+            cur_name = ""
+            for it in related:
+                if str(it.get("vod_id")) == str(vid):
+                    cur_name = self._clean(it.get("vod_name") or "") or ""
+                    break
+            cur_name = cur_name or "正片"
+            parts.append("%s$nid:%s" % (cur_name, self._encode_nid(vid)))
+            used.add(cur_name)
+
+        for it in related:
+            iid = str(it.get("vod_id") or "")
+            if not iid or iid == str(vid):
+                continue
+            name = self._clean(it.get("vod_name") or iid) or iid
+            if not name or name in used:
+                continue
+            used.add(name)
+            parts.append("%s$nid:%s" % (name, self._encode_nid(iid)))
+
+        return "#".join(parts)
+
+    # -------------------- 播放源提取 --------------------
     def _extract_playlist(self, data):
         try:
             if data(self.CONFIG.SEL_PLAYER):
@@ -1296,14 +1379,32 @@ class Spider(BaseSpider):
         if data is None:
             print(f"[searchContent] 抓取失败: {url}")
             return {"list": [], "page": pg, "pagecount": 9999}
-        return {"list": self._getlist(data("article")), "page": pg, "pagecount": 9999}
+        lst = self._getlist(data("article"))
+        if lst:
+            self._cache_items(("search", str(key), str(pg)), lst)
+        return {"list": lst, "page": pg, "pagecount": 9999}
 
     # -------------------- 播放 / 代理 --------------------
     def playerContent(self, flag, id, vipFlags=None):
         s = str(id or "")
+
+        # nid: 伪集 → 还原到真实详情，取第一条真实播放地址
+        if s.startswith("nid:"):
+            vid = self._decode_nid(s)
+            if not vid:
+                return {"parse": 0, "url": "", "header": self.headers}
+            playlist, _content, url = self._raw_detail_cached(vid)
+            real = ""
+            if playlist:
+                p0 = playlist[0]
+                real = p0.split("$", 1)[1] if "$" in p0 else p0
+            if not real:
+                real = url
+            s = real
+
         parse = 0 if self.isVideoFormat(s) else 1
-        url = self.proxy(s) if ".m3u8" in s else s
-        return {"parse": parse, "url": url, "header": self.headers}
+        final = self.proxy(s) if ".m3u8" in s else s
+        return {"parse": parse, "url": final, "header": self.headers}
 
     def proxy(self, data, kind="m3u8"):
         if data and self.proxies:
@@ -1349,7 +1450,6 @@ class Spider(BaseSpider):
         base = res.url.rsplit("/", 1)[0]
         out, iskey = [], True
         for line in res.text.split("\n"):
-            # 加密 KEY 也要走代理，否则被 Referer / 防盗链拦截
             if iskey and 'URI="' in line:
                 m = re.search(r'URI="([^"]*)"', line)
                 if m:
