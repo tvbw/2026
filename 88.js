@@ -6,18 +6,33 @@
       "key": "九九归一",
       "name": "九九归一.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/九九归一.py"
     },
     {
       "key": "fulleroticmovies",
       "name": "经典世界sex电影｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/fulleroticmovies.py"
     },
     {
       "key": "madou8",
       "name": "麻豆吧｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/madou8.py"
     },
     {
@@ -30,12 +45,22 @@
       "key": "lissav",
       "name": "lissav.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/lissav.py"
     },
     {
       "key": "51爆料终极完美版",
       "name": "51爆料终极完美版.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/51爆料终极完美版.py"
     },
     {
@@ -43,6 +68,11 @@
       "key": "91吃瓜中心终极完美版",
       "name": "91吃瓜中心终极完美版.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/91吃瓜中心终极完美版.py"
     },
     {
@@ -55,102 +85,187 @@
       "key": "91吃瓜喽(瑟+瓜)",
       "name": "91吃瓜喽(瑟+瓜).py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/91吃瓜喽(瑟+瓜).py"
     },
     {
       "key": "91热爆",
       "name": "91热爆.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/91热爆.py"
     },
     {
       "key": "每日大乱斗",
       "name": "每日大乱斗.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/每日大乱斗.py"
     },
     {
       "key": "57吃瓜",
       "name": "57吃瓜｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/57短剧.py"
     },
     {
       "key": "橙果短剧",
       "name": "橙果短剧.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/橙果短剧.py"
     },
     {
       "key": "橙果短剧_2",
       "name": "橙果短剧_2.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/橙果短剧_2.py"
     },
     {
       "key": "黄果漫剧",
       "name": "黄果漫剧.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/黄果漫剧.py"
     },
     {
       "key": "夜社短剧",
       "name": "夜社短剧.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/夜社短剧.py"
     },
     {
       "key": "91动漫",
       "name": "91动漫.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/91动漫.py"
     },
     {
       "key": "海角乱伦",
       "name": "海角乱伦(关梯).py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/海角乱伦.py"
     },
     {
       "key": "海角",
       "name": "海角.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/海角.py"
     },
     {
       "key": "茄子精品",
       "name": "茄子精品.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/茄子精品.py"
     },
     {
       "key": "肉视频",
       "name": "肉视频｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/肉视频.py"
     },
     {
       "key": "抖阴",
       "name": "抖阴.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/抖阴.py"
     },
     {
       "key": "蜜桃AV",
       "name": "蜜桃AV.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/蜜桃AV.py"
     },
     {
       "key": "麻豆影院",
       "name": "麻豆影院.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/麻豆影院.py"
     },
     {
       "key": "绯色天际",
       "name": "绯色天际.py｜🔞",
       "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/绯色天际.py"
     },
     {
