@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-每日大赛 · 快速跳转 + 自愈抓取 + 播放相关推荐聚合（完整版）
+每日大赛 · 快速跳转 + 自愈抓取 + 播放相关推荐聚合（入口页并发优化版）
 =========================================================================
-在前一版基础之上补回 01.txt 的「播放源聚合扩展」，并做了兼容性适配：
-  - 列表接口（首页 / 分类 / 搜索）缓存当前页 items，并建 vid → page 索引
-  - 详情页自动把当前页的其他视频作为"相关推荐"追加到播放列表
-    · 当前视频保留真实集数（dplayer / 内容区链接）
-    · 推荐视频以 nid:base64(vid) 伪集形式出现，点开跳到对应视频
-  - playerContent 识别 nid: 编码，还原到真实 vid，再取第一条真实播放地址
-  - 详情抓取带 LRU 缓存，避免点推荐时重复请求
+本版新增 / 修复
+-------------------------------------------------------------------------
+- 【优化】DomainResolver._collect_candidates()
+    · 导航页 + 发布页合并为一个并发池（max_workers=6）
+    · as_completed + 超时回收，最坏 6×12s → ~12s
+- 【增强】DomainResolver._ENTRY_CACHE（类级）
+    · 入口页抓取结果按 URL 缓存，TTL 30 分钟
+    · 同进程多次 init / 重连时跳过重复抓取
+- 快路径 / 内容校验 / 播放推荐聚合等其余逻辑，与上一版一致
 =========================================================================
 """
 import json
@@ -85,12 +87,15 @@ class Config:
     HOST_CACHE_KEY = "mrds_host_fix_v1"
     HOST_CACHE_TTL = 6 * 3600
 
-    FAST_TIMEOUT         = 5             # 进入网页时间  
+    FAST_TIMEOUT         = 6
     PROBE_TIMEOUT        = 12
     PROBE_MIN_HTML       = 2000
     PROBE_MIN_ARTICLE    = 1
     PROBE_MAX_ROUNDS     = 2
     PROBE_MAX_CANDIDATES = 30
+
+    # 入口页结果缓存 TTL（秒）—— 同一进程内多次 init 时跳过重复抓取
+    ENTRY_CACHE_TTL      = 1800
 
     SITE_KEYWORDS = ["每日大赛"]
     SITE_MARKERS  = ["post-title", "entry-title", "<article", 'class="post']
@@ -192,7 +197,7 @@ class Config:
 
 
 # ==================================================================
-# ② 慢路径域名解析器（01.txt 引擎移植，原样保留）
+# ② 慢路径域名解析器（入口页并发 + 结果缓存）
 # ==================================================================
 class DomainResolver:
     SKIP_HREF = (
@@ -229,9 +234,17 @@ class DomainResolver:
         r'''<meta[^>]+http-equiv=["']refresh["'][^>]+url=([^"'\s>]+)''',
     ]
 
+    # ---- 类级缓存：跨实例保留，多次 init / 重连时复用 ----
+    _ENTRY_CACHE = {}          # src → (ts, final_host, ext_list, bare_list)
+    _ENTRY_LOCK  = None        # 惰性初始化（避免 import threading 开销）
+
     def __init__(self, cfg, fetcher):
         self.cfg, self.fetch = cfg, fetcher
+        if DomainResolver._ENTRY_LOCK is None:
+            import threading
+            DomainResolver._ENTRY_LOCK = threading.Lock()
 
+    # ---------- 抓取与提取 ----------
     def _safe_fetch(self, url, timeout):
         try:
             return self.fetch(url, timeout=timeout)
@@ -299,6 +312,7 @@ class DomainResolver:
                 "Y" if has_keyword else "N")
         return True, "OK"
 
+    # ---------- 六源提取 ----------
     def _seed_suffixes(self):
         out = set()
         for u in self.cfg.SEED_HOSTS:
@@ -454,41 +468,89 @@ class DomainResolver:
 
         return r, extracted, bare
 
+    # ---------- 候选收集：入口页并发 + 缓存 ----------
+    def _read_entry_cache(self, src, now):
+        """返回缓存命中的 (final_host, ext, bare)；未命中或过期返回 None"""
+        with self._ENTRY_LOCK:
+            cached = self._ENTRY_CACHE.get(src)
+        if not cached:
+            return None
+        ts, final_h, ext, bare = cached
+        if now - ts >= getattr(self.cfg, "ENTRY_CACHE_TTL", 1800):
+            return None
+        return final_h, ext, bare
+
+    def _write_entry_cache(self, src, now, final_h, ext, bare):
+        with self._ENTRY_LOCK:
+            self._ENTRY_CACHE[src] = (now, final_h, list(ext), list(bare))
+            # 简单清理：超量时丢掉最早的
+            if len(self._ENTRY_CACHE) > 40:
+                ordered = sorted(self._ENTRY_CACHE.items(), key=lambda kv: kv[1][0])
+                for k, _ in ordered[:len(ordered) - 40]:
+                    self._ENTRY_CACHE.pop(k, None)
+
     def _collect_candidates(self):
         candidates = []
         stats = {"nav_hit": 0, "pub_hit": 0, "struct": 0, "bare": 0, "seed": 0}
 
         nav_srcs = list(self.cfg.NAV_URLS)
         pub_srcs = list(getattr(self.cfg, "PUBLISH_URLS", []))
+        all_srcs = [(u, False) for u in nav_srcs] + [(u, True) for u in pub_srcs]
 
-        if nav_srcs:
-            print(f"--- 抓取导航页 {len(nav_srcs)} 个 ---")
-            for src in nav_srcs:
-                r, ext, bare = self._fetch_and_report(src, is_publish=False)
-                if r is None:
-                    continue
-                stats["nav_hit"] += 1
-                if r.url and self._final_host(r.url):
-                    candidates.append(self._final_host(r.url))
-                candidates.extend(ext)
-                stats["struct"] += len(ext)
-                candidates.extend(bare)
-                stats["bare"] += len(bare)
+        now = time.time()
+        fresh_srcs = []
 
-        if pub_srcs:
-            print(f"--- 抓取发布页 {len(pub_srcs)} 个 ---")
-            for src in pub_srcs:
-                r, ext, bare = self._fetch_and_report(src, is_publish=True)
-                if r is None:
-                    continue
-                stats["pub_hit"] += 1
-                if r.url and self._final_host(r.url):
-                    candidates.append(self._final_host(r.url))
-                candidates.extend(ext)
-                stats["struct"] += len(ext)
-                candidates.extend(bare)
-                stats["bare"] += len(bare)
+        # ① 先查缓存
+        for src, is_pub in all_srcs:
+            hit = self._read_entry_cache(src, now)
+            if hit is None:
+                fresh_srcs.append((src, is_pub))
+                continue
+            final_h, ext, bare = hit
+            tag = "发布" if is_pub else "导航"
+            print(f"  [{tag}缓存] {src} → {final_h or '(无跳转)'} | "
+                  f"结构化 {len(ext)} | 裸扫 {len(bare)}")
+            if final_h:
+                candidates.append(final_h)
+            candidates.extend(ext)
+            stats["struct"] += len(ext)
+            candidates.extend(bare)
+            stats["bare"] += len(bare)
+            stats["pub_hit" if is_pub else "nav_hit"] += 1
 
+        # ② 未命中的走并发
+        if fresh_srcs:
+            print(f"--- 并发抓取入口页 {len(fresh_srcs)} 个 "
+                  f"(导航 {len(nav_srcs)} + 发布 {len(pub_srcs)}，已缓存 "
+                  f"{len(all_srcs) - len(fresh_srcs)}) ---")
+            try:
+                with ThreadPoolExecutor(max_workers=min(6, len(fresh_srcs))) as ex:
+                    futs = {ex.submit(self._fetch_and_report, src, is_pub): (src, is_pub)
+                            for src, is_pub in fresh_srcs}
+                    for f in as_completed(futs, timeout=self.cfg.PROBE_TIMEOUT + 8):
+                        src, is_pub = futs[f]
+                        try:
+                            r, ext, bare = f.result()
+                        except Exception as e:
+                            print(f"  [入口异常] {src}: {e}")
+                            continue
+                        if r is None:
+                            continue
+                        final_h = self._final_host(r.url) if r.url else ""
+                        # 写缓存（无论是否提取到结果，避免短时间内反复重试）
+                        self._write_entry_cache(src, now, final_h, ext, bare)
+
+                        stats["pub_hit" if is_pub else "nav_hit"] += 1
+                        if final_h:
+                            candidates.append(final_h)
+                        candidates.extend(ext)
+                        stats["struct"] += len(ext)
+                        candidates.extend(bare)
+                        stats["bare"] += len(bare)
+            except Exception as e:
+                LOG.debug("入口并发异常: %s", e)
+
+        # ③ 种子域名兜底
         candidates.extend([u.rstrip("/") for u in self.cfg.SEED_HOSTS])
         stats["seed"] = len(self.cfg.SEED_HOSTS)
 
@@ -506,6 +568,7 @@ class DomainResolver:
               f"种子 {stats['seed']} → 最终 {len(urls)} 个")
         return urls
 
+    # ---------- 三轮回流探测 ----------
     def resolve(self):
         queue = self._collect_candidates()
         if not queue:
@@ -1087,7 +1150,6 @@ class Spider(BaseSpider):
 
     # -------------------- 详情：核心抓取 + 相关推荐聚合 --------------------
     def _raw_detail(self, vid):
-        """抓详情页，返回 (playlist, content, url)"""
         vid = str(vid or "")
         if vid.endswith("@folder"):
             vid = vid[:-7]
@@ -1106,7 +1168,7 @@ class Spider(BaseSpider):
             return self._detail_cache[key]
         result = self._raw_detail(key)
         self._detail_cache[key] = result
-        while len(self._detail_cache) >120:
+        while len(self._detail_cache) > 60:
             first = next(iter(self._detail_cache))
             self._detail_cache.pop(first, None)
         return result
@@ -1138,7 +1200,6 @@ class Spider(BaseSpider):
         }]}
 
     def _build_playlist_with_related(self, vid, own_playlist, related):
-        """当前视频保留真实集；当前页其他视频以 nid: 伪集追加到播放列表"""
         parts, used = [], set()
 
         for p in (own_playlist or []):
@@ -1388,7 +1449,6 @@ class Spider(BaseSpider):
     def playerContent(self, flag, id, vipFlags=None):
         s = str(id or "")
 
-        # nid: 伪集 → 还原到真实详情，取第一条真实播放地址
         if s.startswith("nid:"):
             vid = self._decode_nid(s)
             if not vid:
