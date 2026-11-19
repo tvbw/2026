@@ -85,7 +85,7 @@ class Config:
     HOST_CACHE_KEY = "mrds_host_fix_v1"
     HOST_CACHE_TTL = 6 * 3600
 
-    FAST_TIMEOUT         = 6
+    FAST_TIMEOUT         = 5             # 进入网页时间  
     PROBE_TIMEOUT        = 12
     PROBE_MIN_HTML       = 2000
     PROBE_MIN_ARTICLE    = 1
@@ -1106,7 +1106,7 @@ class Spider(BaseSpider):
             return self._detail_cache[key]
         result = self._raw_detail(key)
         self._detail_cache[key] = result
-        while len(self._detail_cache) > 60:
+        while len(self._detail_cache) >120:
             first = next(iter(self._detail_cache))
             self._detail_cache.pop(first, None)
         return result
