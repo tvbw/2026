@@ -84,7 +84,7 @@ class Config:
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host_fix_v1"
+    HOST_CACHE_KEY = "mrds_host_fix_0v1"
     HOST_CACHE_TTL = 6 * 3600
 
     FAST_TIMEOUT         = 6
@@ -97,7 +97,7 @@ class Config:
     # 入口页结果缓存 TTL（秒）—— 同一进程内多次 init 时跳过重复抓取
     ENTRY_CACHE_TTL      = 1800
 
-    SITE_KEYWORDS = ["每日大赛"]
+    SITE_KEYWORDS = ["每日大赛v01"]
     SITE_MARKERS  = ["post-title", "entry-title", "<article", 'class="post']
 
     NAV_PAGE_KEYWORDS = (
