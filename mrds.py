@@ -46,10 +46,10 @@ class Spider(BaseSpider):
         img_cache.clear()
 
     def get_working_host(self):
-        dynamic_urls = [
-        "https://mrdld7.com",
-        "https://mrdld6.com",
-        "https://mrdld4.com",
+        dynamic_urls = [        
+        "https://www.lfntptwv.cc/",        
+        "https://cast.wgbfdjfgk.cc/",
+        "https://basic.wgbfdjfgk.cc/",
         ]
         for url in dynamic_urls:
             try:
