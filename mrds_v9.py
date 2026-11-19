@@ -82,7 +82,7 @@ class Config:
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host_fix_v1"
+    HOST_CACHE_KEY = "mrds_host_fix_v2"
     HOST_CACHE_TTL = 6 * 3600
 
     FAST_TIMEOUT         = 5             # 进入网页时间  
@@ -92,7 +92,7 @@ class Config:
     PROBE_MAX_ROUNDS     = 2
     PROBE_MAX_CANDIDATES = 30
 
-    SITE_KEYWORDS = ["每日大赛"]
+    SITE_KEYWORDS = ["每日大赛2"]
     SITE_MARKERS  = ["post-title", "entry-title", "<article", 'class="post']
 
     NAV_PAGE_KEYWORDS = (
