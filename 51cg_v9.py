@@ -66,11 +66,9 @@ class SiteConfig:
 
     # ============ 快路径（已知可用域名，最先探测）============
     FAST_HOSTS = [
-        "https://www.gugvyepf.cc/",
-        "https://be.gadoatcl.cc/",
-        "https://awful.gadoatcl.cc/",
-        "https://51cgo25.com",
-        "https://51cge23.com",
+        "https://captain.tjkbkaca.cc/",
+        "https://aid.tjkbkaca.cc/",
+        "https://gyay.tjkbkaca.cc/",
     ]
 
     # ============ 导航页 ============
