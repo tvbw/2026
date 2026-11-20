@@ -292,7 +292,7 @@
     },
     {
       "key": "每日大赛v10自愈版",
-      "name": "每日大赛发v10自愈版",
+      "name": "每日大赛v10自愈版",
       "type": 3,
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds_v9.py",
       "searchable": 1,
