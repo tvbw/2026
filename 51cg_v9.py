@@ -56,7 +56,7 @@ LOG = logging.getLogger(__name__)
 # ==================================================================
 class Config:
     SITE_NAME        = "51吃瓜"
-    SITE_KEYWORDS    = ["51吃瓜"]   # 多个备选，任一命中即可
+    SITE_KEYWORDS        = ["51吃瓜", "51吃瓜1"]     # 多备选更稳
     PLAY_FROM        = "51吃瓜"
     PLAY_FALLBACK    = "51吃瓜"
     HOST_CACHE_KEY   = "51cg_host_v10"
