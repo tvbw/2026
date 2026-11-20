@@ -51,9 +51,22 @@ LOG = logging.getLogger(__name__)
 # ① 配置
 # ==================================================================
 class Config:
-    PUBLISH_URLS = [
+    FAST_HOSTS = [
         "https://dwatg7dnnvd2f.cloudfront.net",
-        "https://mrdld6.com",
+        "https://among.mturgjfv.cc/",
+        "https://annual.mturgjfv.cc/",
+        "https://alone.mturgjfv.cc/",
+        "https://admit.mturgjfv.cc/",
+        "https://affair.mturgjfv.cc/",
+    ]
+
+    NAV_URLS = [
+        "https://mrdld5.com",
+        "https://mrdld1.com",
+    ]
+
+    PUBLISH_URLS = [
+        "https://mrdld7.com",
     ]
 
     SEED_HOSTS = [
@@ -63,6 +76,8 @@ class Config:
         "https://alone.mturgjfv.cc/",
         "https://admit.mturgjfv.cc/",
         "https://affair.mturgjfv.cc/",
+        "https://mrdld6.com",
+        "https://mrdld4.com",
     ]
 
     FALLBACK_HOST  = None
@@ -79,7 +94,7 @@ class Config:
     # 入口页结果缓存 TTL（秒）—— 同一进程内多次 init 时跳过重复抓取
     ENTRY_CACHE_TTL      = 1800
 
-    SITE_KEYWORDS = ["每日大乱斗v10"]
+    SITE_KEYWORDS = ["每日大乱斗v10自愈版", "每日大乱斗", "每日大乱斗v10",]
     SITE_MARKERS  = ["post-title", "entry-title", "<article", 'class="post']
 
     NAV_PAGE_KEYWORDS = (
