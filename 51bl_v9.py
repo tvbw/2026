@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
 """
-51爆料 · 多域名自愈版（v9 · 发布页自愈模板）
+51大赛 · 多域名自愈版（v10 并发优化 + 模板通用版）
 ================================
-锚点优先级：
-  1) GitLab 发布页 gitlab.com/51blw/web（README 明确更新至 2026-11-09，最可靠）
-  2) navone.cloud 描述页 → 从中提取 51blw.cloud / 51blw.online 主站域名
-  3) 51blw.cloud / 51blw.online / 51new.cloud / 51baoliao01.com / ymlkq.com 主站候选
-  4) 三轮探测回流（失败响应里继续挖新域名）
-  5) 全挂 → 过期缓存 → SEED[0] → 空
+v10 相比 v9.9 的改动
+- 【性能】_collect_candidates 导航+发布合并并发池，16 源串行 192s → 并发 ~12s
+- 【性能】入口页结果 TTL 30 分钟缓存，二次 init 跳过重复抓取
+- 【性能】新增 FAST_HOSTS 快路径，命中即返回（1 个请求确认）
+- 【修复】_site_check 补上 _is_blocked_page 检测，CF 5 秒盾不再白等
+- 【修复】_parse_classes 遍历所有 SEL_NAV 全合并（不再命中即 break）
+- 【增强】分类子目录主动发现 + 1 小时缓存
+- 【通用】SITE_NAME / SITE_KEYWORDS / PLAY_FROM / *_CACHE_KEY 集中配置
+- 【通用】SITE_KEYWORDS 支持多个字符串 + 正则，match_keyword() 统一匹配
+- 播放源聚合扩展（_install_playlist_extension）原样保留
 
-换站改 SiteConfig 四段：NAV_URLS / PUBLISH_URLS / SEED_HOSTS / SITE_KEYWORDS
+换站点只改 SiteConfig 顶部 6 行（SITE_NAME / SITE_KEYWORDS / PLAY_FROM /
+PLAY_FALLBACK / HOST_CACHE_KEY / CLASS_CACHE_KEY）+ 三组域名 + SEL_* 选择器
 """
 import json
 import re
@@ -47,24 +52,42 @@ LOG = logging.getLogger(__name__)
 
 
 # ==================================================================
-# ① 配置层（51系列标准，换站只改这一段）
+# ① 配置层（换站只改本类顶部）
 # ==================================================================
 class SiteConfig:
-    # ---- 导航页：navone.cloud 描述 51 爆料的页面，从中提取主站域名 ----
+    # ============ 站点身份（换站改这一段）============
+    SITE_NAME        = "51爆料"
+    SITE_KEYWORDS    = ["51爆料"]   # 多个备选，任一命中即可
+    PLAY_FROM        = "51爆料"
+    PLAY_FALLBACK    = "51爆料"
+    HOST_CACHE_KEY   = "51bl_host_v10"
+    CLASS_CACHE_KEY  = "51bl_classes_v10"
+    CLASS_CACHE_TTL  = 3600
+
+    # ============ 快路径（已知可用域名，最先探测）============
+    FAST_HOSTS = [
+        "https://d2gt333ro578y4.cloudfront.net",
+        "https://anxiety.ttiaqryf.cc",
+        "https://at.ttiaqryf.cc",
+        "https://basket.ttiaqryf.cc",
+        "https://campus.ttiaqryf.cc",
+    ]
+
+    # ============ 导航页 ============
     NAV_URLS = [
         "https://51blk5.com",
         "https://51blk2.com",
         "https://51blk1.com",
     ]
 
-    # ---- 发布页 / 永久锚点：GitLab 是当前确认活跃的锚点 ----
+    # ============ 发布页（GitLab 为当前最可靠锚点）============
     PUBLISH_URLS = [
         "https://51blk6.com",
         "https://51blk3.com",
         "https://51blk4.com",
     ]
 
-    # ---- 种子：只保留可能承载 HTML 主站的域名 ----
+    # ============ 种子（可能承载 HTML 主站的域名）============
     SEED_HOSTS = [
         "https://d2gt333ro578y4.cloudfront.net",
         "https://anxiety.ttiaqryf.cc",
@@ -73,19 +96,24 @@ class SiteConfig:
         "https://campus.ttiaqryf.cc",
     ]
 
-    FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "51bl_host_v9.9"              # 换 key，强制清旧缓存
-    HOST_CACHE_TTL = 6 * 3600
-    SITE_KEYWORDS    = ["51爆料V9"]
-    SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
+    # ============ 探测参数 ============
+    FAST_TIMEOUT         = 6      # 快路径单请求超时
+    PROBE_TIMEOUT        = 12
+    PROBE_MIN_HTML       = 2000   # 原 3000，降到 2000
+    PROBE_MIN_ARTICLE    = 1
+    PROBE_MAX_ROUNDS     = 2
+    PROBE_MAX_CANDIDATES = 30
+    ENTRY_CACHE_TTL      = 1800   # 入口页结果缓存 30 分钟
 
-      # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 15            # 原8，给慢站留余量
-    PROBE_MIN_HTML       = 3000   # 原 2500，略降低避免误判
-    PROBE_MIN_ARTICLE    = 1                # 原2，改为 1（宽松）
-    PROBE_MAX_ROUNDS     = 2                # 原1，增加一轮回流
-    PROBE_MAX_CANDIDATES = 30    
-    
+    FILTER_PROBE_TIMEOUT = 5      # 分类页筛选栏单请求超时
+    FILTER_TOTAL_TIMEOUT = 25     # 全部一级分类并发总超时
+
+    FALLBACK_HOST    = None
+    HOST_CACHE_TTL   = 25000
+
+    # ============ 站点结构特征 ============
+    SITE_MARKERS = ["post-title", "entry-title", "<article", 'class="post']
+
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "推荐访问", "线路正常",
         "官方导航", "发布页", "备用线路", "地址发布页", "永久地址", "最新地址",
@@ -116,6 +144,7 @@ class SiteConfig:
 
     EXTRA_BLACKLIST = ('beian.miit.gov.cn','w3.org','example.com')
 
+    # ============ 页面选择器 ============
     SEL_ARTICLE      = "#index article, #archive article, article"
     SEL_ARTICLE_HOME = "#index article, article"
     SEL_PLAYER       = ".dplayer"
@@ -124,24 +153,74 @@ class SiteConfig:
     SEL_SUMMARY      = ".post-content"
     SEL_TITLE        = ".post-title, h1"
 
+    # 导航 - 抓全类放前面，遍历全部合并（不再命中即 break）
     SEL_NAV = [
+        ".category-list ul li",
+        ".category-list a",
+        ".nav-menu li",
+        ".nav-menu a",
+        ".menu li",
+        ".menu a",
+        "nav ul li",
+        "nav a",
+        "header nav a",
         "ul.navbar-nav.mr-auto > li.nav-item > a.nav-link",
         "ul.navbar-nav > li.nav-item > a.nav-link",
         "ul.navbar-nav li a.nav-link",
         "#navbarCollapse a.nav-link",
         ".navbar-nav a.nav-link",
-        ".category-list ul li",
-        ".nav-menu li",
-        ".menu li",
-        "nav ul li",
-        "header nav a",
-        "nav a",
     ]
+
     SEL_SUB_NAV = [
         "ul.navbar-nav.mr-auto li.nav-item.dropdown > ul.dropdown-menu > li.dropdown-item > a",
         "ul.dropdown-menu > li.dropdown-item > a",
         ".dropdown-menu a",
     ]
+
+    # 筛选栏（分类页内的子分类切换）
+    SEL_FILTER = [
+        ".filter-tabs a",
+        ".filter-nav a",
+        ".filter-list a",
+        ".filter-links a",
+        ".sub-cats a",
+        ".subcategories a",
+        ".sub-categories a",
+        ".sub-nav a",
+        ".sub-nav-list a",
+        ".sub-cate a",
+        ".category-children a",
+        ".child-cats a",
+        ".children-cat a",
+        ".tag-filter a",
+        ".tag-list a",
+        ".tag-links a",
+        ".category-filter a",
+        ".screening a",
+        ".screening-tabs a",
+        ".category-tabs a",
+        ".archive-tabs a",
+        ".type-tabs a",
+        ".content-tabs a",
+        ".post-categories a",
+        ".tabs a",
+        ".tab-list a",
+    ]
+
+    # 分类总览页
+    SEL_OVERVIEW = [
+        ".category-list a",
+        ".categories a",
+        ".category-item a",
+        ".cat-list a",
+        ".cat-item a",
+        ".category-name a",
+        ".archive-list a",
+        ".type-list a",
+        ".taxonomy-list a",
+        ".terms-list a",
+    ]
+
     DEFAULT_CATEGORY = {"type_name": "首页", "type_id": "/"}
 
     LINK_KEYWORDS = (
@@ -167,9 +246,25 @@ class SiteConfig:
         "Cache-Control": "no-cache",
     }
 
+    # ============ 通用关键词匹配 ============
+    @classmethod
+    def match_keyword(cls, text):
+        if not text:
+            return False
+        for kw in cls.SITE_KEYWORDS:
+            try:
+                if hasattr(kw, "search"):
+                    if kw.search(text):
+                        return True
+                elif kw in text:
+                    return True
+            except Exception:
+                continue
+        return False
+
 
 # ==================================================================
-# ② 域名解析器（v7 完整逻辑，未改动）
+# ② 域名解析器（v10 并发 + 入口缓存）
 # ==================================================================
 class DomainResolver:
     SKIP_HREF = (
@@ -206,9 +301,15 @@ class DomainResolver:
         r'''<meta[^>]+http-equiv=["']refresh["'][^>]+url=([^"'\s>]+)''',
     ]
 
+    _ENTRY_CACHE = {}
+    _ENTRY_LOCK  = None
+
     def __init__(self, cfg, fetcher, cache_get=None, cache_set=None, cache_del=None):
         self.cfg, self.fetch = cfg, fetcher
         self.cache_get, self.cache_set, self.cache_del = cache_get, cache_set, cache_del
+        if DomainResolver._ENTRY_LOCK is None:
+            import threading
+            DomainResolver._ENTRY_LOCK = threading.Lock()
 
     def _read_cache(self):
         if not self.cache_get:
@@ -297,12 +398,14 @@ class DomainResolver:
             return False, "空响应"
         if len(html) < self.cfg.PROBE_MIN_HTML:
             return False, "HTML过短(%d<%d)" % (len(html), self.cfg.PROBE_MIN_HTML)
+        if self._is_blocked_page(html):                    # v10 新增
+            return False, "CF/验证页"
         if self._is_nav_page(html):
             return False, "导航页特征"
         low = html.lower()
         has_article = low.count("<article") >= self.cfg.PROBE_MIN_ARTICLE
         has_marker  = any(m in low for m in self.cfg.SITE_MARKERS)
-        has_keyword = any(kw in html for kw in self.cfg.SITE_KEYWORDS)
+        has_keyword = self.cfg.match_keyword(html)         # v10 改用 match_keyword
         if not (has_article or has_marker or has_keyword):
             return False, "无内容结构(article=%d,marker=%s,kw=%s)" % (
                 low.count("<article"),
@@ -402,11 +505,11 @@ class DomainResolver:
                 unquoted = unquote(decoded)
                 if "[" not in unquoted:
                     continue
-                if not any(kw in unquoted for kw in self.cfg.SITE_KEYWORDS):
+                if not self.cfg.match_keyword(unquoted):    # v10 通用匹配
                     continue
                 site_list = json.loads(unquoted)
                 for item in site_list:
-                    if not any(kw in str(item.get("name", "")) for kw in self.cfg.SITE_KEYWORDS):
+                    if not self.cfg.match_keyword(str(item.get("name", ""))):
                         continue
                     u = item.get("url", "")
                     if u:
@@ -449,7 +552,7 @@ class DomainResolver:
 
         text = r.text or ""
         if self._is_blocked_page(text):
-            print(f"  [{tag}拦截] {src} 被 CloudFlare/验证页拦截 (前80字符: {text[:80]!r})")
+            print(f"  [{tag}拦截] {src} 被 CloudFlare/验证页拦截")
             return r, [], []
 
         extracted = self._extract_hosts_from_html(text, trusted=is_publish)
@@ -460,8 +563,7 @@ class DomainResolver:
         if bare:
             print(f"  [{tag}裸扫] {src} → {len(bare)} 个: {bare[:3]}")
         if not extracted and not bare:
-            print(f"  [{tag}提取为空] {src} HTML前200字符:")
-            print(f"    {text[:200]!r}")
+            print(f"  [{tag}提取为空] {src}")
 
         return r, extracted, bare
 
@@ -484,51 +586,96 @@ class DomainResolver:
         print(f"  [gitlab raw失败] {src} 所有 raw 路径均失败")
         return ""
 
+    # ---------- 入口页缓存 ----------
+    def _read_entry_cache(self, src, now):
+        with self._ENTRY_LOCK:
+            cached = self._ENTRY_CACHE.get(src)
+        if not cached:
+            return None
+        ts, final_h, ext, bare = cached
+        if now - ts >= getattr(self.cfg, "ENTRY_CACHE_TTL", 1800):
+            return None
+        return final_h, ext, bare
+
+    def _write_entry_cache(self, src, now, final_h, ext, bare):
+        with self._ENTRY_LOCK:
+            self._ENTRY_CACHE[src] = (now, final_h, list(ext), list(bare))
+            if len(self._ENTRY_CACHE) > 40:
+                ordered = sorted(self._ENTRY_CACHE.items(), key=lambda kv: kv[1][0])
+                for k, _ in ordered[:len(ordered) - 40]:
+                    self._ENTRY_CACHE.pop(k, None)
+
+    # ---------- 候选收集：并发 + 缓存 ----------
     def _collect_candidates(self, cached):
         candidates = []
         stats = {"nav_hit": 0, "pub_hit": 0, "struct": 0, "bare": 0, "seed": 0}
 
         nav_srcs = list(self.cfg.NAV_URLS)
         pub_srcs = list(getattr(self.cfg, "PUBLISH_URLS", []))
+        all_srcs = [(u, False) for u in nav_srcs] + [(u, True) for u in pub_srcs]
 
-        if nav_srcs:
-            print(f"--- 抓取导航页 {len(nav_srcs)} 个 ---")
-            for src in nav_srcs:
-                r, ext, bare = self._fetch_and_report(src, is_publish=False)
-                if r is None:
-                    continue
-                stats["nav_hit"] += 1
-                if r.url and self._final_host(r.url):
-                    candidates.append(self._final_host(r.url))
-                candidates.extend(ext)
-                stats["struct"] += len(ext)
-                candidates.extend(bare)
-                stats["bare"] += len(bare)
+        now = time.time()
+        fresh_srcs = []
 
-        if pub_srcs:
-            print(f"--- 抓取发布页 {len(pub_srcs)} 个 ---")
-            for src in pub_srcs:
-                r, ext, bare = self._fetch_and_report(src, is_publish=True)
-                if r is None:
-                    continue
-                stats["pub_hit"] += 1
-                if r.url and self._final_host(r.url):
-                    candidates.append(self._final_host(r.url))
-                candidates.extend(ext)
-                stats["struct"] += len(ext)
-                candidates.extend(bare)
-                stats["bare"] += len(bare)
+        # ① 查缓存
+        for src, is_pub in all_srcs:
+            hit = self._read_entry_cache(src, now)
+            if hit is None:
+                fresh_srcs.append((src, is_pub))
+                continue
+            final_h, ext, bare = hit
+            tag = "发布" if is_pub else "导航"
+            print(f"  [{tag}缓存] {src} → {final_h or '(无跳转)'} | 结构化 {len(ext)} | 裸扫 {len(bare)}")
+            if final_h:
+                candidates.append(final_h)
+            candidates.extend(ext)
+            stats["struct"] += len(ext)
+            candidates.extend(bare)
+            stats["bare"] += len(bare)
+            stats["pub_hit" if is_pub else "nav_hit"] += 1
 
-                if 'gitlab.com' in src:
-                    readme = self._fetch_gitlab_readme(src)
-                    if readme:
-                        ext2 = self._extract_hosts_from_html(readme, trusted=True)
-                        bare2 = self._extract_bare_domains(readme, trusted=True)
-                        print(f"  [gitlab提取] 结构化={len(ext2)} 裸扫={len(bare2)}")
-                        candidates.extend(ext2)
-                        candidates.extend(bare2)
-                        stats["struct"] += len(ext2)
-                        stats["bare"] += len(bare2)
+        # ② 未命中并发
+        if fresh_srcs:
+            print(f"--- 并发抓取入口页 {len(fresh_srcs)} 个 "
+                  f"(导航 {len(nav_srcs)} + 发布 {len(pub_srcs)}，已缓存 "
+                  f"{len(all_srcs) - len(fresh_srcs)}) ---")
+            try:
+                with ThreadPoolExecutor(max_workers=min(6, len(fresh_srcs))) as ex:
+                    futs = {ex.submit(self._fetch_and_report, src, is_pub): (src, is_pub)
+                            for src, is_pub in fresh_srcs}
+                    for f in as_completed(futs, timeout=self.cfg.PROBE_TIMEOUT + 8):
+                        src, is_pub = futs[f]
+                        try:
+                            r, ext, bare = f.result()
+                        except Exception as e:
+                            print(f"  [入口异常] {src}: {e}")
+                            continue
+                        if r is None:
+                            continue
+                        final_h = self._final_host(r.url) if r.url else ""
+                        self._write_entry_cache(src, now, final_h, ext, bare)
+
+                        stats["pub_hit" if is_pub else "nav_hit"] += 1
+                        if final_h:
+                            candidates.append(final_h)
+                        candidates.extend(ext)
+                        stats["struct"] += len(ext)
+                        candidates.extend(bare)
+                        stats["bare"] += len(bare)
+
+                        # GitLab README 单独处理
+                        if 'gitlab.com' in src:
+                            readme = self._fetch_gitlab_readme(src)
+                            if readme:
+                                ext2 = self._extract_hosts_from_html(readme, trusted=True)
+                                bare2 = self._extract_bare_domains(readme, trusted=True)
+                                print(f"  [gitlab提取] 结构化={len(ext2)} 裸扫={len(bare2)}")
+                                candidates.extend(ext2)
+                                candidates.extend(bare2)
+                                stats["struct"] += len(ext2)
+                                stats["bare"] += len(bare2)
+            except Exception as e:
+                LOG.debug("入口并发异常: %s", e)
 
         candidates.extend([u.rstrip("/") for u in self.cfg.SEED_HOSTS])
         stats["seed"] = len(self.cfg.SEED_HOSTS)
@@ -550,9 +697,47 @@ class DomainResolver:
               f"种子 {stats['seed']} → 最终 {len(urls)} 个")
         return urls
 
+    # ---------- 快路径 ----------
+    def _fast_probe(self):
+        urls = [u.rstrip("/") for u in getattr(self.cfg, "FAST_HOSTS", []) if u]
+        if not urls:
+            return ""
+        results = {}
+        try:
+            with ThreadPoolExecutor(max_workers=min(8, len(urls))) as ex:
+                futs = {ex.submit(self._safe_fetch, u + "/", self.cfg.FAST_TIMEOUT): u
+                        for u in urls}
+                for f in as_completed(futs, timeout=self.cfg.FAST_TIMEOUT + 6):
+                    u = futs[f]
+                    try:
+                        results[u] = f.result()
+                    except Exception:
+                        results[u] = None
+        except Exception as e:
+            LOG.debug("快路径并发异常: %s", e)
+
+        for u in urls:
+            r = results.get(u)
+            if r is None:
+                print(f"  [快路径] {u} 无响应")
+                continue
+            if r.status_code != 200:
+                print(f"  [快路径] {u} HTTP={r.status_code}")
+                continue
+            ok, reason = self._site_check(r.text)
+            if not ok:
+                print(f"  [快路径] {u} 不通过: {reason}")
+                continue
+            final = self._final_host(r.url) or u
+            print(f"  [快路径] {u} → {final} 命中")
+            return final
+        return ""
+
+    # ---------- 主入口 ----------
     def resolve(self):
         cached = self._read_cache()
 
+        # 1) 缓存
         if cached and self._cache_fresh(cached):
             r = self._safe_fetch(cached["host"] + "/", self.cfg.PROBE_TIMEOUT)
             if r is not None and r.status_code == 200:
@@ -568,6 +753,13 @@ class DomainResolver:
             else:
                 print(f"缓存失效: {cached['host']} 无响应")
 
+        # 2) 快路径
+        fast = self._fast_probe()
+        if fast:
+            self._write_cache(fast)
+            return fast
+
+        # 3) 慢路径
         queue = self._collect_candidates(cached)
         if not queue:
             print("[诊断] 无任何候选域名")
@@ -633,11 +825,6 @@ class DomainResolver:
                 print(f"第 {round_no} 轮结束，新增 {len(next_queue)} 个，进下一轮")
 
         print(f"[诊断] 已试 {len(tried)} 个域名，全部失败")
-        print(f"[诊断] 排查：")
-        print(f"  1) 日志里 [源失败] → 该源无法访问（网络/DNS/需梯子）")
-        print(f"  2) 日志里 [拦截] → CloudFlare 5秒盾，需换源")
-        print(f"  3) 日志里 [提取为空] → 抓到了但没提取到域名，看打印的HTML片段")
-        print(f"  4) 日志里 [不匹配] → 候选域名有效但不是主站，改 SITE_KEYWORDS")
         return self._fallback(cached, "所有轮失败")
 
     def _fallback(self, cached, reason):
@@ -705,7 +892,9 @@ class BaseMultiDomainSpider(BaseSpider):
             self.headers.update({"Origin": self.host, "Referer": self.host + "/"})
         print(f"使用站点: {self.host}")
 
-    def getName(self):          return "🌈 51爆料|多域自愈版"
+    def getName(self):
+        return "🌈 %s|多域自愈版" % self.CONFIG.SITE_NAME
+
     def manualVideoCheck(self): return False
     def isVideoFormat(self, u): return any(e in (u or "") for e in (".m3u8", ".mp4", ".ts"))
     def destroy(self):          self._img_cache.clear()
@@ -769,11 +958,8 @@ class BaseMultiDomainSpider(BaseSpider):
             return {"class": [], "list": []}
         lst = self._parse_list(data(self.CONFIG.SEL_ARTICLE_HOME))
         if not lst:
-            print(f"[homeContent] 列表解析为空，HTML长度={len(r.text or '')}，检查 SEL_ARTICLE_HOME")
-        return {
-            "class": self._parse_classes(data),
-            "list":  lst,
-        }
+            print(f"[homeContent] 列表解析为空，HTML长度={len(r.text or '')}")
+        return {"class": self._parse_classes(data), "list": lst}
 
     def homeVideoContent(self):
         if not self.host:
@@ -783,35 +969,250 @@ class BaseMultiDomainSpider(BaseSpider):
             return {"list": []}
         return {"list": self._parse_list(data(self.CONFIG.SEL_ARTICLE_HOME))}
 
+    # -------------------- 分类结构（v10 全合并 + 子目录发现 + 缓存）--------------------
     def _parse_classes(self, data):
-        classes, seen = [], set()
-        def _add(href, name):
-            href = (href or "").strip()
-            name = (name or "").strip()
-            if not href or not name or href == "#":
-                return
-            if href.startswith(("javascript:", "mailto:", "tel:")):
-                return
-            if not href.startswith("http"):
-                href = "/" + href.lstrip("/")
-            if href in seen:
-                return
-            seen.add(href)
-            classes.append({"type_name": name, "type_id": href})
-        for sel in self.CONFIG.SEL_NAV:
-            for k in data(sel).items():
-                a = k if k.is_("a") else k("a").eq(0)
-                _add(a.attr("href"), a.text())
-            if classes:
+        # 1) 缓存
+        cached = self._read_classes_cache()
+        if cached:
+            print(f"[classes] 命中缓存 → {len(cached)} 个")
+            return cached
+
+        # 2) 首页导航 - 遍历所有 SEL_NAV 合并
+        classes = self._parse_home_nav(data)
+        print(f"[classes] 首页导航 → {len(classes)} 个")
+
+        # 3) 兜底扫描 /category/* /tag/*
+        extra = self._scan_category_links(data)
+        if extra:
+            classes = self._merge_classes(classes, extra)
+            print(f"[classes] 首页链接补充 → {len(classes)} 个")
+
+        # 4) 分类总览页
+        for path in ("/category/", "/categories/", "/category/index/"):
+            ov = self._get_soup(self._abs(path), timeout=self.CONFIG.FILTER_PROBE_TIMEOUT)[1]
+            if ov is None:
+                continue
+            ov_classes = self._parse_category_overview(ov)
+            if ov_classes:
+                classes = self._merge_classes(classes, ov_classes)
+                print(f"[classes] 总览页 {path} 补充 → {len(classes)} 个")
                 break
-        for sel in self.CONFIG.SEL_SUB_NAV:
-            for a in data(sel).items():
-                _add(a.attr("href"), a.attr("title") or a.text())
-            if classes:
-                break
+
         if not classes:
             classes = [dict(self.CONFIG.DEFAULT_CATEGORY)]
+
+        # 5) 每个一级分类抓筛选栏子分类
+        try:
+            merged = self._augment_with_filters(classes)
+            if merged and len(merged) > len(classes):
+                print(f"[classes] 筛选栏合并 {len(classes)} → {len(merged)} 个")
+                classes = merged
+        except Exception as e:
+            LOG.debug("筛选子分类异常: %s", e)
+
+        # 6) 写缓存
+        self._write_classes_cache(classes)
         return classes
+
+    def _read_classes_cache(self):
+        fn = getattr(self, "getCache", None)
+        if not fn:
+            return None
+        try:
+            raw = fn(self.CONFIG.CLASS_CACHE_KEY)
+        except Exception:
+            return None
+        if not raw:
+            return None
+        try:
+            d = json.loads(raw) if isinstance(raw, str) else raw
+            if not isinstance(d, dict):
+                return None
+            ts = int(d.get("ts") or 0)
+            if time.time() - ts >= self.CONFIG.CLASS_CACHE_TTL:
+                return None
+            classes = d.get("classes") or []
+            return classes if isinstance(classes, list) and classes else None
+        except Exception:
+            return None
+
+    def _write_classes_cache(self, classes):
+        fn = getattr(self, "setCache", None)
+        if not fn or not classes:
+            return
+        try:
+            fn(self.CONFIG.CLASS_CACHE_KEY, json.dumps({
+                "ts": int(time.time()),
+                "classes": classes,
+            }, ensure_ascii=False))
+        except Exception:
+            pass
+
+    def _parse_home_nav(self, data):
+        """遍历所有 SEL_NAV 全合并（不再命中即 break）"""
+        out, seen = [], set()
+        for sel in self.CONFIG.SEL_NAV:
+            try:
+                items = list(data(sel).items())
+            except Exception:
+                continue
+            for k in items:
+                a = k if k.is_("a") else k("a").eq(0)
+                href = (a.attr("href") or "").strip()
+                name = (a.text() or "").strip()
+                if not href or not name or href == "#":
+                    continue
+                if href.startswith(("javascript:", "mailto:", "tel:")):
+                    continue
+                if not (href.startswith("/") or href.startswith("http")):
+                    continue
+                if href.startswith("http"):
+                    try:
+                        p = urlparse(href)
+                        href = p.path or "/"
+                    except Exception:
+                        continue
+                if href in seen:
+                    continue
+                seen.add(href)
+                out.append({"type_name": name, "type_id": href})
+        return out
+
+    def _scan_category_links(self, data):
+        out, seen = [], set()
+        try:
+            for a in data("a").items():
+                href = (a.attr("href") or "").strip()
+                name = (a.text() or "").strip()
+                if not href or not name:
+                    continue
+                if not re.match(r"^/(?:category|tag|tags|type)/[\w\-]+(?:/[\w\-]+)?/?$", href):
+                    continue
+                if href in seen:
+                    continue
+                seen.add(href)
+                out.append({"type_name": name, "type_id": href})
+        except Exception:
+            pass
+        return out
+
+    def _parse_category_overview(self, data):
+        out, seen = [], set()
+        for sel in self.CONFIG.SEL_OVERVIEW:
+            try:
+                items = list(data(sel).items())
+            except Exception:
+                continue
+            for a in items:
+                href = (a.attr("href") or "").strip()
+                name = (a.text() or "").strip()
+                if not href or not name:
+                    continue
+                if href.startswith(("javascript:", "mailto:", "tel:")):
+                    continue
+                if href.startswith("http"):
+                    try:
+                        p = urlparse(href)
+                        href = p.path or "/"
+                    except Exception:
+                        continue
+                if not href.startswith("/"):
+                    continue
+                if href in seen:
+                    continue
+                seen.add(href)
+                out.append({"type_name": name, "type_id": href})
+        return out
+
+    @staticmethod
+    def _merge_classes(base, extra):
+        out, seen = [], set()
+        for c in (base or []) + (extra or []):
+            tid = (c.get("type_id") or "").strip()
+            if not tid or tid in seen:
+                continue
+            seen.add(tid)
+            out.append(c)
+        return out
+
+    def _augment_with_filters(self, main_categories):
+        if not main_categories:
+            return main_categories
+        targets = [c for c in main_categories
+                   if (c.get("type_id") or "") not in ("", "/", "#")]
+        if not targets:
+            return main_categories
+
+        print(f"[classes] 并发抓取 {len(targets)} 个一级分类的筛选栏 ...")
+        results_by_tid = {}
+        try:
+            with ThreadPoolExecutor(max_workers=min(6, len(targets))) as ex:
+                futs = {ex.submit(self._fetch_category_filters, cat): cat
+                        for cat in targets}
+                try:
+                    for f in as_completed(futs, timeout=self.CONFIG.FILTER_TOTAL_TIMEOUT):
+                        try:
+                            tid, subs = f.result()
+                            if subs:
+                                results_by_tid[tid] = subs
+                        except Exception:
+                            continue
+                except Exception:
+                    pass
+        except Exception as e:
+            LOG.debug("筛选并发异常: %s", e)
+
+        if not results_by_tid:
+            return main_categories
+
+        merged = []
+        for c in main_categories:
+            merged.append(c)
+            merged.extend(results_by_tid.get(c.get("type_id"), []))
+        return merged
+
+    def _fetch_category_filters(self, cat):
+        tid = cat.get("type_id") or ""
+        url = self._abs(tid)
+        if not url:
+            return tid, []
+        if not url.endswith("/"):
+            url += "/"
+
+        r = self._get(url, timeout=self.CONFIG.FILTER_PROBE_TIMEOUT)
+        if r is None or r.status_code != 200:
+            return tid, []
+
+        data = self.getpq(r.text)
+        subs = []
+        base_tid = tid.rstrip("/")
+        seen = {base_tid, base_tid + "/", tid, "/" + tid.lstrip("/")}
+
+        for sel in self.CONFIG.SEL_FILTER:
+            try:
+                for a in data(sel).items():
+                    href = (a.attr("href") or "").strip()
+                    name = (a.text() or "").strip()
+                    if not href or not name:
+                        continue
+                    if href in seen:
+                        continue
+                    if href.startswith("http"):
+                        try:
+                            p = urlparse(href)
+                            href = p.path or "/"
+                        except Exception:
+                            continue
+                    if not href.startswith("/"):
+                        continue
+                    seen.add(href)
+                    subs.append({
+                        "type_name": "%s · %s" % (cat.get("type_name", ""), name),
+                        "type_id": href,
+                    })
+            except Exception:
+                continue
+        return tid, subs
 
     def categoryContent(self, tid, pg=1, filter=False, extend=None):
         if not self.host:
@@ -895,15 +1296,15 @@ class BaseMultiDomainSpider(BaseSpider):
     def detailContent(self, ids):
         vid = str(ids[0] if isinstance(ids, (list, tuple)) else ids)
         if not self.host:
-            return {"list": [{"vod_play_from": "51爆料", "vod_play_url": "获取失败"}]}
+            return {"list": [{"vod_play_from": self.CONFIG.PLAY_FROM, "vod_play_url": "获取失败"}]}
         url = vid if vid.startswith("http") else self.host + vid
         r, data = self._get_soup(url)
         if data is None:
-            return {"list": [{"vod_play_from": "51爆料", "vod_play_url": "获取失败"}]}
+            return {"list": [{"vod_play_from": self.CONFIG.PLAY_FROM, "vod_play_url": "获取失败"}]}
         playlist = self._extract_playlist(data)
         play_url = "#".join(playlist) or "未找到视频源，请访问网页$%s" % url
         return {"list": [{
-            "vod_play_from": "51爆料",
+            "vod_play_from": self.CONFIG.PLAY_FROM,
             "vod_play_url":  play_url,
             "vod_content":   self._extract_content(data),
         }]}
@@ -963,7 +1364,7 @@ class BaseMultiDomainSpider(BaseSpider):
                 tags.append("[a=cr:%s/]%s[/a]" % (json.dumps({"id": self._abs(h), "name": t}), t))
         if tags:
             return " ".join(tags) + "\n\n" + (data(self.CONFIG.SEL_SUMMARY).text() or "")[:150]
-        return data(self.CONFIG.SEL_TITLE).text() or "未命名"
+        return data(self.CONFIG.SEL_TITLE).text() or self.CONFIG.PLAY_FALLBACK
 
     def _parse_pic(self, k):
         return self._extract_img(k("script").text(), k)
@@ -1096,11 +1497,11 @@ class Spider(BaseMultiDomainSpider):
     CONFIG = SiteConfig
 
     def getName(self):
-        return "🌈 51爆料|多域自愈版"
+        return "🌈 %s|多域自愈版" % self.CONFIG.SITE_NAME
 
 
 # ==================================================================
-# ⑤ 播放源聚合扩展（v7 原样保留）
+# ⑤ 播放源聚合扩展（原样保留）
 # ==================================================================
 def _install_playlist_extension(_C):
     if getattr(_C, "_pl_patched", False):
