@@ -65,14 +65,10 @@ class Config:
         "https://build.ovtrphyw.cc/",
         "https://boss.ovtrphyw.cc/",
     ]
-
-    NAV_URLS = [
-        "https://91cgb24.com/",
-        "https://www.mgrhlgof.cc/",
-        "https://91cgb20.com/",
-    ]
-
     PUBLISH_URLS = [
+        "https://www.mgrhlgof.cc/",
+        "https://91cgb24.com/",
+        "https://91cgb20.com/",
         "https://91cgb23.com/",
         "https://91cgb21.com/",
         "https://91cgb22.com/",
