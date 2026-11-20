@@ -58,29 +58,19 @@ class Config:
     CLASS_CACHE_KEY      = "cg91_classes_v10"
     CLASS_CACHE_TTL      = 3600
 
-    FAST_HOSTS = [
-        "https://but.ybejhul.com/",
-        "https://adopt.ybejhul.com/",
-        "https://d2w4b8lvgqly57.cloudfront.net/",
-        "https://build.ovtrphyw.cc/",
-        "https://boss.ovtrphyw.cc/",
-    ]
     PUBLISH_URLS = [
-        "https://www.mgrhlgof.cc/",
-        "https://91cgb24.com/",
-        "https://91cgb20.com/",
-        "https://91cgb23.com/",
-        "https://91cgb21.com/",
-        "https://91cgb22.com/",
+        "https://91cgb23.com/",         # 地址导航公布页，最稳，用作唯一挖域名入口
     ]
 
+    # ================== 慢路径：种子域名 ==================
     SEED_HOSTS = [
+        "https://d2w4b8lvgqly57.cloudfront.net/",
         "https://but.ybejhul.com/",
         "https://adopt.ybejhul.com/",
-        "https://d2w4b8lvgqly57.cloudfront.net/",
         "https://build.ovtrphyw.cc/",
         "https://boss.ovtrphyw.cc/",
         "https://91cgb24.com/",
+        "https://www.mgrhlgof.cc/",
         "https://91cgb20.com/",
     ]
 
