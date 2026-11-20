@@ -73,35 +73,18 @@ class SiteConfig:
         "https://apple.oshyitifo.cc",
     ]
 
-    # ============ 导航页 ============
-    NAV_URLS = [
-        "https://www.gugvyepf.cc/",
-        "https://51dsa33.com",
-        "https://51dsa36.com/",
-        "https://51dsa1.com",
-        "https://51dsa2.com/",
-        "https://51dsa3.com",
-        "https://51dsa4.com/",
-    ]
-
     # ============ 发布页（GitLab 为当前最可靠锚点）============
     PUBLISH_URLS = [
-        "https://51dsa38.com/",
-        "https://51dsa39.com/",
-        "https://51dsa40.com/",
-        "https://51dsa5.com",
-        "https://51dsa6.com/",
-        "https://51dsa7.com",
-        "https://51dsa8.com/"
+        "https://51dsa33.com",
     ]
 
     # ============ 种子（可能承载 HTML 主站的域名）============
     SEED_HOSTS = [
-        "https://51ds88.com/",
-        "https://d2ivs15vgv2y88.cloudfront.net",
-        "https://border.oshyitifo.cc",
-        "https://aide.oshyitifo.cc",
-        "https://apple.oshyitifo.cc",
+        "https://d2gt333ro578y4.cloudfront.net",
+        "https://anxiety.ttiaqryf.cc",
+        "https://at.ttiaqryf.cc",
+        "https://basket.ttiaqryf.cc",
+        "https://campus.ttiaqryf.cc",
     ]
 
     # ============ 探测参数 ============
