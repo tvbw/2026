@@ -1,22 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-57吃瓜 · 直达域名自愈版（urllib 版 V5）
-=========================================
-相比 V4.1 的改动
-- 【新增】HOSTS_CG / HOSTS_SITE 集中配置，4 个直达域名并发探测
-- 【新增】域名探测结果缓存 6 小时（getCache / setCache）
-- 【新增】_probe_one 内容校验：必含 /events/ 或 /thread/，排除 CloudFlare 页
-- 【修复】siteUrl 单点：57duanju.org 挂掉时降级到 cgUrl（搜索/全部分类至少不会空）
-- 【修复】detailContent 双域名兜底避免 siteUrl==cgUrl 时重复请求
-- 【增强】extend={"host": "..."} 手动指定跳过探测
-- 【保留】homeContent 11 分类 / _parse_card_list / categoryContent slug 路由 /
-        detailContent 的 5 层视频解析 / playerContent / localProxy 全部原样
-=========================================================================
-说明
-- 无发布页/导航页锚点，所以域名挂了只能手动改 HOSTS_CG
-- 如需增加域名，往 HOSTS_CG 里加即可，代码会自动探测
-=========================================================================
+57吃瓜 · 直达域名自愈 + 播放相关推荐（urllib 版 V6）
+=====================================================
+V6 相比 V5 新增
+- 【新增】播放页面「相关推荐」：当前页其他视频以 nid:base64url(event_id) 伪集
+        追加到播放列表末尾，点开即切到对应视频
+- 【新增】_cache_items / _items_of / _encode_nid / _decode_nid
+- 【新增】_extract_episodes 从 detailContent 抽出，供 _fetch_real_stream 复用
+- 【新增】_fetch_real_stream LRU 缓存，来回点推荐不重复请求
+- 【新增】detailContent 兼容 nid: 前缀入口
+- 其余（域名自愈 / 内容校验 / 11 分类 / slug 路由 / 5 层视频解析）与 V5 一致
+=====================================================
 """
 
 import sys
@@ -44,11 +39,10 @@ except ImportError:
 
 
 class Spider(SpiderBase):
-    # ================== 站点配置（换站只改这一段）==================
+    # ================== 站点配置 ==================
     SITE_NAME    = "57吃瓜"
     PLAY_FROM    = "57吃瓜在线"
 
-    # ---- 直达域名（无发布页，挂了就手动加）----
     HOSTS_CG = [
         "https://57cg4.com",
         "https://57cg1.com",
@@ -59,11 +53,9 @@ class Spider(SpiderBase):
         "https://57cg1.com",
     ]
 
-    # ---- 探测参数 ----
-    FAST_TIMEOUT  = 6
+    FAST_TIMEOUT   = 6
     PROBE_MIN_HTML = 1000
 
-    # ---- 内容校验 ----
     BLOCKED_MARKERS = (
         'just a moment', 'cf-browser-verification', 'cf-challenge',
         'checking your browser', '__cf_chl_', 'ddos-guard',
@@ -71,25 +63,29 @@ class Spider(SpiderBase):
     )
     VALID_MARKERS = ("/events/", "events/", "/thread/", "/t/", "events")
 
-    # ---- 缓存 ----
     HOST_CACHE_KEY = "cg57_host_v1"
     HOST_CACHE_TTL = 6 * 3600
 
     def __init__(self):
         super(Spider, self).__init__()
-        # 默认值（init 探测后会被覆盖）
         self.cgUrl      = self.HOSTS_CG[0]
         self.siteUrl    = self.HOSTS_SITE[0]
         self.imgReferer = self.HOSTS_CG[0] + "/"
 
-        self.tgGroup      = "https://t.me/tvshare23"
-        self.brandActor   = "🦋 TG群: @tvshare23"
-        self.brandDirector = "🦋 蝴蝶影视"
+        self.tgGroup       = "https://t.me/tvshare23"
+        self.brandActor    = "🦋 23"
+        self.brandDirector = "🦋 影视"
 
         self._ua = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                     "AppleWebKit/537.36 (KHTML, like Gecko) "
                     "Chrome/128.0.0.0 Safari/537.36")
         self.options = {}
+
+        # ---- 播放相关推荐缓存 ----
+        self._page_cache   = {}   # key → [vod items]
+        self._page_index   = {}   # vid → key
+        self._page_keys    = []   # LRU keys
+        self._detail_cache = {}   # vid → 第一条真实地址
 
         self.ctx = ssl.create_default_context()
         self.ctx.check_hostname = False
@@ -103,6 +99,12 @@ class Spider(SpiderBase):
 
     # ================== 生命周期 ==================
     def init(self, extend=""):
+        # 清空缓存
+        self._page_cache   = {}
+        self._page_index   = {}
+        self._page_keys    = []
+        self._detail_cache = {}
+
         if isinstance(extend, dict):
             self.options = extend
         elif extend:
@@ -111,7 +113,6 @@ class Spider(SpiderBase):
             except Exception:
                 self.options = {}
 
-        # extend={"host":"..."} 或 extend="https://..."
         manual = ""
         if isinstance(self.options, dict):
             manual = self.options.get("host", "") or ""
@@ -173,7 +174,6 @@ class Spider(SpiderBase):
             self.siteUrl = self.cgUrl
 
         self.imgReferer = self.cgUrl + "/"
-
         self._write_host_cache({"cg": self.cgUrl, "site": self.siteUrl})
 
     def _probe_hosts(self, urls):
@@ -345,15 +345,58 @@ class Spider(SpiderBase):
             pic_url = "https:" + pic_url
         elif pic_url.startswith("/"):
             pic_url = (self.siteUrl or self.HOSTS_SITE[0]) + pic_url
-
         if "s.chigua.media" in pic_url and "@" not in pic_url:
             return "%s@Referer=%s@User-Agent=%s" % (
                 pic_url, self.imgReferer, quote(self._ua))
         return pic_url
 
+    # ================== 播放相关推荐：基础工具 ==================
+    @staticmethod
+    def _clean_name(s):
+        return str(s or "").replace("$", " ").replace("#", " ").strip()
+
+    @staticmethod
+    def _encode_nid(vid):
+        try:
+            return base64.urlsafe_b64encode(
+                str(vid).encode("utf-8")).decode("ascii").rstrip("=")
+        except Exception:
+            return ""
+
+    @staticmethod
+    def _decode_nid(s):
+        s = str(s or "")
+        if s.startswith("nid:"):
+            s = s[4:]
+        if not s:
+            return ""
+        pad = "=" * (-len(s) % 4)
+        try:
+            return base64.urlsafe_b64decode(s + pad).decode("utf-8", "ignore")
+        except Exception:
+            return ""
+
+    def _cache_items(self, key, items):
+        out = [x for x in (items or []) if isinstance(x, dict) and x.get("vod_id")]
+        if not out:
+            return
+        self._page_cache[key] = out
+        if key in self._page_keys:
+            self._page_keys.remove(key)
+        self._page_keys.append(key)
+        for it in out:
+            self._page_index[str(it["vod_id"])] = key
+        while len(self._page_keys) > 30:
+            self._page_cache.pop(self._page_keys.pop(0), None)
+
+    def _items_of(self, vid):
+        key = self._page_index.get(str(vid))
+        if key is None or key not in self._page_cache:
+            return []
+        return list(self._page_cache.get(key, []))
+
     # ================== 首页 ==================
     def homeContent(self, filter):
-        # 彻底规避 hot / video / root 等底层保留关键字
         classes = [
             {"type_name": "成人AI短剧", "type_id": "cat_aichengduanju"},
             {"type_name": "热门精选",   "type_id": "cat_hot"},
@@ -367,31 +410,29 @@ class Spider(SpiderBase):
             {"type_name": "明星八卦",   "type_id": "cat_star"},
             {"type_name": "全部短剧",   "type_id": "cat_all"}
         ]
-
         result = {"class": classes}
-
         if filter:
-            sort_filter = [
-                {
-                    "key": "sort",
-                    "name": "排序",
-                    "value": [
-                        {"n": "最新发布", "v": ""},
-                        {"n": "全站最热", "v": "hot"},
-                        {"n": "飙升热榜", "v": "trending"}
-                    ]
-                }
-            ]
+            sort_filter = [{
+                "key": "sort",
+                "name": "排序",
+                "value": [
+                    {"n": "最新发布", "v": ""},
+                    {"n": "全站最热", "v": "hot"},
+                    {"n": "飙升热榜", "v": "trending"}
+                ]
+            }]
             filters_dict = {}
             for item in classes:
                 filters_dict[item["type_id"]] = sort_filter
             result["filters"] = filters_dict
-
         return result
 
     def homeVideoContent(self):
         res = self.categoryContent("cat_aichengduanju", 1, False, {})
-        return {"list": res.get("list", [])[:12]}
+        lst = res.get("list", [])[:12]
+        if lst:
+            self._cache_items(("homev",), lst)     # 首页 12 条作为相关推荐
+        return {"list": lst}
 
     # ================== 列表 ==================
     def _parse_card_list(self, html_text):
@@ -438,7 +479,6 @@ class Spider(SpiderBase):
         del filter
         page = int(pg) if pg else 1
         raw_slug = str(tid).strip("/")
-
         slug = raw_slug.replace("cat_", "")
         sort_val = extend.get("sort") if isinstance(extend, dict) else ""
 
@@ -459,6 +499,11 @@ class Spider(SpiderBase):
         html_text = res.get("text", "")
         vod_list = self._parse_card_list(html_text)
 
+        # 缓存本页作为相关推荐来源
+        if vod_list:
+            self._cache_items(
+                ("cate", str(tid), str(page), str(sort_val or "")), vod_list)
+
         return {
             "page": page,
             "pagecount": page + 1 if len(vod_list) >= 10 else page,
@@ -467,48 +512,33 @@ class Spider(SpiderBase):
             "list": vod_list
         }
 
-    # ================== 详情 ==================
-    def detailContent(self, ids):
-        raw_id = ids[0] if isinstance(ids, (list, tuple)) else str(ids)
-        event_id = raw_id.strip("/")
-
-        target_url = "%s/events/%s/" % (self.cgUrl, event_id)
-        res = self._fetch(target_url)
-        detail_html = res.get("text", "")
-
-        # 避免 siteUrl==cgUrl（降级场景）时重复请求
-        if (not detail_html or len(detail_html) < 500) and self.siteUrl != self.cgUrl:
-            target_url = "%s/events/%s/" % (self.siteUrl, event_id)
-            res = self._fetch(target_url)
-            detail_html = res.get("text", "")
-
-        title = "AI短剧/热点 %s" % event_id
-        cover = ""
-        desc = "暂无详细介绍"
+    # ================== 详情（含相关推荐聚合）==================
+    def _extract_episodes(self, detail_html):
+        """从详情 HTML 提取 (episodes, cover, title, desc)，供 detailContent / _fetch_real_stream 复用"""
+        title, desc, cover = "", "", ""
+        episodes = []
 
         m_title = re.search(r'<h1[^>]*>([\s\S]*?)</h1>', detail_html)
         if m_title:
             title = re.sub(r'<[^>]+>', '', m_title.group(1)).strip()
 
-        m_desc = re.search(r'<meta[^>]+name=["\']description["\'][^>]+content=["\']([^"\']*)["\']', detail_html)
+        m_desc = re.search(
+            r'<meta[^>]+name=["\']description["\'][^>]+content=["\']([^"\']*)["\']',
+            detail_html)
         if m_desc:
             desc = m_desc.group(1).strip()
 
-        episodes = []
-
-        # 1. <video> 标签（优先 data-hls-src）
+        # 1. <video> 标签
         v_blocks = re.findall(r'<video([^>]+)>', detail_html)
-        for idx, attr in enumerate(v_blocks):
+        for attr in v_blocks:
             m_hls = re.search(r'data-hls-src=["\']([^"\']+)["\']', attr)
             m_src = re.search(r'src=["\']([^"\']+)["\']', attr)
             stream_url = (m_hls.group(1).strip() if m_hls
                           else (m_src.group(1).strip() if m_src else ""))
-
             if not cover:
                 m_post = re.search(r'poster=["\']([^"\']+)["\']', attr)
                 if m_post:
                     cover = m_post.group(1).strip()
-
             if stream_url:
                 episodes.append("片段 %02d$%s" % (len(episodes) + 1, stream_url))
 
@@ -552,13 +582,81 @@ class Spider(SpiderBase):
             if m_pic:
                 cover = m_pic.group(1).strip()
 
+        return episodes, cover, title, desc
+
+    def _build_playlist_with_related(self, vid, own_episodes, related):
+        """当前视频保留真实片段；当前页其他视频以 nid: 伪集追加"""
+        parts, used = [], set()
+
+        for ep in (own_episodes or []):
+            name = self._clean_name(ep.split("$", 1)[0] if "$" in ep else ep)
+            if not name or name in used:
+                continue
+            used.add(name)
+            parts.append(ep)
+
+        # 当前视频一个片段都没解析到：用 nid 占位，playerContent 会自己抓
+        if not parts:
+            cur_name = "正片"
+            for it in related:
+                if str(it.get("vod_id")) == str(vid):
+                    cur_name = self._clean_name(it.get("vod_name") or "") or "正片"
+                    break
+            parts.append("%s$nid:%s" % (cur_name, self._encode_nid(vid)))
+            used.add(cur_name)
+
+        for it in related:
+            iid = str(it.get("vod_id") or "")
+            if not iid or iid == str(vid):
+                continue
+            name = self._clean_name(it.get("vod_name") or iid) or iid
+            if not name or name in used:
+                continue
+            used.add(name)
+            parts.append("%s$nid:%s" % (name, self._encode_nid(iid)))
+
+        return "#".join(parts)
+
+    def detailContent(self, ids):
+        raw_id = ids[0] if isinstance(ids, (list, tuple)) else str(ids)
+        event_id = raw_id.strip("/")
+
+        # 允许 nid: 前缀（从推荐再点进详情）
+        if event_id.startswith("nid:"):
+            decoded = self._decode_nid(event_id)
+            if decoded:
+                event_id = decoded
+
+        target_url = "%s/events/%s/" % (self.cgUrl, event_id)
+        res = self._fetch(target_url)
+        detail_html = res.get("text", "")
+
+        if (not detail_html or len(detail_html) < 500) and self.siteUrl != self.cgUrl:
+            target_url = "%s/events/%s/" % (self.siteUrl, event_id)
+            res = self._fetch(target_url)
+            detail_html = res.get("text", "")
+
+        episodes, cover, title, desc = self._extract_episodes(detail_html)
+
+        if not title:
+            title = "AI短剧/热点 %s" % event_id
+        if not desc:
+            desc = "暂无详细介绍"
+
+        # ---- 拼接相关推荐 ----
+        related = self._items_of(event_id)
+        if related:
+            play_url = self._build_playlist_with_related(event_id, episodes, related)
+        else:
+            play_url = "#".join(episodes) if episodes else ("无可用视频流$http://127.0.0.1")
+
         full_desc = (
             "【🔥 官方交流群: %s】\n"
             "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-            "本贴为您解析到【%d】个现场视频片段，点击下方片段即可起播！\n\n%s"
-        ) % (self.tgGroup, len(episodes), desc)
-
-        play_url = "#".join(episodes) if episodes else ("无可用视频流$http://127.0.0.1")
+            "本贴为您解析到【%d】个现场视频片段"
+            "（含 %d 个相关推荐），点击片段即可起播！\n\n%s"
+        ) % (self.tgGroup, len(episodes),
+             max(0, len(related) - 1) if related else 0, desc)
 
         return {
             "list": [{
@@ -574,19 +672,61 @@ class Spider(SpiderBase):
             }]
         }
 
+    # ================== 推荐跳转：拿真实视频地址 ==================
+    def _fetch_real_stream(self, vid):
+        """从详情页拿第一条真实视频地址（带 LRU 缓存）"""
+        key = str(vid)
+        if key in self._detail_cache:
+            return self._detail_cache[key]
+
+        real = ""
+        try:
+            target = "%s/events/%s/" % (self.cgUrl, key)
+            res = self._fetch(target)
+            html_text = res.get("text", "")
+            if (not html_text or len(html_text) < 500) and self.siteUrl != self.cgUrl:
+                target = "%s/events/%s/" % (self.siteUrl, key)
+                res = self._fetch(target)
+                html_text = res.get("text", "")
+            if html_text:
+                episodes, _c, _t, _d = self._extract_episodes(html_text)
+                if episodes:
+                    first = episodes[0]
+                    real = first.split("$", 1)[1] if "$" in first else first
+        except Exception:
+            pass
+
+        self._detail_cache[key] = real
+        while len(self._detail_cache) > 60:
+            k = next(iter(self._detail_cache))
+            self._detail_cache.pop(k, None)
+        return real
+
     # ================== 播放 / 代理 ==================
-    def playerContent(self, flag, id, vipFlags):
-        raw_url = str(id).strip()
-        headers = {
+    def _player_headers(self):
+        return {
             "User-Agent": self._ua,
             "Referer": self.imgReferer,
             "Origin": self.imgReferer.rstrip("/")
         }
+
+    def playerContent(self, flag, id, vipFlags):
+        s = str(id or "")
+
+        # nid: 伪集 → 还原到真实 event_id，抓第一条真实播放地址
+        if s.startswith("nid:"):
+            vid = self._decode_nid(s)
+            if not vid:
+                return {"parse": 0, "playUrl": "", "url": "",
+                        "header": self._player_headers()}
+            real = self._fetch_real_stream(vid)
+            s = real or vid
+
         return {
             "parse": 0,
             "playUrl": "",
-            "url": raw_url,
-            "header": headers
+            "url": s,
+            "header": self._player_headers()
         }
 
     def searchContent(self, key, quick, pg="1"):
@@ -599,6 +739,9 @@ class Spider(SpiderBase):
         res = self._fetch(search_url)
         html_text = res.get("text", "")
         vod_list = self._parse_card_list(html_text)
+
+        if vod_list:
+            self._cache_items(("search", str(key), str(page)), vod_list)
 
         return {
             "page": page,
@@ -623,3 +766,7 @@ class Spider(SpiderBase):
 
     def destroy(self):
         self.options = {}
+        self._page_cache   = {}
+        self._page_index   = {}
+        self._page_keys    = []
+        self._detail_cache = {}
