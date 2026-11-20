@@ -1,20 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-91吃瓜 · 快速跳转 + 自愈抓取 + 播放相关推荐聚合（模板通用版）
+91吃瓜 · 快速跳转 + 自愈抓取 + 多结构列表适配（实时监控页修复版）
 =========================================================================
-设计目标
--------------------------------------------------------------------------
-- 引擎逻辑与「每日大赛」优化版完全一致（快路径 → 慢路径 → 相关推荐聚合）
-- 站点身份全部集中在 Config 顶部，适配 91 系列其他站点时只改 Config
-- SITE_KEYWORDS 支持多个备选 + 正则，站点标题带版本号也不怕失效
-- HOST_CACHE_KEY 按站点隔离，避免多站点共用缓存
-=========================================================================
-本版修复
--------------------------------------------------------------------------
-- 【修复】FAST_HOSTS / SEED_HOSTS 里多余的 `7`（会触发 TypeError）
-- 【修复】vod_play_from / vod_content fallback 写死"每日大乱斗"
-        改为 Config.PLAY_FROM / PLAY_FALLBACK_TITLE
-- 【增强】Config.match_keyword() 统一关键词匹配，支持 str / re.Pattern
+本版针对附件2的实时监控页结构修复：
+- 【新增】列表选择器支持 .realtime-card / .video-card / .video-item 等
+        多结构卡片（不止 <article>）
+- 【新增】标题识别支持 aria-label / title / data-title / img alt
+- 【新增】图片识别支持 data-xkrkllgl / data-src / data-original / data-lazy-src
+        等懒加载属性，优先取真实 URL，data:image 占位只在无真实 URL 时使用
+- 【新增】分类导航支持 .realtime-tabs a / .category-tabs a / .tabs a
+- 【增强】SITE_MARKERS / _site_check / _is_site 加入 realtime-card / candid-video
+        关键词，避免把实时监控页误判成导航页/非本站页
+- 其余引擎逻辑（快路径、慢路径、相关推荐聚合）与前版一致
 =========================================================================
 """
 import json
@@ -52,39 +49,41 @@ LOG = logging.getLogger(__name__)
 
 
 # ==================================================================
-# ① 配置（适配 91 系列：换站点只改本类顶部）
+# ① 配置
 # ==================================================================
 class Config:
     # ================== 站点身份（换站点只改这几行）==================
     SITE_NAME            = "91吃瓜"
-    SITE_KEYWORDS        = ["91吃瓜", "91cg"]        # 多个备选，任一命中即可
-    PLAY_FROM            = "91吃瓜"                  # 播放线路名
-    PLAY_FALLBACK_TITLE  = "91吃瓜"                  # vod_content 兜底
-    HOST_CACHE_KEY       = "cg91_host_v1"            # 缓存 key（站点隔离）
+    SITE_KEYWORDS        = ["91吃瓜", "91cg"]
+    PLAY_FROM            = "91吃瓜"
+    PLAY_FALLBACK_TITLE  = "91吃瓜"
+    HOST_CACHE_KEY       = "cg91_host_v1"
 
     # ================== 快路径域名 ==================
     FAST_HOSTS = [
+        "https://but.ybejhul.com/",
+        "https://adopt.ybejhul.com/",
         "https://d2w4b8lvgqly57.cloudfront.net/",
         "https://build.ovtrphyw.cc/",
         "https://boss.ovtrphyw.cc/",
     ]
 
-    # ================== 慢路径：导航页 ==================
+    # ================== 慢路径 ==================
     NAV_URLS = [
         "https://91cgb24.com/",
         "https://www.mgrhlgof.cc/",
         "https://91cgb20.com/",
     ]
 
-    # ================== 慢路径：发布页 ==================
     PUBLISH_URLS = [
         "https://91cgb23.com/",
         "https://91cgb21.com/",
         "https://91cgb22.com/",
     ]
 
-    # ================== 慢路径：种子域名 ==================
     SEED_HOSTS = [
+        "https://but.ybejhul.com/",
+        "https://adopt.ybejhul.com/",
         "https://d2w4b8lvgqly57.cloudfront.net/",
         "https://build.ovtrphyw.cc/",
         "https://boss.ovtrphyw.cc/",
@@ -104,8 +103,11 @@ class Config:
     PROBE_MAX_CANDIDATES = 30
     ENTRY_CACHE_TTL      = 1800
 
-    # ================== 站点结构特征 ==================
-    SITE_MARKERS = ["post-title", "entry-title", "<article", 'class="post']
+    # ================== 站点结构特征（本版增强）==================
+    SITE_MARKERS = [
+        "post-title", "entry-title", "<article", 'class="post',
+        "realtime-card", "candid-video", "video-card",
+    ]
 
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "线路四", "线路五",
@@ -141,11 +143,17 @@ class Config:
 
     EXTRA_BLACKLIST = ('beian.miit.gov.cn', 'w3.org', 'example.com')
 
-    # ================== 页面选择器 ==================
-    SEL_ARTICLE      = "#index article, #archive article, article"
-    SEL_ARTICLE_HOME = "#index article, article"
+    # ================== 列表选择器（本版扩展）==================
+    SEL_ARTICLE      = (
+        "#index article, #archive article, article, "
+        ".realtime-card, .video-card, .video-item, .post-item, .card-item"
+    )
+    SEL_ARTICLE_HOME = (
+        "#index article, article, "
+        ".realtime-card, .video-card, .video-item, .post-item, .card-item"
+    )
     SEL_PLAYER       = ".dplayer"
-    SEL_CONTENT      = ".post-content, article"
+    SEL_CONTENT      = ".post-content, article, .realtime-content"
     SEL_TAGS         = ".post-tags a, .tags a, .keywords a"
     SEL_SUMMARY      = ".post-content"
     SEL_TITLE        = ".post-title, h1"
@@ -156,9 +164,12 @@ class Config:
         "ul.navbar-nav li a.nav-link",
         "#navbarCollapse a.nav-link",
         ".navbar-nav a.nav-link",
+        ".realtime-tabs a",
+        ".category-tabs a",
         ".category-list ul li",
         ".nav-menu li",
         ".menu li",
+        ".tabs a",
         "nav ul li",
         "header nav a",
         "nav a",
@@ -204,14 +215,8 @@ class Config:
         "Cache-Control": "no-cache",
     }
 
-    # ================== 通用关键词匹配 ==================
     @classmethod
     def match_keyword(cls, text):
-        """支持 str / re.Pattern 混合匹配，任一命中即 True。
-        换站点时 SITE_KEYWORDS 可以写：
-            ["91吃瓜", "91cg"]                        # 多个字符串备选
-            ["91吃瓜", re.compile(r"91.*?吃瓜", re.I)] # 混合正则
-        """
         if not text:
             return False
         for kw in cls.SITE_KEYWORDS:
@@ -273,7 +278,6 @@ class DomainResolver:
             import threading
             DomainResolver._ENTRY_LOCK = threading.Lock()
 
-    # ---------- 抓取与提取 ----------
     def _safe_fetch(self, url, timeout):
         try:
             return self.fetch(url, timeout=timeout)
@@ -315,8 +319,11 @@ class DomainResolver:
         if 'data-base=' in html and 'id="list-wrap"' in html:
             return True
         low = html.lower()
-        has_content = low.count("<article") >= 1 or low.count('class="post') >= 3
-        if has_content:
+        # 有多结构内容就不是导航页
+        if (low.count("<article") >= 1
+                or low.count('class="post') >= 3
+                or low.count('realtime-card') >= 2
+                or low.count('video-card') >= 2):
             return False
         hits = sum(1 for kw in getattr(self.cfg, "NAV_PAGE_KEYWORDS", ()) if kw in html)
         return hits >= 3
@@ -331,9 +338,13 @@ class DomainResolver:
         if self._is_nav_page(html):
             return False, "导航页特征"
         low = html.lower()
-        has_article = low.count("<article") >= self.cfg.PROBE_MIN_ARTICLE
+        has_article = (
+            low.count("<article") >= self.cfg.PROBE_MIN_ARTICLE
+            or low.count("realtime-card") >= self.cfg.PROBE_MIN_ARTICLE
+            or low.count("video-card") >= self.cfg.PROBE_MIN_ARTICLE
+        )
         has_marker = any(m in low for m in self.cfg.SITE_MARKERS)
-        has_keyword = self.cfg.match_keyword(html)     # ← 通用匹配
+        has_keyword = self.cfg.match_keyword(html)
         if not (has_article or has_marker or has_keyword):
             return False, "无内容结构(article=%d,marker=%s,kw=%s)" % (
                 low.count("<article"),
@@ -341,7 +352,6 @@ class DomainResolver:
                 "Y" if has_keyword else "N")
         return True, "OK"
 
-    # ---------- 六源提取 ----------
     def _seed_suffixes(self):
         out = set()
         for u in self.cfg.SEED_HOSTS:
@@ -428,7 +438,6 @@ class DomainResolver:
         primary.extend(self._extract_js_redirects(html))
         primary.extend(self._extract_sibling_domains(html))
 
-        # Base64 块：关键词匹配改为通用
         for b in re.findall(r'["\']([A-Za-z0-9+/=]{100,})["\']', html):
             try:
                 decoded = base64.b64decode(b).decode("utf-8", errors="ignore")
@@ -498,7 +507,6 @@ class DomainResolver:
 
         return r, extracted, bare
 
-    # ---------- 候选收集：入口页并发 + 缓存 ----------
     def _read_entry_cache(self, src, now):
         with self._ENTRY_LOCK:
             cached = self._ENTRY_CACHE.get(src)
@@ -528,7 +536,6 @@ class DomainResolver:
         now = time.time()
         fresh_srcs = []
 
-        # ① 先查缓存
         for src, is_pub in all_srcs:
             hit = self._read_entry_cache(src, now)
             if hit is None:
@@ -546,7 +553,6 @@ class DomainResolver:
             stats["bare"] += len(bare)
             stats["pub_hit" if is_pub else "nav_hit"] += 1
 
-        # ② 未命中的走并发
         if fresh_srcs:
             print(f"--- 并发抓取入口页 {len(fresh_srcs)} 个 "
                   f"(导航 {len(nav_srcs)} + 发布 {len(pub_srcs)}，已缓存 "
@@ -577,7 +583,6 @@ class DomainResolver:
             except Exception as e:
                 LOG.debug("入口并发异常: %s", e)
 
-        # ③ 种子域名兜底
         candidates.extend([u.rstrip("/") for u in self.cfg.SEED_HOSTS])
         stats["seed"] = len(self.cfg.SEED_HOSTS)
 
@@ -595,7 +600,6 @@ class DomainResolver:
               f"种子 {stats['seed']} → 最终 {len(urls)} 个")
         return urls
 
-    # ---------- 三轮回流探测 ----------
     def resolve(self):
         queue = self._collect_candidates()
         if not queue:
@@ -695,7 +699,6 @@ class Spider(BaseSpider):
         self._page_keys = []
         self._detail_cache = {}
 
-    # -------------------- 生命周期 --------------------
     def init(self, extend=""):
         self._img_cache = {}
         self._page_cache = {}
@@ -828,7 +831,10 @@ class Spider(BaseSpider):
         if 'data-base=' in html and 'id="list-wrap"' in html:
             return True
         low = html.lower()
-        if low.count("<article") >= 1 or low.count('class="post') >= 3:
+        if (low.count("<article") >= 1
+                or low.count('class="post') >= 3
+                or low.count('realtime-card') >= 2
+                or low.count('video-card') >= 2):
             return False
         hits = sum(1 for kw in self.CONFIG.NAV_PAGE_KEYWORDS if kw in html)
         return hits >= 3
@@ -843,14 +849,16 @@ class Spider(BaseSpider):
         if len(html) < (min_len or self.CONFIG.PROBE_MIN_HTML):
             return False, "HTML过短(%d)" % len(html)
         low = html.lower()
-        has_article = low.count("<article") >= 1
+        has_article = (low.count("<article") >= 1
+                       or low.count("realtime-card") >= 1
+                       or low.count("video-card") >= 1)
         has_marker = any(m in low for m in self.CONFIG.SITE_MARKERS)
-        has_keyword = self.CONFIG.match_keyword(html)      # ← 通用匹配
+        has_keyword = self.CONFIG.match_keyword(html)
         if not (has_article or has_marker or has_keyword):
             return False, "无内容结构"
         return True, "OK"
 
-    # -------------------- host 探测（快路径 → 慢路径）--------------------
+    # -------------------- host 探测 --------------------
     def _read_host_cache(self):
         fn = getattr(self, "getCache", None)
         if not fn:
@@ -962,7 +970,7 @@ class Spider(BaseSpider):
             print(f"【警告】全部探测失败，回退 {host}")
         return host
 
-    # -------------------- 页面级 items 缓存（供相关推荐使用）--------------------
+    # -------------------- 页面级缓存 --------------------
     def _cache_items(self, key, items):
         out = [x for x in (items or []) if isinstance(x, dict) and x.get("vod_id")]
         if not out:
@@ -982,7 +990,6 @@ class Spider(BaseSpider):
             return []
         return list(self._page_cache.get(key, []))
 
-    # -------------------- nid 编解码 --------------------
     @staticmethod
     def _encode_nid(vid):
         try:
@@ -1091,6 +1098,7 @@ class Spider(BaseSpider):
         if "/category/" in base or "/tag/" in base:
             if "/page/" in base:
                 base = base.split("/page/")[0]
+            # 实时监控等二级目录（/category/sstp/live/）也走追加 /N/
             return "%s/%d/" % (base, pg)
 
         if "/page/" in base:
@@ -1122,20 +1130,46 @@ class Spider(BaseSpider):
         lst = self._getlist(data(self.CONFIG.SEL_ARTICLE), tid)
         if lst:
             self._cache_items(("cate", tid, str(pg)), lst)
+        else:
+            print(f"[categoryContent] 列表为空: {url} 检查 SEL_ARTICLE 或页面结构")
         return {"list": lst, "page": pg, "pagecount": 9999, "limit": 90, "total": 999999}
 
-    # -------------------- 列表 / 目录 --------------------
+    # -------------------- 列表（本版核心增强）--------------------
     def _getlist(self, data, tid=""):
         videos, seen = [], set()
         is_folder = "/mrdg" in (tid or "")
+
         for k in data.items():
             a = k if k.is_("a") else k("a").eq(0)
-            href = a.attr("href") or k.attr("href")
-            title = (k("h2").text() or k(".entry-title").text()
-                     or k(".post-title").text() or "").strip()
+            href = ((a.attr("href") if a else "") or k.attr("href") or "").strip()
+            if not href or href in ("#", "javascript:;", "javascript:void(0)"):
+                continue
+
+            # 标题：多来源综合（aria-label / title / img alt / h2 / 正文）
+            title = ""
+            for src_elem in (a, k):
+                if not src_elem:
+                    continue
+                for attr in ("aria-label", "title", "data-title"):
+                    v = (src_elem.attr(attr) or "").strip()
+                    if v:
+                        title = v
+                        break
+                if title:
+                    break
+                img_alt = (src_elem("img").attr("alt") or "").strip()
+                if img_alt:
+                    title = img_alt
+                    break
+            if not title:
+                title = (k("h2").text() or k(".entry-title").text()
+                         or k(".post-title").text() or "").strip()
             if not title and k.is_("a"):
                 title = (k.text() or "").strip()
-            if not href or not title:
+            if not title and a and a.is_("a"):
+                title = (a.text() or "").strip()
+
+            if not title:
                 continue
 
             vid = "%s%s" % (href, "@folder" if is_folder else "")
@@ -1143,11 +1177,20 @@ class Spider(BaseSpider):
                 continue
             seen.add(vid)
 
+            # 日期：time 元素 或 从文本抓
+            remark = ""
+            try:
+                remark = (k("time").text() or "").strip()
+            except Exception:
+                remark = ""
+            if not remark:
+                remark = self._parse_date(k)
+
             videos.append({
                 "vod_id": vid,
                 "vod_name": title,
                 "vod_pic": self._extract_img(k),
-                "vod_remarks": self._parse_date(k),
+                "vod_remarks": remark,
                 "vod_tag": "folder" if is_folder else "",
                 "style": {"type": "rect", "ratio": 1.33},
             })
@@ -1175,7 +1218,7 @@ class Spider(BaseSpider):
             LOG.debug("目录解析异常: %s", e)
         return out
 
-    # -------------------- 详情：核心抓取 + 相关推荐聚合 --------------------
+    # -------------------- 详情 --------------------
     def _raw_detail(self, vid):
         vid = str(vid or "")
         if vid.endswith("@folder"):
@@ -1229,7 +1272,6 @@ class Spider(BaseSpider):
 
     def _build_playlist_with_related(self, vid, own_playlist, related):
         parts, used = [], set()
-
         for p in (own_playlist or []):
             name = (p.split("$", 1)[0] if "$" in p else p).strip()
             if not name or name in used:
@@ -1241,7 +1283,7 @@ class Spider(BaseSpider):
             cur_name = ""
             for it in related:
                 if str(it.get("vod_id")) == str(vid):
-                    cur_name = self._clean(it.get("vod_name") or "") or ""
+                    cur_name = self._clean(it.get("vod_name") or "")
                     break
             cur_name = cur_name or "正片"
             parts.append("%s$nid:%s" % (cur_name, self._encode_nid(vid)))
@@ -1256,10 +1298,9 @@ class Spider(BaseSpider):
                 continue
             used.add(name)
             parts.append("%s$nid:%s" % (name, self._encode_nid(iid)))
-
         return "#".join(parts)
 
-    # -------------------- 播放源提取 --------------------
+    # -------------------- 播放源 --------------------
     def _extract_playlist(self, data):
         try:
             if data(self.CONFIG.SEL_PLAYER):
@@ -1366,7 +1407,7 @@ class Spider(BaseSpider):
         except Exception:
             return ""
 
-    # -------------------- 图片 / 日期 --------------------
+    # -------------------- 图片 / 日期（本版核心增强）--------------------
     def _parse_date(self, k):
         try:
             t = k("time").text()
@@ -1386,6 +1427,8 @@ class Spider(BaseSpider):
     def _extract_img(self, elem):
         if elem is None:
             return ""
+
+        # 1) loadBannerDirect 脚本内嵌
         try:
             text = elem("script").text() or ""
         except Exception:
@@ -1393,6 +1436,23 @@ class Spider(BaseSpider):
         if m := re.search(r"loadBannerDirect\('([^']+)'", text):
             return self._proc_url(m.group(1))
 
+        # 2) 懒加载属性（优先真实 URL）
+        img = elem if elem.is_("img") else elem("img").eq(0)
+        if img:
+            for attr in ("data-xkrkllgl", "data-src", "data-original",
+                         "data-lazy-src", "data-echo", "data-url"):
+                v = img.attr(attr)
+                if v and not str(v).startswith("data:"):
+                    return self._proc_url(v)
+
+            # 3) src 是 data:image 时用 base64
+            v = img.attr("src")
+            if v and str(v).startswith("data:"):
+                return self._proc_url(v)
+            if v and not str(v).startswith("data:"):
+                return self._proc_url(v)
+
+        # 4) 从 outer_html 兜底正则
         try:
             html = elem.outer_html() if hasattr(elem, "outer_html") else str(elem)
         except Exception:
@@ -1401,20 +1461,26 @@ class Spider(BaseSpider):
                     .replace("&apos;", "'")
                     .replace("&amp;", "&"))
 
-        for pat in (
-            r"(data:image/[a-zA-Z0-9+/=;,]+)",
-            r'(https?://[^"\'\s)]+\.(?:jpg|png|jpeg|webp))',
-            r'url\s*\(\s*[\'"]?([^"\'\)]+)[\'"]?\s*\)',
-        ):
-            m = re.search(pat, html, re.I)
-            if m:
-                return self._proc_url(m.group(1))
+        # 先找外链真实图片
+        m = re.search(r'(https?://[^"\'\s)]+\.(?:jpg|png|jpeg|webp|gif))', html, re.I)
+        if m:
+            return self._proc_url(m.group(1))
+
+        # 再找 data:image base64
+        m = re.search(r"(data:image/[a-zA-Z0-9+/=;,]+)", html)
+        if m:
+            return self._proc_url(m.group(1))
+
+        # 最后找 CSS url()
+        m = re.search(r'url\s*\(\s*[\'"]?([^"\'\)]+)[\'"]?\s*\)', html, re.I)
+        if m:
+            return self._proc_url(m.group(1))
         return ""
 
     def _proc_url(self, url):
         if not url:
             return ""
-        url = url.strip("'\" ")
+        url = str(url).strip("'\" ")
         if url.startswith("data:"):
             try:
                 _, b64s = url.split(",", 1)
@@ -1468,7 +1534,7 @@ class Spider(BaseSpider):
         if data is None:
             print(f"[searchContent] 抓取失败: {url}")
             return {"list": [], "page": pg, "pagecount": 9999}
-        lst = self._getlist(data("article"))
+        lst = self._getlist(data("article, .realtime-card, .video-card, .video-item"))
         if lst:
             self._cache_items(("search", str(key), str(pg)), lst)
         return {"list": lst, "page": pg, "pagecount": 9999}
@@ -1559,7 +1625,6 @@ class Spider(BaseSpider):
         res = self._request(real)
         return [200, "video/mp2t", res.content] if res is not None else [404, "text/plain", b""]
 
-    # -------------------- 编码工具 --------------------
     @staticmethod
     def e64(s):
         return base64.b64encode(str(s).encode()).decode()
