@@ -90,8 +90,8 @@ class SiteConfig:
     ]
 
     # ============ 探测参数 ============
-    FAST_TIMEOUT         = 6      # 快路径单请求超时
-    PROBE_TIMEOUT        = 12
+    FAST_TIMEOUT         = 10     # 快路径单请求超时
+    PROBE_TIMEOUT        = 15
     PROBE_MIN_HTML       = 2000   # 原 3000，降到 2000
     PROBE_MIN_ARTICLE    = 1
     PROBE_MAX_ROUNDS     = 2
