@@ -51,27 +51,45 @@ LOG = logging.getLogger(__name__)
 # ==================================================================
 class Config:
     SITE_NAME            = "91吃瓜1"
-    SITE_KEYWORDS        = ["91吃瓜1"]
+    SITE_KEYWORDS        = ["91吃瓜", "91吃瓜1"]     # 多备选更稳
     PLAY_FROM            = "91吃瓜1"
     PLAY_FALLBACK_TITLE  = "91吃瓜1"
-    HOST_CACHE_KEY       = "cg91_host_v10"
-    CLASS_CACHE_KEY      = "cg91_classes_v10"
+    HOST_CACHE_KEY       = "cg91_host_v11"
+    CLASS_CACHE_KEY      = "cg91_classes_v11"
     CLASS_CACHE_TTL      = 3600
 
-    PUBLISH_URLS = [
-        "https://91cgb23.com/",         # 地址导航公布页，最稳，用作唯一挖域名入口
-    ]
-
-    # ================== 慢路径：种子域名 ==================
-    SEED_HOSTS = [
-        "https://d2w4b8lvgqly57.cloudfront.net/",
+    # ---- 快路径：三级域名（302 到主站），最先探测 ----
+    FAST_HOSTS = [
         "https://but.ybejhul.com/",
         "https://adopt.ybejhul.com/",
+        "https://d2w4b8lvgqly57.cloudfront.net/",
         "https://build.ovtrphyw.cc/",
         "https://boss.ovtrphyw.cc/",
+    ]
+
+    # ---- 慢路径：导航页 ----
+    NAV_URLS = [
         "https://91cgb24.com/",
         "https://www.mgrhlgof.cc/",
+    ]
+
+    # ---- 慢路径：发布页（只留最稳的做主力）----
+    PUBLISH_URLS = [
+        "https://91cgb23.com/",
+    ]
+
+    # ---- 慢路径：种子 ----
+    SEED_HOSTS = [
+        # 三级域名（可能是主站，探测有效）
+        "https://but.ybejhul.com/",
+        "https://adopt.ybejhul.com/",
+        "https://d2w4b8lvgqly57.cloudfront.net/",
+        "https://build.ovtrphyw.cc/",
+        "https://boss.ovtrphyw.cc/",
+        # 原 PUBLISH 降级（买保险，大概率不命中但无害）
         "https://91cgb20.com/",
+        "https://91cgb21.com/",
+        "https://91cgb22.com/",
     ]
 
     FALLBACK_HOST  = None
