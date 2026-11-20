@@ -73,13 +73,6 @@ class SiteConfig:
         "https://campus.ttiaqryf.cc",
     ]
 
-    # ============ 导航页 ============
-    NAV_URLS = [
-        "https://51blk5.com",
-        "https://51blk2.com",
-        "https://51blk1.com",
-    ]
-
     # ============ 发布页（GitLab 为当前最可靠锚点）============
     PUBLISH_URLS = [
         "https://51blk6.com",
