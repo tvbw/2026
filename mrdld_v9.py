@@ -84,8 +84,8 @@ class Config:
     HOST_CACHE_KEY = "mrdld_host_fix_v10"
     HOST_CACHE_TTL = 6 * 3600
 
-    FAST_TIMEOUT         = 6
-    PROBE_TIMEOUT        = 12
+    FAST_TIMEOUT         = 10
+    PROBE_TIMEOUT        = 15
     PROBE_MIN_HTML       = 2000
     PROBE_MIN_ARTICLE    = 1
     PROBE_MAX_ROUNDS     = 2
