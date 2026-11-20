@@ -1,16 +1,20 @@
 # -*- coding: utf-8 -*-
 """
-每日大赛 · 快速跳转 + 自愈抓取 + 播放相关推荐聚合（入口页并发优化版）
+91吃瓜 · 快速跳转 + 自愈抓取 + 播放相关推荐聚合（模板通用版）
 =========================================================================
-本版新增 / 修复
+设计目标
 -------------------------------------------------------------------------
-- 【优化】DomainResolver._collect_candidates()
-    · 导航页 + 发布页合并为一个并发池（max_workers=6）
-    · as_completed + 超时回收，最坏 6×12s → ~12s
-- 【增强】DomainResolver._ENTRY_CACHE（类级）
-    · 入口页抓取结果按 URL 缓存，TTL 30 分钟
-    · 同进程多次 init / 重连时跳过重复抓取
-- 快路径 / 内容校验 / 播放推荐聚合等其余逻辑，与上一版一致
+- 引擎逻辑与「每日大赛」优化版完全一致（快路径 → 慢路径 → 相关推荐聚合）
+- 站点身份全部集中在 Config 顶部，适配 91 系列其他站点时只改 Config
+- SITE_KEYWORDS 支持多个备选 + 正则，站点标题带版本号也不怕失效
+- HOST_CACHE_KEY 按站点隔离，避免多站点共用缓存
+=========================================================================
+本版修复
+-------------------------------------------------------------------------
+- 【修复】FAST_HOSTS / SEED_HOSTS 里多余的 `7`（会触发 TypeError）
+- 【修复】vod_play_from / vod_content fallback 写死"每日大乱斗"
+        改为 Config.PLAY_FROM / PLAY_FALLBACK_TITLE
+- 【增强】Config.match_keyword() 统一关键词匹配，支持 str / re.Pattern
 =========================================================================
 """
 import json
@@ -48,48 +52,60 @@ LOG = logging.getLogger(__name__)
 
 
 # ==================================================================
-# ① 配置
+# ① 配置（适配 91 系列：换站点只改本类顶部）
 # ==================================================================
 class Config:
+    # ================== 站点身份（换站点只改这几行）==================
+    SITE_NAME            = "91吃瓜"
+    SITE_KEYWORDS        = ["91吃瓜", "91cg"]        # 多个备选，任一命中即可
+    PLAY_FROM            = "91吃瓜"                  # 播放线路名
+    PLAY_FALLBACK_TITLE  = "91吃瓜"                  # vod_content 兜底
+    HOST_CACHE_KEY       = "cg91_host_v1"            # 缓存 key（站点隔离）
+
+    # ================== 快路径域名 ==================
     FAST_HOSTS = [
-        "https://d2w4b8lvgqly57.cloudfront.net/",7        
+        "https://d2w4b8lvgqly57.cloudfront.net/",
         "https://build.ovtrphyw.cc/",
         "https://boss.ovtrphyw.cc/",
     ]
 
+    # ================== 慢路径：导航页 ==================
     NAV_URLS = [
         "https://91cgb24.com/",
         "https://www.mgrhlgof.cc/",
         "https://91cgb20.com/",
     ]
 
+    # ================== 慢路径：发布页 ==================
     PUBLISH_URLS = [
         "https://91cgb23.com/",
         "https://91cgb21.com/",
         "https://91cgb22.com/",
     ]
 
+    # ================== 慢路径：种子域名 ==================
     SEED_HOSTS = [
-        "https://d2w4b8lvgqly57.cloudfront.net/",7        
+        "https://d2w4b8lvgqly57.cloudfront.net/",
         "https://build.ovtrphyw.cc/",
         "https://boss.ovtrphyw.cc/",
+        "https://91cgb24.com/",
+        "https://91cgb20.com/",
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host_fix_0v1"
     HOST_CACHE_TTL = 6 * 3600
 
+    # ================== 探测参数 ==================
     FAST_TIMEOUT         = 6
     PROBE_TIMEOUT        = 12
     PROBE_MIN_HTML       = 2000
     PROBE_MIN_ARTICLE    = 1
     PROBE_MAX_ROUNDS     = 2
     PROBE_MAX_CANDIDATES = 30
-
-    # 入口页结果缓存 TTL（秒）—— 同一进程内多次 init 时跳过重复抓取
     ENTRY_CACHE_TTL      = 1800
-    SITE_KEYWORDS = ["91吃瓜v000000"]
-    SITE_MARKERS  = ["post-title", "entry-title", "<article", 'class="post']
+
+    # ================== 站点结构特征 ==================
+    SITE_MARKERS = ["post-title", "entry-title", "<article", 'class="post']
 
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "线路四", "线路五",
@@ -98,6 +114,7 @@ class Config:
         "地址发布页", "永久地址", "最新地址",
     )
 
+    # ================== TLD 白名单 ==================
     VALID_TLDS = {
         'com', 'net', 'org', 'cc', 'xyz', 'lol', 'vip', 'app', 'top', 'cn', 'co', 'io', 'me',
         'tv', 'club', 'site', 'online', 'info', 'biz', 'pro', 'link', 'live', 'shop', 'fun',
@@ -124,6 +141,7 @@ class Config:
 
     EXTRA_BLACKLIST = ('beian.miit.gov.cn', 'w3.org', 'example.com')
 
+    # ================== 页面选择器 ==================
     SEL_ARTICLE      = "#index article, #archive article, article"
     SEL_ARTICLE_HOME = "#index article, article"
     SEL_PLAYER       = ".dplayer"
@@ -186,9 +204,30 @@ class Config:
         "Cache-Control": "no-cache",
     }
 
+    # ================== 通用关键词匹配 ==================
+    @classmethod
+    def match_keyword(cls, text):
+        """支持 str / re.Pattern 混合匹配，任一命中即 True。
+        换站点时 SITE_KEYWORDS 可以写：
+            ["91吃瓜", "91cg"]                        # 多个字符串备选
+            ["91吃瓜", re.compile(r"91.*?吃瓜", re.I)] # 混合正则
+        """
+        if not text:
+            return False
+        for kw in cls.SITE_KEYWORDS:
+            try:
+                if hasattr(kw, "search"):
+                    if kw.search(text):
+                        return True
+                elif kw in text:
+                    return True
+            except Exception:
+                continue
+        return False
+
 
 # ==================================================================
-# ② 慢路径域名解析器（入口页并发 + 结果缓存）
+# ② 慢路径域名解析器
 # ==================================================================
 class DomainResolver:
     SKIP_HREF = (
@@ -225,9 +264,8 @@ class DomainResolver:
         r'''<meta[^>]+http-equiv=["']refresh["'][^>]+url=([^"'\s>]+)''',
     ]
 
-    # ---- 类级缓存：跨实例保留，多次 init / 重连时复用 ----
-    _ENTRY_CACHE = {}          # src → (ts, final_host, ext_list, bare_list)
-    _ENTRY_LOCK  = None        # 惰性初始化（避免 import threading 开销）
+    _ENTRY_CACHE = {}
+    _ENTRY_LOCK  = None
 
     def __init__(self, cfg, fetcher):
         self.cfg, self.fetch = cfg, fetcher
@@ -295,7 +333,7 @@ class DomainResolver:
         low = html.lower()
         has_article = low.count("<article") >= self.cfg.PROBE_MIN_ARTICLE
         has_marker = any(m in low for m in self.cfg.SITE_MARKERS)
-        has_keyword = any(kw in html for kw in self.cfg.SITE_KEYWORDS)
+        has_keyword = self.cfg.match_keyword(html)     # ← 通用匹配
         if not (has_article or has_marker or has_keyword):
             return False, "无内容结构(article=%d,marker=%s,kw=%s)" % (
                 low.count("<article"),
@@ -390,17 +428,18 @@ class DomainResolver:
         primary.extend(self._extract_js_redirects(html))
         primary.extend(self._extract_sibling_domains(html))
 
+        # Base64 块：关键词匹配改为通用
         for b in re.findall(r'["\']([A-Za-z0-9+/=]{100,})["\']', html):
             try:
                 decoded = base64.b64decode(b).decode("utf-8", errors="ignore")
                 unquoted = unquote(decoded)
                 if "[" not in unquoted:
                     continue
-                if not any(kw in unquoted for kw in self.cfg.SITE_KEYWORDS):
+                if not self.cfg.match_keyword(unquoted):
                     continue
                 site_list = json.loads(unquoted)
                 for item in site_list:
-                    if not any(kw in str(item.get("name", "")) for kw in self.cfg.SITE_KEYWORDS):
+                    if not self.cfg.match_keyword(str(item.get("name", ""))):
                         continue
                     u = item.get("url", "")
                     if u:
@@ -461,7 +500,6 @@ class DomainResolver:
 
     # ---------- 候选收集：入口页并发 + 缓存 ----------
     def _read_entry_cache(self, src, now):
-        """返回缓存命中的 (final_host, ext, bare)；未命中或过期返回 None"""
         with self._ENTRY_LOCK:
             cached = self._ENTRY_CACHE.get(src)
         if not cached:
@@ -474,7 +512,6 @@ class DomainResolver:
     def _write_entry_cache(self, src, now, final_h, ext, bare):
         with self._ENTRY_LOCK:
             self._ENTRY_CACHE[src] = (now, final_h, list(ext), list(bare))
-            # 简单清理：超量时丢掉最早的
             if len(self._ENTRY_CACHE) > 40:
                 ordered = sorted(self._ENTRY_CACHE.items(), key=lambda kv: kv[1][0])
                 for k, _ in ordered[:len(ordered) - 40]:
@@ -528,7 +565,6 @@ class DomainResolver:
                         if r is None:
                             continue
                         final_h = self._final_host(r.url) if r.url else ""
-                        # 写缓存（无论是否提取到结果，避免短时间内反复重试）
                         self._write_entry_cache(src, now, final_h, ext, bare)
 
                         stats["pub_hit" if is_pub else "nav_hit"] += 1
@@ -703,7 +739,7 @@ class Spider(BaseSpider):
         print(f"使用站点: {self.host}")
 
     def getName(self):
-        return "🍑每日大赛|终极完美版"
+        return "🍉%s|终极完美版" % self.CONFIG.SITE_NAME
 
     def isVideoFormat(self, url):
         return any(ext in (url or "") for ext in (".m3u8", ".mp4", ".ts"))
@@ -809,7 +845,7 @@ class Spider(BaseSpider):
         low = html.lower()
         has_article = low.count("<article") >= 1
         has_marker = any(m in low for m in self.CONFIG.SITE_MARKERS)
-        has_keyword = any(kw in html for kw in self.CONFIG.SITE_KEYWORDS)
+        has_keyword = self.CONFIG.match_keyword(html)      # ← 通用匹配
         if not (has_article or has_marker or has_keyword):
             return False, "无内容结构"
         return True, "OK"
@@ -1150,7 +1186,7 @@ class Spider(BaseSpider):
             print(f"[detail] 抓取失败: {url}")
             return [], "", url
         playlist = self._extract_playlist(data)
-        content = self._extract_content(data) or "每日大乱斗"
+        content = self._extract_content(data) or self.CONFIG.PLAY_FALLBACK_TITLE
         return playlist, content, url
 
     def _raw_detail_cached(self, vid):
@@ -1167,7 +1203,8 @@ class Spider(BaseSpider):
     def detailContent(self, ids):
         orig_vid = str(ids[0] if isinstance(ids, (list, tuple)) else ids)
         if not self.host:
-            return {"list": [{"vod_play_from": "每日大乱斗", "vod_play_url": "获取失败"}]}
+            return {"list": [{"vod_play_from": self.CONFIG.PLAY_FROM,
+                              "vod_play_url": "获取失败"}]}
 
         vid = orig_vid
         if vid.startswith("nid:"):
@@ -1185,7 +1222,7 @@ class Spider(BaseSpider):
             play_url = "#".join(playlist) or ("未找到视频源，请访问网页$" + url)
 
         return {"list": [{
-            "vod_play_from": "每日大乱斗",
+            "vod_play_from": self.CONFIG.PLAY_FROM,
             "vod_play_url":  play_url,
             "vod_content":   content,
         }]}
