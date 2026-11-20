@@ -105,9 +105,13 @@ class Config:
         "https://believe.gadoatcl.cc/",
         "https://arrest.gadoatcl.cc/",
         # 原 PUBLISH 降级（买保险，大概率不命中但无害）
-        "https://91cgb20.com/",
-        "https://91cgb21.com/",
-        "https://91cgb22.com/",
+        "https://51cgf26.com",
+        "https://51cgo21.com",
+        "https://51cge20.com",
+        "https://51cge21.com",
+        "https://51cge22.com",
+        "https://51cge24.com",
+        "https://51cge25.com",
     ]
     # ============ 探测参数 ============
     FAST_TIMEOUT         = 8      # 快路径单请求超时
