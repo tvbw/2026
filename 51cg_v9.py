@@ -54,32 +54,29 @@ LOG = logging.getLogger(__name__)
 # ==================================================================
 # ① 配置层（换站只改本类顶部）
 # ==================================================================
-class Config:
+class SiteConfig:
+    # ============ 站点身份（换站改这一段）============
     SITE_NAME        = "51吃瓜"
-    SITE_KEYWORDS    = ["51吃瓜", "51吃瓜1"]     # 多备选更稳
+    SITE_KEYWORDS    = ["51吃瓜"]   # 多个备选，任一命中即可
     PLAY_FROM        = "51吃瓜"
     PLAY_FALLBACK    = "51吃瓜"
     HOST_CACHE_KEY   = "51cg_host_v10"
     CLASS_CACHE_KEY  = "51cg_classes_v10"
     CLASS_CACHE_TTL  = 3600
 
-    # ---- 快路径：三级域名（302 到主站），最先探测 ----
+    # ============ 快路径（已知可用域名，最先探测）============
     FAST_HOSTS = [
-        "https://watuqekltmwiki1y26.trpynfky.cc/",
-        "https://advise.tsrtfxhe.cc/",
-        "https://gyay.tjkbkaca.cc/",
+        "https://art.ufwyylsgb.cc/",
         "https://be.gadoatcl.cc/",
         "https://awful.gadoatcl.cc/",
-        "https://baby.gadoatcl.cc/",
-        "https://case.gadoatcl.cc/",
-        "https://believe.gadoatcl.cc/",
-        "https://arrest.gadoatcl.cc/",
+        "https://attempt.ufwyylsgb.cc/",
+        "https://accuse.ufwyylsgb.cc/",
     ]
 
-    # ---- 慢路径：导航页 ----
+    # ============ 导航页 ============
     NAV_URLS = [
         "https://www.gugvyepf.cc/",
-        "https://www.zixsyisfb.cc/",
+        "https://51cgo25.com",
         "https://51cge23.com",
         "https://51cge26.com",
         "https://51cgf25.com",
@@ -87,34 +84,23 @@ class Config:
         "https://51cgo23.com",
     ]
 
-    # ---- 慢路径：发布页（只留最稳的做主力）----
+    # ============ 发布页（GitLab 为当前最可靠锚点）============
     PUBLISH_URLS = [
-        "https://51cgo25.com",
+        "https://51cgo21.com",
     ]
 
-    # ---- 慢路径：种子 ----
+    # ============ 种子（可能承载 HTML 主站的域名）============
     SEED_HOSTS = [
-        # 三级域名（可能是主站，探测有效）
-        "https://aid.tjkbkaca.cc/",
-        "https://gyay.tjkbkaca.cc/",
         "https://be.gadoatcl.cc/",
-        "https://watuqekltmwiki1y26.trpynfky.cc/",
         "https://awful.gadoatcl.cc/",
         "https://baby.gadoatcl.cc/",
         "https://case.gadoatcl.cc/",
         "https://believe.gadoatcl.cc/",
         "https://arrest.gadoatcl.cc/",
-        # 原 PUBLISH 降级（买保险，大概率不命中但无害）
-        "https://51cgf26.com",
-        "https://51cgo21.com",
-        "https://51cge20.com",
-        "https://51cge21.com",
-        "https://51cge22.com",
-        "https://51cge24.com",
-        "https://51cge25.com",
     ]
+
     # ============ 探测参数 ============
-    FAST_TIMEOUT         = 8      # 快路径单请求超时
+    FAST_TIMEOUT         = 10   # 快路径单请求超时
     PROBE_TIMEOUT        = 15
     PROBE_MIN_HTML       = 2000   # 原 3000，降到 2000
     PROBE_MIN_ARTICLE    = 1
