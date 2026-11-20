@@ -79,7 +79,7 @@ class Config:
     # ---- 慢路径：导航页 ----
     NAV_URLS = [
         "https://www.gugvyepf.cc/",
-        "https://51cgo25.com",
+        "https://www.zixsyisfb.cc/",
         "https://51cge23.com",
         "https://51cge26.com",
         "https://51cgf25.com",
