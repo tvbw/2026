@@ -291,8 +291,8 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg_v9.py"
     },
     {
-      "key": "每日大赛_v9自愈版",
-      "name": "❤️每日大赛v9自愈版🔞",
+      "key": "每日大赛v10自愈版",
+      "name": "每日大赛发v10自愈版",
       "type": 3,
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds_v9.py",
       "searchable": 1,
@@ -304,8 +304,8 @@
       "changeable": 1
     },
     {
-      "key": "mrdld_v9自愈版",
-      "name": "❤️每日大乱斗v9自愈版🔞",
+      "key": "每日大乱斗v10自愈版",
+      "name": "每日大乱斗v10自愈版",
       "type": 3,
       "playerType": 2,
       "style": {
