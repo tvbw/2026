@@ -66,7 +66,7 @@ class Config:
     # ---- 快路径：三级域名（302 到主站），最先探测 ----
     FAST_HOSTS = [
         "https://watuqekltmwiki1y26.trpynfky.cc/",
-        "https://aid.tjkbkaca.cc/",
+        "https://advise.tsrtfxhe.cc/",
         "https://gyay.tjkbkaca.cc/",
         "https://be.gadoatcl.cc/",
         "https://awful.gadoatcl.cc/",
