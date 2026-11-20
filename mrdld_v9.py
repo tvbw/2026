@@ -51,24 +51,9 @@ LOG = logging.getLogger(__name__)
 # ① 配置
 # ==================================================================
 class Config:
-    FAST_HOSTS = [
-        "https://dwatg7dnnvd2f.cloudfront.net",
-        "https://among.mturgjfv.cc/",
-        "https://annual.mturgjfv.cc/",
-        "https://alone.mturgjfv.cc/",
-        "https://admit.mturgjfv.cc/",
-        "https://affair.mturgjfv.cc/",
-    ]
-
-    NAV_URLS = [
-        "https://mrdld5.com",
-        "https://mrdld1.com",
-    ]
-
     PUBLISH_URLS = [
-        "https://mrdld7.com",
+        "https://dwatg7dnnvd2f.cloudfront.net",
         "https://mrdld6.com",
-        "https://mrdld4.com",
     ]
 
     SEED_HOSTS = [
