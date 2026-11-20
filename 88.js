@@ -115,17 +115,6 @@
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/每日大乱斗.py"
     },
     {
-      "key": "57吃瓜",
-      "name": "57吃瓜｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/57短剧.py"
-    },
-    {
       "key": "橙果短剧",
       "name": "橙果短剧.py｜🔞",
       "type": 3,
@@ -291,10 +280,21 @@
       "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
+      "key": "91吃瓜new_V9.9超级自愈版",
+      "name": "❤️91吃瓜V9.9超级自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg_v9.py"
+    },
+    {
       "key": "每日大赛_v9自愈版",
       "name": "❤️每日大赛v9自愈版🔞",
       "type": 3,
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/mrds_v9.py",
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrds_v9.py",
       "searchable": 1,
       "quickSearch": 1,
       "style": {
@@ -312,20 +312,10 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
     },
     {
-      "key": "91吃瓜new_V9.9超级自愈版",
-      "name": "❤️91吃瓜V9.9超级自愈版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/91cg_v9.py"
-    },
-    {
+
       "key": "51吃瓜new_V9.9超级自愈版",
       "name": "❤️51吃瓜V9.9超级自愈版｜🔞",
       "type": 3,
@@ -334,7 +324,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51cg_v9.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg_v9.py"
     },
     {
 
@@ -346,7 +336,7 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51ds_v9.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds_v9.py"
     },
     {
       "key": "51爆料v9.9",
@@ -357,7 +347,18 @@
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51bl_v9.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl_v9.py"
+    },
+    {
+      "key": "57吃瓜",
+      "name": "❤️57吃瓜｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/57cg.py"
     },
     {
       "key": "missav666",
