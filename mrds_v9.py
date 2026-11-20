@@ -51,14 +51,22 @@ LOG = logging.getLogger(__name__)
 # ① 配置
 # ==================================================================
 class Config:
+    FAST_HOSTS = [
+        "https://www.lfntptwv.cc/",
+        "https://cast.wgbfdjfgk.cc/",
+        "https://basic.wgbfdjfgk.cc/",
+    ]
+
+    NAV_URLS = [
+        "https://mrdsv2.com",
+        "https://mrdsv3.com",
+        "https://mrdsv1.com",
+    ]
+
     PUBLISH_URLS = [
         "https://mrdsv5.com",
-        "https://cap.unaydvxst.cc/",
-        "https://bench.sezupttrb.cc/",
-        "https://beyond.sezupttrb.cc/",
-        "https://mrdsv6.com",
-        "https://mrdsv4.com",
     ]
+
     SEED_HOSTS = [
         "https://www.lfntptwv.cc/",
         "https://cast.wgbfdjfgk.cc/",
@@ -74,11 +82,11 @@ class Config:
     ]
 
     FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "mrds_host_fix_v1"
+    HOST_CACHE_KEY = "mrds_host_fix_0v1"
     HOST_CACHE_TTL = 6 * 3600
 
-    FAST_TIMEOUT         = 6
-    PROBE_TIMEOUT        = 12
+    FAST_TIMEOUT         = 10
+    PROBE_TIMEOUT        = 15
     PROBE_MIN_HTML       = 2000
     PROBE_MIN_ARTICLE    = 1
     PROBE_MAX_ROUNDS     = 2
@@ -87,7 +95,7 @@ class Config:
     # 入口页结果缓存 TTL（秒）—— 同一进程内多次 init 时跳过重复抓取
     ENTRY_CACHE_TTL      = 1800
 
-    SITE_KEYWORDS = ["每日大赛"]
+    SITE_KEYWORDS = ["每日大赛v10自愈版","每日大赛"]
     SITE_MARKERS  = ["post-title", "entry-title", "<article", 'class="post']
 
     NAV_PAGE_KEYWORDS = (
