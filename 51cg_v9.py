@@ -64,39 +64,19 @@ class SiteConfig:
     CLASS_CACHE_KEY  = "51cg_classes_v10"
     CLASS_CACHE_TTL  = 3600
 
-    # ============ 快路径（已知可用域名，最先探测）============
-    FAST_HOSTS = [
-        "https://captain.tjkbkaca.cc/",
-        "https://aid.tjkbkaca.cc/",
-        "https://gyay.tjkbkaca.cc/",
-    ]
-
-    # ============ 导航页 ============
-    NAV_URLS = [
-        "https://www.gugvyepf.cc/",
-        "https://51cgo25.com",
-        "https://51cge23.com",
-        "https://51cge26.com",
-        "https://51cgf25.com",
-        "https://51cgo22.com",
-        "https://51cgo23.com",
-    ]
-
     # ============ 发布页（GitLab 为当前最可靠锚点）============
     PUBLISH_URLS = [
-        "https://51cgo22.com",
+        "https://www.gugvyepf.cc/",
         "https://51cgo25.com",
         "https://51cgf26.com",
         "https://51cgo21.com",
-        "https://51cge20.com",
-        "https://51cge21.com",
-        "https://51cge22.com",
-        "https://51cge24.com",
-        "https://51cge25.com",
     ]
 
     # ============ 种子（可能承载 HTML 主站的域名）============
     SEED_HOSTS = [
+        "https://captain.tjkbkaca.cc/",
+        "https://aid.tjkbkaca.cc/",
+        "https://gyay.tjkbkaca.cc/",
         "https://be.gadoatcl.cc/",
         "https://awful.gadoatcl.cc/",
         "https://baby.gadoatcl.cc/",
