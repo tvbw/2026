@@ -50,12 +50,12 @@ LOG = logging.getLogger(__name__)
 # ① 配置
 # ==================================================================
 class Config:
-    SITE_NAME            = "91吃瓜"
-    SITE_KEYWORDS        = ["91吃瓜", "91cg"]
-    PLAY_FROM            = "91吃瓜"
-    PLAY_FALLBACK_TITLE  = "91吃瓜"
-    HOST_CACHE_KEY       = "cg91_host_v2"
-    CLASS_CACHE_KEY      = "cg91_classes_v2"
+    SITE_NAME            = "91吃瓜1"
+    SITE_KEYWORDS        = ["91吃瓜1"]
+    PLAY_FROM            = "91吃瓜1"
+    PLAY_FALLBACK_TITLE  = "91吃瓜1"
+    HOST_CACHE_KEY       = "cg91_host_v10"
+    CLASS_CACHE_KEY      = "cg91_classes_v10"
     CLASS_CACHE_TTL      = 3600
 
     FAST_HOSTS = [
