@@ -91,16 +91,16 @@ class Config:
     FALLBACK_HOST  = None
     HOST_CACHE_TTL = 6 * 3600
 
-    FAST_TIMEOUT         = 6
-    PROBE_TIMEOUT        = 12
+    FAST_TIMEOUT         = 15
+    PROBE_TIMEOUT        = 20
     PROBE_MIN_HTML       = 2000
     PROBE_MIN_ARTICLE    = 1
     PROBE_MAX_ROUNDS     = 2
     PROBE_MAX_CANDIDATES = 30
     ENTRY_CACHE_TTL      = 1800
 
-    FILTER_PROBE_TIMEOUT = 5      # 单个分类页抓筛选栏的超时
-    FILTER_TOTAL_TIMEOUT = 25     # 全部一级分类的总超时（并发）
+    FILTER_PROBE_TIMEOUT = 10   # 单个分类页抓筛选栏的超时
+    FILTER_TOTAL_TIMEOUT = 30     # 全部一级分类的总超时（并发）
 
     SITE_MARKERS = [
         "post-title", "entry-title", "<article", 'class="post',
