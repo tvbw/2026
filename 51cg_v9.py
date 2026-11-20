@@ -68,13 +68,11 @@ class SiteConfig:
     PUBLISH_URLS = [
         "https://www.gugvyepf.cc/",
         "https://51cgo25.com",
-        "https://51cgf26.com",
-        "https://51cgo21.com",
     ]
 
     # ============ 种子（可能承载 HTML 主站的域名）============
     SEED_HOSTS = [
-        "https://captain.tjkbkaca.cc/",
+        "https://watuqekltmwiki1y26.trpynfky.cc/",
         "https://aid.tjkbkaca.cc/",
         "https://gyay.tjkbkaca.cc/",
         "https://be.gadoatcl.cc/",
