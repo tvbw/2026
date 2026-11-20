@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-91吃瓜 · 快速跳转 + 自愈抓取 + 多结构列表适配 + 筛选子分类发现
+91吃瓜 · 快速跳转 + 自愈抓取 + 分类全量发现 + 实时监控多结构适配
 =========================================================================
-本版新增
-- 【新增】筛选子分类自动发现（分类页内筛选栏 → 平铺进分类列表）
-- 【新增】分类结构 1 小时缓存（getCache/setCache），二次启动零耗时
-- 【增强】标题识别：aria-label / title / data-title / img alt / h1~h4 /
-        各类 .title 类名 / meta itemprop / 文本兜底
-- 【增强】图片识别：background-image: url() → data-* 懒加载 →
-        img src → 正则兜底
-- 实时监控多结构卡片 / 播放相关推荐聚合，与前版一致
+本版针对"一级目录 + 二级平铺目录漏抓"的修复：
+- 【核心】_parse_classes 遍历所有 SEL_NAV 全部合并（不再命中即 break）
+        此前"命中即 break"会漏掉非 .nav-link 类的二级嵌套分类
+- 【新增】_scan_category_links 兜底扫描首页所有 /category/* /tag/* 链接
+- 【新增】_parse_category_overview 访问 /category/ 总览页补充完整分类
+- 【增强】_augment_with_filters 处理全部一级分类（不再限制前 8 个）
+- 【保留】实时监控页 .realtime-card 多结构解析 / data-xkrkllgl 懒加载图
+- 【保留】播放相关推荐聚合 / 快慢路径域名自愈
 =========================================================================
 """
 import json
@@ -54,8 +54,8 @@ class Config:
     SITE_KEYWORDS        = ["91吃瓜", "91cg"]
     PLAY_FROM            = "91吃瓜"
     PLAY_FALLBACK_TITLE  = "91吃瓜"
-    HOST_CACHE_KEY       = "cg91_host_v1"
-    CLASS_CACHE_KEY      = "cg91_classes_v1"
+    HOST_CACHE_KEY       = "cg91_host_v2"
+    CLASS_CACHE_KEY      = "cg91_classes_v2"
     CLASS_CACHE_TTL      = 3600
 
     FAST_HOSTS = [
@@ -99,9 +99,8 @@ class Config:
     PROBE_MAX_CANDIDATES = 30
     ENTRY_CACHE_TTL      = 1800
 
-    # 最多探测前 N 个主分类的筛选栏
-    FILTER_PROBE_LIMIT   = 8
-    FILTER_PROBE_TIMEOUT = 6
+    FILTER_PROBE_TIMEOUT = 5      # 单个分类页抓筛选栏的超时
+    FILTER_TOTAL_TIMEOUT = 25     # 全部一级分类的总超时（并发）
 
     SITE_MARKERS = [
         "post-title", "entry-title", "<article", 'class="post',
@@ -155,21 +154,31 @@ class Config:
     SEL_SUMMARY      = ".post-content"
     SEL_TITLE        = ".post-title, h1"
 
+    # 首页导航 - 遍历所有选择器合并（不再命中即 break）
     SEL_NAV = [
-        "ul.navbar-nav.mr-auto > li.nav-item > a.nav-link",
-        "ul.navbar-nav > li.nav-item > a.nav-link",
-        "ul.navbar-nav li a.nav-link",
-        "#navbarCollapse a.nav-link",
+        # 抓全类：优先放前面，li 能覆盖嵌套子分类
+        ".nav-menu li",
+        ".nav-menu a",
+        ".menu li",
+        ".menu a",
+        ".category-list ul li",
+        ".category-list a",
+        "nav ul li",
+        "nav a",
+        "header nav a",
         ".navbar-nav a.nav-link",
+        "#navbarCollapse a.nav-link",
+        "ul.navbar-nav li a.nav-link",
+        "ul.navbar-nav > li.nav-item > a.nav-link",
+        "ul.navbar-nav.mr-auto > li.nav-item > a.nav-link",
+        # 二级子导航
+        "ul.navbar-nav.mr-auto li.nav-item.dropdown > ul.dropdown-menu > li.dropdown-item > a",
+        "ul.dropdown-menu > li.dropdown-item > a",
+        ".dropdown-menu a",
+        # 分类页 / 实时监控页的 tabs
         ".realtime-tabs a",
         ".category-tabs a",
-        ".category-list ul li",
-        ".nav-menu li",
-        ".menu li",
         ".tabs a",
-        "nav ul li",
-        "header nav a",
-        "nav a",
     ]
 
     # 筛选栏选择器（分类页内的子分类切换）
@@ -177,27 +186,46 @@ class Config:
         ".realtime-tabs a",
         ".filter-tabs a",
         ".filter-nav a",
+        ".filter-list a",
+        ".filter-links a",
         ".sub-cats a",
         ".subcategories a",
         ".sub-categories a",
         ".sub-nav a",
+        ".sub-nav-list a",
+        ".sub-cate a",
+        ".category-children a",
+        ".child-cats a",
+        ".children-cat a",
         ".tag-filter a",
-        ".filter-list a",
+        ".tag-list a",
+        ".tag-links a",
         ".category-filter a",
         ".screening a",
         ".screening-tabs a",
-        ".filter-links a",
         ".category-tabs a",
-        ".tag-list a",
         ".archive-tabs a",
         ".type-tabs a",
+        ".content-tabs a",
         ".post-categories a",
+        ".video-tabs a",
+        # 通用 ul/li 兜底
+        ".tabs li a",
+        ".tab-list a",
     ]
 
-    SEL_SUB_NAV = [
-        "ul.navbar-nav.mr-auto li.nav-item.dropdown > ul.dropdown-menu > li.dropdown-item > a",
-        "ul.dropdown-menu > li.dropdown-item > a",
-        ".dropdown-menu a",
+    # 分类总览页选择器
+    SEL_OVERVIEW = [
+        ".category-list a",
+        ".categories a",
+        ".category-item a",
+        ".cat-list a",
+        ".cat-item a",
+        ".category-name a",
+        ".archive-list a",
+        ".type-list a",
+        ".taxonomy-list a",
+        ".terms-list a",
     ]
 
     DEFAULT_CATEGORY = {"type_name": "首页", "type_id": "/"}
@@ -251,10 +279,60 @@ class Config:
 
 
 # ==================================================================
-# ② 慢路径域名解析器（保持前版，省略细节差异）
+# ② DomainResolver（与上一版完全一致，此处从略）
+#    直接把上一版代码里的 class DomainResolver 原封不动放进来即可
 # ==================================================================
-# 说明：DomainResolver 与前版完全一致，此处不重复贴出以减少篇幅。
-#       如需完整版请从上一轮回复中拷贝，或见文末"完整文件"提示。
+# class DomainResolver:
+#     ...   <- 上一版内容，无需改动
+# ...   <-
+# 如果你没有上一版的 DomainResolver，把下面这段最小版本放进来也能跑
+# （完整版请从上一轮回复拷贝，功能更全，这里放最精简版本保底）：
+
+class DomainResolver:
+    def __init__(self, cfg, fetcher):
+        self.cfg, self.fetch = cfg, fetcher
+
+    def resolve(self):
+        # 简化版：只并发探测 SEED_HOSTS
+        try:
+            with ThreadPoolExecutor(max_workers=min(6, len(self.cfg.SEED_HOSTS))) as ex:
+                futs = {ex.submit(self._check, u.rstrip("/") + "/"): u
+                        for u in self.cfg.SEED_HOSTS if u}
+                for f in as_completed(futs, timeout=self.cfg.PROBE_TIMEOUT + 5):
+                    try:
+                        h = f.result()
+                        if h:
+                            return h
+                    except Exception:
+                        continue
+        except Exception:
+            pass
+        return (self.cfg.FAST_HOSTS[0] if self.cfg.FAST_HOSTS else "").rstrip("/")
+
+    def _check(self, url):
+        try:
+            r = self.fetch(url, timeout=self.cfg.PROBE_TIMEOUT)
+            if r is None or r.status_code != 200:
+                return ""
+            text = r.text or ""
+            if len(text) < self.cfg.PROBE_MIN_HTML:
+                return ""
+            low = text.lower()
+            if (low.count("<article") >= 1
+                    or low.count("realtime-card") >= 1
+                    or low.count("post-card") >= 1
+                    or any(m in low for m in self.cfg.SITE_MARKERS)
+                    or self.cfg.match_keyword(text)):
+                try:
+                    p = urlparse(r.url or url)
+                    if p.scheme and p.netloc:
+                        return "%s://%s" % (p.scheme, p.netloc.lower())
+                except Exception:
+                    pass
+                return url.rstrip("/")
+        except Exception:
+            return ""
+        return ""
 
 
 # ==================================================================
@@ -438,7 +516,7 @@ class Spider(BaseSpider):
             return False, "无内容结构"
         return True, "OK"
 
-    # -------------------- host 探测（快路径 → 慢路径）--------------------
+    # -------------------- host 探测 --------------------
     def _read_host_cache(self):
         fn = getattr(self, "getCache", None)
         if not fn:
@@ -503,15 +581,11 @@ class Spider(BaseSpider):
 
         for u in urls:
             r = results.get(u)
-            if r is None:
-                print(f"  [快路径] {u} 无响应")
-                continue
-            if r.status_code != 200:
-                print(f"  [快路径] {u} HTTP={r.status_code}")
+            if r is None or r.status_code != 200:
                 continue
             ok, reason = self._is_site(r.text)
             if not ok:
-                print(f"  [快路径] {u} 不通过: {reason} 长度={len(r.text or '')}")
+                print(f"  [快路径] {u} 不通过: {reason}")
                 continue
             final = self._final_host(r.url) or u
             print(f"  [快路径] {u} → {final} 命中")
@@ -519,11 +593,8 @@ class Spider(BaseSpider):
         return ""
 
     def _slow_probe(self):
-        print("[慢路径] 启动六源 + 三轮回流解析引擎 ...")
-        from_dr = globals().get("DomainResolver")
-        if from_dr is None:
-            return ""
-        resolver = from_dr(self.CONFIG, self._request)
+        print("[慢路径] 启动探测 ...")
+        resolver = DomainResolver(self.CONFIG, self._request)
         return resolver.resolve()
 
     def get_working_host(self):
@@ -531,7 +602,7 @@ class Spider(BaseSpider):
         if cached:
             final = self._verify_host(cached)
             if final:
-                print(f"缓存有效: {cached}" + (f" → {final}" if final != cached else ""))
+                print(f"缓存有效: {cached}")
                 if final != cached:
                     self._write_host_cache(final)
                 return final
@@ -628,7 +699,7 @@ class Spider(BaseSpider):
         except Exception:
             return ""
 
-    # -------------------- 首页 / 分类 --------------------
+    # -------------------- 首页 / 分类（核心改动）--------------------
     def homeContent(self, filter=False):
         if not self.host:
             return {"class": [], "list": []}
@@ -653,117 +724,202 @@ class Spider(BaseSpider):
         return {"list": lst}
 
     def _parse_classes(self, data):
-        # 优先读缓存
+        # 1) 缓存
         cached = self._read_classes_cache()
         if cached:
-            print("[classes] 命中缓存，跳过筛选栏探测")
+            print(f"[classes] 命中缓存 → {len(cached)} 个")
             return cached
 
-        classes, seen = [], set()
+        # 2) 首页导航 - 遍历所有 SEL_NAV 合并
+        classes = self._parse_home_nav(data)
+        print(f"[classes] 首页导航 → {len(classes)} 个")
 
-        def _add(href, name):
-            href = (href or "").strip()
-            name = (name or "").strip()
-            if not href or not name or href == "#":
-                return
-            if href.startswith(("javascript:", "mailto:", "tel:")):
-                return
-            if not href.startswith("http"):
-                href = "/" + href.lstrip("/")
-            if href in seen:
-                return
-            seen.add(href)
-            classes.append({"type_name": name, "type_id": href})
+        # 3) 兜底扫描 - 首页所有 /category/* /tag/* 链接
+        extra = self._scan_category_links(data)
+        if extra:
+            classes = self._merge_classes(classes, extra)
+            print(f"[classes] 首页链接补充 → {len(classes)} 个")
 
-        for sel in self.CONFIG.SEL_NAV:
-            hit = False
-            try:
-                for k in data(sel).items():
-                    a = k if k.is_("a") else k("a").eq(0)
-                    _add(a.attr("href"), a.text())
-                    hit = True
-            except Exception:
+        # 4) 分类总览页补充
+        for path in ("/category/", "/categories/", "/category/index/"):
+            ov = self._soup(self._abs(path), timeout=self.CONFIG.FILTER_PROBE_TIMEOUT)
+            if ov is None:
                 continue
-            if hit and classes:
+            ov_classes = self._parse_category_overview(ov)
+            if ov_classes:
+                classes = self._merge_classes(classes, ov_classes)
+                print(f"[classes] 总览页 {path} 补充 → {len(classes)} 个")
                 break
 
-        if not classes:
-            for sel in self.CONFIG.SEL_SUB_NAV:
-                hit = False
-                try:
-                    for a in data(sel).items():
-                        _add(a.attr("href"), a.attr("title") or a.text())
-                        hit = True
-                except Exception:
-                    continue
-                if hit:
-                    break
-
+        # 5) 兜底
         if not classes:
             classes = [dict(self.CONFIG.DEFAULT_CATEGORY)]
 
-        # 抓筛选子分类
+        # 6) 每个一级分类抓筛选栏子分类（核心改动：全部处理）
         try:
             merged = self._augment_with_filters(classes)
             if merged and len(merged) > len(classes):
+                print(f"[classes] 筛选栏合并 {len(classes)} → {len(merged)} 个")
                 classes = merged
         except Exception as e:
-            LOG.debug("筛选子分类抓取异常: %s", e)
+            LOG.debug("筛选子分类异常: %s", e)
 
-        # 写缓存
+        # 7) 写缓存
         self._write_classes_cache(classes)
         return classes
 
+    def _parse_home_nav(self, data):
+        """遍历所有 SEL_NAV 选择器，全部合并去重（不再命中即 break）"""
+        out, seen = [], set()
+        for sel in self.CONFIG.SEL_NAV:
+            try:
+                items = list(data(sel).items())
+            except Exception:
+                continue
+            for k in items:
+                a = k if k.is_("a") else k("a").eq(0)
+                href = (a.attr("href") or "").strip()
+                name = (a.text() or "").strip()
+                if not href or not name or href == "#":
+                    continue
+                if href.startswith(("javascript:", "mailto:", "tel:")):
+                    continue
+                if not (href.startswith("/") or href.startswith("http")):
+                    continue
+                if href in seen:
+                    continue
+                # 绝对链接只保留同域
+                if href.startswith("http"):
+                    if self._final_host(href) != self.host:
+                        continue
+                    try:
+                        p = urlparse(href)
+                        href = p.path or "/"
+                    except Exception:
+                        continue
+                seen.add(href)
+                out.append({"type_name": name, "type_id": href})
+        return out
+
+    def _scan_category_links(self, data):
+        """扫描首页所有 href 匹配 /category/* 或 /tag/* 的链接"""
+        out, seen = [], set()
+        try:
+            for a in data("a").items():
+                href = (a.attr("href") or "").strip()
+                name = (a.text() or "").strip()
+                if not href or not name:
+                    continue
+                if not re.match(r"^/(?:category|tag|tags|type)/[\w\-]+(?:/[\w\-]+)?/?$", href):
+                    continue
+                if href in seen:
+                    continue
+                seen.add(href)
+                out.append({"type_name": name, "type_id": href})
+        except Exception:
+            pass
+        return out
+
+    def _parse_category_overview(self, data):
+        """分类总览页 - 从常见容器抓所有分类"""
+        out, seen = [], set()
+        for sel in self.CONFIG.SEL_OVERVIEW:
+            try:
+                items = list(data(sel).items())
+            except Exception:
+                continue
+            for a in items:
+                href = (a.attr("href") or "").strip()
+                name = (a.text() or "").strip()
+                if not href or not name:
+                    continue
+                if href.startswith(("javascript:", "mailto:", "tel:")):
+                    continue
+                if href.startswith("http"):
+                    if self._final_host(href) != self.host:
+                        continue
+                    try:
+                        p = urlparse(href)
+                        href = p.path or "/"
+                    except Exception:
+                        continue
+                if not href.startswith("/"):
+                    continue
+                if href in seen:
+                    continue
+                seen.add(href)
+                out.append({"type_name": name, "type_id": href})
+        return out
+
+    @staticmethod
+    def _merge_classes(base, extra):
+        out, seen = [], set()
+        for c in (base or []) + (extra or []):
+            tid = (c.get("type_id") or "").strip()
+            if not tid or tid in seen:
+                continue
+            seen.add(tid)
+            out.append(c)
+        return out
+
     def _augment_with_filters(self, main_categories):
-        """并发访问主分类页抓取筛选栏子分类"""
+        """对全部一级分类并发访问抓筛选栏子分类"""
         if not main_categories:
             return main_categories
-        targets = main_categories[:self.CONFIG.FILTER_PROBE_LIMIT]
+
+        # 排除首页 / 空路径
+        targets = [c for c in main_categories
+                   if (c.get("type_id") or "") not in ("", "/", "#")]
         if not targets:
             return main_categories
 
-        results_by_parent = {}
+        print(f"[classes] 并发抓取 {len(targets)} 个一级分类的筛选栏 ...")
+        results_by_tid = {}
         try:
-            with ThreadPoolExecutor(max_workers=min(5, len(targets))) as ex:
+            with ThreadPoolExecutor(max_workers=min(6, len(targets))) as ex:
                 futs = {ex.submit(self._fetch_category_filters, cat): cat
                         for cat in targets}
-                for f in as_completed(futs, timeout=15):
-                    try:
-                        parent_name, subs = f.result()
-                        if subs:
-                            results_by_parent[parent_name] = subs
-                    except Exception:
-                        continue
+                try:
+                    for f in as_completed(futs, timeout=self.CONFIG.FILTER_TOTAL_TIMEOUT):
+                        try:
+                            tid, subs = f.result()
+                            if subs:
+                                results_by_tid[tid] = subs
+                        except Exception:
+                            continue
+                except Exception:
+                    pass
         except Exception as e:
             LOG.debug("筛选并发异常: %s", e)
 
-        if not results_by_parent:
+        if not results_by_tid:
             return main_categories
 
         merged = []
         for c in main_categories:
             merged.append(c)
-            name = c.get("type_name") or ""
-            if name in results_by_parent:
-                merged.extend(results_by_parent[name])
+            subs = results_by_tid.get(c.get("type_id"), [])
+            merged.extend(subs)
         return merged
 
     def _fetch_category_filters(self, cat):
         """访问一个分类页，抓取筛选栏子分类"""
-        url = self._abs(cat.get("type_id") or "")
+        tid = cat.get("type_id") or ""
+        url = self._abs(tid)
         if not url:
-            return cat.get("type_name", ""), []
+            return tid, []
         if not url.endswith("/"):
             url += "/"
 
         r = self._request(url, timeout=self.CONFIG.FILTER_PROBE_TIMEOUT)
         if r is None or r.status_code != 200:
-            return cat.get("type_name", ""), []
+            return tid, []
 
         data = self.getpq(r.text)
         subs = []
-        base_tid = (cat.get("type_id") or "").rstrip("/")
-        seen_hrefs = {base_tid, base_tid + "/"}
+        base_tid = tid.rstrip("/")
+        seen = {base_tid, base_tid + "/", tid,
+                "/" + tid.lstrip("/")}
 
         for sel in self.CONFIG.SEL_FILTER:
             try:
@@ -772,27 +928,26 @@ class Spider(BaseSpider):
                     name = (a.text() or "").strip()
                     if not href or not name:
                         continue
-                    if href in seen_hrefs:
+                    if href in seen:
                         continue
-                    if not (href.startswith("/") or href.startswith("http")):
-                        continue
-                    # 只保留同域/同路径前缀的链接
-                    if href.startswith("/"):
-                        pass
-                    else:
-                        hp = self._final_host(href)
-                        if not hp or hp != self.host:
+                    if href.startswith("http"):
+                        if self._final_host(href) != self.host:
                             continue
-                    seen_hrefs.add(href)
+                        try:
+                            p = urlparse(href)
+                            href = p.path or "/"
+                        except Exception:
+                            continue
+                    if not href.startswith("/"):
+                        continue
+                    seen.add(href)
                     subs.append({
                         "type_name": "%s · %s" % (cat.get("type_name", ""), name),
                         "type_id": href,
                     })
             except Exception:
                 continue
-            if subs:
-                break
-        return cat.get("type_name", ""), subs
+        return tid, subs
 
     def _build_page_url(self, tid, pg):
         tid = str(tid or "/")
@@ -846,7 +1001,7 @@ class Spider(BaseSpider):
             print(f"[categoryContent] 列表为空: {url} 检查 SEL_ARTICLE 或页面结构")
         return {"list": lst, "page": pg, "pagecount": 9999, "limit": 90, "total": 999999}
 
-    # -------------------- 列表（标题/图片双增强）--------------------
+    # -------------------- 列表 --------------------
     def _getlist(self, data, tid=""):
         videos, seen = [], set()
         is_folder = "/mrdg" in (tid or "")
@@ -857,6 +1012,11 @@ class Spider(BaseSpider):
                 continue
 
             title = self._extract_title(k, a)
+            # 兜底：从 URL 拿最后一段
+            if not title:
+                m = re.search(r"/([^/]+)/?$", href)
+                if m and m.group(1):
+                    title = m.group(1)
             if not title:
                 continue
 
@@ -926,7 +1086,7 @@ class Spider(BaseSpider):
         try:
             for meta in k("meta").items():
                 prop = (meta.attr("itemprop") or "").lower()
-                if "name" in prop or "headline" in prop:
+                if "headline" in prop:
                     v = (meta.attr("content") or "").strip()
                     if v:
                         return v
@@ -1195,7 +1355,7 @@ class Spider(BaseSpider):
         if img:
             for attr in ("data-xkrkllgl", "data-src", "data-original",
                          "data-lazy-src", "data-echo", "data-url", "data-bg",
-                         "data-original-src"):
+                         "data-original-src", "data-ll-lazy"):
                 v = img.attr(attr)
                 if v and not str(v).startswith("data:"):
                     return self._proc_url(v)
@@ -1203,7 +1363,7 @@ class Spider(BaseSpider):
             if v:
                 return self._proc_url(v)
 
-        # 3. loadBannerDirect 脚本
+        # 3. loadBannerDirect
         try:
             txt = elem("script").text() or ""
         except Exception:
