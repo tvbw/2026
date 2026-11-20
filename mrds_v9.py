@@ -51,24 +51,14 @@ LOG = logging.getLogger(__name__)
 # ① 配置
 # ==================================================================
 class Config:
-    FAST_HOSTS = [
-        "https://www.lfntptwv.cc/",
-        "https://cast.wgbfdjfgk.cc/",
-        "https://basic.wgbfdjfgk.cc/",
-    ]
-
-    NAV_URLS = [
-        "https://mrdsv2.com",
-        "https://mrdsv3.com",
-        "https://mrdsv1.com",
-    ]
-
     PUBLISH_URLS = [
         "https://mrdsv5.com",
+        "https://cap.unaydvxst.cc/",
+        "https://bench.sezupttrb.cc/",
+        "https://beyond.sezupttrb.cc/",
         "https://mrdsv6.com",
         "https://mrdsv4.com",
     ]
-
     SEED_HOSTS = [
         "https://www.lfntptwv.cc/",
         "https://cast.wgbfdjfgk.cc/",
