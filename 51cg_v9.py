@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-51大赛 · 发布页直达版（v11.2 · 列表/分页/分类全增强）
-=====================================================
-针对 51 系列“三级域名失效快、只能靠发布页”的特点：
-- PUBLISH_URLS 唯一可靠锚点（302 自动跟随）
-- SEED_HOSTS 清空，完全依赖发布页
-- 发布页解析三路兜底：302跳转 → 发布页即内容站 → 多策略提取候选
-- 列表解析：多选择器合并（不再命中即停）
-- 分页解析：候选 URL 列表逐个尝试
-- 分类导航：遍历全部 SEL_NAV 合并（v10 命中即停的 bug 修复）
-- 业务逻辑（图片/播放/相关推荐/代理）与 v10 完全一致
+51大赛 · 发布页直达版（v12 · 二级目录平铺）
+================================
+针对 51 系列“三级域名失效快、无法自动跳转、仅发布页长期有效”的特点：
+- 【核心】以 PUBLISH_URLS（发布页）为唯一可靠锚点，并发抓取
+- 【解析】多策略提取真实内容站域名：
+    * <a href="https://..."> 链接
+    * JavaScript 变量（如 backupLine = [...]）
+    * Base64 编码的脚本内容（部分发布页用这种方式隐藏域名）
+    * 中文提示附近的裸域名
+- 【直达】提取到候选后，并发探测，命中即写缓存返回
+- 【缓存】发布页解析结果 TTL 6 小时，避免每次 init 都重新抓
+- 【极速】即使只配 1 个发布页，也能在 5~10 秒内完成
+- 业务逻辑（列表解析 / 图片 / 播放 / 相关推荐）与 v10 完全一致
 """
 import json
 import re
@@ -44,34 +47,30 @@ except Exception:
 LOG = logging.getLogger(__name__)
 
 
-# ==================================================================
-# ① 配置层
-# ==================================================================
 class Config:
     # ================== 站点身份 ==================
-    SITE_NAME            = "51吃瓜"
-    SITE_KEYWORDS        = ["51吃瓜", "51cg"]
-    PLAY_FROM            = "51吃瓜"
-    PLAY_FALLBACK_TITLE  = "51吃瓜"
-    HOST_CACHE_KEY       = "51cg_host_v11"
+    SITE_NAME            = "51吃瓜1"
+    SITE_KEYWORDS        = ["51吃瓜1", "51cg"]
+    PLAY_FROM            = "51吃瓜1"
+    PLAY_FALLBACK_TITLE  = "51吃瓜1"
+    HOST_CACHE_KEY       = "51cg_host_v12"
     HOST_CACHE_TTL       = 6 * 3600
 
-    # ================== 发布页（唯一可靠锚点）==================
-    # 51cgo25.com 等会自动 302 跳到这里
+    # ================== 发布页（唯一可靠锚点，可只配 1 个）==================
     PUBLISH_URLS = [
         "https://www.nqvudlbn.cc/",
     ]
 
-    # 51 系列三级域名失效快，留空完全依赖发布页
+    # 三级域名（可选，通常失效快，留空则完全依赖发布页）
     SEED_HOSTS = []
 
     FALLBACK_HOST = None
 
-    # ================== 探测参数 ==================
-    PUBLISH_TIMEOUT    = 12    # 发布页抓取超时
+    # ================== 探测参数（针对发布页直达优化）==================
+    PUBLISH_TIMEOUT    = 10    # 发布页抓取超时
     PROBE_TIMEOUT      = 8     # 候选域名探测超时
     FAST_TIMEOUT       = 5     # 缓存校验超时
-    PROBE_MIN_HTML     = 1500
+    PROBE_MIN_HTML     = 2000
     PROBE_MIN_ARTICLE  = 1
 
     # ================== 站点结构特征 ==================
@@ -81,10 +80,8 @@ class Config:
     ]
 
     NAV_PAGE_KEYWORDS = (
-        "线路一", "线路二", "线路三", "线路四", "线路五",
-        "线路1", "线路2", "线路3",
-        "推荐访问", "线路正常", "官方导航", "发布页", "备用线路",
-        "地址发布页", "永久地址", "最新地址",
+        "线路一", "线路二", "线路三", "推荐访问", "线路正常",
+        "官方导航", "发布页", "备用线路", "地址发布页", "永久地址", "最新地址",
     )
 
     VALID_TLDS = {
@@ -112,38 +109,36 @@ class Config:
 
     EXTRA_BLACKLIST = ('beian.miit.gov.cn', 'w3.org', 'example.com')
 
-    # ================== 列表选择器（多选择器合并）==================
-    SEL_ARTICLE_LIST = [
-        ".realtime-card",
-        ".video-card",
-        ".video-item",
-        ".post-item",
-        ".card-item",
-        "article",
-        "#index article",
-        "#archive article",
-    ]
-    # 兼容原有字段引用
-    SEL_ARTICLE      = ", ".join(SEL_ARTICLE_LIST)
-    SEL_ARTICLE_HOME = ", ".join(SEL_ARTICLE_LIST)
-
+    # ================== 列表选择器（v10 多结构）==================
+    SEL_ARTICLE      = (
+        "#index article, #archive article, article, "
+        ".realtime-card, .video-card, .video-item, .post-item, .card-item"
+    )
+    SEL_ARTICLE_HOME = (
+        "#index article, article, "
+        ".realtime-card, .video-card, .video-item, .post-item, .card-item"
+    )
     SEL_PLAYER       = ".dplayer"
     SEL_CONTENT      = ".post-content, article, .realtime-content"
     SEL_TAGS         = ".post-tags a, .tags a, .keywords a"
     SEL_SUMMARY      = ".post-content"
     SEL_TITLE        = ".post-title, h1"
 
-    # ================== 分类导航（全合并，不命中即停）==================
+    # ================== 导航解析（一级 + 二级平铺）==================
+    # 根节点：主导航栏（注意页面里还有 side-toolbar-list 等副导航，必须限定）
+    SEL_NAV_ROOT = "ul.navbar-nav.mr-auto"
+    # 一级菜单项
+    SEL_NAV_ITEM = "li.nav-item"
+    # 一级项里的直接链接/按钮
+    SEL_NAV_LINK = "a.nav-link"
+    SEL_NAV_TOGGLE = "button.nav-link"
+    # 二级子菜单链接
+    # 相对二级菜单容器内部使用（pyquery 选择器不含上下文自身，不能写成 ul.dropdown-menu ...）
+    SEL_SUB_MENU_ITEM = "li.dropdown-item a"
+    # 仅这些内容路径视为可点播的分类
+    NAV_VALID_PREFIXES = ("/category/",)
+
     SEL_NAV = [
-        ".category-list ul li",
-        ".category-list a",
-        ".nav-menu li",
-        ".nav-menu a",
-        ".menu li",
-        ".menu a",
-        "nav ul li",
-        "nav a",
-        "header nav a",
         "ul.navbar-nav.mr-auto > li.nav-item > a.nav-link",
         "ul.navbar-nav > li.nav-item > a.nav-link",
         "ul.navbar-nav li a.nav-link",
@@ -151,7 +146,13 @@ class Config:
         ".navbar-nav a.nav-link",
         ".realtime-tabs a",
         ".category-tabs a",
+        ".category-list ul li",
+        ".nav-menu li",
+        ".menu li",
         ".tabs a",
+        "nav ul li",
+        "header nav a",
+        "nav a",
     ]
 
     SEL_SUB_NAV = [
@@ -215,13 +216,11 @@ class Config:
 # ==================================================================
 class PublishResolver:
     """以发布页为唯一可靠锚点：
-    1) 缓存有效 → 校验后返回
-    2) 并发抓取 PUBLISH_URLS（allow_redirects=True，跟随 302）
-    3) 三级兜底：
-       a) 302 跳转后的最终 URL 是内容站 → 直接用
-       b) 发布页 HTML 本身就是内容站 → 直接用
-       c) 从发布页 HTML 多策略提取候选 → 并发探测
-    4) 全部失败 → 回退缓存 / FALLBACK_HOST / 第一个发布页
+    1) 缓存有效 → 校验后直接返回
+    2) 并发抓取所有 PUBLISH_URLS
+    3) 多策略提取候选域名：<a href> / JS变量 / Base64 / 中文提示 / 裸域名
+    4) 并发探测候选域名，命中即返回
+    5) 全部失败 → 回退缓存或第一个发布页（而非内容站）
     """
 
     def __init__(self, cfg, fetcher, cache_get=None, cache_set=None):
@@ -229,12 +228,8 @@ class PublishResolver:
         self.fetch = fetcher
         self.cache_get = cache_get
         self.cache_set = cache_set
-        self._publish_hosts = set()
-        for u in cfg.PUBLISH_URLS:
-            h = self._final_host(u)
-            if h:
-                self._publish_hosts.add(h.rstrip("/"))
 
+    # -------------------- 基础 --------------------
     def _safe_fetch(self, url, timeout):
         try:
             return self.fetch(url, timeout=timeout)
@@ -254,6 +249,7 @@ class PublishResolver:
             pass
         return ""
 
+    # -------------------- 页面判定 --------------------
     def _is_blocked_page(self, html):
         if not html:
             return False
@@ -266,68 +262,53 @@ class PublishResolver:
         )
         return any(m in low for m in markers)
 
-    def _is_nav_page(self, html):
-        if not html:
-            return False
-        if 'data-base=' in html and 'id="list-wrap"' in html:
-            return True
-        low = html.lower()
-        if (low.count("<article") >= 1
-                or low.count('class="post') >= 3
-                or low.count('realtime-card') >= 2
-                or low.count('video-card') >= 2):
-            return False
-        hits = sum(1 for kw in self.cfg.NAV_PAGE_KEYWORDS if kw in html)
-        return hits >= 3
-
     def _site_ok(self, html):
         if not html or len(html) < self.cfg.PROBE_MIN_HTML:
             return False
         if self._is_blocked_page(html):
             return False
-        if self._is_nav_page(html):
-            return False
         low = html.lower()
         has_article = (low.count("<article") >= self.cfg.PROBE_MIN_ARTICLE
                        or low.count("realtime-card") >= self.cfg.PROBE_MIN_ARTICLE
-                       or low.count("video-card") >= self.cfg.PROBE_MIN_ARTICLE
-                       or low.count("video-item") >= self.cfg.PROBE_MIN_ARTICLE)
+                       or low.count("video-card") >= self.cfg.PROBE_MIN_ARTICLE)
         has_marker = any(m in low for m in self.cfg.SITE_MARKERS)
         has_keyword = self.cfg.match_keyword(html)
         return has_article or has_marker or has_keyword
 
-    # -------------------- 多策略提取候选 --------------------
+    # -------------------- 多策略提取候选域名 --------------------
     def _extract_hosts_from_publish(self, html):
+        """从发布页 HTML 中提取真实内容站域名候选。"""
         if not html:
             return []
+
         hosts, seen = [], set()
 
         def _add(h):
             h = self._final_host(h)
             if not h:
                 return
-            h = h.rstrip("/")
             hl = h.lower()
             if any(bl in hl for bl in self.cfg.DOMAIN_BLACKLIST):
                 return
             if any(bl in hl for bl in getattr(self.cfg, "EXTRA_BLACKLIST", ())):
                 return
-            if h in self._publish_hosts:
+            # 排除发布页自身
+            if h.rstrip("/") in [u.rstrip("/") for u in self.cfg.PUBLISH_URLS]:
                 return
             if h in seen:
                 return
             seen.add(h)
             hosts.append(h)
 
-        # 1) 显式 <a href>
+        # 策略1：<a href="https://..."> 链接
         for m in re.finditer(r'<a\b[^>]+href=["\'](https?://[^"\']+)["\']', html):
             _add(m.group(1))
 
-        # 2) JS 变量/字符串中的 URL
+        # 策略2：JavaScript 变量中的域名（如 backupLine = ["https://..."]）
         for m in re.finditer(r'["\'](https?://[^"\']+)["\']', html):
             _add(m.group(1))
 
-        # 3) Base64 编码隐藏域名
+        # 策略3：Base64 编码的脚本内容（部分发布页用这种方式隐藏域名）
         for b64_match in re.finditer(r'["\']([A-Za-z0-9+/=]{80,})["\']', html):
             try:
                 decoded = base64.b64decode(b64_match.group(1)).decode("utf-8", "ignore")
@@ -336,10 +317,9 @@ class PublishResolver:
             except Exception:
                 continue
 
-        # 4) 中文提示附近域名
+        # 策略4：中文提示附近的域名
         for m in re.finditer(
-            r'(?:新地址|新网址|永久地址|最新地址|最新域名|官方入口|请访问|访问地址|'
-            r'线路[一二三四五六七八九十\d]+|推荐访问|备用线路)'
+            r'(?:新地址|新网址|永久地址|最新地址|最新域名|官方入口|请访问|访问地址|线路[一二三四五六七八九十\d]+)'
             r'[：:\s]*((?:https?://)?[a-zA-Z0-9][a-zA-Z0-9.\-]{3,}\.[a-zA-Z]{2,10})',
             html
         ):
@@ -348,7 +328,7 @@ class PublishResolver:
                 u = "https://" + u
             _add(u)
 
-        # 5) 裸域名扫描
+        # 策略5：裸域名扫描（严格 TLD + 黑名单）
         for m in re.finditer(
             r'(?<![\w.\-])((?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,10})(?![\w.\-])',
             html
@@ -426,27 +406,26 @@ class PublishResolver:
 
     # -------------------- 主入口 --------------------
     def resolve(self):
-        # 1) 缓存校验
+        # 1) 缓存命中
         cached = self._read_cache()
         if cached:
             r = self._safe_fetch(cached + "/", self.cfg.FAST_TIMEOUT)
             if r is not None and r.status_code == 200 and self._site_ok(r.text):
                 final = self._final_host(r.url) or cached
-                print(f"[缓存] 有效: {cached}" + (f" → {final}" if final != cached else ""))
+                print(f"缓存有效: {cached}" + (f" → {final}" if final != cached else ""))
                 if final != cached:
                     self._write_cache(final)
                 return final
-            print(f"[缓存] 失效: {cached}")
+            print(f"缓存失效: {cached}")
 
-        # 2) 并发抓发布页
+        # 2) 并发抓取所有发布页
         publish_urls = [u.rstrip("/") + "/" for u in self.cfg.PUBLISH_URLS]
         if not publish_urls:
-            print("[发布页] 未配置 PUBLISH_URLS")
+            print("[发布页] 未配置 PUBLISH_URLS，无法解析")
             return self._fallback(cached, "无发布页")
 
         print(f"[发布页直达] 并发抓取 {len(publish_urls)} 个发布页 ...")
         candidates = []
-        direct_hit = ""
         try:
             with ThreadPoolExecutor(max_workers=min(8, len(publish_urls))) as ex:
                 futs = {ex.submit(self._safe_fetch, u, self.cfg.PUBLISH_TIMEOUT): u
@@ -458,34 +437,10 @@ class PublishResolver:
                     except Exception as e:
                         print(f"  [发布页] {u} 异常: {e}")
                         continue
-                    if r is None:
-                        print(f"  [发布页] {u} 无响应")
+                    if r is None or r.status_code != 200:
+                        print(f"  [发布页] {u} 失败 (HTTP={getattr(r, 'status_code', '无响应')})")
                         continue
-                    if r.status_code != 200:
-                        print(f"  [发布页] {u} HTTP={r.status_code}")
-                        continue
-
-                    publish_host = self._final_host(u)
-                    final_redirect = self._final_host(r.url)
-                    html = r.text or ""
-
-                    # 2a) 302 跳到新域名且通过校验 → 直接返回
-                    if final_redirect and final_redirect != publish_host:
-                        print(f"  [发布页] {u} → 302 至 {final_redirect}")
-                        if self._site_ok(html):
-                            print(f"  [发布页] 跳转目标通过校验，直接使用")
-                            direct_hit = final_redirect
-                            break
-                        # 跳转后不是内容站，继续尝试从 HTML 提取
-                    else:
-                        # 2b) 发布页本身是内容站 → 直接返回
-                        if self._site_ok(html):
-                            print(f"  [发布页] {u} 本身即内容站，直接使用")
-                            direct_hit = final_redirect or publish_host
-                            break
-
-                    # 2c) 提取候选
-                    hosts = self._extract_hosts_from_publish(html)
+                    hosts = self._extract_hosts_from_publish(r.text or "")
                     if hosts:
                         print(f"  [发布页] {u} → 提取 {len(hosts)} 个候选: {hosts[:5]}")
                         candidates.extend(hosts)
@@ -494,24 +449,21 @@ class PublishResolver:
         except Exception as e:
             LOG.debug("发布页并发异常: %s", e)
 
-        if direct_hit:
-            self._write_cache(direct_hit)
-            return direct_hit
-
-        # 3) 去重 + 探测候选
-        seen, uniq = set(), []
+        # 去重
+        seen, unique_candidates = set(), []
         for h in candidates:
             h = h.rstrip("/")
             if h and h not in seen:
                 seen.add(h)
-                uniq.append(h)
+                unique_candidates.append(h)
 
-        if not uniq:
-            print("[发布页] 所有发布页均未提取到候选")
+        if not unique_candidates:
+            print("[发布页] 所有发布页均未提取到候选域名")
             return self._fallback(cached, "无候选")
 
-        print(f"[直达] 探测 {len(uniq)} 个候选 ...")
-        final = self._probe_hosts(uniq, tag="直达")
+        # 3) 并发探测候选域名
+        print(f"[直达] 探测 {len(unique_candidates)} 个候选 ...")
+        final = self._probe_hosts(unique_candidates, tag="直达")
         if final:
             self._write_cache(final)
             return final
@@ -528,14 +480,14 @@ class PublishResolver:
             return fb
         if self.cfg.PUBLISH_URLS:
             fb = self.cfg.PUBLISH_URLS[0].rstrip("/")
-            print(f"【警告】回退第一个发布页（注意：不一定是内容站）: {fb}")
+            print(f"【警告】回退第一个发布页（注意：这不是内容站）: {fb}")
             return fb
         print(f"【错误】彻底失败: {reason}")
         return ""
 
 
 # ==================================================================
-# ③ 主爬虫
+# ③ 主爬虫（业务逻辑与 v10 一致，仅替换 host 解析）
 # ==================================================================
 class Spider(BaseSpider):
     CONFIG = Config
@@ -699,7 +651,7 @@ class Spider(BaseSpider):
         except Exception:
             return ""
 
-    # -------------------- 首页 --------------------
+    # -------------------- 首页 / 分类 --------------------
     def homeContent(self, filter=False):
         if not self.host:
             return {"class": [], "list": []}
@@ -707,11 +659,11 @@ class Spider(BaseSpider):
         if data is None:
             print(f"[homeContent] 抓取 {self.host} 失败")
             return {"class": [], "list": []}
-        lst = self._getlist(data)
+        lst = self._getlist(data(self.CONFIG.SEL_ARTICLE_HOME))
         if lst:
             self._cache_items(("home",), lst)
         if not lst:
-            print(f"[homeContent] 列表解析为空")
+            print(f"[homeContent] 列表解析为空，检查 SEL_ARTICLE_HOME")
         return {"class": self._parse_classes(data), "list": lst}
 
     def homeVideoContent(self):
@@ -720,65 +672,97 @@ class Spider(BaseSpider):
         data = self._soup(self.host + "/")
         if data is None:
             return {"list": []}
-        lst = self._getlist(data)
+        lst = self._getlist(data(self.CONFIG.SEL_ARTICLE_HOME))
         if lst:
             self._cache_items(("homev",), lst)
         return {"list": lst}
 
-    # -------------------- 分类导航（全合并）--------------------
     def _parse_classes(self, data):
+        """一级 + 二级目录平铺：
+        - 遍历主导航根节点下的一级 li（含直接链接项和下拉项）
+        - 下拉项取其 ul.dropdown-menu 里的二级链接，全部平铺进 classes
+        - 仅保留站内的 /category/ 内容栏目，自动剔除广告、TG、活动页等干扰链接
+        """
         classes, seen = [], set()
+        C = self.CONFIG
 
-        def _add(href, name):
+        def _clean_name(name):
+            return " ".join(str(name or "").split())
+
+        def _add(href, name, parent=""):
             href = (href or "").strip()
-            name = (name or "").strip()
+            name = _clean_name(name)
             if not href or not name or href == "#":
                 return
-            if href.startswith(("javascript:", "mailto:", "tel:")):
+            low = href.lower()
+            if low.startswith(("javascript:", "mailto:", "tel:", "data:")):
+                return
+            # 只保留站内路径，剔除 t.me / 联盟广告等站外链接
+            if not low.startswith("/"):
+                return
+            # 只保留“首页”与内容栏目（/category/ 前缀），剔除 share.html、
+            # archives 单页、wish/contribute 等功能页、TG/联盟广告等站外链接
+            if href.rstrip("/") != "" and not any(low.startswith(p) for p in C.NAV_VALID_PREFIXES):
                 return
             if not href.startswith("http"):
                 href = "/" + href.lstrip("/")
             if href in seen:
                 return
             seen.add(href)
-            classes.append({"type_name": name, "type_id": href})
+            # 重名栏目用父级名区分，如“官方活动”下若有同名子项
+            show = name
+            if any(c["type_name"] == show for c in classes) and parent:
+                show = "%s·%s" % (parent, name)
+            classes.append({"type_name": show, "type_id": href})
 
-        # ★ 遍历全部 SEL_NAV 合并（不再命中即停）
-        for sel in self.CONFIG.SEL_NAV:
-            try:
-                for k in data(sel).items():
-                    a = k if k.is_("a") else k("a").eq(0)
-                    _add(a.attr("href"), a.text())
-            except Exception:
-                continue
+        root = data(C.SEL_NAV_ROOT).eq(0)
+        if root.length:
+            for li in root.children(C.SEL_NAV_ITEM).items():
+                # 一级项名称：直接 <a> 或 <button>（下拉开关）里的文字
+                a = li.children(C.SEL_NAV_LINK).eq(0)
+                btn = li.children(C.SEL_NAV_TOGGLE).eq(0)
+                menu = li("ul.dropdown-menu")
+                if menu.length:
+                    # 下拉容器：取父级名，平铺其全部二级链接
+                    parent = _clean_name(
+                        (a.text() or "").strip() or (btn.text() or "").strip()
+                        or (li("button.nav-link div").eq(0).text() or "").strip())
+                    for sa in menu(C.SEL_SUB_MENU_ITEM).items():
+                        _add(sa.attr("href"),
+                             (sa.attr("title") or "").strip() or (sa.text() or "").strip(),
+                             parent)
+                else:
+                    # 一级直链（如 首页 / 今日吃瓜 / AI成人短剧）
+                    _add(a.attr("href"),
+                         (a.attr("title") or "").strip() or (a.text() or "").strip())
 
-        # 补充下拉菜单
-        for sel in self.CONFIG.SEL_SUB_NAV:
-            try:
-                for a in data(sel).items():
-                    _add(a.attr("href"), a.attr("title") or a.text())
-            except Exception:
-                continue
-
-        # 兜底扫描 /category/* /tag/*
-        try:
-            for a in data("a").items():
-                href = (a.attr("href") or "").strip()
-                name = (a.text() or "").strip()
-                if not href or not name:
-                    continue
-                if not re.match(r"^/(?:category|tag|tags|type)/[\w\-]+(?:/[\w\-]+)?/?$", href):
-                    continue
-                _add(href, name)
-        except Exception:
-            pass
-
+        # 兜底：兼容旧结构（个别版本没有 mr-auto 根节点）
         if not classes:
-            classes = [dict(self.CONFIG.DEFAULT_CATEGORY)]
-        return classes
+            for sel in C.SEL_NAV + C.SEL_SUB_NAV:
+                try:
+                    for a in data(sel).items():
+                        _add(a.attr("href"),
+                             (a.attr("title") or "").strip() or (a.text() or "").strip())
+                except Exception:
+                    continue
+                if classes:
+                    break
 
-    # -------------------- 分页 URL 候选（多路径）--------------------
-    def _build_page_url_candidates(self, tid, pg):
+        # 去重后保证“首页”在前
+        uniq, seen_names = [], set()
+        for c in classes:
+            if c["type_id"] in seen_names:
+                continue
+            seen_names.add(c["type_id"])
+            uniq.append(c)
+        if any(c["type_id"] == "/" for c in uniq):
+            uniq = ([c for c in uniq if c["type_id"] == "/"] +
+                    [c for c in uniq if c["type_id"] != "/"])
+        if not uniq:
+            uniq = [dict(C.DEFAULT_CATEGORY)]
+        return uniq
+
+    def _build_page_url(self, tid, pg):
         tid = str(tid or "/")
         if tid.startswith("http"):
             base = tid.rstrip("/")
@@ -786,26 +770,21 @@ class Spider(BaseSpider):
             base = self._abs(tid).rstrip("/")
 
         if pg <= 1:
-            return [base + "/"]
+            return base + "/"
 
-        candidates = []
-        host_ns = self.host.rstrip("/") if self.host else ""
-
+        host_ns = self.host.rstrip("/")
         if base == host_ns:
-            candidates = [f"{host_ns}/page/{pg}/", f"{host_ns}/{pg}/"]
-        elif "/category/" in base or "/tag/" in base:
-            clean_base = re.sub(r'/page/\d+/?$', '', base).rstrip("/")
-            candidates = [
-                f"{clean_base}/{pg}/",
-                f"{clean_base}/page/{pg}/",
-            ]
-        else:
-            clean_base = re.sub(r'/page/\d+/?$', '', base).rstrip("/")
-            candidates = [
-                f"{clean_base}/page/{pg}/",
-                f"{clean_base}/{pg}/",
-            ]
-        return candidates
+            return "%s/page/%d/" % (host_ns, pg)
+
+        if "/category/" in base or "/tag/" in base:
+            base = re.sub(r"/page/\d+/?$", "", base.rstrip("/"))
+            return "%s/page/%d/" % (base, pg)
+
+        if "/page/" in base:
+            base = base.split("/page/")[0]
+            return "%s/page/%d/" % (base, pg)
+
+        return "%s/page/%d/" % (base, pg)
 
     def categoryContent(self, tid, pg=1, filter=False, extend=None):
         try:
@@ -821,121 +800,77 @@ class Spider(BaseSpider):
             v = self._getfod(tid.replace("@folder", ""))
             return {"list": v, "page": 1, "pagecount": 1, "limit": 90, "total": len(v)}
 
-        # ★ 多路径尝试分页
-        url_candidates = self._build_page_url_candidates(tid, pg)
-        data = None
-        for url in url_candidates:
-            print(f"[分页] 尝试: {url}")
-            d = self._soup(url)
-            if d is None:
-                continue
-            # 简单内容校验：避免命中空壳
-            if (d("article") or d(".realtime-card") or d(".video-card")
-                    or d(".video-item") or d(".post-item")):
-                print(f"[分页] 成功: {url}")
-                data = d
-                break
-            print(f"[分页] 页面无内容，继续尝试: {url}")
-
+        url = self._build_page_url(tid, pg)
+        data = self._soup(url)
         if data is None:
-            print(f"[categoryContent] 所有分页 URL 均失败: {url_candidates}")
+            print(f"[categoryContent] 抓取失败: {url}")
             return {"list": [], "page": pg, "pagecount": 9999, "limit": 90, "total": 0}
 
-        lst = self._getlist(data, tid)
+        lst = self._getlist(data(self.CONFIG.SEL_ARTICLE), tid)
         if lst:
             self._cache_items(("cate", tid, str(pg)), lst)
         else:
-            print(f"[categoryContent] 列表为空 (pg={pg})")
+            print(f"[categoryContent] 列表为空: {url} 检查 SEL_ARTICLE 或页面结构")
         return {"list": lst, "page": pg, "pagecount": 9999, "limit": 90, "total": 999999}
 
-    # -------------------- 列表解析（多选择器合并）--------------------
+    # -------------------- 列表 --------------------
     def _getlist(self, data, tid=""):
         videos, seen = [], set()
         is_folder = "/mrdg" in (tid or "")
 
-        # ★ 遍历所有选择器合并（不再命中即停）
-        all_elements = []
-        for selector in self.CONFIG.SEL_ARTICLE_LIST:
-            try:
-                elements = list(data(selector).items())
-                if elements:
-                    all_elements.extend(elements)
-                    print(f"  [列表] '{selector}' → {len(elements)} 项")
-            except Exception as e:
-                LOG.debug(f"选择器 '{selector}' 异常: {e}")
+        for k in data.items():
+            a = k if k.is_("a") else k("a").eq(0)
+            href = ((a.attr("href") if a else "") or k.attr("href") or "").strip()
+            if not href or href in ("#", "javascript:;", "javascript:void(0)"):
                 continue
 
-        # 兜底：链接模式扫描
-        if not all_elements:
-            print("  [列表] 所有选择器未命中，启动链接扫描...")
+            title = ""
+            for src_elem in (a, k):
+                if not src_elem:
+                    continue
+                for attr in ("aria-label", "title", "data-title"):
+                    v = (src_elem.attr(attr) or "").strip()
+                    if v:
+                        title = v
+                        break
+                if title:
+                    break
+                img_alt = (src_elem("img").attr("alt") or "").strip()
+                if img_alt:
+                    title = img_alt
+                    break
+            if not title:
+                title = (k("h2").text() or k(".entry-title").text()
+                         or k(".post-title").text() or "").strip()
+            if not title and k.is_("a"):
+                title = (k.text() or "").strip()
+            if not title and a and a.is_("a"):
+                title = (a.text() or "").strip()
+
+            if not title:
+                continue
+
+            vid = "%s%s" % (href, "@folder" if is_folder else "")
+            if vid in seen:
+                continue
+            seen.add(vid)
+
+            remark = ""
             try:
-                all_elements = list(data(
-                    "a[href*='/archives/'], a[href*='/vodplay/'], "
-                    "a[href*='/video/'], a[href*='/play/']"
-                ).items())
-                if all_elements:
-                    print(f"  [列表] 链接扫描 → {len(all_elements)} 项")
+                remark = (k("time").text() or "").strip()
             except Exception:
-                pass
-
-        for k in all_elements:
-            try:
-                a = k if k.is_("a") else k("a").eq(0)
-                href = ((a.attr("href") if a else "") or k.attr("href") or "").strip()
-                if not href or href in ("#", "javascript:;", "javascript:void(0)"):
-                    continue
-
-                # 标题多来源
-                title = ""
-                for src_elem in (a, k):
-                    if not src_elem:
-                        continue
-                    for attr in ("aria-label", "title", "data-title"):
-                        v = (src_elem.attr(attr) or "").strip()
-                        if v:
-                            title = v
-                            break
-                    if title:
-                        break
-                    img_alt = (src_elem("img").attr("alt") or "").strip()
-                    if img_alt:
-                        title = img_alt
-                        break
-                if not title:
-                    title = (k("h2").text() or k(".entry-title").text()
-                             or k(".post-title").text() or "").strip()
-                if not title and k.is_("a"):
-                    title = (k.text() or "").strip()
-                if not title and a and a.is_("a"):
-                    title = (a.text() or "").strip()
-
-                if not title:
-                    continue
-
-                vid = "%s%s" % (href, "@folder" if is_folder else "")
-                if vid in seen:
-                    continue
-                seen.add(vid)
-
                 remark = ""
-                try:
-                    remark = (k("time").text() or "").strip()
-                except Exception:
-                    remark = ""
-                if not remark:
-                    remark = self._parse_date(k)
+            if not remark:
+                remark = self._parse_date(k)
 
-                videos.append({
-                    "vod_id": vid,
-                    "vod_name": title,
-                    "vod_pic": self._extract_img(k),
-                    "vod_remarks": remark,
-                    "vod_tag": "folder" if is_folder else "",
-                    "style": {"type": "rect", "ratio": 1.33},
-                })
-            except Exception as e:
-                LOG.debug("列表项解析异常: %s", e)
-                continue
+            videos.append({
+                "vod_id": vid,
+                "vod_name": title,
+                "vod_pic": self._extract_img(k),
+                "vod_remarks": remark,
+                "vod_tag": "folder" if is_folder else "",
+                "style": {"type": "rect", "ratio": 1.33},
+            })
         return videos
 
     def _getfod(self, id):
@@ -1264,12 +1199,12 @@ class Spider(BaseSpider):
             return {"list": [], "page": pg, "pagecount": 9999}
 
         url = ("%s/search/%s/" % (self.host, key) if pg <= 1
-               else "%s/search/%s/%d/" % (self.host, key, pg))
+               else "%s/search/%s/page/%d/" % (self.host, key, pg))
         data = self._soup(url)
         if data is None:
             print(f"[searchContent] 抓取失败: {url}")
             return {"list": [], "page": pg, "pagecount": 9999}
-        lst = self._getlist(data)
+        lst = self._getlist(data("article, .realtime-card, .video-card, .video-item"))
         if lst:
             self._cache_items(("search", str(key), str(pg)), lst)
         return {"list": lst, "page": pg, "pagecount": 9999}
