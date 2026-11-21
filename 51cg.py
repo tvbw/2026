@@ -50,56 +50,25 @@ LOG = logging.getLogger(__name__)
 # ① 配置层（51系列标准，换站只改这一段）
 # ==================================================================
 class SiteConfig:
-    # ★ 你提供的 51爆料导航页/发布页
-    NAV_URLS = [
-        "https://51cgo25.com",
-        "https://51cge23.com",
-        "https://51cge26.com",
-        "https://51cgf25.com",
-        "https://51cgo22.com",
-        "https://51cgo23.com",
-        "https://51cgo24.com",
-        "https://51cgo20.com",
-        "https://51cgo21.com",
-        "https://51cge20.com",
-        "https://51cge21.com",
-        "https://51cge22.com",
-        "https://51cge24.com",
-        "https://51cge25.com",
-    ]
-
-    # 发布页留空，因为导航页本身承担了这个角色；如果有单独的二级发布页可加在这里
-    PUBLISH_URLS = []
-
-    # ★ 你提供的兜底三级域名
     SEED_HOSTS = [
-        "https://belt.wxxqhhht.cc/",
-        "https://capture.wxxqhhht.cc/",
-        "https://both.wxxqhhht.cc/",
-        "https://attract.wxxqhhht.cc/",
-        "https://achieve.wxxqhhht.cc/",
-        "https://bridge.wxxqhhht.cc/",
+        "https://51cgo21.com",
+        "https://bus.lrmidpip.cc/",
+        "https://bind.lrmidpip.cc/",
+        "https://below.lrmidpip.cc/",
     ]
-
     FALLBACK_HOST  = None
+    PROBE_TIMEOUT        = 8
+    PROBE_MIN_HTML       = 3000
+    PROBE_MIN_ARTICLE    = 3
     HOST_CACHE_KEY = "51cg_host_v9"          # ★ 再次换 Key，强制丢弃所有旧缓存
     HOST_CACHE_TTL = 25000
-    # ★ 关键词覆盖 51爆料 及可能出现的变体
     SITE_KEYWORDS    = ["51吃瓜v99"]
-    SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']
-
-      # ---- 探测参数 ----
-    PROBE_TIMEOUT        = 15
-    PROBE_MIN_HTML       = 2000           # 略降低，适应可能较简单的导航页
-    PROBE_MIN_ARTICLE    = 1
-    PROBE_MAX_ROUNDS     = 2              # 三轮回流，给“导航→三级”的链路更多机会
-    PROBE_MAX_CANDIDATES = 30
   
+    SITE_MARKERS     = ["post-title", "entry-title", "<article", 'class="post']  
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "推荐访问", "线路正常",
         "官方导航", "发布页", "备用线路", "地址发布页", "永久地址", "最新地址",
     )
-
     VALID_TLDS = {
         'com','net','org','cc','xyz','lol','vip','app','top','cn','co','io','me',
         'tv','club','site','online','info','biz','pro','link','live','shop','fun',
