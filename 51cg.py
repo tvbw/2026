@@ -49,21 +49,16 @@ LOG = logging.getLogger(__name__)
 
 class Config:
     # ================== 站点身份 ==================
-    SITE_NAME            = "51吃瓜"
-    SITE_KEYWORDS        = ["51吃瓜", "51cg"]
-    PLAY_FROM            = "51吃瓜"
-    PLAY_FALLBACK_TITLE  = "51吃瓜"
+    SITE_NAME            = "51吃瓜1"
+    SITE_KEYWORDS        = ["51吃瓜1", "51cg"]
+    PLAY_FROM            = "51吃瓜1"
+    PLAY_FALLBACK_TITLE  = "51吃瓜1"
     HOST_CACHE_KEY       = "51cg_host_v11"
     HOST_CACHE_TTL       = 6 * 3600
 
     # ================== 发布页（唯一可靠锚点，可只配 1 个）==================
     PUBLISH_URLS = [
-        "https://51cgo25.com",
-        "https://51cge23.com",
-        "https://51cge26.com",
-        "https://51cgf25.com",
-        "https://51cgo22.com",
-        "https://51cgo23.com",
+        "https://www.nqvudlbn.cc/",
     ]
 
     # 三级域名（可选，通常失效快，留空则完全依赖发布页）
