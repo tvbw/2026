@@ -1,57 +1,76 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-57吃瓜 · 直达域名自愈 + 播放相关推荐（urllib 版 V6）
-=====================================================
-V6 相比 V5 新增
-- 【新增】播放页面「相关推荐」：当前页其他视频以 nid:base64url(event_id) 伪集
-        追加到播放列表末尾，点开即切到对应视频
-- 【新增】_cache_items / _items_of / _encode_nid / _decode_nid
-- 【新增】_extract_episodes 从 detailContent 抽出，供 _fetch_real_stream 复用
-- 【新增】_fetch_real_stream LRU 缓存，来回点推荐不重复请求
-- 【新增】detailContent 兼容 nid: 前缀入口
-- 其余（域名自愈 / 内容校验 / 11 分类 / slug 路由 / 5 层视频解析）与 V5 一致
-=====================================================
-"""
+51爆料 · 多域名自愈版（v9 · 发布页自愈模板）
+================================
+锚点优先级：
+  1) GitLab 发布页 gitlab.com/51blw/web（README 明确更新至 2026-11-09，最可靠）
+  2) navone.cloud 描述页 → 从中提取 51blw.cloud / 51blw.online 主站域名
+  3) 51blw.cloud / 51blw.online / 51new.cloud / 51baoliao01.com / ymlkq.com 主站候选
+  4) 三轮探测回流（失败响应里继续挖新域名）
+  5) 全挂 → 过期缓存 → SEED[0] → 空
 
-import sys
-import os
-import re
+换站改 SiteConfig 四段：NAV_URLS / PUBLISH_URLS / SEED_HOSTS / SITE_KEYWORDS
+"""
 import json
+import re
+import sys
 import time
 import base64
-import gzip
-import zlib
-import ssl
-import http.cookiejar
-import urllib.request
-import urllib.parse
-from urllib.parse import urlparse, quote, unquote
+import hashlib
+import logging
+from base64 import b64decode, b64encode
+from urllib.parse import quote, unquote, urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+import requests
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+from pyquery import PyQuery as pq
+
+sys.path.append('..')
 try:
-    from base.spider import Spider as SpiderBase
+    from base.spider import Spider as BaseSpider
 except ImportError:
-    class SpiderBase(object):
-        def getCache(self, key): return None
-        def setCache(self, key, value): return "fail"
-        def delCache(self, key): return "fail"
+    class BaseSpider:
+        def getCache(self, k):    return None
+        def setCache(self, k, v): pass
+        def delCache(self, k):    pass
+        def getProxyUrl(self):    return ""
+
+try:
+    import urllib3
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+except Exception:
+    pass
+
+LOG = logging.getLogger(__name__)
 
 
-class Spider(SpiderBase):
-    # ================== 站点配置 ==================
-    SITE_NAME    = "51ds"
-    PLAY_FROM    = "51大赛"
-
-    HOSTS_CG = [
+# ==================================================================
+# ① 配置层（51系列标准，换站只改这一段）
+# ==================================================================
+class SiteConfig:
+    # ============ 快路径（已知可用域名，最先探测）============
+    FAST_HOSTS = [
         "https://51ds88.com/",
         "https://d2ivs15vgv2y88.cloudfront.net",
         "https://d3j1rgw50kjbyy.cloudfront.net/",
         "https://aide.oshyitifo.cc",
         "https://apple.oshyitifo.cc",
     ]
-    HOSTS_SITE = [
-        "https://51ds88.com/",
+
+    # ============ 发布页（GitLab 为当前最可靠锚点）============
+    PUBLISH_URLS = [
+        "https://51ds18.com",
+    ]
+
+    # ============ 种子（可能承载 HTML 主站的域名）============
+    SEED_HOSTS = [
+        "https://d2gt333ro578y4.cloudfront.net",
+        "https://d3j1rgw50kjbyy.cloudfront.net/",
+        "https://at.ttiaqryf.cc",
+        "https://basket.ttiaqryf.cc",
+        "https://campus.ttiaqryf.cc",
     ]
 
     SITE_NAME        = "51大赛"
