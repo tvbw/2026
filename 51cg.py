@@ -57,12 +57,18 @@ class Config:
     # 当一级域名JS混淆跳转，静态正则抓不到跳转目标，追加这些跳转后的导航发布页做兜底解析
     # 仅用于调试学习，真实环境如果域名经常变化这个列表也要更新
     PUBLISH_FALLBACK_AFTER_JUMP = [
-        "https://www.nqvudlbddn.cc/",
+        "https://www.nqvudlbn.cc/",
     ]
 
     # ================== 发布页（唯一可靠锚点，学习测试只保留1个）==================
     PUBLISH_URLS = [
+        "https://www.gugvyepf.cc/",
         "https://51cgo25.com",
+        "https://51cge23.com",
+        "https://51cge26.com",
+        "https://51cgf25.com",
+        "https://51cgo22.com",
+        "https://51cgo23.com",
     ]
 
     # 三级域名（可选，通常失效快，留空则完全依赖发布页）
