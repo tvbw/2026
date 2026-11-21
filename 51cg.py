@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-51大赛 · 发布页直达版（v11 优化）
+51大赛 · 发布页直达版（v13 · 一级域名跳转链 + 二级目录平铺）
 ================================
 针对 51 系列“三级域名失效快、无法自动跳转、仅发布页长期有效”的特点：
 - 【核心】以 PUBLISH_URLS（发布页）为唯一可靠锚点，并发抓取
@@ -53,12 +53,22 @@ class Config:
     SITE_KEYWORDS        = ["51吃瓜1", "51cg"]
     PLAY_FROM            = "51吃瓜1"
     PLAY_FALLBACK_TITLE  = "51吃瓜1"
-    HOST_CACHE_KEY       = "51cg_host_v11"
+    HOST_CACHE_KEY       = "51cg_host_v13"
+    PUB_CACHE_KEY        = "51cg_pub_v13"
+    PUB_CACHE_TTL      = 6 * 3600
+    # 跟随 JS/meta 跳转的最大跳数（防循环）
+    JUMP_MAX_HOPS      = 3
     HOST_CACHE_TTL       = 6 * 3600
 
     # ================== 发布页（唯一可靠锚点，可只配 1 个）==================
+    # 一级域名：进入后秒跳转到真正的导航发布页（支持 302 / JS / meta refresh / base64 混淆）
     PUBLISH_URLS = [
-        "https://www.nqvudlbn.cc/",
+        "https://51cgo25.com",
+        "https://51cge23.com",
+        "https://51cge26.com",
+        "https://51cgf25.com",
+        "https://51cgo22.com",
+        "https://51cgo23.com",
     ]
 
     # 三级域名（可选，通常失效快，留空则完全依赖发布页）
@@ -123,6 +133,20 @@ class Config:
     SEL_TAGS         = ".post-tags a, .tags a, .keywords a"
     SEL_SUMMARY      = ".post-content"
     SEL_TITLE        = ".post-title, h1"
+
+    # ================== 导航解析（一级 + 二级平铺）==================
+    # 根节点：主导航栏（注意页面里还有 side-toolbar-list 等副导航，必须限定）
+    SEL_NAV_ROOT = "ul.navbar-nav.mr-auto"
+    # 一级菜单项
+    SEL_NAV_ITEM = "li.nav-item"
+    # 一级项里的直接链接/按钮
+    SEL_NAV_LINK = "a.nav-link"
+    SEL_NAV_TOGGLE = "button.nav-link"
+    # 二级子菜单链接
+    # 相对二级菜单容器内部使用（pyquery 选择器不含上下文自身，不能写成 ul.dropdown-menu ...）
+    SEL_SUB_MENU_ITEM = "li.dropdown-item a"
+    # 仅这些内容路径视为可点播的分类
+    NAV_VALID_PREFIXES = ("/category/",)
 
     SEL_NAV = [
         "ul.navbar-nav.mr-auto > li.nav-item > a.nav-link",
@@ -234,6 +258,104 @@ class PublishResolver:
         except Exception:
             pass
         return ""
+
+    # -------------------- 跳转链解析（JS / meta refresh / base64 混淆）--------------------
+    JUMP_PATTERNS = (
+        # <meta http-equiv="refresh" content="0; url=https://...">
+        r'<meta[^>]+http-equiv=["\']?refresh["\']?[^>]*?url\s*=\s*([^"\'>\s]+)',
+        r'url\s*=\s*([^"\'>\s;]+)["\'][^>]*http-equiv=["\']?refresh',
+        # window.location = "..." / location.href = "..."
+        r'(?:window\s*\.\s*)?location(?:\s*\.\s*href)?\s*=\s*["\'](https?://[^"\']+)["\']',
+        # location.replace("...") / location.assign("...")
+        r'(?:window\s*\.\s*)?location\s*\.\s*(?:replace|assign)\s*\(\s*["\'](https?://[^"\']+)["\']',
+        # var url = "https://..."（紧跟 location 使用的常见写法）
+        r'(?:var\s+)?(?:url|href|targetUrl|jumpUrl)\s*=\s*["\'](https?://[^"\']+)["\']',
+    )
+
+    def _extract_jump_targets(self, html, base_url):
+        """从跳转页 HTML 中提取跳转目标 URL（支持 meta refresh / JS / base64 混淆脚本）。"""
+        if not html:
+            return []
+        out, seen = [], set()
+
+        def _norm(u):
+            try:
+                u = unquote(str(u)).strip().strip('"\' ')
+            except Exception:
+                return ""
+            if not u or u.startswith(("javascript:", "data:", "mailto:")):
+                return ""
+            if u.startswith("//"):
+                u = "https:" + u
+            if not u.startswith("http"):
+                from urllib.parse import urljoin
+                u = urljoin(base_url or "", u)
+            low = u.lower()
+            if any(bl in low for bl in self.cfg.DOMAIN_BLACKLIST):
+                return ""
+            try:
+                parts = urlparse(u).netloc.lower().split(".")
+                if parts and parts[-1] not in self.cfg.VALID_TLDS:
+                    return ""
+            except Exception:
+                return ""
+            if u.rstrip("/") == (base_url or "").rstrip("/"):
+                return ""
+            return u
+
+        texts = [html]
+        # base64 混淆的跳转脚本：解码后再按同样规则提取
+        for b64 in re.finditer(r'["\']([A-Za-z0-9+/=]{40,})["\']', html):
+            try:
+                d = base64.b64decode(b64.group(1)).decode("utf-8", "ignore")
+                if "location" in d or "url" in d or "http" in d:
+                    texts.append(d)
+            except Exception:
+                continue
+
+        last_idx = len(self.JUMP_PATTERNS) - 1
+        for t in texts:
+            for idx, p in enumerate(self.JUMP_PATTERNS):
+                for m in re.finditer(p, t, re.I):
+                    # 最后一个（var url= 类宽松模式）必须排除 HTML 标签属性场景，
+                    # 否则 <a href="https://..."> 会被误判为 JS 跳转
+                    if idx == last_idx:
+                        lt, gt = t.rfind("<", 0, m.start()), t.rfind(">", 0, m.start())
+                        if lt > gt:
+                            continue
+                    u = _norm(m.group(1))
+                    if u and u not in seen:
+                        seen.add(u)
+                        out.append(u)
+            # 兜底：短小跳转页里的任何站外绝对链接
+            if len(t) < 3000 and ("location" in t or "refresh" in t):
+                for m in re.finditer(r'["\'](https?://[^"\']{8,})["\']', t):
+                    u = _norm(m.group(1))
+                    if u and u not in seen:
+                        seen.add(u)
+                        out.append(u)
+        return out[:5]
+
+    def _resolve_publish_chain(self, start_url):
+        """抓取发布入口并跟随 JS/meta 跳转链，返回 [(最终host, html), ...]（含每一跳）。
+        HTTP 302/301 已由 requests 自动跟随，这里只处理页面内的 JS/meta 跳转。"""
+        pages, visited = [], set()
+        cur = (start_url or "").rstrip("/") + "/"
+        for _ in range(getattr(self.cfg, "JUMP_MAX_HOPS", 3) + 1):
+            if not cur or cur in visited:
+                break
+            visited.add(cur)
+            r = self._safe_fetch(cur, self.cfg.PUBLISH_TIMEOUT)
+            if r is None or r.status_code != 200:
+                break
+            html = r.text or ""
+            final = self._final_host(r.url) or cur
+            pages.append((final, html))
+            targets = self._extract_jump_targets(html, final)
+            if not targets:
+                break
+            cur = targets[0].rstrip("/") + "/"
+        return pages
 
     # -------------------- 页面判定 --------------------
     def _is_blocked_page(self, html):
@@ -360,6 +482,25 @@ class PublishResolver:
         return ""
 
     # -------------------- 缓存 --------------------
+    def _read_simple_cache(self, key):
+        if not self.cache_get:
+            return ""
+        try:
+            raw = self.cache_get(key)
+            if isinstance(raw, bytes):
+                raw = raw.decode("utf-8", "ignore")
+            return (raw or "").strip().rstrip("/") if str(raw or "").strip().startswith("http") else ""
+        except Exception:
+            return ""
+
+    def _write_simple_cache(self, key, value):
+        if not self.cache_set or not value:
+            return
+        try:
+            self.cache_set(key, str(value).rstrip("/"))
+        except Exception:
+            pass
+
     def _read_cache(self):
         if not self.cache_get:
             return ""
@@ -404,36 +545,50 @@ class PublishResolver:
                 return final
             print(f"缓存失效: {cached}")
 
-        # 2) 并发抓取所有发布页
+        # 2) 并发抓取所有发布页（跟随 JS/meta 跳转链）
         publish_urls = [u.rstrip("/") + "/" for u in self.cfg.PUBLISH_URLS]
         if not publish_urls:
             print("[发布页] 未配置 PUBLISH_URLS，无法解析")
             return self._fallback(cached, "无发布页")
 
-        print(f"[发布页直达] 并发抓取 {len(publish_urls)} 个发布页 ...")
+        # 2.1 快路径：上次解析出的导航发布页缓存仍有效则直接用
+        pub_cached = self._read_simple_cache(self.cfg.PUB_CACHE_KEY)
         candidates = []
-        try:
-            with ThreadPoolExecutor(max_workers=min(8, len(publish_urls))) as ex:
-                futs = {ex.submit(self._safe_fetch, u, self.cfg.PUBLISH_TIMEOUT): u
-                        for u in publish_urls}
-                for f in as_completed(futs, timeout=self.cfg.PUBLISH_TIMEOUT + 8):
-                    u = futs[f]
-                    try:
-                        r = f.result()
-                    except Exception as e:
-                        print(f"  [发布页] {u} 异常: {e}")
-                        continue
-                    if r is None or r.status_code != 200:
-                        print(f"  [发布页] {u} 失败 (HTTP={getattr(r, 'status_code', '无响应')})")
-                        continue
-                    hosts = self._extract_hosts_from_publish(r.text or "")
-                    if hosts:
-                        print(f"  [发布页] {u} → 提取 {len(hosts)} 个候选: {hosts[:5]}")
-                        candidates.extend(hosts)
-                    else:
-                        print(f"  [发布页] {u} → 未提取到候选")
-        except Exception as e:
-            LOG.debug("发布页并发异常: %s", e)
+        if pub_cached:
+            r = self._safe_fetch(pub_cached + "/", self.cfg.FAST_TIMEOUT)
+            if r is not None and r.status_code == 200:
+                hosts = self._extract_hosts_from_publish(r.text or "")
+                if hosts:
+                    print(f"[发布页缓存] 直接命中导航页: {pub_cached}")
+                    candidates.extend(hosts)
+
+        # 2.2 全量解析：并发抓一级域名 → 跟随跳转 → 逐跳提取候选
+        if not candidates:
+            print(f"[发布页直达] 并发抓取 {len(publish_urls)} 个入口（跟随跳转链）...")
+            try:
+                with ThreadPoolExecutor(max_workers=min(8, len(publish_urls))) as ex:
+                    futs = {ex.submit(self._resolve_publish_chain, u): u
+                            for u in publish_urls}
+                    for f in as_completed(futs, timeout=self.cfg.PUBLISH_TIMEOUT * 2 + 8):
+                        u = futs[f]
+                        try:
+                            pages = f.result() or []
+                        except Exception as e:
+                            print(f"  [发布页] {u} 异常: {e}")
+                            continue
+                        if not pages:
+                            print(f"  [发布页] {u} 失败（无响应或非200）")
+                            continue
+                        chain = " → ".join(p[0] for p in pages)
+                        print(f"  [发布页] {u} 跳转链: {chain}")
+                        self._write_simple_cache(self.cfg.PUB_CACHE_KEY, pages[-1][0])
+                        for _pu, _ph in pages:
+                            hosts = self._extract_hosts_from_publish(_ph)
+                            if hosts:
+                                print(f"  [发布页] {_pu} → 提取 {len(hosts)} 个候选: {hosts[:5]}")
+                                candidates.extend(hosts)
+            except Exception as e:
+                LOG.debug("发布页并发异常: %s", e)
 
         # 去重
         seen, unique_candidates = set(), []
@@ -664,49 +819,89 @@ class Spider(BaseSpider):
         return {"list": lst}
 
     def _parse_classes(self, data):
+        """一级 + 二级目录平铺：
+        - 遍历主导航根节点下的一级 li（含直接链接项和下拉项）
+        - 下拉项取其 ul.dropdown-menu 里的二级链接，全部平铺进 classes
+        - 仅保留站内的 /category/ 内容栏目，自动剔除广告、TG、活动页等干扰链接
+        """
         classes, seen = [], set()
+        C = self.CONFIG
 
-        def _add(href, name):
+        def _clean_name(name):
+            return " ".join(str(name or "").split())
+
+        def _add(href, name, parent=""):
             href = (href or "").strip()
-            name = (name or "").strip()
+            name = _clean_name(name)
             if not href or not name or href == "#":
                 return
-            if href.startswith(("javascript:", "mailto:", "tel:")):
+            low = href.lower()
+            if low.startswith(("javascript:", "mailto:", "tel:", "data:")):
+                return
+            # 只保留站内路径，剔除 t.me / 联盟广告等站外链接
+            if not low.startswith("/"):
+                return
+            # 只保留“首页”与内容栏目（/category/ 前缀），剔除 share.html、
+            # archives 单页、wish/contribute 等功能页、TG/联盟广告等站外链接
+            if href.rstrip("/") != "" and not any(low.startswith(p) for p in C.NAV_VALID_PREFIXES):
                 return
             if not href.startswith("http"):
                 href = "/" + href.lstrip("/")
             if href in seen:
                 return
             seen.add(href)
-            classes.append({"type_name": name, "type_id": href})
+            # 重名栏目用父级名区分，如“官方活动”下若有同名子项
+            show = name
+            if any(c["type_name"] == show for c in classes) and parent:
+                show = "%s·%s" % (parent, name)
+            classes.append({"type_name": show, "type_id": href})
 
-        for sel in self.CONFIG.SEL_NAV:
-            hit = False
-            try:
-                for k in data(sel).items():
-                    a = k if k.is_("a") else k("a").eq(0)
-                    _add(a.attr("href"), a.text())
-                    hit = True
-            except Exception:
-                continue
-            if hit and classes:
-                break
+        root = data(C.SEL_NAV_ROOT).eq(0)
+        if root.length:
+            for li in root.children(C.SEL_NAV_ITEM).items():
+                # 一级项名称：直接 <a> 或 <button>（下拉开关）里的文字
+                a = li.children(C.SEL_NAV_LINK).eq(0)
+                btn = li.children(C.SEL_NAV_TOGGLE).eq(0)
+                menu = li("ul.dropdown-menu")
+                if menu.length:
+                    # 下拉容器：取父级名，平铺其全部二级链接
+                    parent = _clean_name(
+                        (a.text() or "").strip() or (btn.text() or "").strip()
+                        or (li("button.nav-link div").eq(0).text() or "").strip())
+                    for sa in menu(C.SEL_SUB_MENU_ITEM).items():
+                        _add(sa.attr("href"),
+                             (sa.attr("title") or "").strip() or (sa.text() or "").strip(),
+                             parent)
+                else:
+                    # 一级直链（如 首页 / 今日吃瓜 / AI成人短剧）
+                    _add(a.attr("href"),
+                         (a.attr("title") or "").strip() or (a.text() or "").strip())
 
+        # 兜底：兼容旧结构（个别版本没有 mr-auto 根节点）
         if not classes:
-            for sel in self.CONFIG.SEL_SUB_NAV:
-                hit = False
+            for sel in C.SEL_NAV + C.SEL_SUB_NAV:
                 try:
                     for a in data(sel).items():
-                        _add(a.attr("href"), a.attr("title") or a.text())
-                        hit = True
+                        _add(a.attr("href"),
+                             (a.attr("title") or "").strip() or (a.text() or "").strip())
                 except Exception:
                     continue
-                if hit:
+                if classes:
                     break
 
-        if not classes:
-            classes = [dict(self.CONFIG.DEFAULT_CATEGORY)]
-        return classes
+        # 去重后保证“首页”在前
+        uniq, seen_names = [], set()
+        for c in classes:
+            if c["type_id"] in seen_names:
+                continue
+            seen_names.add(c["type_id"])
+            uniq.append(c)
+        if any(c["type_id"] == "/" for c in uniq):
+            uniq = ([c for c in uniq if c["type_id"] == "/"] +
+                    [c for c in uniq if c["type_id"] != "/"])
+        if not uniq:
+            uniq = [dict(C.DEFAULT_CATEGORY)]
+        return uniq
 
     def _build_page_url(self, tid, pg):
         tid = str(tid or "/")
@@ -723,9 +918,8 @@ class Spider(BaseSpider):
             return "%s/page/%d/" % (host_ns, pg)
 
         if "/category/" in base or "/tag/" in base:
-            if "/page/" in base:
-                base = base.split("/page/")[0]
-            return "%s/%d/" % (base, pg)
+            base = re.sub(r"/page/\d+/?$", "", base.rstrip("/"))
+            return "%s/page/%d/" % (base, pg)
 
         if "/page/" in base:
             base = base.split("/page/")[0]
@@ -1146,7 +1340,7 @@ class Spider(BaseSpider):
             return {"list": [], "page": pg, "pagecount": 9999}
 
         url = ("%s/search/%s/" % (self.host, key) if pg <= 1
-               else "%s/search/%s/%d/" % (self.host, key, pg))
+               else "%s/search/%s/page/%d/" % (self.host, key, pg))
         data = self._soup(url)
         if data is None:
             print(f"[searchContent] 抓取失败: {url}")
