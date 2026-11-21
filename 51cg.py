@@ -62,13 +62,7 @@ class Config:
 
     # ================== 发布页（唯一可靠锚点，学习测试只保留1个）==================
     PUBLISH_URLS = [
-        "https://www.gugvyepf.cc/",
         "https://51cgo25.com",
-        "https://51cge23.com",
-        "https://51cge26.com",
-        "https://51cgf25.com",
-        "https://51cgo22.com",
-        "https://51cgo23.com",
     ]
 
     # 三级域名（可选，通常失效快，留空则完全依赖发布页）
