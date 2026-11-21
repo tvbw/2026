@@ -75,14 +75,14 @@ class SiteConfig:
 
     # ============ 发布页（GitLab 为当前最可靠锚点）============
     PUBLISH_URLS = [
-        "https://51blk6.com",
-        "https://51blk3.com",
-        "https://51blk4.com",
+        "https://www.hbpkledgy.cc/",
     ]
 
     # ============ 种子（可能承载 HTML 主站的域名）============
     SEED_HOSTS = [
         "https://d2gt333ro578y4.cloudfront.net",
+        "https://51blk3.com",
+        "https://51blk4.com",
         "https://anxiety.ttiaqryf.cc",
         "https://at.ttiaqryf.cc",
         "https://basket.ttiaqryf.cc",
