@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-51大赛 · 发布页直达版（v13 · 修复学习版）
-学习点：
-1、requests静态解析无法执行JS，混淆跳转页面正则会失效；
-2、增加兜底备用导航发布页配置用于调试测试；
-3、多策略域名提取、并发探测、缓存设计；
-注意：仅技术学习，禁止访问违规站点！
+51大赛 · 发布页直达版（v12 · 二级目录平铺）
+================================
+针对 51 系列“三级域名失效快、无法自动跳转、仅发布页长期有效”的特点：
+- 【核心】以 PUBLISH_URLS（发布页）为唯一可靠锚点，并发抓取
+- 【解析】多策略提取真实内容站域名：
+    * <a href="https://..."> 链接
+    * JavaScript 变量（如 backupLine = [...]）
+    * Base64 编码的脚本内容（部分发布页用这种方式隐藏域名）
+    * 中文提示附近的裸域名
+- 【直达】提取到候选后，并发探测，命中即写缓存返回
+- 【缓存】发布页解析结果 TTL 6 小时，避免每次 init 都重新抓
+- 【极速】即使只配 1 个发布页，也能在 5~10 秒内完成
+- 业务逻辑（列表解析 / 图片 / 播放 / 相关推荐）与 v10 完全一致
 """
 import json
 import re
@@ -16,6 +23,7 @@ import hashlib
 import logging
 from urllib.parse import unquote, urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
 import requests
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
@@ -36,7 +44,6 @@ try:
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 except Exception:
     pass
-
 LOG = logging.getLogger(__name__)
 
 
@@ -49,44 +56,35 @@ class Config:
     HOST_CACHE_KEY   = "51bl_host_v10"
     CLASS_CACHE_KEY  = "51bl_classes_v10"
     CLASS_CACHE_TTL  = 3600
-    # 跟随 JS/meta 跳转的最大跳数（防循环）
-    JUMP_MAX_HOPS      = 3
-    HOST_CACHE_TTL       = 6 * 3600
 
-    # =====================【新增学习配置】=====================
-    # 当一级域名JS混淆跳转，静态正则抓不到跳转目标，追加这些跳转后的导航发布页做兜底解析
-    # 仅用于调试学习，真实环境如果域名经常变化这个列表也要更新
-    PUBLISH_FALLBACK_AFTER_JUMP = [
-        "https://d2gt333ro578y4.cloudfront.net",
-        "https://anxiety.ttiaqryf.cc",
-        "https://at.ttiaqryf.cc",
-        "https://basket.ttiaqryf.cc",
-        "https://campus.ttiaqryf.cc",
-    ]
-
-    # ================== 发布页（唯一可靠锚点，学习测试只保留1个）==================
+    # ================== 发布页（唯一可靠锚点，可只配 1 个）==================
     PUBLISH_URLS = [
-       "https://51blk3.com",
+        "https://www.hgylahkr.cc/",
     ]
 
     # 三级域名（可选，通常失效快，留空则完全依赖发布页）
     SEED_HOSTS = []
+
     FALLBACK_HOST = None
+
     # ================== 探测参数（针对发布页直达优化）==================
     PUBLISH_TIMEOUT    = 10    # 发布页抓取超时
     PROBE_TIMEOUT      = 8     # 候选域名探测超时
     FAST_TIMEOUT       = 5     # 缓存校验超时
     PROBE_MIN_HTML     = 2000
     PROBE_MIN_ARTICLE  = 1
+
     # ================== 站点结构特征 ==================
     SITE_MARKERS = [
         "post-title", "entry-title", "<article", 'class="post',
         "realtime-card", "candid-video", "video-card",
     ]
+
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "推荐访问", "线路正常",
         "官方导航", "发布页", "备用线路", "地址发布页", "永久地址", "最新地址",
     )
+
     VALID_TLDS = {
         'com', 'net', 'org', 'cc', 'xyz', 'lol', 'vip', 'app', 'top', 'cn', 'co', 'io', 'me',
         'tv', 'club', 'site', 'online', 'info', 'biz', 'pro', 'link', 'live', 'shop', 'fun',
@@ -95,6 +93,7 @@ class Config:
         'hk', 'jp', 'kr', 'ru', 'us', 'uk', 'de', 'fr', 'nl', 'eu', 'au', 'ca', 'sg', 'my',
         'sbs', 'bet', 'cam', 'one', 'plus', 'now', 'today', 'pub', 'dev', 'cool', 'cloud',
     }
+
     DOMAIN_BLACKLIST = (
         'google', 'gstatic', 'bing.com', 'baidu.com', 'so.com', 'sogou.com', 'yandex',
         'facebook', 'fbcdn', 'instagram', 'twitter', 'twimg', 'youtube', 'ytimg',
@@ -108,7 +107,9 @@ class Config:
         'wordpress.org', 'wix.com', 'weebly', 'shopify', '51.la', 'cnzz.com', '51yes',
         'navone.cloud',
     )
+
     EXTRA_BLACKLIST = ('beian.miit.gov.cn', 'w3.org', 'example.com')
+
     # ================== 列表选择器（v10 多结构）==================
     SEL_ARTICLE      = (
         "#index article, #archive article, article, "
@@ -123,13 +124,21 @@ class Config:
     SEL_TAGS         = ".post-tags a, .tags a, .keywords a"
     SEL_SUMMARY      = ".post-content"
     SEL_TITLE        = ".post-title, h1"
+
     # ================== 导航解析（一级 + 二级平铺）==================
+    # 根节点：主导航栏（注意页面里还有 side-toolbar-list 等副导航，必须限定）
     SEL_NAV_ROOT = "ul.navbar-nav.mr-auto"
+    # 一级菜单项
     SEL_NAV_ITEM = "li.nav-item"
+    # 一级项里的直接链接/按钮
     SEL_NAV_LINK = "a.nav-link"
     SEL_NAV_TOGGLE = "button.nav-link"
+    # 二级子菜单链接
+    # 相对二级菜单容器内部使用（pyquery 选择器不含上下文自身，不能写成 ul.dropdown-menu ...）
     SEL_SUB_MENU_ITEM = "li.dropdown-item a"
+    # 仅这些内容路径视为可点播的分类
     NAV_VALID_PREFIXES = ("/category/",)
+
     SEL_NAV = [
         "ul.navbar-nav.mr-auto > li.nav-item > a.nav-link",
         "ul.navbar-nav > li.nav-item > a.nav-link",
@@ -146,12 +155,15 @@ class Config:
         "header nav a",
         "nav a",
     ]
+
     SEL_SUB_NAV = [
         "ul.navbar-nav.mr-auto li.nav-item.dropdown > ul.dropdown-menu > li.dropdown-item > a",
         "ul.dropdown-menu > li.dropdown-item > a",
         ".dropdown-menu a",
     ]
+
     DEFAULT_CATEGORY = {"type_name": "首页", "type_id": "/"}
+
     LINK_KEYWORDS = (
         "点击观看", "点击播放", "点击进入", "进入观看", "前往观看",
         "观看", "播放", "视频", "立即观看", "在线观看", "在线播放",
@@ -163,14 +175,17 @@ class Config:
         "第1话", "第2话", "第3话", "第4话", "第5话",
         "episode", "watch", "play", "full",
     )
+
     LINK_URL_PATTERNS = (
         r"/vodplay/", r"/vodplay\b", r"/v/\d+", r"/play/",
         r"/video/", r"/watch/", r"/player/", r"\.m3u8",
     )
+
     IMG_AES_KEYS = [
         (b"f5d965df75336270", b"97b60394abc2fbe1"),
         (b"75336270f5d965df", b"abc2fbe197b60394"),
     ]
+
     HEADERS = {
         "User-Agent": ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -198,18 +213,24 @@ class Config:
 
 
 # ==================================================================
-# ② 发布页直达解析器【修复版】
+# ② 发布页直达解析器
 # ==================================================================
 class PublishResolver:
-    """以发布页为唯一可靠锚点
-    学习痛点：requests无法执行JS，混淆跳转页面静态正则提取会失效，增加兜底导航页配置
+    """以发布页为唯一可靠锚点：
+    1) 缓存有效 → 校验后直接返回
+    2) 并发抓取所有 PUBLISH_URLS
+    3) 多策略提取候选域名：<a href> / JS变量 / Base64 / 中文提示 / 裸域名
+    4) 并发探测候选域名，命中即返回
+    5) 全部失败 → 回退缓存或第一个发布页（而非内容站）
     """
+
     def __init__(self, cfg, fetcher, cache_get=None, cache_set=None):
         self.cfg = cfg
         self.fetch = fetcher
         self.cache_get = cache_get
         self.cache_set = cache_set
 
+    # -------------------- 基础 --------------------
     def _safe_fetch(self, url, timeout):
         try:
             return self.fetch(url, timeout=timeout)
@@ -229,92 +250,7 @@ class PublishResolver:
             pass
         return ""
 
-    JUMP_PATTERNS = (
-        r'<meta[^>]+http-equiv=["\']?refresh["\']?[^>]*?url\s*=\s*([^"\'>\s]+)',
-        r'url\s*=\s*([^"\'>\s;]+)["\'][^>]*http-equiv=["\']?refresh',
-        r'(?:window\s*\.\s*)?location(?:\s*\.\s*href)?\s*=\s*["\'](https?://[^"\']+)["\']',
-        r'(?:window\s*\.\s*)?location\s*\.\s*(?:replace|assign)\s*\(\s*["\'](https?://[^"\']+)["\']',
-        r'(?:var\s+)?(?:url|href|targetUrl|jumpUrl)\s*=\s*["\'](https?://[^"\']+)["\']',
-    )
-
-    def _extract_jump_targets(self, html, base_url):
-        if not html:
-            return []
-        out, seen = [], set()
-
-        def _norm(u):
-            try:
-                u = unquote(str(u)).strip().strip('"\' ')
-            except Exception:
-                return ""
-            if not u or u.startswith(("javascript:", "data:", "mailto:")):
-                return ""
-            if u.startswith("//"):
-                u = "https:" + u
-            if not u.startswith("http"):
-                from urllib.parse import urljoin
-                u = urljoin(base_url or "", u)
-            low = u.lower()
-            if any(bl in low for bl in self.cfg.DOMAIN_BLACKLIST):
-                return ""
-            try:
-                parts = urlparse(u).netloc.lower().split(".")
-                if parts and parts[-1] not in self.cfg.VALID_TLDS:
-                    return ""
-            except Exception:
-                return ""
-            if u.rstrip("/") == (base_url or "").rstrip("/"):
-                return ""
-            return u
-
-        texts = [html]
-        for b64 in re.finditer(r'["\']([A-Za-z0-9+/=]{40,})["\']', html):
-            try:
-                d = base64.b64decode(b64.group(1)).decode("utf-8", "ignore")
-                if "location" in d or "url" in d or "http" in d:
-                    texts.append(d)
-            except Exception:
-                continue
-
-        last_idx = len(self.JUMP_PATTERNS) - 1
-        for t in texts:
-            for idx, p in enumerate(self.JUMP_PATTERNS):
-                for m in re.finditer(p, t, re.I):
-                    if idx == last_idx:
-                        lt, gt = t.rfind("<", 0, m.start()), t.rfind(">", 0, m.start())
-                        if lt > gt:
-                            continue
-                    u = _norm(m.group(1))
-                    if u and u not in seen:
-                        seen.add(u)
-                        out.append(u)
-            if len(t) < 3000 and ("location" in t or "refresh" in t):
-                for m in re.finditer(r'["\'](https?://[^"\']{8,})["\']', t):
-                    u = _norm(m.group(1))
-                    if u and u not in seen:
-                        seen.add(u)
-                        out.append(u)
-        return out[:5]
-
-    def _resolve_publish_chain(self, start_url):
-        pages, visited = [], set()
-        cur = (start_url or "").rstrip("/") + "/"
-        for _ in range(getattr(self.cfg, "JUMP_MAX_HOPS", 3) + 1):
-            if not cur or cur in visited:
-                break
-            visited.add(cur)
-            r = self._safe_fetch(cur, self.cfg.PUBLISH_TIMEOUT)
-            if r is None or r.status_code != 200:
-                break
-            html = r.text or ""
-            final = self._final_host(r.url) or cur
-            pages.append((final, html))
-            targets = self._extract_jump_targets(html, final)
-            if not targets:
-                break
-            cur = targets[0].rstrip("/") + "/"
-        return pages
-
+    # -------------------- 页面判定 --------------------
     def _is_blocked_page(self, html):
         if not html:
             return False
@@ -340,9 +276,12 @@ class PublishResolver:
         has_keyword = self.cfg.match_keyword(html)
         return has_article or has_marker or has_keyword
 
+    # -------------------- 多策略提取候选域名 --------------------
     def _extract_hosts_from_publish(self, html):
+        """从发布页 HTML 中提取真实内容站域名候选。"""
         if not html:
             return []
+
         hosts, seen = [], set()
 
         def _add(h):
@@ -354,6 +293,7 @@ class PublishResolver:
                 return
             if any(bl in hl for bl in getattr(self.cfg, "EXTRA_BLACKLIST", ())):
                 return
+            # 排除发布页自身
             if h.rstrip("/") in [u.rstrip("/") for u in self.cfg.PUBLISH_URLS]:
                 return
             if h in seen:
@@ -361,13 +301,15 @@ class PublishResolver:
             seen.add(h)
             hosts.append(h)
 
-        # 策略1 a标签链接
+        # 策略1：<a href="https://..."> 链接
         for m in re.finditer(r'<a\b[^>]+href=["\'](https?://[^"\']+)["\']', html):
             _add(m.group(1))
-        # 策略2 js字符串url
+
+        # 策略2：JavaScript 变量中的域名（如 backupLine = ["https://..."]）
         for m in re.finditer(r'["\'](https?://[^"\']+)["\']', html):
             _add(m.group(1))
-        # 策略3 base64混淆脚本
+
+        # 策略3：Base64 编码的脚本内容（部分发布页用这种方式隐藏域名）
         for b64_match in re.finditer(r'["\']([A-Za-z0-9+/=]{80,})["\']', html):
             try:
                 decoded = base64.b64decode(b64_match.group(1)).decode("utf-8", "ignore")
@@ -375,7 +317,8 @@ class PublishResolver:
                     _add(m.group(1))
             except Exception:
                 continue
-        # 策略4 中文提示附近域名
+
+        # 策略4：中文提示附近的域名
         for m in re.finditer(
             r'(?:新地址|新网址|永久地址|最新地址|最新域名|官方入口|请访问|访问地址|线路[一二三四五六七八九十\d]+)'
             r'[：:\s]*((?:https?://)?[a-zA-Z0-9][a-zA-Z0-9.\-]{3,}\.[a-zA-Z]{2,10})',
@@ -385,7 +328,8 @@ class PublishResolver:
             if not u.startswith("http"):
                 u = "https://" + u
             _add(u)
-        # 策略5 裸域名扫描
+
+        # 策略5：裸域名扫描（严格 TLD + 黑名单）
         for m in re.finditer(
             r'(?<![\w.\-])((?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,10})(?![\w.\-])',
             html
@@ -395,8 +339,10 @@ class PublishResolver:
             if len(parts) < 2 or parts[-1] not in self.cfg.VALID_TLDS:
                 continue
             _add("https://" + d)
+
         return hosts[:20]
 
+    # -------------------- 并发探测 --------------------
     def _probe_hosts(self, urls, tag="探测"):
         if not urls:
             return ""
@@ -428,25 +374,7 @@ class PublishResolver:
             LOG.debug("%s 并发异常: %s", tag, e)
         return ""
 
-    def _read_simple_cache(self, key):
-        if not self.cache_get:
-            return ""
-        try:
-            raw = self.cache_get(key)
-            if isinstance(raw, bytes):
-                raw = raw.decode("utf-8", "ignore")
-            return (raw or "").strip().rstrip("/") if str(raw or "").strip().startswith("http") else ""
-        except Exception:
-            return ""
-
-    def _write_simple_cache(self, key, value):
-        if not self.cache_set or not value:
-            return
-        try:
-            self.cache_set(key, str(value).rstrip("/"))
-        except Exception:
-            pass
-
+    # -------------------- 缓存 --------------------
     def _read_cache(self):
         if not self.cache_get:
             return ""
@@ -477,7 +405,9 @@ class PublishResolver:
         except Exception:
             pass
 
+    # -------------------- 主入口 --------------------
     def resolve(self):
+        # 1) 缓存命中
         cached = self._read_cache()
         if cached:
             r = self._safe_fetch(cached + "/", self.cfg.FAST_TIMEOUT)
@@ -489,80 +419,56 @@ class PublishResolver:
                 return final
             print(f"缓存失效: {cached}")
 
+        # 2) 并发抓取所有发布页
         publish_urls = [u.rstrip("/") + "/" for u in self.cfg.PUBLISH_URLS]
         if not publish_urls:
             print("[发布页] 未配置 PUBLISH_URLS，无法解析")
             return self._fallback(cached, "无发布页")
 
-        pub_cached = self._read_simple_cache(self.cfg.PUB_CACHE_KEY)
+        print(f"[发布页直达] 并发抓取 {len(publish_urls)} 个发布页 ...")
         candidates = []
-        if pub_cached:
-            r = self._safe_fetch(pub_cached + "/", self.cfg.FAST_TIMEOUT)
-            if r is not None and r.status_code == 200:
-                hosts = self._extract_hosts_from_publish(r.text or "")
-                if hosts:
-                    print(f"[发布页缓存] 直接命中导航页: {pub_cached}")
-                    candidates.extend(hosts)
+        try:
+            with ThreadPoolExecutor(max_workers=min(8, len(publish_urls))) as ex:
+                futs = {ex.submit(self._safe_fetch, u, self.cfg.PUBLISH_TIMEOUT): u
+                        for u in publish_urls}
+                for f in as_completed(futs, timeout=self.cfg.PUBLISH_TIMEOUT + 8):
+                    u = futs[f]
+                    try:
+                        r = f.result()
+                    except Exception as e:
+                        print(f"  [发布页] {u} 异常: {e}")
+                        continue
+                    if r is None or r.status_code != 200:
+                        print(f"  [发布页] {u} 失败 (HTTP={getattr(r, 'status_code', '无响应')})")
+                        continue
+                    hosts = self._extract_hosts_from_publish(r.text or "")
+                    if hosts:
+                        print(f"  [发布页] {u} → 提取 {len(hosts)} 个候选: {hosts[:5]}")
+                        candidates.extend(hosts)
+                    else:
+                        print(f"  [发布页] {u} → 未提取到候选")
+        except Exception as e:
+            LOG.debug("发布页并发异常: %s", e)
 
-        if not candidates:
-            print(f"[发布页直达] 并发抓取 {len(publish_urls)} 个入口（跟随跳转链）...")
-            try:
-                with ThreadPoolExecutor(max_workers=min(8, len(publish_urls))) as ex:
-                    futs = {ex.submit(self._resolve_publish_chain, u): u
-                            for u in publish_urls}
-                    for f in as_completed(futs, timeout=self.cfg.PUBLISH_TIMEOUT * 2 + 8):
-                        u = futs[f]
-                        try:
-                            pages = f.result() or []
-                        except Exception as e:
-                            print(f"  [发布页] {u} 异常: {e}")
-                            continue
-                        if not pages:
-                            print(f"  [发布页] {u} 失败（无响应或非200）")
-                            continue
-                        chain = " → ".join(p[0] for p in pages)
-                        print(f"  [发布页] {u} 跳转链: {chain}")
-                        self._write_simple_cache(self.cfg.PUB_CACHE_KEY, pages[-1][0])
-                        for _pu, _ph in pages:
-                            hosts = self._extract_hosts_from_publish(_ph)
-                            if hosts:
-                                print(f"  [发布页] {_pu} → 提取 {len(hosts)} 个候选: {hosts[:5]}")
-                                candidates.extend(hosts)
-            except Exception as e:
-                LOG.debug("发布页并发异常: %s", e)
-
-        # =================【修复新增兜底逻辑】=================
-        if not candidates and hasattr(self.cfg, "PUBLISH_FALLBACK_AFTER_JUMP") and self.cfg.PUBLISH_FALLBACK_AFTER_JUMP:
-            print("[兜底]一级域名静态解析拿不到跳转目标，加载备用导航发布页列表")
-            for fb_pub in self.cfg.PUBLISH_FALLBACK_AFTER_JUMP:
-                fb_pub = fb_pub.rstrip("/") + "/"
-                r = self._safe_fetch(fb_pub, timeout=self.cfg.PUBLISH_TIMEOUT)
-                if r is None or r.status_code != 200:
-                    print(f"  [兜底导航页] {fb_pub} 访问失败")
-                    continue
-                print(f"  [兜底导航页] {fb_pub} 获取页面成功，提取候选域名")
-                hosts = self._extract_hosts_from_publish(r.text or "")
-                if hosts:
-                    print(f"  [兜底导航页] {fb_pub} →提取候选 {hosts[:5]}")
-                    candidates.extend(hosts)
-                    self._write_simple_cache(self.cfg.PUB_CACHE_KEY, self._final_host(r.url))
-        # ======================================================
-
+        # 去重
         seen, unique_candidates = set(), []
         for h in candidates:
             h = h.rstrip("/")
             if h and h not in seen:
                 seen.add(h)
                 unique_candidates.append(h)
+
         if not unique_candidates:
             print("[发布页] 所有发布页均未提取到候选域名")
             return self._fallback(cached, "无候选")
 
+        # 3) 并发探测候选域名
         print(f"[直达] 探测 {len(unique_candidates)} 个候选 ...")
         final = self._probe_hosts(unique_candidates, tag="直达")
         if final:
             self._write_cache(final)
             return final
+
         return self._fallback(cached, "探测全部失败")
 
     def _fallback(self, cached, reason):
@@ -575,14 +481,14 @@ class PublishResolver:
             return fb
         if self.cfg.PUBLISH_URLS:
             fb = self.cfg.PUBLISH_URLS[0].rstrip("/")
-            print(f"【警告】回退第一个发布页（这不是内容站）: {fb}")
+            print(f"【警告】回退第一个发布页（注意：这不是内容站）: {fb}")
             return fb
         print(f"【错误】彻底失败: {reason}")
         return ""
 
 
 # ==================================================================
-# ③ 主爬虫（业务逻辑保留原版）
+# ③ 主爬虫（业务逻辑与 v10 一致，仅替换 host 解析）
 # ==================================================================
 class Spider(BaseSpider):
     CONFIG = Config
@@ -607,6 +513,7 @@ class Spider(BaseSpider):
         self._page_keys = []
         self._detail_cache = {}
         self.proxies = {}
+
         raw_extend = {}
         if isinstance(extend, dict):
             raw_extend = dict(extend)
@@ -615,15 +522,19 @@ class Spider(BaseSpider):
                 raw_extend = json.loads(extend)
             except Exception:
                 raw_extend = {}
+
         if raw_extend:
             self.proxies = {k: v for k, v in raw_extend.items()
                             if k in ("http", "https", "all")}
+
         self.headers = dict(self.CONFIG.HEADERS)
+
         manual = ""
         if isinstance(raw_extend, dict):
             manual = raw_extend.get("host", "") or ""
         if not manual and isinstance(extend, str) and extend.strip().startswith("http"):
             manual = extend.strip()
+
         if manual:
             manual = manual.strip().rstrip("/")
             if not manual.startswith("http"):
@@ -632,6 +543,7 @@ class Spider(BaseSpider):
             self.host = manual
         else:
             self.host = self.get_working_host()
+
         if self.host:
             self.headers.update({"Origin": self.host, "Referer": self.host + "/"})
         print(f"使用站点: {self.host}")
@@ -652,6 +564,7 @@ class Spider(BaseSpider):
         self._page_keys.clear()
         self._detail_cache.clear()
 
+    # -------------------- 基础请求 --------------------
     def _request(self, url, timeout=None, **kw):
         try:
             return requests.get(
@@ -690,6 +603,7 @@ class Spider(BaseSpider):
             return href
         return self.host + (href if href.startswith("/") else "/" + href)
 
+    # -------------------- host 解析 --------------------
     def get_working_host(self):
         resolver = PublishResolver(
             self.CONFIG, self._request,
@@ -698,6 +612,7 @@ class Spider(BaseSpider):
         )
         return resolver.resolve()
 
+    # -------------------- 页面级缓存 --------------------
     def _cache_items(self, key, items):
         out = [x for x in (items or []) if isinstance(x, dict) and x.get("vod_id")]
         if not out:
@@ -737,6 +652,7 @@ class Spider(BaseSpider):
         except Exception:
             return ""
 
+    # -------------------- 首页 / 分类 --------------------
     def homeContent(self, filter=False):
         if not self.host:
             return {"class": [], "list": []}
@@ -763,6 +679,11 @@ class Spider(BaseSpider):
         return {"list": lst}
 
     def _parse_classes(self, data):
+        """一级 + 二级目录平铺：
+        - 遍历主导航根节点下的一级 li（含直接链接项和下拉项）
+        - 下拉项取其 ul.dropdown-menu 里的二级链接，全部平铺进 classes
+        - 仅保留站内的 /category/ 内容栏目，自动剔除广告、TG、活动页等干扰链接
+        """
         classes, seen = [], set()
         C = self.CONFIG
 
@@ -777,8 +698,11 @@ class Spider(BaseSpider):
             low = href.lower()
             if low.startswith(("javascript:", "mailto:", "tel:", "data:")):
                 return
+            # 只保留站内路径，剔除 t.me / 联盟广告等站外链接
             if not low.startswith("/"):
                 return
+            # 只保留“首页”与内容栏目（/category/ 前缀），剔除 share.html、
+            # archives 单页、wish/contribute 等功能页、TG/联盟广告等站外链接
             if href.rstrip("/") != "" and not any(low.startswith(p) for p in C.NAV_VALID_PREFIXES):
                 return
             if not href.startswith("http"):
@@ -786,6 +710,7 @@ class Spider(BaseSpider):
             if href in seen:
                 return
             seen.add(href)
+            # 重名栏目用父级名区分，如“官方活动”下若有同名子项
             show = name
             if any(c["type_name"] == show for c in classes) and parent:
                 show = "%s·%s" % (parent, name)
@@ -794,10 +719,12 @@ class Spider(BaseSpider):
         root = data(C.SEL_NAV_ROOT).eq(0)
         if root.length:
             for li in root.children(C.SEL_NAV_ITEM).items():
+                # 一级项名称：直接 <a> 或 <button>（下拉开关）里的文字
                 a = li.children(C.SEL_NAV_LINK).eq(0)
                 btn = li.children(C.SEL_NAV_TOGGLE).eq(0)
                 menu = li("ul.dropdown-menu")
                 if menu.length:
+                    # 下拉容器：取父级名，平铺其全部二级链接
                     parent = _clean_name(
                         (a.text() or "").strip() or (btn.text() or "").strip()
                         or (li("button.nav-link div").eq(0).text() or "").strip())
@@ -806,8 +733,11 @@ class Spider(BaseSpider):
                              (sa.attr("title") or "").strip() or (sa.text() or "").strip(),
                              parent)
                 else:
+                    # 一级直链（如 首页 / 今日吃瓜 / AI成人短剧）
                     _add(a.attr("href"),
                          (a.attr("title") or "").strip() or (a.text() or "").strip())
+
+        # 兜底：兼容旧结构（个别版本没有 mr-auto 根节点）
         if not classes:
             for sel in C.SEL_NAV + C.SEL_SUB_NAV:
                 try:
@@ -818,6 +748,8 @@ class Spider(BaseSpider):
                     continue
                 if classes:
                     break
+
+        # 去重后保证“首页”在前
         uniq, seen_names = [], set()
         for c in classes:
             if c["type_id"] in seen_names:
@@ -837,17 +769,22 @@ class Spider(BaseSpider):
             base = tid.rstrip("/")
         else:
             base = self._abs(tid).rstrip("/")
+
         if pg <= 1:
             return base + "/"
+
         host_ns = self.host.rstrip("/")
         if base == host_ns:
             return "%s/page/%d/" % (host_ns, pg)
+
         if "/category/" in base or "/tag/" in base:
             base = re.sub(r"/page/\d+/?$", "", base.rstrip("/"))
             return "%s/page/%d/" % (base, pg)
+
         if "/page/" in base:
             base = base.split("/page/")[0]
             return "%s/page/%d/" % (base, pg)
+
         return "%s/page/%d/" % (base, pg)
 
     def categoryContent(self, tid, pg=1, filter=False, extend=None):
@@ -855,17 +792,21 @@ class Spider(BaseSpider):
             pg = int(pg or 1)
         except Exception:
             pg = 1
+
         if not self.host:
             return {"list": [], "page": pg, "pagecount": 1, "limit": 90, "total": 0}
+
         tid = str(tid or "/")
         if "@folder" in tid:
             v = self._getfod(tid.replace("@folder", ""))
             return {"list": v, "page": 1, "pagecount": 1, "limit": 90, "total": len(v)}
+
         url = self._build_page_url(tid, pg)
         data = self._soup(url)
         if data is None:
             print(f"[categoryContent] 抓取失败: {url}")
             return {"list": [], "page": pg, "pagecount": 9999, "limit": 90, "total": 0}
+
         lst = self._getlist(data(self.CONFIG.SEL_ARTICLE), tid)
         if lst:
             self._cache_items(("cate", tid, str(pg)), lst)
@@ -873,14 +814,17 @@ class Spider(BaseSpider):
             print(f"[categoryContent] 列表为空: {url} 检查 SEL_ARTICLE 或页面结构")
         return {"list": lst, "page": pg, "pagecount": 9999, "limit": 90, "total": 999999}
 
+    # -------------------- 列表 --------------------
     def _getlist(self, data, tid=""):
         videos, seen = [], set()
         is_folder = "/mrdg" in (tid or "")
+
         for k in data.items():
             a = k if k.is_("a") else k("a").eq(0)
             href = ((a.attr("href") if a else "") or k.attr("href") or "").strip()
             if not href or href in ("#", "javascript:;", "javascript:void(0)"):
                 continue
+
             title = ""
             for src_elem in (a, k):
                 if not src_elem:
@@ -903,12 +847,15 @@ class Spider(BaseSpider):
                 title = (k.text() or "").strip()
             if not title and a and a.is_("a"):
                 title = (a.text() or "").strip()
+
             if not title:
                 continue
+
             vid = "%s%s" % (href, "@folder" if is_folder else "")
             if vid in seen:
                 continue
             seen.add(vid)
+
             remark = ""
             try:
                 remark = (k("time").text() or "").strip()
@@ -916,6 +863,7 @@ class Spider(BaseSpider):
                 remark = ""
             if not remark:
                 remark = self._parse_date(k)
+
             videos.append({
                 "vod_id": vid,
                 "vod_name": title,
@@ -948,6 +896,7 @@ class Spider(BaseSpider):
             LOG.debug("目录解析异常: %s", e)
         return out
 
+    # -------------------- 详情 --------------------
     def _raw_detail(self, vid):
         vid = str(vid or "")
         if vid.endswith("@folder"):
@@ -977,18 +926,22 @@ class Spider(BaseSpider):
         if not self.host:
             return {"list": [{"vod_play_from": self.CONFIG.PLAY_FROM,
                               "vod_play_url": "获取失败"}]}
+
         vid = orig_vid
         if vid.startswith("nid:"):
             decoded = self._decode_nid(vid)
             if decoded:
                 vid = decoded
                 orig_vid = decoded
+
         playlist, content, url = self._raw_detail_cached(vid)
+
         related = self._items_of(orig_vid)
         if related:
             play_url = self._build_playlist_with_related(orig_vid, playlist, related)
         else:
             play_url = "#".join(playlist) or ("未找到视频源，请访问网页$" + url)
+
         return {"list": [{
             "vod_play_from": self.CONFIG.PLAY_FROM,
             "vod_play_url":  play_url,
@@ -1003,6 +956,7 @@ class Spider(BaseSpider):
                 continue
             used.add(name)
             parts.append(p)
+
         if not parts:
             cur_name = ""
             for it in related:
@@ -1012,6 +966,7 @@ class Spider(BaseSpider):
             cur_name = cur_name or "正片"
             parts.append("%s$nid:%s" % (cur_name, self._encode_nid(vid)))
             used.add(cur_name)
+
         for it in related:
             iid = str(it.get("vod_id") or "")
             if not iid or iid == str(vid):
@@ -1023,6 +978,7 @@ class Spider(BaseSpider):
             parts.append("%s$nid:%s" % (name, self._encode_nid(iid)))
         return "#".join(parts)
 
+    # -------------------- 播放源 --------------------
     def _extract_playlist(self, data):
         try:
             if data(self.CONFIG.SEL_PLAYER):
@@ -1116,17 +1072,20 @@ class Spider(BaseSpider):
                 tags.append("[a=cr:%s/]%s[/a]" % (target, t))
         except Exception:
             pass
+
         if tags:
             try:
                 summary = (data(self.CONFIG.SEL_SUMMARY).text() or "")[:150].strip()
             except Exception:
                 summary = ""
             return " ".join(tags) + (("\n\n" + summary) if summary else "")
+
         try:
             return (data(self.CONFIG.SEL_TITLE).text() or "").strip()
         except Exception:
             return ""
 
+    # -------------------- 图片 / 日期 --------------------
     def _parse_date(self, k):
         try:
             t = k("time").text()
@@ -1146,12 +1105,14 @@ class Spider(BaseSpider):
     def _extract_img(self, elem):
         if elem is None:
             return ""
+
         try:
             text = elem("script").text() or ""
         except Exception:
             text = ""
         if m := re.search(r"loadBannerDirect\('([^']+)'", text):
             return self._proc_url(m.group(1))
+
         img = elem if elem.is_("img") else elem("img").eq(0)
         if img:
             for attr in ("data-xkrkllgl", "data-src", "data-original",
@@ -1159,11 +1120,13 @@ class Spider(BaseSpider):
                 v = img.attr(attr)
                 if v and not str(v).startswith("data:"):
                     return self._proc_url(v)
+
             v = img.attr("src")
             if v and str(v).startswith("data:"):
                 return self._proc_url(v)
             if v and not str(v).startswith("data:"):
                 return self._proc_url(v)
+
         try:
             html = elem.outer_html() if hasattr(elem, "outer_html") else str(elem)
         except Exception:
@@ -1171,12 +1134,15 @@ class Spider(BaseSpider):
         html = (html.replace("&quot;", '"')
                     .replace("&apos;", "'")
                     .replace("&amp;", "&"))
+
         m = re.search(r'(https?://[^"\'\s)]+\.(?:jpg|png|jpeg|webp|gif))', html, re.I)
         if m:
             return self._proc_url(m.group(1))
+
         m = re.search(r"(data:image/[a-zA-Z0-9+/=;,]+)", html)
         if m:
             return self._proc_url(m.group(1))
+
         m = re.search(r'url\s*\(\s*[\'"]?([^"\'\)]+)[\'"]?\s*\)', html, re.I)
         if m:
             return self._proc_url(m.group(1))
@@ -1224,6 +1190,7 @@ class Spider(BaseSpider):
                 pass
         return data
 
+    # -------------------- 搜索 --------------------
     def searchContent(self, key, quick=False, pg=1):
         try:
             pg = int(pg or 1)
@@ -1231,6 +1198,7 @@ class Spider(BaseSpider):
             pg = 1
         if not self.host:
             return {"list": [], "page": pg, "pagecount": 9999}
+
         url = ("%s/search/%s/" % (self.host, key) if pg <= 1
                else "%s/search/%s/page/%d/" % (self.host, key, pg))
         data = self._soup(url)
@@ -1242,8 +1210,10 @@ class Spider(BaseSpider):
             self._cache_items(("search", str(key), str(pg)), lst)
         return {"list": lst, "page": pg, "pagecount": 9999}
 
+    # -------------------- 播放 / 代理 --------------------
     def playerContent(self, flag, id, vipFlags=None):
         s = str(id or "")
+
         if s.startswith("nid:"):
             vid = self._decode_nid(s)
             if not vid:
@@ -1256,6 +1226,7 @@ class Spider(BaseSpider):
             if not real:
                 real = url
             s = real
+
         parse = 0 if self.isVideoFormat(s) else 1
         final = self.proxy(s) if ".m3u8" in s else s
         return {"parse": parse, "url": final, "header": self.headers}
@@ -1269,9 +1240,11 @@ class Spider(BaseSpider):
         try:
             param = param or {}
             t = param.get("type")
+
             if t == "cache":
                 d = self._img_cache.get(param.get("key"))
                 return [200, "image/jpeg", d] if d else [404, "text/plain", b"Expired"]
+
             if t == "img":
                 raw = param.get("url") or ""
                 real = raw if raw.startswith("http") else self.d64(raw)
@@ -1279,14 +1252,17 @@ class Spider(BaseSpider):
                 if res is None:
                     return [404, "text/plain", b""]
                 return [200, "image/jpeg", self.aesimg(res.content)]
+
             if t == "m3u8":
                 return self.m3Proxy(param.get("url"))
+
             if t == "mkey":
                 raw = param.get("url") or ""
                 real = raw if raw.startswith("http") else self.d64(raw)
                 res = self._request(real, timeout=10)
                 return ([200, "application/octet-stream", res.content]
                         if res is not None else [404, "text/plain", b""])
+
             return self.tsProxy(param.get("url"))
         except Exception:
             return [404, "text/plain", b""]
@@ -1327,11 +1303,3 @@ class Spider(BaseSpider):
     @staticmethod
     def d64(s):
         return base64.b64decode(str(s).encode()).decode()
-
-
-# ============简易测试入口（仅用于学习调试，不要访问违规站点）============
-if __name__ == "__main__":
-    print("【学习提示】该代码仅用于爬虫技术原理学习，禁止访问色情违规网站！")
-    spider = Spider()
-    spider.init()
-    print("spider.host =", spider.host)
