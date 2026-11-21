@@ -91,7 +91,21 @@ class SiteConfig:
         "https://basket.ttiaqryf.cc",
         "https://campus.ttiaqryf.cc",
     ]
+    # ============ 探测参数 ============
+    FAST_TIMEOUT         = 15     # 快路径单请求超时
+    PROBE_TIMEOUT        = 20
+    PROBE_MIN_HTML       = 2000   # 原 3000，降到 2000
+    PROBE_MIN_ARTICLE    = 1
+    PROBE_MAX_ROUNDS     = 2
+    PROBE_MAX_CANDIDATES = 40
+    ENTRY_CACHE_TTL      = 25000   # 入口页结果缓存 30 分钟
 
+    FILTER_PROBE_TIMEOUT = 10    # 分类页筛选栏单请求超时
+    FILTER_TOTAL_TIMEOUT = 30     # 全部一级分类并发总超时
+
+    FALLBACK_HOST    = None
+    HOST_CACHE_TTL   = 25000
+    
     # ============ 站点结构特征 ============
     SITE_MARKERS = ["post-title", "entry-title", "<article", 'class="post']
 
