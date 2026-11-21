@@ -56,51 +56,44 @@ LOG = logging.getLogger(__name__)
 # ==================================================================
 class SiteConfig:
     # ============ 站点身份（换站改这一段）============
-    SITE_NAME        = "51吃瓜"
-    SITE_KEYWORDS    = ["51吃瓜"]   # 多个备选，任一命中即可
-    PLAY_FROM        = "51吃瓜"
-    PLAY_FALLBACK    = "51吃瓜"
+    SITE_NAME        = "51吃瓜1"
+    SITE_KEYWORDS    = ["51吃瓜1"]   # 多个备选，任一命中即可
+    PLAY_FROM        = "51吃瓜1"
+    PLAY_FALLBACK    = "51吃瓜1"
     HOST_CACHE_KEY   = "51cg_host_v10"
     CLASS_CACHE_KEY  = "51cg_classes_v10"
     CLASS_CACHE_TTL  = 3600
 
     # ============ 快路径（已知可用域名，最先探测）============
     FAST_HOSTS = [
-        "https://art.ufwyylsgb.cc/",
+        "https://african.zcwshsefd.cc/",
         "https://be.gadoatcl.cc/",
         "https://awful.gadoatcl.cc/",
         "https://attempt.ufwyylsgb.cc/",
         "https://accuse.ufwyylsgb.cc/",
     ]
 
-    # ============ 导航页 ============
-    NAV_URLS = [
-        "https://www.gugvyepf.cc/",
+    # ============ 发布页（GitLab 为当前最可靠锚点）============
+    PUBLISH_URLS = [
+       "https://www.zkofiivk.cc/",
+    ]
+
+    # ============ 种子（可能承载 HTML 主站的域名）============
+    SEED_HOSTS = [
+        "https://d2gt333ro578y4.cloudfront.net",
+        "https://d3j1rgw50kjbyy.cloudfront.net/",
         "https://51cgo25.com",
         "https://51cge23.com",
         "https://51cge26.com",
         "https://51cgf25.com",
         "https://51cgo22.com",
-        "https://51cgo23.com",
-    ]
-
-    # ============ 发布页（GitLab 为当前最可靠锚点）============
-    PUBLISH_URLS = [
-        "https://51cgo21.com",
-    ]
-
-    # ============ 种子（可能承载 HTML 主站的域名）============
-    SEED_HOSTS = [
-        "https://be.gadoatcl.cc/",
-        "https://awful.gadoatcl.cc/",
-        "https://baby.gadoatcl.cc/",
-        "https://case.gadoatcl.cc/",
-        "https://believe.gadoatcl.cc/",
-        "https://arrest.gadoatcl.cc/",
+        "https://at.ttiaqryf.cc",
+        "https://basket.ttiaqryf.cc",
+        "https://campus.ttiaqryf.cc",
     ]
 
     # ============ 探测参数 ============
-    FAST_TIMEOUT         = 10   # 快路径单请求超时
+    FAST_TIMEOUT         = 10     # 快路径单请求超时
     PROBE_TIMEOUT        = 15
     PROBE_MIN_HTML       = 2000   # 原 3000，降到 2000
     PROBE_MIN_ARTICLE    = 1
