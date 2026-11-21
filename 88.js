@@ -1,7 +1,41 @@
 {
-  "spider": "http://pglblb.test.upcdn.net/custom_spider.jar",
+  "spider": "http://pglblb.test.upcdn.net/fm.jar",
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
+    {
+      "key": "91大赛",
+      "name": "❤️91大赛",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/91ds.py"
+    },
+    {
+      "key": "91黑料",
+      "name": "❤️91黑料",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/91hl.py"
+    },
+    {
+
+      "key": "51爆料v9",
+      "name": "❤️51爆料V9自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
+    },
     {
       "key": "九九归一",
       "name": "九九归一.py｜🔞",
@@ -291,6 +325,28 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/91cg_v9.py"
     },
     {
+      "key": "51吃瓜V3",
+      "name": "❤️51吃瓜导航探测版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51cg.py"
+    },
+    {
+      "key": "51吃瓜发布页版",
+      "name": "❤️51吃瓜发布页版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg_v9.py"
+    },
+    {
       "key": "每日大赛v10自愈版",
       "name": "每日大赛v10自愈版",
       "type": 3,
@@ -316,17 +372,7 @@
     },
     {
 
-      "key": "51吃瓜new_V9.9超级自愈版",
-      "name": "❤️51吃瓜V9.9超级自愈版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51cg_v9.py"
-    },
-    {
+
 
       "key": "51大赛v9.9",
       "name": "❤️51大赛V9.9超级自愈版｜🔞",
@@ -500,28 +546,7 @@
       "changeable": 1
     },
     {
-      "key": "51吃瓜V9",
-      "name": "❤️51吃瓜V9自愈版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51cg.py"
-    },
-    {
-      "key": "51爆料v9",
-      "name": "❤️51爆料V9自愈版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
-    },
-    {
+
       "key": "csp_xbpq_禁片天堂",
       "name": "❤️禁片天堂【🔞】",
       "type": 3,
@@ -2050,28 +2075,7 @@
       "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/91cg.py"
     },
     {
-      "key": "91大赛",
-      "name": "❤️91大赛",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/91ds.py"
-    },
-    {
-      "key": "91黑料",
-      "name": "❤️91黑料",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/91hl.py"
-    },
-    {
+
 
       "key": "push_agent",
       "name": "手机｜推送",
