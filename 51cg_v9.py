@@ -58,6 +58,7 @@ class Config:
     # 仅用于调试学习，真实环境如果域名经常变化这个列表也要更新
     PUBLISH_FALLBACK_AFTER_JUMP = [
         "https://www.sunkdjlla.cc/",
+        "https://www.nqvudlbn.cc/",
     ]
 
     # ================== 发布页（唯一可靠锚点，学习测试只保留1个）==================
