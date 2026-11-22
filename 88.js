@@ -3,6 +3,119 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "🍁正宗聚合",
+      "name": "🍁影视聚合",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
+    },
+    {
+      "key": "xb6v修护",
+      "name": "🍁6V影视",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
+    },
+    {
+      "key": "91吃瓜自愈版",
+      "name": "❤️91吃瓜自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/91cg_v9.py"
+    },
+    {
+      "key": "57吃瓜",
+      "name": "❤️57吃瓜｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/57cg.py"
+    },
+    {
+      "key": "51吃瓜导航直达版",
+      "name": "❤️51吃瓜导航直达版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51cg1.py"
+    },
+    {
+      "key": "51吃瓜导航兜底版",
+      "name": "❤️51吃瓜导航兜底版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51cg2.py"
+    },
+    {
+      "key": "51爆料导航版",
+      "name": "❤️51爆料导航标准版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl1.py"
+    },
+    {
+      "key": "51大赛v9.9",
+      "name": "❤️51大赛V9.9超级自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51ds1.py"
+    },
+    {
+      "key": "每日大赛v10自愈版",
+      "name": "每日大赛v10自愈版",
+      "type": 3,
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/mrds_v9.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "changeable": 1
+    },
+    {
+      "key": "每日大乱斗v10自愈版",
+      "name": "每日大乱斗v10自愈版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
+    },
+    {
+
       "key": "91大赛",
       "name": "❤️91大赛",
       "type": 3,
@@ -292,118 +405,7 @@
       "api": "https://gh.acmsz.top/https://github.com/ge6bu6/1/blob/main/py/绯色天际.py"
     },
     {
-      "key": "🍁正宗聚合",
-      "name": "🍁影视聚合",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/zz%E8%81%9A%E5%90%88.py"
-    },
-    {
-      "key": "xb6v修护",
-      "name": "🍁6V影视",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
-    },
-    {
-      "key": "91吃瓜自愈版",
-      "name": "❤️91吃瓜自愈版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/91cg_v9.py"
-    },
-    {
-      "key": "57吃瓜",
-      "name": "❤️57吃瓜｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/57cg.py"
-    },
-    {
-      "key": "51吃瓜导航版1",
-      "name": "❤️51吃瓜导航版1｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51cg1.py"
-    },
-    {
-      "key": "51吃瓜导航版2",
-      "name": "❤️51吃瓜导航版2｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51cg2.py"
-    },
-    {
-      "key": "51爆料导航版",
-      "name": "❤️51爆料导航版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl1.py"
-    },
-    {
-      "key": "51大赛v9.9",
-      "name": "❤️51大赛V9.9超级自愈版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51ds1.py"
-    },
-    {
-      "key": "每日大赛v10自愈版",
-      "name": "每日大赛v10自愈版",
-      "type": 3,
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/mrds_v9.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "changeable": 1
-    },
-    {
-      "key": "每日大乱斗v10自愈版",
-      "name": "每日大乱斗v10自愈版",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
-    },
-    {
+
 
       "key": "missav666",
       "name": "5❤️missav666【🔞】",
