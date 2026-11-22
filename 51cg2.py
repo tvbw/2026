@@ -49,21 +49,22 @@ class Config:
     HOST_CACHE_KEY       = "51cg_host_v13"
     PUB_CACHE_KEY        = "51cg_pub_v13"
     PUB_CACHE_TTL      = 25000
+    HOST_CACHE_TTL     = 25000
     # 跟随 JS/meta 跳转的最大跳数（防循环）
     JUMP_MAX_HOPS      = 2
 
     # =====================【新增学习配置】=====================
     # 当一级域名JS混淆跳转，静态正则抓不到跳转目标，追加这些跳转后的导航发布页做兜底解析
     PUBLISH_FALLBACK_AFTER_JUMP = [
-        "https://www.nqvudlbn.cc/",
         "https://www.sunkdjlla.cc/",
+        "https://www.nqvudlbn.cc/",
+
     ]
 
     # ================== 导航地址静态发布页==================
     PUBLISH_URLS = [
         "https://51cge26.com/",
     ]
-
     # 三级域名（可选，通常失效快，留空则完全依赖发布页）
     SEED_HOSTS = []
     FALLBACK_HOST = None
