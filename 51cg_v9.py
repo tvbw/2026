@@ -48,21 +48,21 @@ class Config:
     PLAY_FALLBACK_TITLE  = "51吃瓜"
     HOST_CACHE_KEY       = "51cg_host_v10"
     PUB_CACHE_KEY        = "51cg_pub_v10"
-    PUB_CACHE_TTL      = 6 * 3600
+    PUB_CACHE_TTL      =25000
+    HOST_CACHE_TTL     = 25000
     # 跟随 JS/meta 跳转的最大跳数（防循环）
     JUMP_MAX_HOPS      = 2
-    HOST_CACHE_TTL       = 22500
 
     # =====================【新增学习配置】=====================
     # 当一级域名JS混淆跳转，静态正则抓不到跳转目标，追加这些跳转后的导航发布页做兜底解析
     # 仅用于调试学习，真实环境如果域名经常变化这个列表也要更新
     PUBLISH_FALLBACK_AFTER_JUMP = [
         "https://www.sunkdjlla.cc/",
-        "https://www.nqvudlbn.cc/",
     ]
 
     # ================== 发布页（唯一可靠锚点，学习测试只保留1个）==================
     PUBLISH_URLS = [
+        "https://www.nqvudlbn.cc/",
         "https://51cgf24.com/",
     ]
 
@@ -70,10 +70,10 @@ class Config:
     SEED_HOSTS = []
     FALLBACK_HOST = None
     # ================== 探测参数（针对发布页直达优化）==================
-    PUBLISH_TIMEOUT    = 10    # 发布页抓取超时
-    PROBE_TIMEOUT      = 8     # 候选域名探测超时
-    FAST_TIMEOUT       = 5     # 缓存校验超时
-    PROBE_MIN_HTML     = 2000
+    PUBLISH_TIMEOUT    = 15   # 发布页抓取超时
+    PROBE_TIMEOUT      = 15    # 候选域名探测超时
+    FAST_TIMEOUT       = 10   # 缓存校验超时
+    PROBE_MIN_HTML     = 1500
     PROBE_MIN_ARTICLE  = 1
     # ================== 站点结构特征 ==================
     SITE_MARKERS = [
