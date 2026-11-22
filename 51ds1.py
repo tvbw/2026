@@ -57,10 +57,10 @@ class SiteConfig:
     FALLBACK_HOST   = None
 
     # ---------- 发布页（一级跳板 + 二级保底）----------
-    PUBLISH_URLS = ["https://51cgf24.com/"]
+    PUBLISH_URLS = ["https://51ds18.com/"]
     PUBLISH_FALLBACK_AFTER_JUMP = [
-        "https://www.sunkdjlla.cc/",
-        "https://www.nqvudlbn.cc/",
+        "https://51dsa48.com/",
+        "https://51dsa33.com/",
     ]
 
     # ---------- 超时 ----------
