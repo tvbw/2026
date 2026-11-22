@@ -58,14 +58,14 @@ class Config:
     # ---- 跳转跟随 ----
     JUMP_MAX_HOPS  = 2
 
-    # ---- 一级导航发布页（主入口）----
+    # ---- 二级导航发布页（主入口）----
     PUBLISH_URLS = [
-        "https://51cgf24.com/",
-    ]
-    # ---- 二级导航发布页（一级被 JS 混淆抓不到时的兜底）----
-    PUBLISH_FALLBACK_AFTER_JUMP = [
         "https://www.sunkdjlla.cc/",
         "https://www.nqvudlbn.cc/",
+    ]
+    # ---- 一级导航发布页（一级被 JS 混淆抓不到时的兜底）----
+    PUBLISH_FALLBACK_AFTER_JUMP = [
+        "https://51cgf24.com/",
     ]
 
     # ---- 超时 ----
