@@ -62,8 +62,8 @@ class Config:
 
     # ================== 发布页（唯一可靠锚点，学习测试只保留1个）==================
     PUBLISH_URLS = [
-        "https://www.nqvudlbn.cc/",
         "https://51cgf24.com/",
+        "https://www.nqvudlbn.cc/",
     ]
 
     # 三级域名（可选，通常失效快，留空则完全依赖发布页）
