@@ -61,7 +61,7 @@ class Config:
 
     # ================== 导航地址静态发布页==================
     PUBLISH_URLS = [
-        "https://www.gugvyepf.cc/",
+        "https://51cge26.com/",
     ]
 
     # 三级域名（可选，通常失效快，留空则完全依赖发布页）
