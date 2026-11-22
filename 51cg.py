@@ -57,6 +57,7 @@ class Config:
     # 当一级域名JS混淆跳转，静态正则抓不到跳转目标，追加这些跳转后的导航发布页做兜底解析
     PUBLISH_FALLBACK_AFTER_JUMP = [
         "https://www.nqvudlbn.cc/",
+        "https://www.sunkdjlla.cc/",
     ]
 
     # ================== 导航地址静态发布页==================
