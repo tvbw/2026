@@ -80,15 +80,15 @@
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51bl1.py"
     },
     {
-      "key": "51大赛v9.9",
-      "name": "❤️51大赛V9.9超级自愈版｜🔞",
+      "key": "51大赛导航标准版",
+      "name": "❤️51大赛导航标准版｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://gh.acmsz.top/https://raw.githubusercontent.com/tvbw/2026/main/51ds1.py"
+      "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds1.py"
     },
     {
       "key": "每日大赛v10自愈版",
