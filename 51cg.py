@@ -48,10 +48,9 @@ class Config:
     PLAY_FALLBACK_TITLE  = "51吃瓜1"
     HOST_CACHE_KEY       = "51cg_host_v13"
     PUB_CACHE_KEY        = "51cg_pub_v13"
-    PUB_CACHE_TTL      = 6 * 3600
+    PUB_CACHE_TTL      = 25000
     # 跟随 JS/meta 跳转的最大跳数（防循环）
-    JUMP_MAX_HOPS      = 3
-    HOST_CACHE_TTL       = 6 * 3600
+    JUMP_MAX_HOPS      = 2
 
     # =====================【新增学习配置】=====================
     # 当一级域名JS混淆跳转，静态正则抓不到跳转目标，追加这些跳转后的导航发布页做兜底解析
@@ -70,9 +69,9 @@ class Config:
     FALLBACK_HOST = None
     # ================== 探测参数（针对发布页直达优化）==================
     PUBLISH_TIMEOUT    = 10    # 发布页抓取超时
-    PROBE_TIMEOUT      = 8     # 候选域名探测超时
-    FAST_TIMEOUT       = 5     # 缓存校验超时
-    PROBE_MIN_HTML     = 2000
+    PROBE_TIMEOUT      = 15   # 候选域名探测超时
+    FAST_TIMEOUT       = 10    # 缓存校验超时
+    PROBE_MIN_HTML     = 1500
     PROBE_MIN_ARTICLE  = 1
     # ================== 站点结构特征 ==================
     SITE_MARKERS = [
