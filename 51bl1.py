@@ -1,16 +1,20 @@
 # -*- coding: utf-8 -*-
 """
-51系列标准模板 · 发布页自愈版
+51系列标准模板 · 发布页秒跳自愈版
 ------------------------------------------------------------------
-特点：
-1. 仅依赖【一级导航发布页】+【二级导航发布页】即可自动探测三级域名主页，
-   不需要手动维护动态域名，长期免维护。
-2. 一级发布页常被 JS/meta 混淆跳转，requests 静态正则抓不到目标，
-   本模板会跟随跳转链 + 兜底走二级导航发布页提取候选域名。
-3. 三级域名探测采用「并发 + 首个命中即返回」，并缓存站点 host 与
-   最后成功跳转的发布页 URL，二次启动秒级复用。
-4. 业务层（分类/列表/详情/搜索/播放/图片 AES 解密/m3u8 代理）
-   完整保留 51 系列原有逻辑，方便作为标准模板长期使用。
+核心思路：
+  1. 一级跳板页（如 https://51cgf24.com/）进入后通常会被
+     HTTP 3xx 或 HTML/JS 立即跳转到二级发布页；
+  2. 只要快速拿到【二级发布页 URL】并抓取其 HTML，即可从中
+     提取三级内容站候选域名；
+  3. 对候选域名做并发探测，首个命中即为可用站点，写入缓存；
+  4. 一级页解析失败时，直接用 PUBLISH_FALLBACK_AFTER_JUMP
+     里硬编码的二级发布页做保底。
+
+发布页缓存（PUB_CACHE_KEY）记录“上次成功跳转到的二级页”，
+下次启动先试它，可秒进；失效后自动回退到一级跳板页重新解析。
+一级页与二级页同时失效属于故障级事件，才需要手动更新
+PUBLISH_FALLBACK_AFTER_JUMP。
 """
 import json
 import re
@@ -52,28 +56,25 @@ class Config:
     PLAY_FROM     = "51爆料"
 
     # ---- 缓存键 ----
-    HOST_CACHE_KEY = "sp51_host_v1"     # 最终三级域名主页
-    PUB_CACHE_KEY  = "sp51_pub_v1"      # 最后成功跳转的发布页 URL
+    HOST_CACHE_KEY = "sp51_host_v1"      # 最终三级内容站
+    PUB_CACHE_KEY  = "sp51_pub_v1"       # 上次成功跳转到的二级发布页
 
-    # ---- 跳转跟随 ----
-    JUMP_MAX_HOPS  = 2
-
-    # ---- 二级导航发布页（主入口）----
+    # ---- 一级跳板页（只填这一个）----
     PUBLISH_URLS = [
+        "https://51cgf24.com/",
+    ]
+    # ---- 二级发布页（硬编码保底，域名变了再改这里）----
+    PUBLISH_FALLBACK_AFTER_JUMP = [
         "https://www.sunkdjlla.cc/",
         "https://www.nqvudlbn.cc/",
     ]
-    # ---- 一级导航发布页（一级被 JS 混淆抓不到时的兜底）----
-    PUBLISH_FALLBACK_AFTER_JUMP = [
-        "https://51cgf24.com/",
-    ]
 
     # ---- 超时 ----
-    PUBLISH_TIMEOUT = 15
-    PROBE_TIMEOUT   = 15
-    FAST_TIMEOUT    = 10
+    PUBLISH_TIMEOUT = 12
+    PROBE_TIMEOUT   = 12
+    FAST_TIMEOUT    = 8
 
-    # ---- 站点特征 ----
+    # ---- 站点有效性特征 ----
     PROBE_MIN_HTML = 1500
     SITE_MARKERS = (
         "post-title", "entry-title", "<article", 'class="post',
@@ -133,21 +134,26 @@ class Config:
 
 
 # ==================================================================
-# ② 发布页解析器（自愈核心）
+# ② 发布页解析器（核心）
 # ==================================================================
 class PublishResolver:
     """
-    以「发布页」为唯一锚点：
-      发布页 → 跟随 JS/meta 跳转 → 提取候选三级域名 → 并发探测 → 命中缓存
-    一级发布页若因 JS 混淆拿不到跳转目标，自动走二级导航发布页兜底。
+    职责：快速完成 一级跳板页 → 二级发布页 → 三级内容站域名 的解析。
+    只识别两种跳转方式：
+      - HTTP 3xx（requests 自动跟随）
+      - HTML/JS：<meta refresh> / location.href / location.replace
     """
 
-    JUMP_PATTERNS = (
-        r'<meta[^>]+http-equiv=["\']?refresh["\']?[^>]*?url\s*=\s*([^"\'>\s]+)',
-        r'url\s*=\s*([^"\'>\s;]+)["\'][^>]*http-equiv=["\']?refresh',
-        r'(?:window\s*\.\s*)?location(?:\.href)?\s*=\s*["\'](https?://[^"\']+)["\']',
-        r'(?:window\s*\.\s*)?location\s*\.\s*(?:replace|assign)\s*\(\s*["\'](https?://[^"\']+)["\']',
-        r'(?:var\s+)?(?:url|href|targetUrl|jumpUrl)\s*=\s*["\'](https?://[^"\']+)["\']',
+    META_REFRESH_RE = re.compile(
+        r'<meta[^>]+http-equiv=["\']?refresh["\']?[^>]*?'
+        r'content=["\']?\s*\d+\s*;\s*url=([^"\'>\s]+)',
+        re.I,
+    )
+    JS_LOCATION_RE = re.compile(
+        r'(?:window\.|document\.)?location(?:\.href)?\s*=\s*["\'](https?://[^"\']+)["\']'
+        r'|'
+        r'(?:window\.|document\.)?location\.(?:replace|assign)\s*\(\s*["\'](https?://[^"\']+)["\']',
+        re.I,
     )
 
     def __init__(self, cfg, fetcher, cache_get=None, cache_set=None):
@@ -155,149 +161,92 @@ class PublishResolver:
         self.fetch = fetcher
         self.cache_get = cache_get
         self.cache_set = cache_set
-        # 发布页自身 origin（避免把发布页当作候选站点去探测）
-        self._publish_set = {
-            self._final_host(u)
-            for u in (list(cfg.PUBLISH_URLS) + list(cfg.PUBLISH_FALLBACK_AFTER_JUMP))
+        # 一级跳板页 origin（用于判断 requests 是否已跳出跳板页）
+        self._jump_origins = {
+            self._origin(u) for u in cfg.PUBLISH_URLS if u
+        }
+        # 所有发布页 origin（用于从候选域名中排除发布页自身）
+        self._publish_origins = {
+            self._origin(u) for u in
+            (list(cfg.PUBLISH_URLS) + list(cfg.PUBLISH_FALLBACK_AFTER_JUMP))
             if u
         }
 
-    # ---------- 抓取 / URL 工具 ----------
-    def _fetch_safe(self, url, timeout=None):
-        try:
-            return self.fetch(url, timeout=timeout or self.cfg.PROBE_TIMEOUT)
-        except Exception:
-            return None
-
     @staticmethod
-    def _final_host(url):
-        if not url:
-            return ""
+    def _origin(url):
         try:
             p = urlparse(url)
             if p.scheme in ("http", "https") and p.netloc:
-                return "%s://%s" % (p.scheme, p.netloc.lower())
+                return f"{p.scheme}://{p.netloc}".lower()
         except Exception:
             pass
         return ""
 
-    # ---------- 缓存 ----------
-    def _read_kv(self, key, field):
-        if not self.cache_get:
-            return ""
+    @staticmethod
+    def _final_host(url):
         try:
-            raw = self.cache_get(key)
-        except Exception:
-            return ""
-        if raw is None:
-            return ""
-        if isinstance(raw, bytes):
-            try:
-                raw = raw.decode("utf-8", "ignore")
-            except Exception:
-                return ""
-        s = str(raw).strip()
-        if not s:
-            return ""
-        if s.startswith("{"):
-            try:
-                return str(json.loads(s).get(field) or "").strip()
-            except Exception:
-                return ""
-        return s  # 兼容旧版直接字符串缓存
-
-    def _write_kv(self, key, data):
-        if not self.cache_set or not data:
-            return
-        try:
-            self.cache_set(key, json.dumps(data))
+            p = urlparse(url)
+            if p.scheme in ("http", "https") and p.netloc:
+                return f"{p.scheme}://{p.netloc.lower()}"
         except Exception:
             pass
+        return ""
 
-    # ---------- JS/meta 跳转目标提取 ----------
-    def _extract_jump_targets(self, html, base_url):
+    @staticmethod
+    def _normalize_url(u, base_url):
+        u = unquote(str(u or "")).strip().strip('"\' ')
+        if not u:
+            return ""
+        if u.startswith("//"):
+            u = "https:" + u
+        if not u.startswith("http"):
+            u = urljoin(base_url or "", u)
+        return u
+
+    # ---------- 一级页 → 二级页 ----------
+    def _resolve_jump_page(self, start_url):
+        """
+        返回：(二级发布页 URL, 该页 HTML)
+        失败返回 ("", "")。
+        """
+        start_url = start_url.rstrip("/") + "/"
+        r = self.fetch(start_url, timeout=self.cfg.PUBLISH_TIMEOUT,
+                       allow_redirects=True)
+        if r is None:
+            return "", ""
+
+        final_url = r.url.rstrip("/") + "/"
+        html = r.text or ""
+
+        # 情况 A：requests 已通过 3xx 跳出跳板页（落到二级页或三级站）
+        if self._origin(final_url) not in self._jump_origins:
+            return final_url, html
+
+        # 情况 B：落地仍是跳板页本身，说明跳转写在 HTML/JS 里
+        target = self._extract_html_jump(html, final_url)
+        if not target:
+            return "", ""
+
+        target = target.rstrip("/") + "/"
+        r2 = self.fetch(target, timeout=self.cfg.PUBLISH_TIMEOUT,
+                        allow_redirects=True)
+        if r2 is None:
+            return "", ""
+        return r2.url.rstrip("/") + "/", (r2.text or "")
+
+    def _extract_html_jump(self, html, base_url):
         if not html:
-            return []
-        out, seen = [], set()
+            return ""
+        m = self.META_REFRESH_RE.search(html)
+        if m:
+            return self._normalize_url(m.group(1), base_url)
+        m = self.JS_LOCATION_RE.search(html)
+        if m:
+            return self._normalize_url(m.group(1) or m.group(2), base_url)
+        return ""
 
-        def _norm(u):
-            try:
-                u = unquote(str(u)).strip().strip('"\' ')
-            except Exception:
-                return ""
-            if not u or u.startswith(("javascript:", "data:", "mailto:", "#")):
-                return ""
-            if u.startswith("//"):
-                u = "https:" + u
-            if not u.startswith("http"):
-                u = urljoin(base_url or "", u)
-            low = u.lower()
-            if any(b in low for b in self.cfg.DOMAIN_BLACKLIST):
-                return ""
-            try:
-                tld = urlparse(u).netloc.lower().split(".")[-1]
-                if tld not in self.cfg.VALID_TLDS:
-                    return ""
-            except Exception:
-                return ""
-            if u.rstrip("/") == (base_url or "").rstrip("/"):
-                return ""
-            return u
-
-        texts = [html]
-        # base64 混淆脚本
-        for m in re.finditer(r'["\']([A-Za-z0-9+/=]{40,})["\']', html):
-            try:
-                d = b64decode(m.group(1)).decode("utf-8", "ignore")
-                if any(k in d for k in ("location", "url", "http")):
-                    texts.append(d)
-            except Exception:
-                continue
-
-        last_idx = len(self.JUMP_PATTERNS) - 1
-        for t in texts:
-            for i, pat in enumerate(self.JUMP_PATTERNS):
-                for m in re.finditer(pat, t, re.I):
-                    # 最后一条“变量赋值”容易误伤 HTML 属性，跳过标签内
-                    if i == last_idx:
-                        lt = t.rfind("<", 0, m.start())
-                        gt = t.rfind(">", 0, m.start())
-                        if lt > gt:
-                            continue
-                    u = _norm(m.group(1))
-                    if u and u not in seen:
-                        seen.add(u)
-                        out.append(u)
-            if len(t) < 3000 and ("location" in t or "refresh" in t):
-                for m in re.finditer(r'["\'](https?://[^"\']{8,})["\']', t):
-                    u = _norm(m.group(1))
-                    if u and u not in seen:
-                        seen.add(u)
-                        out.append(u)
-        return out[:5]
-
-    # ---------- 跟随单条发布页跳转链 ----------
-    def _crawl_one_publish(self, start_url):
-        pages, visited = [], set()
-        cur = start_url.rstrip("/") + "/"
-        for _ in range(self.cfg.JUMP_MAX_HOPS + 1):
-            if not cur or cur in visited:
-                break
-            visited.add(cur)
-            r = self._fetch_safe(cur, self.cfg.PUBLISH_TIMEOUT)
-            if r is None or r.status_code != 200:
-                break
-            html = r.text or ""
-            final = self._final_host(r.url) or cur.rstrip("/")
-            pages.append((final, html))
-            targets = self._extract_jump_targets(html, final)
-            if not targets:
-                break
-            cur = targets[0].rstrip("/") + "/"
-        return pages
-
-    # ---------- 从发布页提取候选域名 ----------
-    def _extract_hosts(self, html):
+    # ---------- 二级页 → 候选三级域名 ----------
+    def _extract_candidate_hosts(self, html):
         if not html:
             return []
         hosts, seen = [], set()
@@ -309,76 +258,58 @@ class PublishResolver:
             hl = h.lower()
             if any(b in hl for b in self.cfg.DOMAIN_BLACKLIST):
                 return
-            if h in self._publish_set:
+            if h in self._publish_origins:   # 排除发布页自身
                 return
             if h in seen:
                 return
             seen.add(h)
             hosts.append(h)
 
-        # 策略1：HTML/JS 中的 http(s) 链接（<a>、script 字符串等）
+        # 策略1：所有 http(s) 链接
         for m in re.finditer(r'https?://[^\s"\'<>()\[\]{},;]+', html):
             _add(m.group(0))
-        # 策略2：base64 混淆脚本
-        for m in re.finditer(r'["\']([A-Za-z0-9+/=]{80,})["\']', html):
-            try:
-                dec = b64decode(m.group(1)).decode("utf-8", "ignore")
-                for u in re.finditer(r'https?://[^\s"\'<>()\[\]{},;]+', dec):
-                    _add(u.group(0))
-            except Exception:
-                continue
-        # 策略3：中文提示附近的裸域名
+
+        # 策略2：裸域名（限制扫描长度）
         for m in re.finditer(
-            r'(?:新地址|新网址|永久地址|最新地址|最新域名|官方入口|请访问|访问地址|'
-            r'线路[一二三四五六七八九十\d]+)'
-            r'[：:\s]*((?:https?://)?[a-zA-Z0-9][a-zA-Z0-9.\-]{3,}\.[a-zA-Z]{2,10})',
-            html
-        ):
-            u = m.group(1)
-            if not u.startswith("http"):
-                u = "https://" + u
-            _add(u)
-        # 策略4：裸域名扫描（限制前 6000 字符，避免噪音过多）
-        for m in re.finditer(
-            r'(?<![\w.\-])((?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,10})'
-            r'(?![\w.\-])',
-            html[:6000]
+            r'(?<![\w.\-])((?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,10})(?![\w.\-])',
+            html[:8000],
         ):
             d = m.group(1).lower().strip('.')
             if d.split('.')[-1] not in self.cfg.VALID_TLDS:
                 continue
             _add("https://" + d)
+
         return hosts[:20]
 
-    # ---------- 站点有效性校验 ----------
+    # ---------- 站点有效性 ----------
     def _site_ok(self, html):
         if not html or len(html) < self.cfg.PROBE_MIN_HTML:
             return False
         low = html.lower()
-        for m in ('just a moment', 'cf-browser-verification', 'checking your browser',
-                  '__cf_chl_', 'ddos-guard', 'enable javascript and cookies',
-                  '请开启 javascript', '请启用 javascript'):
-            if m in low:
-                return False
+        blocked = ('just a moment', 'cf-browser-verification',
+                   'checking your browser', '__cf_chl_', 'ddos-guard',
+                   'enable javascript and cookies')
+        if any(b in low for b in blocked):
+            return False
         has_article = (
-            low.count("<article") >= 1
-            or low.count("realtime-card") >= 1
-            or low.count("video-card") >= 1
-            or low.count("post-title") >= 1
-            or low.count("entry-title") >= 1
+            '<article' in low
+            or 'realtime-card' in low
+            or 'video-card' in low
+            or 'post-title' in low
+            or 'entry-title' in low
         )
         return has_article or self.cfg.match_keyword(html)
 
-    # ---------- 探测单个候选 ----------
+    # ---------- 并发探测 ----------
     def _probe_one(self, url, timeout=None):
-        r = self._fetch_safe(url, timeout or self.cfg.PROBE_TIMEOUT)
+        r = self.fetch(url, timeout=timeout or self.cfg.PROBE_TIMEOUT,
+                       allow_redirects=True)
         if r is None or r.status_code != 200:
             return ""
         if not self._site_ok(r.text):
             return ""
         return self._final_host(r.url) or url.rstrip("/")
 
-    # ---------- 并发探测（首个命中立即返回，未启动任务取消）----------
     def _probe_hosts(self, hosts):
         if not hosts:
             return ""
@@ -402,73 +333,111 @@ class PublishResolver:
             ex.shutdown(wait=False, cancel_futures=True)
         return ""
 
-    # ---------- 并发抓发布页（含跟随跳转）----------
-    def _crawl_publishes(self, urls):
-        if not urls:
-            return []
-        hosts = []
-        ex = ThreadPoolExecutor(max_workers=min(8, len(urls)))
+    # ---------- 缓存 ----------
+    def _read_cache(self, key, field):
+        if not self.cache_get:
+            return ""
         try:
-            futs = {ex.submit(self._crawl_one_publish, u): u for u in urls}
+            raw = self.cache_get(key)
+        except Exception:
+            return ""
+        if not raw:
+            return ""
+        if isinstance(raw, bytes):
             try:
-                for f in as_completed(futs, timeout=self.cfg.PUBLISH_TIMEOUT * (self.cfg.JUMP_MAX_HOPS + 1) + 10):
-                    try:
-                        pages = f.result() or []
-                    except Exception:
-                        continue
-                    if not pages:
-                        continue
-                    # 记录最后成功跳转的发布页（下次优先尝试）
-                    self._write_kv(self.cfg.PUB_CACHE_KEY, {"pub": pages[-1][0]})
-                    for _u, html in pages:
-                        hosts.extend(self._extract_hosts(html))
+                raw = raw.decode("utf-8", "ignore")
             except Exception:
-                pass
-        finally:
-            ex.shutdown(wait=False, cancel_futures=True)
-        return hosts
+                return ""
+        if isinstance(raw, dict):
+            return str(raw.get(field) or "").strip()
+        s = str(raw).strip()
+        if not s:
+            return ""
+        if s.startswith("{"):
+            try:
+                return str(json.loads(s).get(field) or "").strip()
+            except Exception:
+                return ""
+        return s
+
+    def _write_cache(self, key, data):
+        if not self.cache_set or not data:
+            return
+        try:
+            self.cache_set(key, json.dumps(data))
+        except Exception:
+            pass
 
     # ---------- 统一入口 ----------
     def resolve(self):
         # 1) HOST 缓存快速校验
-        cached = self._read_kv(self.cfg.HOST_CACHE_KEY, "host")
-        if cached and self._probe_one(cached.rstrip("/") + "/", self.cfg.FAST_TIMEOUT):
-            return cached
+        cached_host = self._read_cache(self.cfg.HOST_CACHE_KEY, "host")
+        if cached_host:
+            hit = self._probe_one(cached_host.rstrip("/") + "/",
+                                  self.cfg.FAST_TIMEOUT)
+            if hit:
+                print(f"[HOST缓存] 有效: {hit}")
+                if hit != cached_host:
+                    self._write_cache(self.cfg.HOST_CACHE_KEY, {"host": hit})
+                return hit
+            print(f"[HOST缓存] 失效: {cached_host}")
 
-        # 2) 最近一次成功跳转的发布页（加速路径）
-        candidates = []
-        pub_cached = self._read_kv(self.cfg.PUB_CACHE_KEY, "pub")
+        # 2) 上次成功的二级发布页（加速路径）
+        pub_cached = self._read_cache(self.cfg.PUB_CACHE_KEY, "pub")
         if pub_cached:
-            r = self._fetch_safe(pub_cached.rstrip("/") + "/", self.cfg.FAST_TIMEOUT)
+            r = self.fetch(pub_cached.rstrip("/") + "/",
+                           timeout=self.cfg.FAST_TIMEOUT,
+                           allow_redirects=True)
             if r is not None and r.status_code == 200:
-                candidates.extend(self._extract_hosts(r.text or ""))
+                cands = self._extract_candidate_hosts(r.text or "")
+                host = self._probe_hosts(cands)
+                if host:
+                    print(f"[PUB缓存] {pub_cached} → 命中 {host}")
+                    self._write_cache(self.cfg.HOST_CACHE_KEY, {"host": host})
+                    return host
+            print(f"[PUB缓存] 失效: {pub_cached}")
 
-        # 3) 一级导航发布页
-        if not candidates:
-            candidates = self._crawl_publishes(self.cfg.PUBLISH_URLS)
+        # 3) 一级跳板页 → 秒跳转 → 二级发布页
+        for pub_url in self.cfg.PUBLISH_URLS:
+            print(f"[一级页] 解析: {pub_url}")
+            jump_url, html = self._resolve_jump_page(pub_url)
+            if not jump_url:
+                print(f"[一级页] {pub_url} 未能拿到跳转目标")
+                continue
+            print(f"[一级页] {pub_url} → {jump_url}")
+            self._write_cache(self.cfg.PUB_CACHE_KEY, {"pub": jump_url})
+            cands = self._extract_candidate_hosts(html)
+            host = self._probe_hosts(cands)
+            if host:
+                print(f"[一级页] 命中: {host}")
+                self._write_cache(self.cfg.HOST_CACHE_KEY, {"host": host})
+                return host
 
-        # 4) 二级导航发布页兜底（针对 JS 混淆拿不到跳转目标的情况）
-        if not candidates:
-            candidates = self._crawl_publishes(self.cfg.PUBLISH_FALLBACK_AFTER_JUMP)
+        # 4) 二级发布页硬编码兜底
+        for fb_url in self.cfg.PUBLISH_FALLBACK_AFTER_JUMP:
+            fb_url = fb_url.rstrip("/") + "/"
+            print(f"[二级保底] 解析: {fb_url}")
+            r = self.fetch(fb_url, timeout=self.cfg.PUBLISH_TIMEOUT,
+                           allow_redirects=True)
+            if r is None or r.status_code != 200:
+                print(f"[二级保底] {fb_url} 访问失败")
+                continue
+            final_url = r.url.rstrip("/") + "/"
+            self._write_cache(self.cfg.PUB_CACHE_KEY, {"pub": final_url})
+            cands = self._extract_candidate_hosts(r.text or "")
+            host = self._probe_hosts(cands)
+            if host:
+                print(f"[二级保底] 命中: {host}")
+                self._write_cache(self.cfg.HOST_CACHE_KEY, {"host": host})
+                return host
 
-        # 5) 去重后并发探测
-        uniq, seen = [], set()
-        for h in candidates:
-            h = h.rstrip("/")
-            if h and h not in seen:
-                seen.add(h)
-                uniq.append(h)
-        host = self._probe_hosts(uniq)
-        if host:
-            self._write_kv(self.cfg.HOST_CACHE_KEY, {"host": host})
-            return host
-
-        # 6) 全部失败时回退过期缓存
-        return cached or ""
+        # 5) 全部失败回退旧缓存
+        print("[发布页] 全部策略失败，回退旧缓存")
+        return cached_host or ""
 
 
 # ==================================================================
-# ③ Spider 主体（业务层保留 51 系列原有逻辑）
+# ③ Spider 主体
 # ==================================================================
 class Spider(BaseSpider):
     CONFIG = Config
@@ -481,11 +450,34 @@ class Spider(BaseSpider):
         self.proxies = {}
         self.host = ""
         self.headers = dict(self.CONFIG.HEADERS)
+        self._mem_cache = {}
+
+    # ---------- 缓存兜底（BaseSpider 无 getCache/setCache 时用内存）----------
+    def _cache_get(self, key):
+        fn = getattr(self, "getCache", None)
+        if callable(fn):
+            try:
+                v = fn(key)
+                if v:
+                    return v
+            except Exception:
+                pass
+        return self._mem_cache.get(key)
+
+    def _cache_set(self, key, value):
+        self._mem_cache[key] = value
+        fn = getattr(self, "setCache", None)
+        if callable(fn):
+            try:
+                fn(key, value)
+            except Exception:
+                pass
 
     # ---------- 生命周期 ----------
     def init(self, extend=""):
         global img_cache
         img_cache.clear()
+        self._mem_cache = {}
         self.proxies = {}
         self.headers = dict(self.CONFIG.HEADERS)
 
@@ -518,7 +510,7 @@ class Spider(BaseSpider):
         print(f"使用站点: {self.host}")
 
     def getName(self):
-        return "🍉%s|发布页自愈版" % self.CONFIG.SITE_NAME
+        return "🍉%s|发布页秒跳自愈版" % self.CONFIG.SITE_NAME
 
     def isVideoFormat(self, url):
         return any(e in (url or "") for e in (".m3u8", ".mp4", ".ts"))
@@ -529,22 +521,24 @@ class Spider(BaseSpider):
     def destroy(self):
         global img_cache
         img_cache.clear()
+        self._mem_cache = {}
 
     # ---------- 发布页自愈 ----------
     def get_working_host(self):
         resolver = PublishResolver(
             self.CONFIG, self._request,
-            cache_get=getattr(self, "getCache", None),
-            cache_set=getattr(self, "setCache", None),
+            cache_get=self._cache_get,
+            cache_set=self._cache_set,
         )
         return resolver.resolve()
 
     def _request(self, url, timeout=None, **kw):
+        kw.setdefault("allow_redirects", True)
         try:
             return requests.get(
                 url, headers=self.headers, proxies=self.proxies,
                 timeout=timeout or self.CONFIG.PROBE_TIMEOUT,
-                verify=False, allow_redirects=True, **kw)
+                verify=False, **kw)
         except Exception:
             return None
 
@@ -576,7 +570,8 @@ class Spider(BaseSpider):
         data = self.getpq(r.text)
 
         classes = []
-        for sel in ('.category-list ul li', '.nav-menu li', '.menu li', 'nav ul li'):
+        for sel in ('.category-list ul li', '.nav-menu li',
+                    '.menu li', 'nav ul li'):
             for k in data(sel).items():
                 a = k('a')
                 href = (a.attr('href') or '').strip()
@@ -588,7 +583,8 @@ class Spider(BaseSpider):
         if not classes:
             classes = [{'type_name': '最新', 'type_id': '/latest/'},
                        {'type_name': '热门', 'type_id': '/hot/'}]
-        return {"class": classes, "list": self.getlist(data("#index article, article"))}
+        return {"class": classes,
+                "list": self.getlist(data("#index article, article"))}
 
     def homeVideoContent(self):
         if not self.host:
@@ -601,7 +597,8 @@ class Spider(BaseSpider):
 
     def categoryContent(self, tid, pg=1, filter=False, extend=None):
         if not self.host:
-            return {'list': [], 'page': 1, 'pagecount': 1, 'limit': 90, 'total': 0}
+            return {'list': [], 'page': 1, 'pagecount': 1,
+                    'limit': 90, 'total': 0}
         try:
             if '@folder' in tid:
                 v = self.getfod(tid.replace('@folder', ''))
@@ -635,7 +632,7 @@ class Spider(BaseSpider):
             if not self.host:
                 return {'list': [{'vod_play_from': self.CONFIG.PLAY_FROM,
                                   'vod_play_url': '获取失败'}]}
-            url = ids[0] if ids[0].startswith('http') else f"{self.host}{ids[0]}"
+            url = ids[0] if ids[0].startswith('http') else self._abs(ids[0])
             r = self._request(url)
             if r is None or r.status_code != 200:
                 return {'list': [{'vod_play_from': self.CONFIG.PLAY_FROM,
@@ -649,7 +646,8 @@ class Spider(BaseSpider):
                         cfg_attr = k.attr('data-config')
                         if not cfg_attr:
                             continue
-                        video_url = json.loads(cfg_attr).get('video', {}).get('url', '')
+                        video_url = (json.loads(cfg_attr)
+                                     .get('video', {}).get('url', ''))
                         if not video_url:
                             continue
                         ep_name = ''
@@ -795,7 +793,8 @@ class Spider(BaseSpider):
     def tsProxy(self, url):
         real = url if str(url).startswith('http') else self.d64(url)
         res = self._request(real)
-        return [200, 'video/mp2t', res.content] if res is not None else [404, 'text/plain', b'']
+        return ([200, 'video/mp2t', res.content]
+                if res is not None else [404, 'text/plain', b''])
 
     # ---------- 编解码 / 图片 ----------
     def e64(self, text):
@@ -858,7 +857,8 @@ class Spider(BaseSpider):
         for i, h2 in enumerate(data('.post-content h2').items()):
             p_txt = data('.post-content p').eq(i * 2)
             p_img = data('.post-content p').eq(i * 2 + 1)
-            p_html = p_img.outer_html() if hasattr(p_img, 'outer_html') else str(p_img)
+            p_html = (p_img.outer_html()
+                      if hasattr(p_img, 'outer_html') else str(p_img))
             videos.append({
                 'vod_id': p_txt('a').attr('href'),
                 'vod_name': p_txt.text().strip(),
