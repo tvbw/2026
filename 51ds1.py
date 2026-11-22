@@ -49,9 +49,9 @@ class SiteConfig:
     SITE_KEYWORDS   = ["51大赛", "51吃瓜", "51爆料", "51cg"]
     PLAY_FROM       = "51大赛"
     PLAY_FALLBACK   = "51大赛"
-    HOST_CACHE_KEY  = "sp51_host_v11"
-    PUB_CACHE_KEY   = "sp51_pub_v11"
-    CLASS_CACHE_KEY = "sp51_classes_v11"
+    HOST_CACHE_KEY  = "sp51ds_host_v11"
+    PUB_CACHE_KEY   = "sp51ds_pub_v11"
+    CLASS_CACHE_KEY = "sp51ds_classes_v11"
     CLASS_CACHE_TTL = 3600
     HOST_CACHE_TTL  = 25000
     FALLBACK_HOST   = None
