@@ -62,17 +62,10 @@ class SiteConfig:
     PLAY_FALLBACK    = "51大赛"
     HOST_CACHE_KEY   = "51ds_host_v10"
     CLASS_CACHE_KEY  = "51ds_classes_v10"
+    PUB_CACHE_KEY   = "51ds_pub_v1"     # 上次成功跳转到的二级发布页
+    PUBLISH_TIMEOUT = 12 
     CLASS_CACHE_TTL  = 3600
-
-    # ============ 快路径（已知可用域名，最先探测）============
-    FAST_HOSTS = [
-        "https://51ds88.com/",
-        "https://d2ivs15vgv2y88.cloudfront.net",
-        "https://d3j1rgw50kjbyy.cloudfront.net/",
-        "https://aide.oshyitifo.cc",
-        "https://apple.oshyitifo.cc",
-    ]
-
+    
     # ============ 发布页（一级跳板页 + 二级保底）============
     PUBLISH_URLS = [
         "https://51ds16.com/",
@@ -80,17 +73,6 @@ class SiteConfig:
     PUBLISH_FALLBACK_AFTER_JUMP = [
         "https://51dsa48.com/",
         "https://51dsa33.com/",
-    ]
-    PUB_CACHE_KEY   = "51ds_pub_v1"     # 上次成功跳转到的二级发布页
-    PUBLISH_TIMEOUT = 12                # 发布页请求超时
-
-    # ============ 种子（可能承载 HTML 主站的域名）============
-    SEED_HOSTS = [
-        "https://d2gt333ro578y4.cloudfront.net",
-        "https://d3j1rgw50kjbyy.cloudfront.net/",
-        "https://at.ttiaqryf.cc",
-        "https://basket.ttiaqryf.cc",
-        "https://campus.ttiaqryf.cc",
     ]
 
     # ============ 探测参数 ============
@@ -102,7 +84,7 @@ class SiteConfig:
     PROBE_MAX_CANDIDATES = 30
     ENTRY_CACHE_TTL      = 1800   # 入口页结果缓存 30 分钟
 
-    FILTER_PROBE_TIMEOUT = 5      # 分类页筛选栏单请求超时
+    FILTER_PROBE_TIMEOUT = 10     # 分类页筛选栏单请求超时
     FILTER_TOTAL_TIMEOUT = 25     # 全部一级分类并发总超时
 
     FALLBACK_HOST    = None
