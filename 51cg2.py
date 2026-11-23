@@ -51,13 +51,13 @@ img_cache = {}
 # ① 站点配置
 # ==================================================================
 class Config:
-    SITE_NAME     = "51系列"
-    SITE_KEYWORDS = ["51吃瓜", "51爆料", "51cg"]
-    PLAY_FROM     = "51爆料"
+    SITE_NAME     = "51吃瓜8"
+    SITE_KEYWORDS = ["51吃瓜", "51爆料", "51吃瓜8"]
+    PLAY_FROM     = "51吃瓜8"
 
     # ---- 缓存键 ----
-    HOST_CACHE_KEY = "sp51_host_v1"      # 最终三级内容站
-    PUB_CACHE_KEY  = "sp51_pub_v1"       # 上次成功跳转到的二级发布页
+    HOST_CACHE_KEY = "sp51cg_host_v1"      # 最终三级内容站
+    PUB_CACHE_KEY  = "sp51cg_pub_v1"       # 上次成功跳转到的二级发布页
 
     # ---- 一级跳板页（只填这一个）----
     PUBLISH_URLS = [
