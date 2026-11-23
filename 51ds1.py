@@ -71,8 +71,8 @@ class SiteConfig:
     PROBE_TIMEOUT   = 12
     FAST_TIMEOUT    = 8
 
-    FILTER_PROBE_TIMEOUT = 5      # 分类页筛选栏单请求超时
-    FILTER_TOTAL_TIMEOUT = 25     # 全部一级分类并发总超时
+    FILTER_PROBE_TIMEOUT = 15     # 分类页筛选栏单请求超时
+    FILTER_TOTAL_TIMEOUT = 30    # 全部一级分类并发总超时
 
     FALLBACK_HOST    = None
     HOST_CACHE_TTL   = 25000
