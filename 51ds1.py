@@ -67,9 +67,9 @@ class SiteConfig:
         "https://51dsa33.com/",
     ]
     # ---- 超时 ----
-    PUBLISH_TIMEOUT = 12
-    PROBE_TIMEOUT   = 12
-    FAST_TIMEOUT    = 8
+    PUBLISH_TIMEOUT = 15
+    PROBE_TIMEOUT   = 15
+    FAST_TIMEOUT    = 15
 
     FILTER_PROBE_TIMEOUT = 15     # 分类页筛选栏单请求超时
     FILTER_TOTAL_TIMEOUT = 30    # 全部一级分类并发总超时
