@@ -58,6 +58,7 @@ class Config:
 
     # ================== 发布页（唯一可靠锚点，可只配 1 个）==================
     PUBLISH_URLS = [
+        "https://www.sunkdjlla.cc/",
         "https://www.nqvudlbn.cc/",
     ]
 
