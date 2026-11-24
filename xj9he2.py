@@ -32,12 +32,11 @@ class Spider(SpiderBase):
         self.brandDirector = "🦋 蝴蝶影视"
         self._ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         self.img_key_589 = b"2019ysapp7527"
-        
         self.remote_pool_js = "https://webimgg.jiekrrj.cn/cf230705/image/2n8/108/18d/2pz/440fca8bd2f8b9b6342e412746428d85.jpg"
         self.zone_order = ["z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"]
         self.domain_pools = {zid: [] for zid in self.zone_order}
-
         self.zoneMatrix = {
+                "api_host": "https://h5.xxoo169.org", 
             "z1": {
                 "name": "一区", "host": "https://6182094.xyz", "mod": "vod", "default": "1",
                 "subs": [
