@@ -26,9 +26,6 @@ except ImportError:
 class Spider(SpiderBase):
     def __init__(self):
         super(Spider, self).__init__()
-        self.tgGroup = "https://t.me/tvshare23"
-        self.brandActor = "🦋 TG群: @tvshare23"
-        self.brandDirector = "🦋 蝴蝶影视"
         self._ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         self.img_key_589 = b"2019ysapp7527"
 
@@ -39,7 +36,7 @@ class Spider(SpiderBase):
         self.site = {
             "name": "二区",
             "host": "https://618197.xyz",
-            "api_host": "https://www.xjxjx118.org/",   # z1 用；其他区可留默认
+            "api_host": "https://h5.xxoox118.org/",   # z1 用；其他区可留默认
             "mod": "vod",                            # z4 改 art
             "default": "1",
             "subs": [
