@@ -21,11 +21,7 @@ except ImportError:
         def getCache(self, key): return None
         def setCache(self, key, value): return "fail"
         def delCache(self, key): return "fail"
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'zh-CN,zh;q=0.9',
-    }
+
 
 class Spider(SpiderBase):
     def __init__(self):
@@ -42,7 +38,7 @@ class Spider(SpiderBase):
         self.zone_slug = "z1"
         self.site = {
             "name": "一区",
-            "host": "https://618609.xyz/",
+            "host": "https://618197.xyz",
             "api_host": "https://www.xjxjx118.org/",   # z1 用；其他区可留默认
             "mod": "vod",                            # z4 改 art
             "default": "1",
@@ -63,8 +59,8 @@ class Spider(SpiderBase):
         self.domain_pools = {zid: [] for zid in self.zone_order}
 
         # CDN 域名关键字：这些不是主站，不做相对路径转换
-        self._cdn_keywords = ("618799", "6180013", "6180023", "6182321","618799", "6181028","618879", "61881003",
-                              "6182063", "6182275", "618281", "618197","618799", "6180013","6182231")
+        self._cdn_keywords = ("618333", "6180013", "6180023", "6182321",
+                              "6182063", "6182275", "6182231")
 
         self.ctx = ssl.create_default_context()
         self.ctx.check_hostname = False
