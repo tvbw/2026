@@ -43,23 +43,22 @@ LOG = logging.getLogger(__name__)
 # ==================================================================
 class SiteConfig:
     # ============ 站点身份（换站改这一段）============
-    SITE_NAME        = "51吃瓜"
-    SITE_KEYWORDS    = ["51吃瓜", "51爆料"]
-    PLAY_FROM        = "51吃瓜"
-    PLAY_FALLBACK    = "51吃瓜"
+    SITE_NAME        = "51爆料"
+    SITE_KEYWORDS    = ["51吃瓜", "51吃瓜", "51大赛"]
+    PLAY_FROM        = "51爆料"
+    PLAY_FALLBACK    = "51爆料"
 
     # ---- PublishResolver缓存键（来自1.txt）----
-    HOST_CACHE_KEY = "sp51cg_host_v1"      # 最终三级内容站
-    PUB_CACHE_KEY  = "sp51cg_pub_v1"       # 上次成功跳转到的二级发布页
+    HOST_CACHE_KEY = "sp51bl_host_v1"      # 最终三级内容站
+    PUB_CACHE_KEY  = "sp51bl_pub_v1"       # 上次成功跳转到的二级发布页
 
-    # ---- 一级跳板页（会3xx/js跳转到二级发布页）----
+    # ---- 一级跳板页（只填这一个）----
     PUBLISH_URLS = [
-        "shturl.cc/z82dC3h",
+        "https://51blk5.com/",
     ]
-    # ---- 二级发布页硬编码保底，一级跳板全部失效直接使用 ----
+    # ---- 二级发布页（硬编码保底，域名变了再改这里）----
     PUBLISH_FALLBACK_AFTER_JUMP = [
-        "shturl.cc/fOc1ei2uECV4a2K",
-        "shturl.cc/WtIEkTsTfxfefUmcPfM",
+        "https://www.yobbmdnp.cc/",
     ]
 
     # ---- 超时参数（来自1.txt） ----
