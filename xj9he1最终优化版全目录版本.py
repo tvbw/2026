@@ -62,9 +62,6 @@ class Spider(SpiderBase):
 
     def __init__(self):
         super(Spider, self).__init__()
-        self.tgGroup = "https://t.me/tvshare23"
-        self.brandActor = "🦋 TG群: @tvshare23"
-        self.brandDirector = "🦋 蝴蝶影视"
         self._ua = _UA
         self.img_key_589 = _IMG_KEY_589
 
@@ -346,7 +343,7 @@ class Spider(SpiderBase):
         m = _RE_M3U8_MAIN.search(raw_url)
         if m:
             sub_path = m.group(1)
-            target = "https://6180013.xyz" if "bktappup" in sub_path else "https://6180023.xyz"
+            target = "https://618197.xyz" if "bktappup" in sub_path else "https://618197.xyz"
             return "%s/m3u8/%s" % (target, sub_path)
         m = _RE_M3U8_FALLBACK.search(raw_url)
         if m:
@@ -381,7 +378,7 @@ class Spider(SpiderBase):
                     v_url = "z1_mk://" + v_url
                 if zone_slug == "z4" and v_url.endswith(".m3u8"):
                     if not v_url.startswith("http"):
-                        v_url = "https://618799.xyz/web" + ("/" if not v_url.startswith("/") else "") + v_url
+                        v_url = "https://618197.xyz/web" + ("/" if not v_url.startswith("/") else "") + v_url
                 if zone_slug in ("z5", "z8", "z9"):
                     v_url = self._map_m3u8_url(v_url)
 
@@ -564,7 +561,7 @@ class Spider(SpiderBase):
 
         if play_url.startswith("z1_mk://"):
             mk_id = play_url.replace("z1_mk://", "").strip()
-            api_url = "https://h5.xxoo475.org/api/v2/vod/reqplay/" + mk_id
+            api_url = "https://www.xjxjx118.org/api/v2/vod/reqplay/" + mk_id
             api_res = self._fetch(api_url, origin_host, custom_headers={
                 "Accept": "application/json, text/plain, */*",
                 "Connection": "keep-alive"
@@ -584,7 +581,7 @@ class Spider(SpiderBase):
                 "User-Agent": self._ua,
                 "Accept": "*/*",
                 "Accept-Language": "zh,en;q=0.9,zh-CN;q=0.8",
-                "Origin": "https://6182117.xyz",
+                "Origin": "https://618197.xyz",
                 "Connection": "keep-alive"
             }
             res_m3u8 = self._fetch(play_url, custom_headers=z7_headers)
@@ -634,7 +631,7 @@ class Spider(SpiderBase):
                             "url": "data:application/vnd.apple.mpegurl;base64," + m3u8_b64
                         }
 
-        origin_val = "https://6182321.xyz" if ("6182321" in origin_host or "618799" in play_url) else "null"
+        origin_val = "https://618197.xyz" if ("6182321" in origin_host or "618799" in play_url) else "null"
         return {
             "parse": 0,
             "jx": 0,
@@ -660,7 +657,7 @@ class Spider(SpiderBase):
         origin_host = unquote(params.get("host", self._default_host))
 
         if zone_flag == "z4" or "0734.la" in target_url:
-            res = self._fetch(target_url, "https://6182321.xyz", raw_bytes=True)
+            res = self._fetch(target_url, "https://618197.xyz", raw_bytes=True)
             raw = res.get("bytes", b"")
             if not raw: return [404, "text/plain", "Empty Body"]
             mime = _detect_mime(raw)
