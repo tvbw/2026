@@ -38,8 +38,8 @@ class Spider(SpiderBase):
         self.zone_slug = "z3"
         self.site = {
             "name": "三区",
-            "host": "https://618333.xyz",
-            "api_host": "https://h5.xxoo168.org",   # z1 用；其他区可留默认
+            "host": "https://618197.xyz",
+            "api_host": "https://www.xjxjx118.org/",   # z1 用；其他区可留默认
             "mod": "vod",                            # z4 改 art
             "default": "1",
             "subs": [
