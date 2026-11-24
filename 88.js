@@ -25,6 +25,120 @@
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
+      "key": "香蕉9合2",
+      "name": "❤️香蕉9合1原版【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
+    },
+    {
+      "key": "香蕉9合1最终优化版",
+      "name": "❤️香蕉9合1最终优化版全目录【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
+    },
+    {
+      "key": "香蕉1区",
+      "name": "5❤️香蕉1区【🔞】",
+      "type": 3,
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
+      "playerType": 2,
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "changeable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 1.6
+      }
+    },
+    {
+      "key": "香蕉2区",
+      "name": "🔞️香蕉2区【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj102.py",
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj102.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "香蕉3区",
+      "name": "🔞️香蕉3区【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj103.py",
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj103.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "香蕉4区",
+      "name": "🔞️香蕉4区【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj104.py",
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj104.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "香蕉5区",
+      "name": "🔞️香蕉5区【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj105.py",
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj105.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "香蕉6区",
+      "name": "🔞️香蕉6区【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj106.py",
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj106.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "91吃瓜自愈版",
       "name": "❤️91吃瓜自愈版｜🔞",
       "type": 3,
@@ -48,7 +162,7 @@
     },
     {
       "key": "51吃瓜导航直达版",
-      "name": "❤️51吃瓜导航直达版｜🔞",
+      "name": "❤️51吃瓜导航直达版51cg1｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -59,7 +173,7 @@
     },
     {
       "key": "51吃瓜导航兜底版",
-      "name": "❤️51吃瓜导航兜底版｜🔞",
+      "name": "❤️51吃瓜导航兜底版51cg2｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -69,6 +183,29 @@
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/51cg2.py"
     },
     {
+      "key": "91JAV最终版",
+      "name": "❤️91JAV",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/91av.py"
+    },
+    {
+      "key": "连播18AV",
+      "name": "❤️连播18AV",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/18av.py"
+    },
+    {
+
       "key": "51爆料导航版",
       "name": "❤️51爆料导航标准版｜🔞",
       "type": 3,
@@ -148,17 +285,6 @@
         "ratio": 1.66
       },
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
-    },
-    {
-      "key": "九九归一",
-      "name": "九九归一.py｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://github.com/ge6bu6/1/blob/main/py/九九归一.py"
     },
     {
       "key": "fulleroticmovies",
@@ -444,78 +570,8 @@
       "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
     },
     {
-      "key": "Missav3",
-      "name": "❤️Missav新源",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/20261001-18/main/missav-%E6%BA%90.json"
-    },
-    {
-      "key": "香蕉9合2",
-      "name": "❤️香蕉9合1原版【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
-    },
-    {
-      "key": "香蕉9合1最终优化版",
-      "name": "❤️香蕉9合1最终优化版全目录【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
-    },
-    {
-      "key": "香蕉1区",
-      "name": "5❤️香蕉1区【🔞】",
-      "type": 3,
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj101.py",
-      "playerType": 2,
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.6
-      }
-    },
-    {
-      "key": "91JAV最终版",
-      "name": "❤️91JAV",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/91av.py"
-    },
-    {
-      "key": "连播18AV",
-      "name": "❤️连播18AV",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/18av.py"
-    },
-    {
+
+
       "key": "py_4K_fullhd-fullhd3",
       "name": "❤️FHD老僧世界【🔞】",
       "type": 3,
@@ -802,81 +858,7 @@
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/ru.py"
     },
     {
-      "key": "香蕉2区",
-      "name": "🔞️香蕉2区【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj102.py",
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj102.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "香蕉3区",
-      "name": "🔞️香蕉3区【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj103.py",
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj103.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "香蕉4区",
-      "name": "🔞️香蕉4区【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj104.py",
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj104.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "香蕉5区",
-      "name": "🔞️香蕉5区【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj105.py",
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj105.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "香蕉6区",
-      "name": "🔞️香蕉6区【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj106.py",
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj106.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
+
       "key": "py_4K_93合1",
       "name": "❤️93合1【🔞】",
       "type": 3,
