@@ -343,12 +343,12 @@ class Spider(SpiderBase):
         m = _RE_M3U8_MAIN.search(raw_url)
         if m:
             sub_path = m.group(1)
-            target = "https://618197.xyz" if "bktappup" in sub_path else "https://618197.xyz"
+            target = "618197.xyz" if "bktappup" in sub_path else "618197.xyz"
             return "%s/m3u8/%s" % (target, sub_path)
         m = _RE_M3U8_FALLBACK.search(raw_url)
         if m:
             sub_path = m.group(1)
-            target = "https://6180013.xyz" if "bktappup" in sub_path else "https://6180023.xyz"
+            target = "6180013.xyz" if "bktappup" in sub_path else "6180023.xyz"
             return "%s/m3u8/%s" % (target, sub_path)
         return raw_url
 
@@ -378,7 +378,7 @@ class Spider(SpiderBase):
                     v_url = "z1_mk://" + v_url
                 if zone_slug == "z4" and v_url.endswith(".m3u8"):
                     if not v_url.startswith("http"):
-                        v_url = "https://618197.xyz/web" + ("/" if not v_url.startswith("/") else "") + v_url
+                        v_url = "618197.xyz/web" + ("/" if not v_url.startswith("/") else "") + v_url
                 if zone_slug in ("z5", "z8", "z9"):
                     v_url = self._map_m3u8_url(v_url)
 
@@ -561,7 +561,7 @@ class Spider(SpiderBase):
 
         if play_url.startswith("z1_mk://"):
             mk_id = play_url.replace("z1_mk://", "").strip()
-            api_url = "https://www.xjxjx118.org/api/v2/vod/reqplay/" + mk_id
+            api_url = "https://h5.xxoox119.org/api/v2/vod/reqplay/" + mk_id
             api_res = self._fetch(api_url, origin_host, custom_headers={
                 "Accept": "application/json, text/plain, */*",
                 "Connection": "keep-alive"
