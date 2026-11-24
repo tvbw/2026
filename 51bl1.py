@@ -59,11 +59,10 @@ class Config:
     # ================== 发布页（唯一可靠锚点，可只配 1 个）==================
     PUBLISH_URLS = [
         "https://51dsa48.com/",
-        "https://51dsa33.com/",
     ]
     # ---- 二级发布页（硬编码保底，域名变了再改这里）----
     PUBLISH_FALLBACK_AFTER_JUMP = [
-        "https://51ds16.com/",
+        "https://51dsa33.com/",
     ]
     # 三级域名（可选，通常失效快，留空则完全依赖发布页）
     SEED_HOSTS = []
