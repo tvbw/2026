@@ -74,7 +74,7 @@ class Spider(SpiderBase):
 
         self.zoneMatrix = {
             "z1": {
-                "name": "一区", "host": "https://6182094.xyz", "mod": "vod", "default": "1",
+                "name": "一区", "api_host": "https://h5.xxoo169.org","host": "https://6182094.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部视频", "v": "1"}, {"n": "香蕉精品", "v": "13"}, {"n": "制服诱惑", "v": "22"},
                     {"n": "国产视频", "v": "6"}, {"n": "清纯少女", "v": "8"}, {"n": "辣妹大奶", "v": "9"},
@@ -84,7 +84,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z2": {
-                "name": "二区", "host": "https://6182190.xyz", "mod": "vod", "default": "1",
+                "name": "二区","api_host": "https://h5.xxoo169.org", "host": "https://6182190.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"},{"n": "无码", "v": "56"},
                     {"n": "动漫", "v": "9"},{"n": "热门", "v": "5"}, {"n": "黑料", "v": "31"}, 
@@ -93,7 +93,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z3": {
-                "name": "三区", "host": "https://6182028.xyz", "mod": "vod", "default": "1",
+                "name": "三区","api_host": "https://h5.xxoo169.org", "host": "https://6182028.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部", "v": "1"}, {"n": "二区", "v": "66"}, {"n": "日欧", "v": "11"},
                     {"n": "动漫", "v": "26"}, {"n": "无码", "v": "8"}, {"n": "字幕", "v": "7"},
@@ -102,7 +102,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z4": {
-                "name": "四区", "host": "https://6182321.xyz", "mod": "art", "default": "44",
+                "name": "四区", "api_host": "https://h5.xxoo169.org","host": "https://6182321.xyz", "mod": "art", "default": "44",
                 "subs": [
                     {"n": "欧美视频", "v": "44"},{"n": "无码破解", "v": "18"}, 
                     {"n": "中文字幕2", "v": "40"},{"n": "中文字幕", "v": "17"}
