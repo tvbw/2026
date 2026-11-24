@@ -39,11 +39,12 @@ class Spider(SpiderBase):
         # site["mod"]: 绝大部分区是 vod；只有 z4 是 art
         # site["subs"]: 复制原九合一zoneMatrix里面对应区的subs分类列表
         # ==============================================================
-        self.zone_slug = "z1"          # ← 改成你要做单源的区：z1/z2/z3/z4/z5/z6/z7/z8/z9
+        self.zone_slug = "z1"
         self.site = {
             "name": "一区",
-            "host": "https://618285.xyz",  # ←【初始域名】远端池子正常时会自动替换，池子失效才手动改这里
-            "mod": "vod",                   # z4区务必改成 "art"，其他全部 "vod"
+            "host": "https://618197.xyz",
+            "api_host": "https://www.xjxjx118.org/",   # z1 用；其他区可留默认
+            "mod": "vod",                            # z4 改 art
             "default": "1",
             "subs": [
                     {"n": "全部视频", "v": "1"}, {"n": "香蕉精品", "v": "13"}, {"n": "制服诱惑", "v": "22"},
