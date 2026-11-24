@@ -267,12 +267,12 @@ class Spider(SpiderBase):
         m = re.search(r'/(bktappup/.+\.m3u8|v3/.+\.m3u8|cf\d+/.+\.m3u8)', raw_url)
         if m:
             sub_path = m.group(1)
-            target_media_host = "https://6180013.xyz" if "bktappup" in sub_path else "https://6180023.xyz"
+            target_media_host = "https://618026.xyz" if "bktappup" in sub_path else "https://6180023.xyz"
             return "%s/m3u8/%s" % (target_media_host, sub_path)
         m_fallback = re.search(r'/(?:api/app/vid/h5/m3u8|m3u8)/([a-zA-Z0-9_\-/]+\.m3u8)', raw_url)
         if m_fallback:
             sub_path = m_fallback.group(1)
-            target_media_host = "https://6180013.xyz" if "bktappup" in sub_path else "https://6180023.xyz"
+            target_media_host = "https://618026.xyz" if "bktappup" in sub_path else "https://6180023.xyz"
             return "%s/m3u8/%s" % (target_media_host, sub_path)
         return raw_url
 
@@ -305,7 +305,7 @@ class Spider(SpiderBase):
 
                 if zone_slug == "z4" and v_url.endswith(".m3u8"):
                     if not v_url.startswith("http"):
-                        v_url = "https://618799.xyz/web" + ("/" if not v_url.startswith("/") else "") + v_url
+                        v_url = "https://618026.xyz/web" + ("/" if not v_url.startswith("/") else "") + v_url
 
                 if zone_slug in ("z5", "z8", "z9"):
                     v_url = self._map_m3u8_url(v_url)
