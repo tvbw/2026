@@ -71,10 +71,11 @@ class Spider(SpiderBase):
         self.remote_pool_js = "https://webimgg.jiekrrj.cn/cf230705/image/2n8/108/18d/2pz/440fca8bd2f8b9b6342e412746428d85.jpg"
         self.zone_order = ["z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"]
         self.domain_pools = {zid: [] for zid in self.zone_order}
-
+            "host": "https://618285.xyz",
+            "api_host": "https://h5.xxoo169.org",  
         self.zoneMatrix = {
             "z1": {
-                "name": "一区", "host": "https://6182094.xyz", "mod": "vod", "default": "1",
+                "name": "一区", "host": "https://618026.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部视频", "v": "1"}, {"n": "香蕉精品", "v": "13"}, {"n": "制服诱惑", "v": "22"},
                     {"n": "国产视频", "v": "6"}, {"n": "清纯少女", "v": "8"}, {"n": "辣妹大奶", "v": "9"},
