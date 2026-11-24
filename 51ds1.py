@@ -49,21 +49,20 @@ LOG = logging.getLogger(__name__)
 
 class Config:
     # ================== 站点身份 ==================
-    SITE_NAME            = "51吃瓜2"
-    SITE_KEYWORDS        = ["51吃瓜2", "51cg"]
-    PLAY_FROM            = "51吃瓜2"
-    PLAY_FALLBACK_TITLE  = "51吃瓜2"
-    HOST_CACHE_KEY       = "51cg2_host_v12"
+    SITE_NAME            = "51大赛2"
+    SITE_KEYWORDS        = ["51大赛2", "51cg"]
+    PLAY_FROM            = "51大赛2"
+    PLAY_FALLBACK_TITLE  = "51大赛2"
+    HOST_CACHE_KEY       = "51ds2_host_v12"
     HOST_CACHE_TTL       = 6 * 3600
 
     # ================== 发布页（唯一可靠锚点，可只配 1 个）==================
     PUBLISH_URLS = [
-        "https://www.sunkdjlla.cc/",
-        "https://www.nqvudlbn.cc/",
+        "https://www.51dsa48.com/",
     ]
     # ---- 二级发布页（硬编码保底，域名变了再改这里）----
     PUBLISH_FALLBACK_AFTER_JUMP = [
-        "https://51cgf24.com/",
+        "https://www.51dsa33.com/",
     ]
     # 三级域名（可选，通常失效快，留空则完全依赖发布页）
     SEED_HOSTS = []
