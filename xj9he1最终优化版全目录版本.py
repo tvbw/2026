@@ -74,7 +74,7 @@ class Spider(SpiderBase):
 
         self.zoneMatrix = {
             "z1": {
-                "name": "一区", "host": "https://6182094.xyz", "mod": "vod", "default": "1",
+                "name": "一区", "host": "https://618747.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部视频", "v": "1"}, {"n": "香蕉精品", "v": "13"}, {"n": "制服诱惑", "v": "22"},
                     {"n": "国产视频", "v": "6"}, {"n": "清纯少女", "v": "8"}, {"n": "辣妹大奶", "v": "9"},
