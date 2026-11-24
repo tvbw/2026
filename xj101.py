@@ -39,7 +39,7 @@ class Spider(SpiderBase):
         self.site = {
             "name": "一区",
             "host": "https://618197.xyz",
-            "api_host": "https://www.xjxjx118.org/",   # z1 用；其他区可留默认
+            "api_host": "https://h5.xxoox119.org/",   # z1 用；其他区可留默认
             "mod": "vod",                            # z4 改 art
             "default": "1",
             "subs": [
