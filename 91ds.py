@@ -102,9 +102,13 @@ class Config:
         "https://91dswz14.com/",
         "https://91dswz16.com/",
     ]
-    SEED_HOSTS = []                    # 种子内容站（可选）
-    FALLBACK_HOST = None               # 最终兜底内容站（可选）
-
+    SEED_HOSTS = [
+        "https://alone.poampwcv.cc/",
+        "https://break.poampwcv.cc/",
+        "https://any.zenolyqt.cc/",
+    ]                    # 种子内容站（可选）
+    FALLBACK_HOST = [ "https://df2q5wu0gtfve.cloudfront.net/",             # 最终兜底内容站（可选）
+    ]
     # ---------- 超时与判定（一般不用改） ----------
     PUBLISH_TIMEOUT   = 12
     PROBE_TIMEOUT     = 12
