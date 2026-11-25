@@ -84,31 +84,40 @@ class Config:
     # ---------- 站点身份 [改] ----------
     SITE_NAME     = "91大赛"
     SITE_KEYWORDS = ["91大赛", "91爆料", "91cg"]      # 字符串或正则
-    SITE_MARKERS  = (                                 # 内容站 HTML 特征（小写匹配）
+    PLAY_FROM = "91大赛"
+    # 内容站 HTML 特征（小写匹配）
+    SITE_MARKERS  = (                                
         "post-title", "entry-title", "<article",
         'class="post', "realtime-card", "candid-video", "video-card",
     )
-    PLAY_FROM = "91大赛"
 
     # ---------- 缓存键 [改] ----------
     HOST_CACHE_KEY = "sp91_host_v1"    # 三级内容站
     PUB_CACHE_KEY  = "sp91_pub_v1"     # 二级发布页
 
-    # ---------- 发布页锚点 [改] ----------
-    PUBLISH_URLS = [                   # 一级跳板页（可 3xx/JS 跳转，也可直接是发布页）
+    # 一级跳板页（可 3xx/JS 跳转，也可直接是发布页）
+    PUBLISH_URLS = [                   
         "https://91dswz17.com/",
     ]
-    SECONDARY_PUBLISH_URLS = [         # 二级发布页硬编码保底（可选）
+
+    # 二级发布页硬编码保底（可选）
+    SECONDARY_PUBLISH_URLS = [         
         "https://91dswz14.com/",
         "https://91dswz16.com/",
-    ]
+    ]  
+
+    # 种子内容站（可选）                                                       
     SEED_HOSTS = [
         "https://alone.poampwcv.cc/",
         "https://break.poampwcv.cc/",
         "https://any.zenolyqt.cc/",
-    ]                    # 种子内容站（可选）
-    FALLBACK_HOST = [ "https://df2q5wu0gtfve.cloudfront.net/",             # 最终兜底内容站（可选）
-    ]
+    ]   
+
+    # 最终兜底内容站（可选）                                                         
+    FALLBACK_HOST = [ 
+        "https://df2q5wu0gtfve.cloudfront.net/",           
+    ]                                                            
+
     # ---------- 超时与判定（一般不用改） ----------
     PUBLISH_TIMEOUT   = 12
     PROBE_TIMEOUT     = 12
