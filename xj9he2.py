@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""九合一 — vbox 适配版（并发域名探测 + 10分钟缓存 + 协议修正）"""
 
 import sys
 import os
 import re
 import json
 import base64
+import time
 import html as html_lib
 import urllib.request
 import urllib.parse
@@ -15,6 +17,12 @@ import gzip
 import zlib
 import ssl
 import random
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+try:
+    import requests
+except ImportError:
+    requests = None
 
 try:
     from base.spider import Spider as SpiderBase
@@ -24,7 +32,72 @@ except ImportError:
         def setCache(self, key, value): return "fail"
         def delCache(self, key): return "fail"
 
-class Spider(SpiderBase):
+
+# ============================================================
+# 并发域名探测 + 10 分钟 TTL 缓存（按 zone 独立缓存）
+# ============================================================
+_DOMAIN_CACHE = {}  # {zone_slug: {"domain": str, "timestamp": float}}
+_CACHE_TTL = 600
+_PROBE_TIMEOUT = 8
+
+
+def _probe_domain(domain, path, headers, timeout=_PROBE_TIMEOUT):
+    try:
+        url = domain.rstrip('/') + '/' + path.lstrip('/')
+        if requests is not None:
+            rsp = requests.get(url, headers=headers, timeout=timeout, verify=False)
+            if rsp.status_code == 200:
+                return rsp.text, domain
+        else:
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                if resp.getcode() == 200:
+                    raw = resp.read()
+                    if raw.startswith(b"\x1f\x8b"):
+                        raw = gzip.decompress(raw)
+                    return raw.decode("utf-8", errors="ignore"), domain
+    except Exception:
+        pass
+    return None
+
+
+class _DomainProbeMixin:
+    def _fetch_best(self, path, zone_slug="", headers=None, timeout=_PROBE_TIMEOUT):
+        """并发探测域名，按 zone 独立缓存。返回 (text, best_domain)"""
+        headers = headers or getattr(self, '_ua_headers', {})
+        domains = self._get_zone_domains(zone_slug)
+        if not domains:
+            return "", ""
+
+        cache = _DOMAIN_CACHE.get(zone_slug, {"domain": None, "timestamp": 0})
+        now = time.time()
+
+        # 1. 缓存未过期 → 先试缓存域名
+        cached = cache["domain"]
+        if cached and (now - cache["timestamp"]) < _CACHE_TTL:
+            result = _probe_domain(cached, path, headers, timeout)
+            if result:
+                return result
+
+        # 2. 并发探测所有域名，先到先得
+        with ThreadPoolExecutor(max_workers=len(domains)) as executor:
+            futures = {
+                executor.submit(_probe_domain, d, path, headers, timeout): d
+                for d in domains
+            }
+            for future in as_completed(futures):
+                result = future.result()
+                if result:
+                    _DOMAIN_CACHE[zone_slug] = {
+                        "domain": result[1],
+                        "timestamp": time.time()
+                    }
+                    return result
+
+        return "", domains[0] if domains else ""
+
+
+class Spider(_DomainProbeMixin, SpiderBase):
     def __init__(self):
         super(Spider, self).__init__()
         self.tgGroup = "https://t.me/tvshare23"
@@ -32,14 +105,14 @@ class Spider(SpiderBase):
         self.brandDirector = "🦋 蝴蝶影视"
         self._ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         self.img_key_589 = b"2019ysapp7527"
-        
+
         self.remote_pool_js = "https://webimgg.jiekrrj.cn/cf230705/image/2n8/108/18d/2pz/440fca8bd2f8b9b6342e412746428d85.jpg"
         self.zone_order = ["z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"]
         self.domain_pools = {zid: [] for zid in self.zone_order}
 
         self.zoneMatrix = {
             "z1": {
-                "name": "一区", "host": "https://6182094.xyz", "mod": "vod", "default": "1",
+                "name": "一区", "host": "https://618931.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部视频", "v": "1"}, {"n": "香蕉精品", "v": "13"}, {"n": "制服诱惑", "v": "22"},
                     {"n": "国产视频", "v": "6"}, {"n": "清纯少女", "v": "8"}, {"n": "辣妹大奶", "v": "9"},
@@ -49,7 +122,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z2": {
-                "name": "二区", "host": "https://6182190.xyz", "mod": "vod", "default": "1",
+                "name": "二区", "host": "https://618072.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部", "v": "1"}, {"n": "推荐", "v": "6"}, {"n": "动漫", "v": "9"},
                     {"n": "黑料", "v": "31"}, {"n": "无码", "v": "56"}, {"n": "字幕", "v": "7"},
@@ -58,7 +131,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z3": {
-                "name": "三区", "host": "https://6182028.xyz", "mod": "vod", "default": "1",
+                "name": "三区", "host": "https://6181017.xyz", "mod": "vod", "default": "1",
                 "subs": [
                     {"n": "全部", "v": "1"}, {"n": "二区", "v": "66"}, {"n": "日欧", "v": "11"},
                     {"n": "动漫", "v": "26"}, {"n": "无码", "v": "8"}, {"n": "字幕", "v": "7"},
@@ -67,14 +140,14 @@ class Spider(SpiderBase):
                 ]
             },
             "z4": {
-                "name": "四区", "host": "https://6182321.xyz", "mod": "art", "default": "44",
+                "name": "四区", "host": "https://618190.xyz", "mod": "art", "default": "44",
                 "subs": [
                     {"n": "欧美视频", "v": "44"}, {"n": "中文字幕2", "v": "40"},
                     {"n": "中文字幕", "v": "17"}, {"n": "无码破解", "v": "18"}
                 ]
             },
             "z5": {
-                "name": "五区", "host": "https://6182231.xyz", "mod": "vod", "default": "2",
+                "name": "五区", "host": "https://618198.xyz", "mod": "vod", "default": "2",
                 "subs": [
                     {"n": "全部", "v": "2"}, {"n": "韩国", "v": "12"}, {"n": "欧美", "v": "11"},
                     {"n": "无码", "v": "16"}, {"n": "直播", "v": "23"}, {"n": "字幕", "v": "14"},
@@ -83,7 +156,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z6": {
-                "name": "六区", "host": "https://6182240.xyz", "mod": "vod", "default": "43",
+                "name": "六区", "host": "https://618248.xyz", "mod": "vod", "default": "43",
                 "subs": [
                     {"n": "全部", "v": "43"}, {"n": "二区", "v": "1"}, {"n": "韩国", "v": "48"},
                     {"n": "网黄", "v": "59"}, {"n": "中文", "v": "46"}, {"n": "无码", "v": "45"},
@@ -91,7 +164,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z7": {
-                "name": "七区", "host": "https://6182117.xyz", "mod": "vod", "default": "40",
+                "name": "七区", "host": "https://618611.xyz", "mod": "vod", "default": "40",
                 "subs": [
                     {"n": "网黄UP主", "v": "40"}, {"n": "国产AV", "v": "37"}, {"n": "探花AV", "v": "43"},
                     {"n": "绿帽淫妻", "v": "49"}, {"n": "国产传媒", "v": "44"}, {"n": "福利姬", "v": "41"},
@@ -101,7 +174,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z8": {
-                "name": "八区", "host": "https://6182063.xyz", "mod": "vod", "default": "66",
+                "name": "八区", "host": "https://618698.xyz", "mod": "vod", "default": "66",
                 "subs": [
                     {"n": "全部", "v": "66"}, {"n": "二区", "v": "1"}, {"n": "日欧", "v": "63"},
                     {"n": "动漫", "v": "64"}, {"n": "无码", "v": "65"}, {"n": "字幕", "v": "69"},
@@ -110,7 +183,7 @@ class Spider(SpiderBase):
                 ]
             },
             "z9": {
-                "name": "九区", "host": "https://6182275.xyz", "mod": "vod", "default": "35",
+                "name": "九区", "host": "https://618753.xyz", "mod": "vod", "default": "35",
                 "subs": [
                     {"n": "全部", "v": "35"}, {"n": "二区", "v": "2"}, {"n": "韩国", "v": "30"},
                     {"n": "欧美", "v": "27"}, {"n": "无码", "v": "40"}, {"n": "字幕", "v": "39"},
@@ -130,12 +203,66 @@ class Spider(SpiderBase):
             urllib.request.HTTPSHandler(context=self.ctx)
         )
 
+        self._ua_headers = {
+            "User-Agent": self._ua,
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+            "Accept-Encoding": "gzip, deflate",
+            "Connection": "keep-alive"
+        }
+
+    # ---------------- 基类接口 ----------------
+
+    def getName(self):
+        return "蝴蝶影视·九区全功能稳定版(并发漂移版)"
+
+    def getDependence(self):
+        return ['requests']
+
+    def isVideoFormat(self, url):
+        low = (url or "").lower()
+        return any(k in low for k in (".m3u8", ".mp4", ".flv", ".mkv", ".avi", ".ts", ".mpd", "index.png"))
+
+    def manualVideoCheck(self):
+        return False
+
+    def destroy(self):
+        _DOMAIN_CACHE.clear()
+
+    # ---------------- init：域名注入 + super ----------------
+
     def init(self, extend=""):
+        try:
+            super().init(extend)
+        except Exception:
+            pass
+
+        cfg = json.loads(extend) if isinstance(extend, str) and extend else (extend or {})
+        self.proxies = cfg.get("proxies") or {}
+
+        injected = getattr(self, '_vbox_effective_hosts', None) or []
+        if injected and str(injected[0]).startswith('http'):
+            self.host = str(injected[0]).rstrip('/')
+        else:
+            self.host = self.zoneMatrix["z1"]["host"]
+
+        # 同步注入到各 zone（自定义域名覆盖默认域名）
+        for zid in self.zone_order:
+            if not self.zoneMatrix[zid].get("host"):
+                self.zoneMatrix[zid]["host"] = self.host
+
         self.sync_remote_domain_pools()
         return True
 
-    def getName(self):
-        return "蝴蝶影视·九区全功能稳定版"
+    # ---------------- 域名池管理 ----------------
+
+    def _get_zone_domains(self, zone_slug):
+        """获取 zone 的域名列表：远程域名池 > 注入域名 > 默认域名"""
+        pool = self.domain_pools.get(zone_slug, [])
+        if pool:
+            return pool
+        default = self.zoneMatrix.get(zone_slug, {}).get("host", self.host)
+        return [default]
 
     def sync_remote_domain_pools(self):
         try:
@@ -143,7 +270,7 @@ class Spider(SpiderBase):
             req = urllib.request.Request(self.remote_pool_js, headers=headers)
             with self.opener.open(req, timeout=6) as resp:
                 text = resp.read().decode("utf-8", errors="ignore")
-                m = re.search(r'const\s+zuArr\s*=\s*(\[\[[\s\S]*?\]\]);', text)
+                m = re.search(r'const\s+zuArr\s*=(\[\[[\s\S]*?\]\]);', text)
                 if m:
                     raw_arr_str = m.group(1).replace("'", '"')
                     zu_list = json.loads(raw_arr_str)
@@ -159,35 +286,41 @@ class Spider(SpiderBase):
         if not pool:
             self.sync_remote_domain_pools()
             pool = self.domain_pools.get(zone_slug, [])
-        
+
         if pool:
             cur_host = self.zoneMatrix[zone_slug]["host"]
             candidates = [h for h in pool if h != cur_host]
             if candidates:
                 new_host = random.choice(candidates)
                 self.zoneMatrix[zone_slug]["host"] = new_host
+                # 清除该 zone 的缓存，下次请求重新探测
+                _DOMAIN_CACHE.pop(zone_slug, None)
                 return new_host
         return self.zoneMatrix[zone_slug]["host"]
 
+    # ---------------- 加解密 ----------------
+
     def decrypt(self, text):
-        if not text: return ""
-        try: return "".join([chr(128 ^ ord(ch)) for ch in text])
-        except Exception: return text
+        if not text:
+            return ""
+        try:
+            return "".join([chr(128 ^ ord(ch)) for ch in text])
+        except Exception:
+            return text
 
     def smart_decrypt(self, text):
-        if not text: return ""
+        if not text:
+            return ""
         has_normal_printable = any(32 <= ord(c) < 128 for c in text)
-        if has_normal_printable: return text
+        if has_normal_printable:
+            return text
         return self.decrypt(text)
 
-    def isVideoFormat(self, url):
-        low = (url or "").lower()
-        return any(k in low for k in (".m3u8", ".mp4", ".flv", ".mkv", ".avi", ".ts", ".mpd", "index.png"))
-
-    def manualVideoCheck(self): return False
+    # ---------------- HTTP ----------------
 
     def _safe_quote_url(self, url_str):
-        if not url_str: return ""
+        if not url_str:
+            return ""
         parts = urlparse(url_str)
         path = quote(parts.path, safe="/:")
         query = quote(parts.query, safe="=&?:/")
@@ -202,15 +335,11 @@ class Spider(SpiderBase):
             target_url = host + target_url
 
         safe_url = self._safe_quote_url(target_url)
-        headers = {
-            "User-Agent": self._ua,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
-            "Accept-Encoding": "gzip, deflate",
-            "Connection": "keep-alive"
-        }
-        if host: headers["Referer"] = host + "/"
-        if custom_headers: headers.update(custom_headers)
+        headers = dict(self._ua_headers)
+        if host:
+            headers["Referer"] = host + "/"
+        if custom_headers:
+            headers.update(custom_headers)
 
         last_err = ""
         for attempt in range(2):
@@ -224,25 +353,32 @@ class Spider(SpiderBase):
                     if data.startswith(b"\x1f\x8b") or enc == "gzip":
                         data = gzip.decompress(data)
                     elif enc == "deflate":
-                        try: data = zlib.decompress(data)
-                        except Exception: data = zlib.decompress(data, -zlib.MAX_WBITS)
-                    
+                        try:
+                            data = zlib.decompress(data)
+                        except Exception:
+                            data = zlib.decompress(data, -zlib.MAX_WBITS)
+
                     if raw_bytes:
                         return {"code": code, "text": "", "bytes": data, "err": "", "final_url": final_url}
-
-                    try: text = data.decode("utf-8")
-                    except Exception: text = data.decode("latin1", errors="ignore")
+                    try:
+                        text = data.decode("utf-8")
+                    except Exception:
+                        text = data.decode("latin1", errors="ignore")
                     return {"code": code, "text": text, "bytes": data, "err": "", "final_url": final_url}
             except urllib.error.HTTPError as e:
                 last_err = "HTTP %s" % e.code
-                if e.code in (451, 403, 429) and attempt == 0: continue
+                if e.code in (451, 403, 429) and attempt == 0:
+                    continue
                 return {"code": e.code, "text": "", "bytes": b"", "err": str(e), "final_url": safe_url}
             except Exception as e:
                 last_err = str(e)
-                if attempt == 0: continue
+                if attempt == 0:
+                    continue
                 return {"code": -1, "text": "", "bytes": b"", "err": str(e), "final_url": safe_url}
 
         return {"code": -1, "text": "", "bytes": b"", "err": last_err, "final_url": safe_url}
+
+    # ---------------- 首页 ----------------
 
     def homeContent(self, filter):
         classes = []
@@ -257,24 +393,31 @@ class Spider(SpiderBase):
                 "value": item["subs"]
             }]
         result = {"class": classes}
-        if filter: result["filters"] = filters
+        if filter:
+            result["filters"] = filters
         return result
 
-    def homeVideoContent(self): return {"list": []}
+    def homeVideoContent(self):
+        return {"list": []}
+
+    # ---------------- m3u8 URL 映射 ----------------
 
     def _map_m3u8_url(self, raw_url):
-        if not raw_url: return ""
+        if not raw_url:
+            return ""
         m = re.search(r'/(bktappup/.+\.m3u8|v3/.+\.m3u8|cf\d+/.+\.m3u8)', raw_url)
         if m:
             sub_path = m.group(1)
-            target_media_host = "https://6180013.xyz" if "bktappup" in sub_path else "https://6180023.xyz"
+            target_media_host = "https://618932.xyz" if "bktappup" in sub_path else "https://618731.xyz"
             return "%s/m3u8/%s" % (target_media_host, sub_path)
         m_fallback = re.search(r'/(?:api/app/vid/h5/m3u8|m3u8)/([a-zA-Z0-9_\-/]+\.m3u8)', raw_url)
         if m_fallback:
             sub_path = m_fallback.group(1)
-            target_media_host = "https://6180013.xyz" if "bktappup" in sub_path else "https://6180023.xyz"
+            target_media_host = "https://618932.xyz" if "bktappup" in sub_path else "https://618731.xyz"
             return "%s/m3u8/%s" % (target_media_host, sub_path)
         return raw_url
+
+    # ---------------- 列表解析 ----------------
 
     def parse_items(self, html_text, host, zone_slug=""):
         vod_list = []
@@ -285,9 +428,11 @@ class Spider(SpiderBase):
         for raw_block in matches:
             try:
                 href_m = re.search(r'href=["\']([^"\']+)["\']', raw_block, re.I)
-                if not href_m: continue
+                if not href_m:
+                    continue
                 href = href_m.group(1).replace("&amp;", "&")
-                if "/type/id/" in href: continue
+                if "/type/id/" in href:
+                    continue
 
                 parsed = urlparse(href)
                 params = parse_qs(parsed.query)
@@ -305,47 +450,56 @@ class Spider(SpiderBase):
 
                 if zone_slug == "z4" and v_url.endswith(".m3u8"):
                     if not v_url.startswith("http"):
-                        v_url = "https://618799.xyz/web" + ("/" if not v_url.startswith("/") else "") + v_url
+                        v_url = "https://618932.xyz/web" + ("/" if not v_url.startswith("/") else "") + v_url
 
                 if zone_slug in ("z5", "z8", "z9"):
                     v_url = self._map_m3u8_url(v_url)
 
-                if v_url in seen_urls: continue
+                if v_url in seen_urls:
+                    continue
                 seen_urls.add(v_url)
 
                 pic = ""
                 pic_cover = re.search(r'data-cover=["\']([^"\']+)["\']', raw_block, re.I)
-                if pic_cover: pic = pic_cover.group(1).strip()
+                if pic_cover:
+                    pic = pic_cover.group(1).strip()
                 if not pic:
                     pic_m = re.search(r'data-original=["\']([^"\']+)["\']', raw_block, re.I)
-                    if pic_m: pic = pic_m.group(1).strip()
+                    if pic_m:
+                        pic = pic_m.group(1).strip()
                 if not pic:
                     pic_src = re.search(r'src=["\']([^"\']+)["\']', raw_block, re.I)
-                    if pic_src: pic = pic_src.group(1).strip()
+                    if pic_src:
+                        pic = pic_src.group(1).strip()
                 if not pic:
                     pic = params.get("b", [""])[0] or params.get("pic", [""])[0]
 
                 proxy_pic = ""
                 if pic:
-                    if pic.startswith("//"): pic = "https:" + pic
-                    elif pic.startswith("/"): pic = host + pic
+                    if pic.startswith("//"):
+                        pic = "https:" + pic
+                    elif pic.startswith("/"):
+                        pic = host + pic
                     proxy_pic = "proxy://do=py&type=img&url=%s&zone=%s&host=%s" % (
                         urllib.parse.quote(pic), zone_slug, urllib.parse.quote(host)
                     )
 
                 title = ""
                 km_match = re.search(r'<(?:p|span|div)[^>]*class=["\'][^"\']*km-script[^"\']*["\'][^>]*>([\s\S]*?)</(?:p|span|div)>', raw_block, re.I)
-                if km_match: title = self.smart_decrypt(km_match.group(1).strip())
+                if km_match:
+                    title = self.smart_decrypt(km_match.group(1).strip())
                 if not title:
                     clean_inner = re.sub(r'<[^>]+>', '', raw_block).strip()
                     if clean_inner and not clean_inner.startswith("http"):
                         title = self.smart_decrypt(clean_inner)
                 if not title:
                     m_path = re.search(r'/html/[a-zA-Z0-9]+/(.+?)\.html', parsed.path)
-                    if m_path: title = self.smart_decrypt(m_path.group(1))
-                if not title: title = "高清精彩正片"
+                    if m_path:
+                        title = self.smart_decrypt(m_path.group(1))
+                if not title:
+                    title = "高清精彩正片"
 
-                title = title.replace("ゐ", "").replace("ゑ", "").replace("ﾌ", " ").strip()
+                title = title.replace("ゐ", "").replace("ゑ", "").replace("ﾅ", " ").strip()
                 pack_id = "%s@@%s@@%s" % (urllib.parse.quote(title), urllib.parse.quote(v_url), urllib.parse.quote(host))
 
                 vod_list.append({
@@ -358,6 +512,8 @@ class Spider(SpiderBase):
             except Exception:
                 continue
         return vod_list
+
+    # ---------------- 分类 ----------------
 
     def categoryContent(self, tid, pg, filter, extend):
         del filter
@@ -372,8 +528,10 @@ class Spider(SpiderBase):
         cur_id = str(extend.get("sub", default_sub))
         page = int(pg) if pg else 1
 
-        if page == 1: target_url = "%s/index.php/%s/type/id/%s.html" % (host, mod, cur_id)
-        else: target_url = "%s/index.php/%s/type/id/%s/page/%s.html" % (host, mod, cur_id, page)
+        if page == 1:
+            target_url = "%s/index.php/%s/type/id/%s.html" % (host, mod, cur_id)
+        else:
+            target_url = "%s/index.php/%s/type/id/%s/page/%s.html" % (host, mod, cur_id, page)
 
         res = self._fetch(target_url, host)
         html_text = res.get("text", "")
@@ -395,8 +553,10 @@ class Spider(SpiderBase):
         total_pages = 1
         m_page = re.search(r"totalPages='(\d+)'", html_text)
         if m_page:
-            try: total_pages = int(m_page.group(1))
-            except Exception: total_pages = 1
+            try:
+                total_pages = int(m_page.group(1))
+            except Exception:
+                total_pages = 1
 
         return {
             "page": page,
@@ -406,17 +566,21 @@ class Spider(SpiderBase):
             "list": vod_list
         }
 
+    # ---------------- 详情 ----------------
+
     def detailContent(self, ids):
         raw_id = ids[0] if isinstance(ids, (list, tuple)) else str(ids)
         title = "高清正片"
         play_url = ""
-        host = "https://6182094.xyz"
+        host = "https://618932.xyz"
         if "@@" in raw_id:
             parts = raw_id.split("@@")
             title = urllib.parse.unquote(parts[0])
             play_url = urllib.parse.unquote(parts[1])
-            if len(parts) > 2: host = urllib.parse.unquote(parts[2])
-        else: play_url = raw_id
+            if len(parts) > 2:
+                host = urllib.parse.unquote(parts[2])
+        else:
+            play_url = raw_id
 
         final_play_target = "%s@@%s" % (play_url, host)
         full_desc = (
@@ -441,10 +605,12 @@ class Spider(SpiderBase):
             }]
         }
 
+    # ---------------- 播放 ----------------
+
     def playerContent(self, flag, id, vipFlags):
         raw_target = str(id).strip()
         play_url = raw_target
-        origin_host = "https://6182094.xyz"
+        origin_host = "https://618932.xyz"
 
         if "@@" in raw_target:
             parts = raw_target.split("@@")
@@ -453,7 +619,7 @@ class Spider(SpiderBase):
 
         if play_url.startswith("z1_mk://"):
             mk_id = play_url.replace("z1_mk://", "").strip()
-            api_url = "https://h5.xxoo475.org/api/v2/vod/reqplay/" + mk_id
+            api_url = "https://h5.xxoox118.org/api/v2/vod/reqplay/" + mk_id
             api_res = self._fetch(api_url, origin_host, custom_headers={
                 "Accept": "application/json, text/plain, */*",
                 "Connection": "keep-alive"
@@ -484,17 +650,21 @@ class Spider(SpiderBase):
                     parsed_p = urlparse(play_url)
                     base_prefix = "%s://%s%s" % (parsed_p.scheme, parsed_p.netloc, parsed_p.path.rsplit("/", 1)[0])
 
-                    if key_uri.startswith("//"): key_url = "https:" + key_uri
-                    elif key_uri.startswith("/"): key_url = "%s://%s%s" % (parsed_p.scheme, parsed_p.netloc, key_uri)
-                    elif not key_uri.startswith("http"): key_url = "%s/%s" % (base_prefix, key_uri)
-                    else: key_url = key_uri
+                    if key_uri.startswith("//"):
+                        key_url = "https:" + key_uri
+                    elif key_uri.startswith("/"):
+                        key_url = "%s://%s%s" % (parsed_p.scheme, parsed_p.netloc, key_uri)
+                    elif not key_uri.startswith("http"):
+                        key_url = "%s/%s" % (base_prefix, key_uri)
+                    else:
+                        key_url = key_uri
 
                     key_res = self._fetch(key_url, custom_headers=z7_headers, raw_bytes=True)
                     key_raw_bytes = key_res.get("bytes", b"")
                     if len(key_raw_bytes) > 0:
                         if len(key_raw_bytes) != 16:
                             key_raw_bytes = key_raw_bytes[:16].ljust(16, b'\0')
-                        
+
                         b64_key = base64.b64encode(key_raw_bytes).decode("ascii")
                         data_uri = "data:application/octet-stream;base64," + b64_key
                         new_content = content.replace(key_match.group(1), data_uri)
@@ -509,12 +679,11 @@ class Spider(SpiderBase):
                                     else:
                                         line = "%s/%s" % (base_prefix, l_strip)
                             lines.append(line)
-                        
+
                         full_m3u8_text = "\n".join(lines)
                         m3u8_b64 = base64.b64encode(full_m3u8_text.encode("utf-8")).decode("ascii")
                         return {
                             "parse": 0,
-                            "jx": 0,
                             "url": "data:application/vnd.apple.mpegurl;base64," + m3u8_b64
                         }
 
@@ -531,60 +700,84 @@ class Spider(SpiderBase):
 
         return {
             "parse": 0,
-            "jx": 0,
             "url": play_url,
             "header": headers_default
         }
 
+    # ---------------- 本地代理（图片 XOR 解密）----------------
+
     def localProxy(self, params):
-        if not isinstance(params, dict): return [404, "text/plain", "Invalid Params"]
+        if not isinstance(params, dict):
+            return [404, "text/plain", "Invalid Params"]
         target_url = params.get("url", "")
-        if not target_url: return [404, "text/plain", "Empty URL"]
+        if not target_url:
+            return [404, "text/plain", "Empty URL"]
         target_url = urllib.parse.unquote(target_url)
 
         zone_flag = params.get("zone", "")
-        origin_host = urllib.parse.unquote(params.get("host", "https://6182094.xyz"))
+        origin_host = urllib.parse.unquote(params.get("host", "https://618932.xyz"))
 
         def detect_mime(b):
-            if b.startswith(b"\xff\xd8\xff"): return "image/jpeg"
-            elif b.startswith(b"\x89PNG"): return "image/png"
-            elif b.startswith(b"GIF8"): return "image/gif"
-            elif len(b) >= 12 and b[:4] == b"RIFF" and b[8:12] == b"WEBP": return "image/webp"
+            if b.startswith(b"\xff\xd8\xff"):
+                return "image/jpeg"
+            elif b.startswith(b"\x89PNG"):
+                return "image/png"
+            elif b.startswith(b"GIF8"):
+                return "image/gif"
+            elif len(b) >= 12 and b[:4] == b"RIFF" and b[8:12] == b"WEBP":
+                return "image/webp"
             return None
 
         if zone_flag == "z4" or "0734.la" in target_url:
             res = self._fetch(target_url, "https://6182321.xyz", raw_bytes=True)
             raw_bytes = res.get("bytes", b"")
-            if not raw_bytes: return [404, "text/plain", "Empty Body"]
+            if not raw_bytes:
+                return [404, "text/plain", "Empty Body"]
             mime = detect_mime(raw_bytes)
-            if mime: return [200, mime, raw_bytes]
+            if mime:
+                return [200, mime, raw_bytes]
             raw = bytearray(raw_bytes)
-            for i in range(min(16, len(raw))): raw[i] ^= 0x5A
+            for i in range(min(16, len(raw))):
+                raw[i] ^= 0x5A
             return [200, detect_mime(raw) or "image/jpeg", bytes(raw)]
 
-        is_decrypt_589 = (zone_flag in ("z5", "z8", "z9")) or any(k in target_url for k in ("6182231", "6182063", "6182275", "lkkwip.cn"))
+        is_decrypt_589 = (zone_flag in ("z5", "z8", "z9")) or any(
+            k in target_url for k in ("6182231", "6182063", "6182275", "lkkwip.cn"))
         if is_decrypt_589:
             site_map = {"z8": "https://6182063.xyz", "z9": "https://6182275.xyz"}
             origin_site = site_map.get(zone_flag, "https://6182231.xyz")
             res = self._fetch(target_url, custom_headers={"Origin": origin_site}, raw_bytes=True)
             raw_bytes = res.get("bytes", b"")
-            if not raw_bytes: return [404, "text/plain", "Empty Body"]
+            if not raw_bytes:
+                return [404, "text/plain", "Empty Body"]
             raw = bytearray(raw_bytes)
             k_len = len(self.img_key_589)
-            for i in range(min(100, len(raw))): raw[i] ^= self.img_key_589[i % k_len]
+            for i in range(min(100, len(raw))):
+                raw[i] ^= self.img_key_589[i % k_len]
             return [200, detect_mime(raw) or "image/jpeg", bytes(raw)]
 
         res = self._fetch(target_url, origin_host, raw_bytes=True)
         raw = res.get("bytes", b"")
-        if raw: return [200, detect_mime(raw) or "image/jpeg", raw]
+        if raw:
+            return [200, detect_mime(raw) or "image/jpeg", raw]
 
         res_none = self._fetch(target_url, raw_bytes=True)
         raw_none = res_none.get("bytes", b"")
-        if raw_none: return [200, detect_mime(raw_none) or "image/jpeg", raw_none]
+        if raw_none:
+            return [200, detect_mime(raw_none) or "image/jpeg", raw_none]
 
         return [404, "text/plain", "Proxy Error"]
 
-    def searchContent(self, key, quick, pg="1"): return {"page": 1, "pagecount": 1, "limit": 0, "total": 0, "list": []}
-    def action(self, action): return {"msg": "运行正常"}
-    def liveContent(self): return ""
-    def destroy(self): pass
+    # ---------------- 搜索/其他 ----------------
+
+    def searchContent(self, key, quick, pg="1"):
+        return {"page": 1, "pagecount": 1, "limit": 0, "total": 0, "list": []}
+
+    def action(self, action):
+        return {"msg": "运行正常"}
+
+    def liveContent(self):
+        return ""
+
+    def destroy(self):
+        pass
