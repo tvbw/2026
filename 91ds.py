@@ -21,13 +21,6 @@ import requests
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 
-LOG = logging.getLogger("publish_resolver")
-if not LOG.handlers:
-    _h = logging.StreamHandler()
-    _h.setFormatter(logging.Formatter("[%(name)s] %(message)s"))
-    LOG.addHandler(_h)
-    LOG.setLevel(logging.INFO)
-    
 sys.path.append("..")
 try:
     from base.spider import Spider as BaseSpider
@@ -45,6 +38,12 @@ except Exception:
 
 LOG = logging.getLogger(__name__)
 
+LOG = logging.getLogger("publish_resolver")
+if not LOG.handlers:
+    _h = logging.StreamHandler()
+    _h.setFormatter(logging.Formatter("[%(name)s] %(message)s"))
+    LOG.addHandler(_h)
+    LOG.setLevel(logging.INFO)
 
 # ==================== 分类 / 标签常量 ====================
 MANUAL_CLASSES = [
@@ -77,9 +76,7 @@ EPISODE_PATTERN      = re.compile(r'^(.*?)(第\d+集)\s*(.*)$')
 SERIES_CLEAN_PATTERN = re.compile(r'^(.*?)(第\d+集|\d+集|完整版|无码版|爆燃来袭|重磅流出|高能开场|重磅来袭|已完结).*')
 
 
-# ==================================================================
-# ① 站点配置（换站只改这里）
-# ==================================================================
+# ==================== 配置层 ====================
 class Config:
     # ---------- 站点身份 [改] ----------
     SITE_NAME     = "91大赛"
@@ -124,8 +121,8 @@ class Config:
     FAST_TIMEOUT      = 8
     PROBE_MIN_HTML    = 1500
     PROBE_MIN_ARTICLE = 1
-    PROBE_PATHS       = ("/",)        # 首页不是 / 时改为 ("/", "/latest/")
-    MAX_JUMP          = 3             # HTML/JS 跳转最大次数
+    PROBE_PATHS       = ("/",)
+    MAX_JUMP          = 3
 
     # ---------- TLD / 黑名单（一般不用改） ----------
     VALID_TLDS = {
@@ -152,7 +149,7 @@ class Config:
         'beian.miit.gov.cn', 'wordpress.org', 'wix.com', 'weebly',
         'shopify', '51.la', 'cnzz.com', '51yes', 'navone.cloud',
     )
-    EXTRA_BLACKLIST = ()              # 额外黑名单 [改]
+    EXTRA_BLACKLIST = ()
 
     # ---------- HTTP ----------
     HEADERS = {
@@ -181,6 +178,11 @@ class Config:
             except Exception:
                 continue
         return False
+
+    # ---- 图片配置（CDN_XHOST 会被 init() 动态覆盖，这里是兜底默认值）----
+    CDN_XHOST   = "https://pic.hdhwqx.cn"   # 原 pic.xustgq.cn 已挂，更新为当前域名
+    IMG_AES_KEY = "f5d965df75336270"
+    IMG_AES_IV  = "97b60394abc2fbe1"
 
 # ==================================================================
 # ② 发布页解析器（无需修改）
@@ -636,6 +638,129 @@ def auto_install(SpiderCls, cfg=None):
 
     SpiderCls.init = patched_init
 
+# ==================== 域名解析器 ====================
+class DomainResolver:
+    def __init__(self, cfg, fetcher, cache_get=None, cache_set=None):
+        self.cfg, self.fetch = cfg, fetcher
+        self.cache_get, self.cache_set = cache_get, cache_set
+
+    def _site_ok(self, html):
+        if not html or len(html) < self.cfg.PROBE_MIN_HTML:
+            return False
+        if self.cfg.SITE_KEYWORDS:
+            if any(kw in html for kw in self.cfg.SITE_KEYWORDS):
+                return True
+        return any(m in html for m in self.cfg.SITE_MARKERS)
+
+    def _safe_fetch(self, url, timeout):
+        try:
+            return self.fetch(url, timeout=timeout)
+        except Exception:
+            return None
+
+    def _read_cache(self):
+        if not self.cache_get:
+            return None
+        try:
+            raw = self.cache_get(self.cfg.HOST_CACHE_KEY)
+        except Exception:
+            return None
+        if not raw:
+            return None
+        if isinstance(raw, str) and raw.startswith("http"):
+            return {"host": raw.rstrip("/"), "ts": 0}
+        try:
+            if isinstance(raw, str):
+                raw = json.loads(raw)
+            if isinstance(raw, dict) and raw.get("host"):
+                return raw
+        except Exception:
+            pass
+        return None
+
+    def _cache_fresh(self, c):
+        ttl = int(getattr(self.cfg, "HOST_CACHE_TTL", 0) or 0)
+        if ttl <= 0:
+            return True
+        return (time.time() - int(c.get("ts") or 0)) < ttl
+
+    def _write_cache(self, host):
+        if not self.cache_set:
+            return
+        try:
+            self.cache_set(self.cfg.HOST_CACHE_KEY,
+                           json.dumps({"host": host, "ts": int(time.time())}))
+        except Exception:
+            pass
+
+    def _clear_cache(self):
+        if not self.cache_set:
+            return
+        try:
+            if hasattr(self, "cache_del") and self.cache_del:
+                self.cache_del(self.cfg.HOST_CACHE_KEY)
+        except Exception:
+            pass
+
+    def resolve(self):
+        cached = self._read_cache()
+
+        if cached and self._cache_fresh(cached):
+            r = self._safe_fetch(cached["host"] + "/", self.cfg.PROBE_TIMEOUT)
+            if r is not None and r.status_code == 200 and self._site_ok(r.text):
+                final = (r.url or cached["host"]).rstrip("/")
+                print(f"缓存有效: {cached['host']} → {final}")
+                if final != cached["host"]:
+                    self._write_cache(final)
+                return final
+            print(f"缓存失效: {cached['host']}")
+
+        urls = list(self.cfg.SEED_HOSTS)
+        if cached:
+            urls.insert(0, cached["host"] + "/")
+        if not urls:
+            return ""
+
+        with ThreadPoolExecutor(max_workers=min(6, len(urls))) as ex:
+            futs = {ex.submit(self._safe_fetch, u, self.cfg.PROBE_TIMEOUT): u for u in urls}
+            try:
+                for f in as_completed(futs, timeout=self.cfg.PROBE_TIMEOUT + 8):
+                    u = futs[f]
+                    try:
+                        r = f.result()
+                    except Exception as e:
+                        print(f"探测异常 {u}: {e}")
+                        continue
+                    if r is None:
+                        print(f"探测无响应: {u}")
+                        continue
+                    if r.status_code != 200:
+                        print(f"探测 HTTP {r.status_code}: {u}")
+                        continue
+                    if not self._site_ok(r.text):
+                        kws = self.cfg.SITE_KEYWORDS or '结构判断'
+                        print(f"探测内容不匹配: {u} (len={len(r.text or '')}, 关键词={kws})")
+                        continue
+                    final = (r.url or u).rstrip("/")
+                    self._write_cache(final)
+                    if final.rstrip("/") != u.rstrip("/"):
+                        print(f"探测成功（含跳转）: {u} → {final}")
+                    else:
+                        print(f"探测成功: {final}")
+                    return final
+            except Exception as e:
+                LOG.debug("并发探测异常: %s", e)
+
+        if cached:
+            print(f"使用过期缓存: {cached['host']}")
+            return cached["host"]
+
+        if self.cfg.SEED_HOSTS:
+            fallback = self.cfg.SEED_HOSTS[0].rstrip("/")
+            print(f"【警告】所有域名探测失败，回退到种子域名: {fallback}")
+            return fallback
+
+        return ""
 
 
 # ==================== 主爬虫 ====================
