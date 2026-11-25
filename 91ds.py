@@ -21,6 +21,13 @@ import requests
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 
+LOG = logging.getLogger("publish_resolver")
+if not LOG.handlers:
+    _h = logging.StreamHandler()
+    _h.setFormatter(logging.Formatter("[%(name)s] %(message)s"))
+    LOG.addHandler(_h)
+    LOG.setLevel(logging.INFO)
+    
 sys.path.append("..")
 try:
     from base.spider import Spider as BaseSpider
@@ -70,165 +77,552 @@ EPISODE_PATTERN      = re.compile(r'^(.*?)(第\d+集)\s*(.*)$')
 SERIES_CLEAN_PATTERN = re.compile(r'^(.*?)(第\d+集|\d+集|完整版|无码版|爆燃来袭|重磅流出|高能开场|重磅来袭|已完结).*')
 
 
-# ==================== 配置层 ====================
-class SiteConfig:
-    # ---- 三级域名列表 ----
-    SEED_HOSTS = [
-        "https://alone.poampwcv.cc/",
-        "https://break.poampwcv.cc/",
-        "https://any.zenolyqt.cc/",
+# ==================================================================
+# ① 站点配置（换站只改这里）
+# ==================================================================
+class Config:
+    # ---------- 站点身份 [改] ----------
+    SITE_NAME     = "91大赛"
+    SITE_KEYWORDS = ["91大赛", "91爆料", "91cg"]      # 字符串或正则
+    SITE_MARKERS  = (                                 # 内容站 HTML 特征（小写匹配）
+        "post-title", "entry-title", "<article",
+        'class="post', "realtime-card", "candid-video", "video-card",
+    )
+    PLAY_FROM = "91大赛"
+
+    # ---------- 缓存键 [改] ----------
+    HOST_CACHE_KEY = "sp91_host_v1"    # 三级内容站
+    PUB_CACHE_KEY  = "sp91_pub_v1"     # 二级发布页
+
+    # ---------- 发布页锚点 [改] ----------
+    PUBLISH_URLS = [                   # 一级跳板页（可 3xx/JS 跳转，也可直接是发布页）
+        "https://91dswz17.com/",
     ]
-    FALLBACK_HOST  = None
-    HOST_CACHE_KEY = "91ds_host"
-    HOST_CACHE_TTL = 6 * 3600
+    SECONDARY_PUBLISH_URLS = [         # 二级发布页硬编码保底（可选）
+        "https://91dswz14.com/",
+        "https://91dswz16.com/",
+    ]
+    SEED_HOSTS = []                    # 种子内容站（可选）
+    FALLBACK_HOST = None               # 最终兜底内容站（可选）
 
-    PROBE_TIMEOUT        = 8
-    PROBE_MIN_HTML       = 3000
-    PROBE_MIN_ARTICLE    = 3
+    # ---------- 超时与判定（一般不用改） ----------
+    PUBLISH_TIMEOUT   = 12
+    PROBE_TIMEOUT     = 12
+    FAST_TIMEOUT      = 8
+    PROBE_MIN_HTML    = 1500
+    PROBE_MIN_ARTICLE = 1
+    PROBE_PATHS       = ("/",)        # 首页不是 / 时改为 ("/", "/latest/")
+    MAX_JUMP          = 3             # HTML/JS 跳转最大次数
 
-    SITE_KEYWORDS    = ["91大赛"]
-    SITE_MARKERS     = ["Xc_home_article", "Xc_archive", "/archives/"]
+    # ---------- TLD / 黑名单（一般不用改） ----------
+    VALID_TLDS = {
+        'com', 'net', 'org', 'cc', 'xyz', 'lol', 'vip', 'app', 'top', 'cn',
+        'co', 'io', 'me', 'tv', 'club', 'site', 'online', 'info', 'biz',
+        'pro', 'link', 'live', 'shop', 'fun', 'work', 'icu', 'life',
+        'world', 'store', 'tech', 'space', 'website', 'host', 'pw', 'tk',
+        'ml', 'ga', 'cf', 'gq', 'su', 'ws', 'ly', 'to', 'st', 'in', 'tw',
+        'hk', 'jp', 'kr', 'ru', 'us', 'uk', 'de', 'fr', 'nl', 'eu', 'au',
+        'ca', 'sg', 'my', 'sbs', 'bet', 'cam', 'one', 'plus', 'now',
+        'today', 'pub', 'dev', 'cool', 'cloud',
+    }
+    DOMAIN_BLACKLIST = (
+        'google', 'gstatic', 'bing.com', 'baidu.com', 'so.com', 'sogou.com',
+        'yandex', 'facebook', 'fbcdn', 'instagram', 'twitter', 'twimg',
+        'youtube', 'ytimg', 't.me', 'telegram', 'whatsapp', 'discord',
+        'reddit', 'tiktok', 'pinterest', 'apple.com', 'icloud', 'microsoft',
+        'windows', 'amazonaws', 'cloudflare', 'cloudfront', 'azureedge',
+        'github', 'gitlab', 'gitee', 'bitbucket', 'w3.org', 'wikipedia',
+        'mozilla.org', 'stackoverflow', 'jsdelivr', 'unpkg', 'bootstrapcdn',
+        'jquery', 'fontawesome', 'gmail', 'outlook', 'hotmail', 'yahoo',
+        'protonmail', 'qq.com', '163.com', '126.com', 'sina.com',
+        'weibo.com', 'statcounter', 'google-analytics', 'umeng', 'cnzz',
+        'beian.miit.gov.cn', 'wordpress.org', 'wix.com', 'weebly',
+        'shopify', '51.la', 'cnzz.com', '51yes', 'navone.cloud',
+    )
+    EXTRA_BLACKLIST = ()              # 额外黑名单 [改]
 
-    # ---- 图片配置（CDN_XHOST 会被 init() 动态覆盖，这里是兜底默认值）----
-    CDN_XHOST   = "https://pic.hdhwqx.cn"   # 原 pic.xustgq.cn 已挂，更新为当前域名
-    IMG_AES_KEY = "f5d965df75336270"
-    IMG_AES_IV  = "97b60394abc2fbe1"
-
-    # ---- 通用 Headers ----
+    # ---------- HTTP ----------
     HEADERS = {
-        "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "User-Agent": ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
                        "Chrome/120.0.0.0 Safari/537.36"),
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
-        "Accept-Encoding": "gzip, deflate, br",
+        "Accept": ("text/html,application/xhtml+xml,application/xml;q=0.9,"
+                   "image/avif,image/webp,image/apng,*/*;q=0.8"),
+        "Accept-Language": "zh-CN,zh;q=0.9",
         "Connection": "keep-alive",
+        "Cache-Control": "no-cache",
     }
+    VERIFY_SSL = False
 
+    @classmethod
+    def match_keyword(cls, text):
+        if not text:
+            return False
+        for kw in cls.SITE_KEYWORDS:
+            try:
+                if hasattr(kw, "search"):
+                    if kw.search(text):
+                        return True
+                elif kw and kw in text:
+                    return True
+            except Exception:
+                continue
+        return False
 
-# ==================== 域名解析器 ====================
-class DomainResolver:
-    def __init__(self, cfg, fetcher, cache_get=None, cache_set=None):
-        self.cfg, self.fetch = cfg, fetcher
-        self.cache_get, self.cache_set = cache_get, cache_set
+# ==================================================================
+# ② 发布页解析器（无需修改）
+# ==================================================================
+class PublishResolver:
+    META_REFRESH_RE = re.compile(
+        r'<meta[^>]+http-equiv\s*=\s*["\']?refresh["\']?[^>]*?'
+        r'content\s*=\s*["\']?\s*\d+\s*;\s*url\s*=\s*([^"\'>\s]+)',
+        re.I,
+    )
+    JS_LOCATION_RE = re.compile(
+        r'(?:window\.|document\.|top\.)?location(?:\.href)?\s*=\s*["\']([^"\']+)["\']'
+        r'|'
+        r'(?:window\.|document\.|top\.)?location\.(?:replace|assign)\s*\(\s*["\']([^"\']+)["\']',
+        re.I,
+    )
+
+    def __init__(self, cfg, fetcher, cache_get=None, cache_set=None, logger=None):
+        self.cfg = cfg
+        self.fetch = fetcher
+        self.cache_get = cache_get
+        self.cache_set = cache_set
+        self.log = logger or LOG
+        self._publish_origins = set()
+        for u in list(cfg.PUBLISH_URLS) + list(cfg.SECONDARY_PUBLISH_URLS):
+            o = self._origin(u)
+            if o:
+                self._publish_origins.add(o)
+
+    @staticmethod
+    def _origin(url):
+        try:
+            p = urlparse(url)
+            if p.scheme in ("http", "https") and p.netloc:
+                return f"{p.scheme}://{p.netloc}".lower()
+        except Exception:
+            pass
+        return ""
+
+    @staticmethod
+    def _normalize_url(u, base_url=""):
+        u = unquote(str(u or "")).strip().strip('"\' ')
+        if not u:
+            return ""
+        u = u.replace("\\/", "/")
+        if u.startswith("//"):
+            u = "https:" + u
+        if not u.startswith("http"):
+            u = urljoin(base_url or "", u)
+        return u
+
+    def _is_publish_origin(self, url):
+        o = self._origin(url)
+        return bool(o and o in self._publish_origins)
+
+    def _fetch(self, url, timeout=None, allow_redirects=True):
+        try:
+            return self.fetch(url, timeout=timeout, allow_redirects=allow_redirects)
+        except TypeError:
+            try:
+                return self.fetch(url, timeout=timeout)
+            except Exception as e:
+                self.log.debug("fetch 异常 %s: %s", url, e)
+                return None
+        except Exception as e:
+            self.log.debug("fetch 异常 %s: %s", url, e)
+            return None
+
+    def _is_blocked(self, html):
+        if not html:
+            return False
+        low = html.lower()
+        markers = (
+            'just a moment', 'cf-browser-verification', 'cf-challenge',
+            'checking your browser', '__cf_chl_', 'ddos-guard',
+            'cf-ray', 'cloudflare-nginx', 'enable javascript and cookies',
+            '请开启 javascript', '请启用 javascript', '请稍候',
+        )
+        return any(m in low for m in markers)
 
     def _site_ok(self, html):
         if not html or len(html) < self.cfg.PROBE_MIN_HTML:
             return False
-        if self.cfg.SITE_KEYWORDS:
-            if any(kw in html for kw in self.cfg.SITE_KEYWORDS):
-                return True
-        return any(m in html for m in self.cfg.SITE_MARKERS)
+        if self._is_blocked(html):
+            return False
+        low = html.lower()
+        article_cnt = low.count("<article")
+        marker_hit = any((m.lower() in low) for m in self.cfg.SITE_MARKERS)
+        has_article = (article_cnt >= self.cfg.PROBE_MIN_ARTICLE) or marker_hit
+        return has_article or self.cfg.match_keyword(html)
 
-    def _safe_fetch(self, url, timeout):
+    def _looks_like_publish(self, html):
+        if not html:
+            return False
+        markers = ('发布页', '最新地址', '永久地址', '新地址',
+                   '收藏本站', '请收藏', '防走失', '导航页')
+        return any(m in html for m in markers)
+
+    def _extract_candidates(self, html, base_url=""):
+        if not html:
+            return []
+        html = html[:100000]
+        hosts, seen = [], set()
+
+        def _add(raw):
+            h = self._normalize_url(raw, base_url)
+            h = self._origin(h)
+            if not h:
+                return
+            hl = h.lower()
+            if any(b in hl for b in self.cfg.DOMAIN_BLACKLIST):
+                return
+            if any(b in hl for b in getattr(self.cfg, "EXTRA_BLACKLIST", ())):
+                return
+            if self._is_publish_origin(h):
+                return
+            if h in seen:
+                return
+            seen.add(h)
+            hosts.append(h)
+
+        for m in re.finditer(r'<a\b[^>]+href=["\']([^"\']+)["\']', html, re.I):
+            _add(m.group(1))
+        for m in re.finditer(r'https?://[^\s"\'<>()\[\]{},;]+', html):
+            _add(m.group(0))
+        for m in re.finditer(r'["\'](https?://[^"\']+)["\']', html):
+            _add(m.group(1))
+        for b64_match in re.finditer(r'["\']([A-Za-z0-9+/=]{80,})["\']', html):
+            try:
+                decoded = base64.b64decode(b64_match.group(1)).decode("utf-8", "ignore")
+                for m in re.finditer(r'(https?://[^\s"\']+)', decoded):
+                    _add(m.group(1))
+            except Exception:
+                continue
+        for m in re.finditer(
+            r'(?:新地址|新网址|永久地址|最新地址|最新域名|官方入口|请访问|访问地址|'
+            r'线路[一二三四五六七八九十\d]+)[：:\s]*'
+            r'((?:https?://)?[a-zA-Z0-9][a-zA-Z0-9.\-]{3,}\.[a-zA-Z]{2,10})',
+            html
+        ):
+            u = m.group(1)
+            if not u.startswith("http"):
+                u = "https://" + u
+            _add(u)
+        for m in re.finditer(
+            r'(?<![\w.\-])((?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,10})(?![\w.\-])',
+            html
+        ):
+            d = m.group(1).lower().strip('.')
+            if d.split('.')[-1] not in self.cfg.VALID_TLDS:
+                continue
+            _add("https://" + d)
+
+        return hosts[:30]
+
+    def _extract_html_jump(self, html, base_url):
+        if not html:
+            return ""
+        m = self.META_REFRESH_RE.search(html)
+        if m:
+            return self._normalize_url(m.group(1), base_url)
+        m = self.JS_LOCATION_RE.search(html)
+        if m:
+            return self._normalize_url(m.group(1) or m.group(2), base_url)
+        return ""
+
+    def _resolve_publish_chain(self, start_url):
+        cur = start_url.rstrip("/") + "/"
+        visited = set()
+        last_publish = ""
+        candidates = []
+
+        for _ in range(self.cfg.MAX_JUMP + 1):
+            if not cur or cur in visited:
+                break
+            visited.add(cur)
+            r = self._fetch(cur, self.cfg.PUBLISH_TIMEOUT, allow_redirects=True)
+            if r is None or r.status_code != 200:
+                break
+            final_url = (getattr(r, "url", None) or cur).rstrip("/") + "/"
+            html = r.text or ""
+
+            if not self._is_publish_origin(final_url) and self._site_ok(html):
+                return [final_url], ""
+
+            if self._is_publish_origin(final_url) or self._looks_like_publish(html):
+                last_publish = final_url
+                candidates.extend(self._extract_candidates(html, final_url))
+                jump = self._extract_html_jump(html, final_url)
+                if jump and (jump.rstrip("/") + "/") not in visited:
+                    cur = jump
+                    continue
+                break
+
+            candidates.extend(self._extract_candidates(html, final_url))
+            break
+
+        seen, uniq = set(), []
+        for c in candidates:
+            c = c.rstrip("/")
+            if c and c not in seen:
+                seen.add(c)
+                uniq.append(c)
+        return uniq, last_publish
+
+    def _probe_one(self, host, timeout=None):
+        base = self._origin(host) or host.rstrip("/")
+        if not base:
+            return ""
+        paths = self.cfg.PROBE_PATHS or ("/",)
+        for path in paths:
+            if not path.startswith("/"):
+                path = "/" + path
+            url = base + path
+            r = self._fetch(url, timeout or self.cfg.PROBE_TIMEOUT,
+                            allow_redirects=True)
+            if r is None or r.status_code != 200:
+                continue
+            if not self._site_ok(r.text):
+                continue
+            final = self._origin(getattr(r, "url", None) or base) or base
+            if self._is_publish_origin(final):
+                continue
+            return final
+        return ""
+
+    def _probe_hosts(self, hosts):
+        if not hosts:
+            return ""
         try:
-            return self.fetch(url, timeout=timeout)
+            ex = ThreadPoolExecutor(max_workers=min(8, len(hosts)))
         except Exception:
-            return None
+            return ""
+        try:
+            futs = {ex.submit(self._probe_one, h): h for h in hosts}
+            try:
+                for f in as_completed(futs, timeout=self.cfg.PROBE_TIMEOUT + 5):
+                    try:
+                        hit = f.result()
+                    except Exception:
+                        continue
+                    if hit:
+                        self.log.info("[探测] 命中 %s", hit)
+                        for x in futs:
+                            x.cancel()
+                        return hit
+            except Exception:
+                pass
+        finally:
+            try:
+                ex.shutdown(wait=False)
+            except Exception:
+                pass
+        return ""
 
-    def _read_cache(self):
+    def _read_cache(self, key, field):
         if not self.cache_get:
-            return None
+            return ""
         try:
-            raw = self.cache_get(self.cfg.HOST_CACHE_KEY)
+            raw = self.cache_get(key)
         except Exception:
-            return None
+            return ""
         if not raw:
-            return None
-        if isinstance(raw, str) and raw.startswith("http"):
-            return {"host": raw.rstrip("/"), "ts": 0}
-        try:
-            if isinstance(raw, str):
-                raw = json.loads(raw)
-            if isinstance(raw, dict) and raw.get("host"):
-                return raw
-        except Exception:
-            pass
-        return None
+            return ""
+        if isinstance(raw, bytes):
+            raw = raw.decode("utf-8", "ignore")
+        if isinstance(raw, dict):
+            return str(raw.get(field) or "").strip()
+        s = str(raw).strip()
+        if s.startswith("{"):
+            try:
+                return str(json.loads(s).get(field) or "").strip()
+            except Exception:
+                return ""
+        return s
 
-    def _cache_fresh(self, c):
-        ttl = int(getattr(self.cfg, "HOST_CACHE_TTL", 0) or 0)
-        if ttl <= 0:
-            return True
-        return (time.time() - int(c.get("ts") or 0)) < ttl
-
-    def _write_cache(self, host):
-        if not self.cache_set:
+    def _write_cache(self, key, data):
+        if not self.cache_set or not data:
             return
         try:
-            self.cache_set(self.cfg.HOST_CACHE_KEY,
-                           json.dumps({"host": host, "ts": int(time.time())}))
-        except Exception:
-            pass
-
-    def _clear_cache(self):
-        if not self.cache_set:
-            return
-        try:
-            if hasattr(self, "cache_del") and self.cache_del:
-                self.cache_del(self.cfg.HOST_CACHE_KEY)
+            d = dict(data)
+            d.setdefault("ts", int(time.time()))
+            self.cache_set(key, json.dumps(d))
         except Exception:
             pass
 
     def resolve(self):
-        cached = self._read_cache()
+        cached_host = self._read_cache(self.cfg.HOST_CACHE_KEY, "host")
+        if cached_host and not self._is_publish_origin(cached_host):
+            hit = self._probe_one(cached_host, self.cfg.FAST_TIMEOUT)
+            if hit:
+                self.log.info("[HOST缓存] 有效: %s", hit)
+                if hit != cached_host:
+                    self._write_cache(self.cfg.HOST_CACHE_KEY, {"host": hit})
+                return hit
+            self.log.info("[HOST缓存] 失效: %s", cached_host)
 
-        if cached and self._cache_fresh(cached):
-            r = self._safe_fetch(cached["host"] + "/", self.cfg.PROBE_TIMEOUT)
-            if r is not None and r.status_code == 200 and self._site_ok(r.text):
-                final = (r.url or cached["host"]).rstrip("/")
-                print(f"缓存有效: {cached['host']} → {final}")
-                if final != cached["host"]:
-                    self._write_cache(final)
-                return final
-            print(f"缓存失效: {cached['host']}")
+        pub_cached = self._read_cache(self.cfg.PUB_CACHE_KEY, "pub")
+        if pub_cached:
+            r = self._fetch(pub_cached.rstrip("/") + "/",
+                            self.cfg.FAST_TIMEOUT, allow_redirects=True)
+            if r is not None and r.status_code == 200:
+                final_url = (getattr(r, "url", None) or pub_cached).rstrip("/")
+                if not self._is_publish_origin(final_url) and self._site_ok(r.text):
+                    self.log.info("[PUB缓存] 直达内容站: %s", final_url)
+                    self._write_cache(self.cfg.HOST_CACHE_KEY, {"host": final_url})
+                    return final_url
+                hit = self._probe_hosts(
+                    self._extract_candidates(r.text or "", final_url))
+                if hit:
+                    self.log.info("[PUB缓存] %s → 命中 %s", pub_cached, hit)
+                    self._write_cache(self.cfg.HOST_CACHE_KEY, {"host": hit})
+                    return hit
+            self.log.info("[PUB缓存] 失效: %s", pub_cached)
 
-        urls = list(self.cfg.SEED_HOSTS)
-        if cached:
-            urls.insert(0, cached["host"] + "/")
-        if not urls:
-            return ""
+        for pub_url in self.cfg.PUBLISH_URLS:
+            self.log.info("[一级页] 解析: %s", pub_url)
+            cands, pub_final = self._resolve_publish_chain(pub_url)
+            if pub_final:
+                self._write_cache(self.cfg.PUB_CACHE_KEY, {"pub": pub_final})
+            hit = self._probe_hosts(cands)
+            if hit:
+                self.log.info("[一级页] 命中: %s", hit)
+                self._write_cache(self.cfg.HOST_CACHE_KEY, {"host": hit})
+                return hit
 
-        with ThreadPoolExecutor(max_workers=min(6, len(urls))) as ex:
-            futs = {ex.submit(self._safe_fetch, u, self.cfg.PROBE_TIMEOUT): u for u in urls}
-            try:
-                for f in as_completed(futs, timeout=self.cfg.PROBE_TIMEOUT + 8):
-                    u = futs[f]
-                    try:
-                        r = f.result()
-                    except Exception as e:
-                        print(f"探测异常 {u}: {e}")
-                        continue
-                    if r is None:
-                        print(f"探测无响应: {u}")
-                        continue
-                    if r.status_code != 200:
-                        print(f"探测 HTTP {r.status_code}: {u}")
-                        continue
-                    if not self._site_ok(r.text):
-                        kws = self.cfg.SITE_KEYWORDS or '结构判断'
-                        print(f"探测内容不匹配: {u} (len={len(r.text or '')}, 关键词={kws})")
-                        continue
-                    final = (r.url or u).rstrip("/")
-                    self._write_cache(final)
-                    if final.rstrip("/") != u.rstrip("/"):
-                        print(f"探测成功（含跳转）: {u} → {final}")
-                    else:
-                        print(f"探测成功: {final}")
-                    return final
-            except Exception as e:
-                LOG.debug("并发探测异常: %s", e)
-
-        if cached:
-            print(f"使用过期缓存: {cached['host']}")
-            return cached["host"]
+        for fb_url in self.cfg.SECONDARY_PUBLISH_URLS:
+            self.log.info("[二级页] 解析: %s", fb_url)
+            cands, pub_final = self._resolve_publish_chain(fb_url)
+            if pub_final:
+                self._write_cache(self.cfg.PUB_CACHE_KEY, {"pub": pub_final})
+            hit = self._probe_hosts(cands)
+            if hit:
+                self.log.info("[二级页] 命中: %s", hit)
+                self._write_cache(self.cfg.HOST_CACHE_KEY, {"host": hit})
+                return hit
 
         if self.cfg.SEED_HOSTS:
-            fallback = self.cfg.SEED_HOSTS[0].rstrip("/")
-            print(f"【警告】所有域名探测失败，回退到种子域名: {fallback}")
-            return fallback
+            self.log.info("[SEED] 探测 %d 个种子", len(self.cfg.SEED_HOSTS))
+            hit = self._probe_hosts(list(self.cfg.SEED_HOSTS))
+            if hit:
+                self._write_cache(self.cfg.HOST_CACHE_KEY, {"host": hit})
+                return hit
 
+        if cached_host and not self._is_publish_origin(cached_host):
+            self.log.warning("[回退] 过期 HOST 缓存: %s", cached_host)
+            return cached_host
+        if self.cfg.FALLBACK_HOST:
+            fb = self.cfg.FALLBACK_HOST.rstrip("/")
+            self.log.warning("[回退] FALLBACK_HOST: %s", fb)
+            return fb
+        self.log.error("[失败] 未解析到可用内容站")
         return ""
+
+
+# ==================================================================
+# ③ 零侵入挂载（Spider 类一行不改）
+# ==================================================================
+def auto_install(SpiderCls, cfg=None):
+    """
+    用法：文件末尾加一行 auto_install(Spider, Config)
+    效果：
+      - 包装 Spider.init，自动解析发布页并注入 host
+      - 不改动 Spider 的任何业务方法
+    """
+    cfg = cfg or Config
+    original_init = getattr(SpiderCls, "init", None)
+
+    def _resolve_host(self):
+        def _fetch(url, timeout=None, allow_redirects=True):
+            try:
+                return requests.get(
+                    url,
+                    headers=getattr(self, "headers", None) or dict(cfg.HEADERS),
+                    proxies=getattr(self, "proxies", None) or {},
+                    timeout=timeout or cfg.PROBE_TIMEOUT,
+                    verify=getattr(cfg, "VERIFY_SSL", False),
+                    allow_redirects=allow_redirects,
+                )
+            except Exception:
+                return None
+        resolver = PublishResolver(
+            cfg, _fetch,
+            cache_get=getattr(self, "getCache", None),
+            cache_set=getattr(self, "setCache", None),
+        )
+        return resolver.resolve()
+
+    def _inject(self, host):
+        # 常见 base url 属性名全部覆盖
+        for attr in ("host", "baseUrl", "base_url", "url",
+                     "siteUrl", "main_url", "domain", "api"):
+            if hasattr(self, attr):
+                try:
+                    setattr(self, attr, host)
+                except Exception:
+                    pass
+        try:
+            self.host = host
+        except Exception:
+            pass
+        # headers 补 Origin / Referer
+        try:
+            if not getattr(self, "headers", None):
+                self.headers = dict(cfg.HEADERS)
+            self.headers.update({"Origin": host, "Referer": host + "/"})
+        except Exception:
+            pass
+        # proxies 兜底
+        try:
+            if not hasattr(self, "proxies") or self.proxies is None:
+                self.proxies = {}
+        except Exception:
+            pass
+
+    def patched_init(self, extend="", *args, **kwargs):
+        # 先解析（用 cfg.HEADERS，不依赖 spider 状态）
+        host = ""
+        try:
+            host = _resolve_host(self)
+        except Exception as e:
+            LOG.warning("自动解析 host 失败: %s", e)
+
+        # 把 host 注入 extend（如果 spider 从 extend 读）
+        new_extend = extend
+        if host:
+            if isinstance(extend, dict):
+                new_extend = dict(extend)
+                new_extend.setdefault("host", host)
+            elif isinstance(extend, str) and extend.strip().startswith("{"):
+                try:
+                    d = json.loads(extend)
+                    d.setdefault("host", host)
+                    new_extend = json.dumps(d)
+                except Exception:
+                    pass
+            elif not extend:
+                new_extend = host
+
+        # 调原 init
+        if original_init:
+            try:
+                original_init(self, new_extend, *args, **kwargs)
+            except TypeError:
+                try:
+                    original_init(self, new_extend)
+                except TypeError:
+                    original_init(self)
+
+        # 事后注入（覆盖原 init 里硬编码的旧 host）
+        if host:
+            _inject(self, host)
+
+    SpiderCls.init = patched_init
+
 
 
 # ==================== 主爬虫 ====================
@@ -1008,3 +1402,4 @@ try:
     BaseSpider.register(Spider())
 except Exception:
     pass
+auto_install(Spider, Config)
