@@ -564,7 +564,7 @@ class Spider(SpiderBase):
 
         if play_url.startswith("z1_mk://"):
             mk_id = play_url.replace("z1_mk://", "").strip()
-            api_url = "https://h5.xxoo475.org/api/v2/vod/reqplay/" + mk_id
+            api_url = "https://h5.xxoox118.org/api/v2/vod/reqplay/" + mk_id
             api_res = self._fetch(api_url, origin_host, custom_headers={
                 "Accept": "application/json, text/plain, */*",
                 "Connection": "keep-alive"
