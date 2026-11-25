@@ -65,12 +65,6 @@ class SiteConfig:
     # ★ 你提供的兜底三级域名
     SEED_HOSTS = [
         "https://anxiety.ttiaqryf.cc",
-        "https://at.ttiaqryf.cc",
-        "https://actual.ttiaqryf.cc",
-        "https://adviser.ttiaqryf.cc",
-        "https://basket.ttiaqryf.cc",
-        "https://campus.ttiaqryf.cc",
-        "https://d2gt333ro578y4.cloudfront.net",
     ]
 
     FALLBACK_HOST  = None
