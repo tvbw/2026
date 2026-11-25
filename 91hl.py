@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-91大赛 · 多域名自愈版（图片修复版 v2）
+91黑料 · 发布页自愈版（零侵入）
 ================================
-- 域名自愈：并发探测 + TTL缓存 + 302跟随 + 详细日志 + 兜底
-- 图片链路：urlsafe b64 + 原URL优先/CDN兜底 + 明图直通 + 解密失败返回原内容
-- CDN 域名：从首页 HTML 动态提取，站点换图床无需改代码
-- 业务保留：正则列表 + 13策略提取 + 剧集聚合 + AES解密 + CDN重写
+- 前置模块：Config + PublishResolver + auto_install
+- Spider 类：原代码一行不改
+- 换站：只改 Config 里 [改] 字段
 """
 import sys
 import json
@@ -13,21 +12,16 @@ import re
 import time
 import base64
 import logging
-import random
-from urllib.parse import quote, urljoin, unquote
+import hashlib
+from base64 import b64decode, b64encode
+from urllib.parse import urlparse, urljoin, unquote
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
+from pyquery import PyQuery as pq
 
-LOG = logging.getLogger("publish_resolver")
-if not LOG.handlers:
-    _h = logging.StreamHandler()
-    _h.setFormatter(logging.Formatter("[%(name)s] %(message)s"))
-    LOG.addHandler(_h)
-    LOG.setLevel(logging.INFO)
-    
 sys.path.append("..")
 try:
     from base.spider import Spider as BaseSpider
@@ -43,7 +37,15 @@ try:
 except Exception:
     pass
 
-LOG = logging.getLogger(__name__)
+img_cache = {}
+
+LOG = logging.getLogger("publish_resolver")
+if not LOG.handlers:
+    _h = logging.StreamHandler()
+    _h.setFormatter(logging.Formatter("[%(name)s] %(message)s"))
+    LOG.addHandler(_h)
+    LOG.setLevel(logging.INFO)
+
 
 # ==================================================================
 # ① 站点配置（换站只改这里）
@@ -51,27 +53,27 @@ LOG = logging.getLogger(__name__)
 class Config:
     # ---------- 站点身份 [改] ----------
     SITE_NAME     = "91黑料"
-    SITE_KEYWORDS = ["91黑料", "91爆料", "91cg"]      # 字符串或正则
-    SITE_MARKERS  = (                                 # 内容站 HTML 特征（小写匹配）
+    SITE_KEYWORDS = ["91黑料", "91爆料", "91cg"]
+    SITE_MARKERS  = (
         "post-title", "entry-title", "<article",
         'class="post', "realtime-card", "candid-video", "video-card",
     )
-    PLAY_FROM = "91大赛"
+    PLAY_FROM = "91吃瓜中心"
 
     # ---------- 缓存键 [改] ----------
-    HOST_CACHE_KEY = "sp91hl_host_v1"    # 三级内容站
-    PUB_CACHE_KEY  = "sp91hl_pub_v1"     # 二级发布页
+    HOST_CACHE_KEY = "sp91hl_host_v1"
+    PUB_CACHE_KEY  = "sp91hl_pub_v1"
 
     # ---------- 发布页锚点 [改] ----------
-    PUBLISH_URLS = [                   # 一级跳板页（可 3xx/JS 跳转，也可直接是发布页）
+    PUBLISH_URLS = [
         "https://91hl7.com/",
     ]
-    SECONDARY_PUBLISH_URLS = [         # 二级发布页硬编码保底（可选）
+    SECONDARY_PUBLISH_URLS = [
         "https://hl91w.com/",
         "https://91hl6.com/",
     ]
-    SEED_HOSTS = []                    # 种子内容站（可选）
-    FALLBACK_HOST = None               # 最终兜底内容站（可选）
+    SEED_HOSTS = []
+    FALLBACK_HOST = None
 
     # ---------- 超时与判定（一般不用改） ----------
     PUBLISH_TIMEOUT   = 12
@@ -79,8 +81,8 @@ class Config:
     FAST_TIMEOUT      = 8
     PROBE_MIN_HTML    = 1500
     PROBE_MIN_ARTICLE = 1
-    PROBE_PATHS       = ("/",)        # 首页不是 / 时改为 ("/", "/latest/")
-    MAX_JUMP          = 3             # HTML/JS 跳转最大次数
+    PROBE_PATHS       = ("/",)
+    MAX_JUMP          = 3
 
     # ---------- TLD / 黑名单（一般不用改） ----------
     VALID_TLDS = {
@@ -107,7 +109,7 @@ class Config:
         'beian.miit.gov.cn', 'wordpress.org', 'wix.com', 'weebly',
         'shopify', '51.la', 'cnzz.com', '51yes', 'navone.cloud',
     )
-    EXTRA_BLACKLIST = ()              # 额外黑名单 [改]
+    EXTRA_BLACKLIST = ()
 
     # ---------- HTTP ----------
     HEADERS = {
@@ -136,6 +138,7 @@ class Config:
             except Exception:
                 continue
         return False
+
 
 # ==================================================================
 # ② 发布页解析器（无需修改）
@@ -495,12 +498,6 @@ class PublishResolver:
 # ③ 零侵入挂载（Spider 类一行不改）
 # ==================================================================
 def auto_install(SpiderCls, cfg=None):
-    """
-    用法：文件末尾加一行 auto_install(Spider, Config)
-    效果：
-      - 包装 Spider.init，自动解析发布页并注入 host
-      - 不改动 Spider 的任何业务方法
-    """
     cfg = cfg or Config
     original_init = getattr(SpiderCls, "init", None)
 
@@ -525,18 +522,13 @@ def auto_install(SpiderCls, cfg=None):
         return resolver.resolve()
 
     def _inject(self, host):
-        # 常见 base url 属性名全部覆盖
+        # 覆盖所有常见 base url 属性名
         for attr in ("host", "baseUrl", "base_url", "url",
                      "siteUrl", "main_url", "domain", "api"):
-            if hasattr(self, attr):
-                try:
-                    setattr(self, attr, host)
-                except Exception:
-                    pass
-        try:
-            self.host = host
-        except Exception:
-            pass
+            try:
+                setattr(self, attr, host)
+            except Exception:
+                pass
         # headers 补 Origin / Referer
         try:
             if not getattr(self, "headers", None):
@@ -551,29 +543,42 @@ def auto_install(SpiderCls, cfg=None):
         except Exception:
             pass
 
+    def _build_extend(extend, host):
+        """安全地决定是否把 host 注入 extend，避免污染 proxies JSON"""
+        if not host:
+            return extend
+        if isinstance(extend, dict):
+            # 看起来像 proxies（含 http/https/all 键）就不注入
+            if any(k in extend for k in ("http", "https", "all")):
+                return extend
+            d = dict(extend)
+            d.setdefault("host", host)
+            return d
+        if isinstance(extend, str) and extend.strip().startswith("{"):
+            try:
+                d = json.loads(extend)
+                if isinstance(d, dict) and any(k in d for k in ("http", "https", "all")):
+                    return extend          # proxies JSON，原样返回
+                if isinstance(d, dict):
+                    d.setdefault("host", host)
+                    return json.dumps(d)
+            except Exception:
+                pass
+            return extend
+        if not extend:
+            return host                    # 空 extend 才注入 host 字符串
+        return extend
+
     def patched_init(self, extend="", *args, **kwargs):
-        # 先解析（用 cfg.HEADERS，不依赖 spider 状态）
+        # 先解析 host（不依赖 spider 状态，用 cfg.HEADERS）
         host = ""
         try:
             host = _resolve_host(self)
         except Exception as e:
             LOG.warning("自动解析 host 失败: %s", e)
 
-        # 把 host 注入 extend（如果 spider 从 extend 读）
-        new_extend = extend
-        if host:
-            if isinstance(extend, dict):
-                new_extend = dict(extend)
-                new_extend.setdefault("host", host)
-            elif isinstance(extend, str) and extend.strip().startswith("{"):
-                try:
-                    d = json.loads(extend)
-                    d.setdefault("host", host)
-                    new_extend = json.dumps(d)
-                except Exception:
-                    pass
-            elif not extend:
-                new_extend = host
+        # 安全注入 extend
+        new_extend = _build_extend(extend, host)
 
         # 调原 init
         if original_init:
@@ -585,17 +590,36 @@ def auto_install(SpiderCls, cfg=None):
                 except TypeError:
                     original_init(self)
 
-        # 事后注入（覆盖原 init 里硬编码的旧 host）
+        # 事后覆盖 host（覆盖原 init 里写死的旧域名）
         if host:
             _inject(self, host)
 
     SpiderCls.init = patched_init
 
 
+# ==================================================================
+# ④ 原 Spider 类：一行不改
+# ==================================================================
+class Spider(BaseSpider):
 
-# ==================== 主爬虫 ====================
+    def init(self, extend=""):
+        try:
+            self.proxies = json.loads(extend)
+        except:
+            self.proxies = {}
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
+            'Connection': 'keep-alive',
+            'Cache-Control': 'no-cache',
+        }
+        self.host = self.get_working_host()
+        self.headers.update({'Origin': self.host, 'Referer': f"{self.host}/"})
+        print(f"使用站点: {self.host}")
+
     def getName(self):
-        return "91黑料"
+        return "🌈 91吃瓜中心|终极完美版"
 
     def isVideoFormat(self, url):
         return any(ext in (url or '') for ext in ['.m3u8', '.mp4', '.ts'])
@@ -607,12 +631,26 @@ def auto_install(SpiderCls, cfg=None):
         global img_cache
         img_cache.clear()
 
+    def get_working_host(self):
+        dynamic_urls = [
+            'https://hl91w.com/',
+            'https://but.vncchqw.cc/',
+        ]
+        for url in dynamic_urls:
+            try:
+                response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=10)
+                if response.status_code == 200:
+                    return url
+            except Exception:
+                continue
+        return dynamic_urls[0]
+
     def homeContent(self, filter):
         try:
             response = requests.get(self.host, headers=self.headers, proxies=self.proxies, timeout=15)
             if response.status_code != 200: return {'class': [], 'list': []}
             data = self.getpq(response.text)
-            
+
             classes = []
             category_selectors = ['.category-list ul li', '.nav-menu li', '.menu li', 'nav ul li']
             for selector in category_selectors:
@@ -623,10 +661,10 @@ def auto_install(SpiderCls, cfg=None):
                     if not href or href == '#' or not name: continue
                     classes.append({'type_name': name, 'type_id': href})
                 if classes: break
-            
+
             if not classes:
                 classes = [{'type_name': '最新', 'type_id': '/latest/'}, {'type_name': '热门', 'type_id': '/hot/'}]
-            
+
             return {'class': classes, 'list': self.getlist(data('#index article, article'))}
         except Exception as e:
             return {'class': [], 'list': []}
@@ -645,26 +683,26 @@ def auto_install(SpiderCls, cfg=None):
             if '@folder' in tid:
                 v = self.getfod(tid.replace('@folder', ''))
                 return {'list': v, 'page': 1, 'pagecount': 1, 'limit': 90, 'total': len(v)}
-            
+
             pg = int(pg) if pg else 1
-            
+
             if tid.startswith('http'):
                 base_url = tid.rstrip('/')
             else:
                 path = tid if tid.startswith('/') else f"/{tid}"
                 base_url = f"{self.host}{path}".rstrip('/')
-            
+
             if pg == 1:
                 url = f"{base_url}/"
             else:
                 url = f"{base_url}/{pg}/"
-                
+
             response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
             if response.status_code != 200: return {'list': [], 'page': pg, 'pagecount': 9999, 'limit': 90, 'total': 0}
-                
+
             data = self.getpq(response.text)
             videos = self.getlist(data('#archive article, #index article, article'), tid)
-            
+
             return {'list': videos, 'page': pg, 'pagecount': 9999, 'limit': 90, 'total': 999999}
         except Exception as e:
             return {'list': [], 'page': pg, 'pagecount': 9999, 'limit': 90, 'total': 0}
@@ -674,7 +712,7 @@ def auto_install(SpiderCls, cfg=None):
             url = ids[0] if ids[0].startswith('http') else f"{self.host}{ids[0]}"
             response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
             data = self.getpq(response.text)
-            
+
             plist = []
             used_names = set()
             if data('.dplayer'):
@@ -684,7 +722,7 @@ def auto_install(SpiderCls, cfg=None):
                         if config_attr:
                             config = json.loads(config_attr)
                             video_url = config.get('video', {}).get('url', '')
-                            
+
                             if video_url:
                                 ep_name = ''
                                 parent = k.parents().eq(0)
@@ -695,7 +733,7 @@ def auto_install(SpiderCls, cfg=None):
                                         ep_name = heading
                                         break
                                     parent = parent.parents().eq(0)
-                                
+
                                 base_name = ep_name if ep_name else f"视频{c}"
                                 name = base_name
                                 count = 2
@@ -703,62 +741,62 @@ def auto_install(SpiderCls, cfg=None):
                                     name = f"{base_name} {count}"
                                     count += 1
                                 used_names.add(name)
-                                
+
                                 plist.append(f"{name}${video_url}")
                     except: continue
-            
+
             if not plist:
                 content_area = data('.post-content, article')
                 for i, link in enumerate(content_area('a').items(), start=1):
                     link_text = link.text().strip()
                     link_href = link.attr('href')
-                    
+
                     if link_href and any(kw in link_text for kw in ['点击观看', '观看', '播放', '视频', '第一弹', '第二弹', '第三弹', '第四弹', '第五弹', '第六弹', '第七弹', '第八弹', '第九弹', '第十弹']):
                         ep_name = link_text.replace('点击观看：', '').replace('点击观看', '').strip()
                         if not ep_name: ep_name = f"视频{i}"
-                        
+
                         if not link_href.startswith('http'):
                             link_href = f"{self.host}{link_href}" if link_href.startswith('/') else f"{self.host}/{link_href}"
-                        
+
                         plist.append(f"{ep_name}${link_href}")
-            
+
             play_url = '#'.join(plist) if plist else f"未找到视频源${url}"
-            
+
             vod_content = ''
             try:
                 tags = []
                 seen_names = set()
                 seen_ids = set()
-                
+
                 tag_links = data('.tags a, .keywords a, .post-tags a')
-                
+
                 candidates = []
                 for k in tag_links.items():
                     title = k.text().strip()
                     href = k.attr('href')
                     if title and href:
                         candidates.append({'name': title, 'id': href})
-                
+
                 candidates.sort(key=lambda x: len(x['name']), reverse=True)
-                
+
                 for item in candidates:
                     name = item['name']
                     id_ = item['id']
-                    
+
                     if id_ in seen_ids: continue
-                    
+
                     is_duplicate = False
                     for seen in seen_names:
                         if name in seen:
                             is_duplicate = True
                             break
-                    
+
                     if not is_duplicate:
                         target = json.dumps({'id': id_, 'name': name})
                         tags.append(f'[a=cr:{target}/]{name}[/a]')
                         seen_names.add(name)
                         seen_ids.add(id_)
-                
+
                 if tags:
                     vod_content = ' '.join(tags)
                 else:
@@ -776,12 +814,12 @@ def auto_install(SpiderCls, cfg=None):
     def searchContent(self, key, quick, pg="1"):
         try:
             pg = int(pg) if pg else 1
-            
+
             if pg == 1:
                 url = f"{self.host}/search/{key}/"
             else:
                 url = f"{self.host}/search/{key}/{pg}/"
-            
+
             response = requests.get(url, headers=self.headers, proxies=self.proxies, timeout=15)
             return {'list': self.getlist(self.getpq(response.text)('article')), 'page': pg, 'pagecount': 9999}
         except:
@@ -864,7 +902,7 @@ def auto_install(SpiderCls, cfg=None):
             href = a.attr('href')
             title = k('h2').text() or k('.entry-title').text() or k('.post-title').text()
             if not title and k.is_('a'): title = k.text()
-            
+
             if href and title:
                 img = self.getimg(k('script').text(), k, card_html)
                 videos.append({
@@ -896,7 +934,7 @@ def auto_install(SpiderCls, cfg=None):
     def getimg(self, text, elem=None, html_content=None):
         if m := re.search(r"loadBannerDirect\('([^']+)'", text or ''):
             return self._proc_url(m.group(1))
-        
+
         if html_content is None and elem is not None:
              html_content = elem.outer_html() if hasattr(elem, 'outer_html') else str(elem)
         if not html_content: return ''
@@ -909,11 +947,11 @@ def auto_install(SpiderCls, cfg=None):
 
         m = re.search(r'(https?://[^"\'\s)]+\.(?:jpg|png|jpeg|webp))', html_content, re.I)
         if m: return self._proc_url(m.group(1))
-            
+
         if 'url(' in html_content:
             m = re.search(r'url\s*\(\s*[\'"]?([^"\'\)]+)[\'"]?\s*\)', html_content, re.I)
             if m: return self._proc_url(m.group(1))
-            
+
         return ''
 
     def _proc_url(self, url):
@@ -937,4 +975,8 @@ def auto_install(SpiderCls, cfg=None):
         try: return pq(data)
         except: return pq(data.encode('utf-8'))
 
+
+# ==================================================================
+# ⑤ 挂载：必须放在 Spider 类定义之后
+# ==================================================================
 auto_install(Spider, Config)
