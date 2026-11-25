@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-91大赛 · 多域名自愈版（图片修复版 v2）
+91大赛 · 多域名自愈版（发布页自愈 + 图片修复版）
 ================================
-- 域名自愈：并发探测 + TTL缓存 + 302跟随 + 详细日志 + 兜底
+- 域名自愈：发布页解析 + 多级兜底 + 自动探测 + TTL缓存 + 302跟随
 - 图片链路：urlsafe b64 + 原URL优先/CDN兜底 + 明图直通 + 解密失败返回原内容
 - CDN 域名：从首页 HTML 动态提取，站点换图床无需改代码
 - 业务保留：正则列表 + 13策略提取 + 剧集聚合 + AES解密 + CDN重写
@@ -14,7 +14,7 @@ import time
 import base64
 import logging
 import random
-from urllib.parse import quote, urljoin, unquote
+from urllib.parse import quote, urljoin, unquote, urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
@@ -36,8 +36,6 @@ try:
 except Exception:
     pass
 
-LOG = logging.getLogger(__name__)
-
 LOG = logging.getLogger("publish_resolver")
 if not LOG.handlers:
     _h = logging.StreamHandler()
@@ -45,7 +43,8 @@ if not LOG.handlers:
     LOG.addHandler(_h)
     LOG.setLevel(logging.INFO)
 
-# ==================== 分类 / 标签常量 ====================
+
+# ==================== 分类 / 标签常量（保留）====================
 MANUAL_CLASSES = [
     ('/category/jrds/',  '今日大赛',    'iconfont icon-jrds'),
     ('/category/rsds/',  '热搜大赛',    'iconfont icon-rsds'),
@@ -76,46 +75,41 @@ EPISODE_PATTERN      = re.compile(r'^(.*?)(第\d+集)\s*(.*)$')
 SERIES_CLEAN_PATTERN = re.compile(r'^(.*?)(第\d+集|\d+集|完整版|无码版|爆燃来袭|重磅流出|高能开场|重磅来袭|已完结).*')
 
 
-# ==================== 配置层 ====================
+# ==================================================================
+# ① 站点配置（换站只改这里）
+# ==================================================================
 class Config:
     # ---------- 站点身份 [改] ----------
     SITE_NAME     = "91大赛"
-    SITE_KEYWORDS = ["91大赛", "91爆料", "91cg"]      # 字符串或正则
-    PLAY_FROM = "91大赛"
-    # 内容站 HTML 特征（小写匹配）
-    SITE_MARKERS  = (                                
+    SITE_KEYWORDS = ["91大赛", "91爆料", "91cg"]
+    SITE_MARKERS  = (
         "post-title", "entry-title", "<article",
         'class="post', "realtime-card", "candid-video", "video-card",
+        "Xc_home_article", "Xc_archive", "/archives/",   # ← 91大赛原特征
     )
+    PLAY_FROM = "91大赛"
 
     # ---------- 缓存键 [改] ----------
-    HOST_CACHE_KEY = "sp91_host_v1"    # 三级内容站
-    PUB_CACHE_KEY  = "sp91_pub_v1"     # 二级发布页
+    HOST_CACHE_KEY = "sp91_host_v1"
+    PUB_CACHE_KEY  = "sp91_pub_v1"
 
-    # 一级跳板页（可 3xx/JS 跳转，也可直接是发布页）
-    PUBLISH_URLS = [                   
+    # ---------- 发布页锚点 [改] ----------
+    PUBLISH_URLS = [
         "https://91dswz17.com/",
     ]
-
-    # 二级发布页硬编码保底（可选）
-    SECONDARY_PUBLISH_URLS = [         
+    SECONDARY_PUBLISH_URLS = [
         "https://91dswz14.com/",
         "https://91dswz16.com/",
-    ]  
-
-    # 种子内容站（可选）                                                       
+    ]
     SEED_HOSTS = [
         "https://alone.poampwcv.cc/",
         "https://break.poampwcv.cc/",
         "https://any.zenolyqt.cc/",
-    ]   
+    ]
+    # 注意：原值是列表 [ "..." ]，此处改为字符串（模板需要 .rstrip）
+    FALLBACK_HOST = "https://df2q5wu0gtfve.cloudfront.net/"
 
-    # 最终兜底内容站（可选）                                                         
-    FALLBACK_HOST = [ 
-        "https://df2q5wu0gtfve.cloudfront.net/",           
-    ]                                                            
-
-    # ---------- 超时与判定（一般不用改） ----------
+    # ---------- 超时与判定 ----------
     PUBLISH_TIMEOUT   = 12
     PROBE_TIMEOUT     = 12
     FAST_TIMEOUT      = 8
@@ -124,7 +118,7 @@ class Config:
     PROBE_PATHS       = ("/",)
     MAX_JUMP          = 3
 
-    # ---------- TLD / 黑名单（一般不用改） ----------
+    # ---------- TLD / 黑名单 ----------
     VALID_TLDS = {
         'com', 'net', 'org', 'cc', 'xyz', 'lol', 'vip', 'app', 'top', 'cn',
         'co', 'io', 'me', 'tv', 'club', 'site', 'online', 'info', 'biz',
@@ -164,6 +158,11 @@ class Config:
     }
     VERIFY_SSL = False
 
+    # ---------- 图片配置（CDN_XHOST 会被 _detect_cdn_host 动态覆盖） ----------
+    CDN_XHOST   = "https://pic.hdhwqx.cn"
+    IMG_AES_KEY = "f5d965df75336270"
+    IMG_AES_IV  = "97b60394abc2fbe1"
+
     @classmethod
     def match_keyword(cls, text):
         if not text:
@@ -179,10 +178,6 @@ class Config:
                 continue
         return False
 
-    # ---- 图片配置（CDN_XHOST 会被 init() 动态覆盖，这里是兜底默认值）----
-    CDN_XHOST   = "https://pic.hdhwqx.cn"   # 原 pic.xustgq.cn 已挂，更新为当前域名
-    IMG_AES_KEY = "f5d965df75336270"
-    IMG_AES_IV  = "97b60394abc2fbe1"
 
 # ==================================================================
 # ② 发布页解析器（无需修改）
@@ -572,7 +567,7 @@ def auto_install(SpiderCls, cfg=None):
         return resolver.resolve()
 
     def _inject(self, host):
-        # 常见 base url 属性名全部覆盖
+        # 常见 base url 属性名全覆盖
         for attr in ("host", "baseUrl", "base_url", "url",
                      "siteUrl", "main_url", "domain", "api"):
             if hasattr(self, attr):
@@ -597,32 +592,62 @@ def auto_install(SpiderCls, cfg=None):
                 self.proxies = {}
         except Exception:
             pass
+        # ★ post-inject 钩子：自动调用 spider 里的初始化方法（如 _detect_cdn_host）
+        for hook_name in ("_detect_cdn_host", "_on_host_injected", "_after_host_inject"):
+            hook = getattr(self, hook_name, None)
+            if callable(hook):
+                try:
+                    hook()
+                except Exception as e:
+                    LOG.debug("%s 执行失败: %s", hook_name, e)
+
+    def _build_extend(extend, host):
+        """安全决定是否把 host 注入 extend，避免污染 proxies JSON"""
+        if not host:
+            return extend
+        if isinstance(extend, dict):
+            if any(k in extend for k in ("http", "https", "all")):
+                return extend
+            d = dict(extend); d.setdefault("host", host); return d
+        if isinstance(extend, str) and extend.strip().startswith("{"):
+            try:
+                d = json.loads(extend)
+                if isinstance(d, dict) and any(k in d for k in ("http", "https", "all")):
+                    return extend
+                if isinstance(d, dict):
+                    d.setdefault("host", host); return json.dumps(d)
+            except Exception:
+                pass
+            return extend
+        if not extend:
+            return host
+        return extend
+
+    def _early_parse_proxies(self, extend):
+        """提前解析 extend 里的 proxies，让探测请求也能走代理"""
+        try:
+            if isinstance(extend, dict):
+                if any(k in extend for k in ("http", "https", "all")):
+                    self.proxies = dict(extend)
+            elif isinstance(extend, str) and extend.strip().startswith("{"):
+                d = json.loads(extend)
+                if isinstance(d, dict) and any(k in d for k in ("http", "https", "all")):
+                    self.proxies = d
+        except Exception:
+            pass
 
     def patched_init(self, extend="", *args, **kwargs):
-        # 先解析（用 cfg.HEADERS，不依赖 spider 状态）
+        # 0) 提前解析 proxies
+        _early_parse_proxies(self, extend)
+        # 1) 解析 host
         host = ""
         try:
             host = _resolve_host(self)
         except Exception as e:
             LOG.warning("自动解析 host 失败: %s", e)
-
-        # 把 host 注入 extend（如果 spider 从 extend 读）
-        new_extend = extend
-        if host:
-            if isinstance(extend, dict):
-                new_extend = dict(extend)
-                new_extend.setdefault("host", host)
-            elif isinstance(extend, str) and extend.strip().startswith("{"):
-                try:
-                    d = json.loads(extend)
-                    d.setdefault("host", host)
-                    new_extend = json.dumps(d)
-                except Exception:
-                    pass
-            elif not extend:
-                new_extend = host
-
-        # 调原 init
+        # 2) 安全注入 extend
+        new_extend = _build_extend(extend, host)
+        # 3) 调原 init
         if original_init:
             try:
                 original_init(self, new_extend, *args, **kwargs)
@@ -631,17 +656,22 @@ def auto_install(SpiderCls, cfg=None):
                     original_init(self, new_extend)
                 except TypeError:
                     original_init(self)
-
-        # 事后注入（覆盖原 init 里硬编码的旧 host）
+        # 4) 事后覆盖 host + headers + post-inject 钩子
         if host:
             _inject(self, host)
+            try:
+                print(f"使用站点: {host}")
+            except Exception:
+                pass
 
     SpiderCls.init = patched_init
 
 
-# ==================== 主爬虫 ====================
+# ==================================================================
+# ④ 主爬虫（原 Spider 类，业务方法一行不改）
+# ==================================================================
 class Spider(BaseSpider):
-    CONFIG = SiteConfig
+    CONFIG = Config
 
     def __init__(self, *a, **kw):
         try:
@@ -656,6 +686,7 @@ class Spider(BaseSpider):
         return "91大赛·多域自愈版"
 
     def init(self, extend=""):
+        # host 与 _detect_cdn_host 由 auto_install 的 patched_init 统一处理
         try:
             self.proxies = json.loads(extend) if extend else {}
             if not isinstance(self.proxies, dict):
@@ -664,47 +695,24 @@ class Spider(BaseSpider):
             self.proxies = {}
         self.headers = dict(self.CONFIG.HEADERS)
 
-        resolver = DomainResolver(
-            self.CONFIG, self._get,
-            cache_get=getattr(self, "getCache", None),
-            cache_set=getattr(self, "setCache", None),
-        )
-        try:
-            resolver.cache_del = getattr(self, "delCache", None)
-        except Exception:
-            pass
-
-        self.host = resolver.resolve()
-        if self.host:
-            self.headers.update({"Origin": self.host, "Referer": self.host + "/"})
-            # ★ 从首页 HTML 动态提取图片 CDN 域名（站点换图床时自动适配）
-            self._detect_cdn_host()
-        print(f"使用站点: {self.host}")
-
     def _detect_cdn_host(self):
-        """从首页 HTML 里提取图片域名，作为 CDN_XHOST 的兜底来源。
-        优先 data-src / loadThumb 的绝对地址；失败则保留默认值。"""
+        """从首页 HTML 动态提取图片 CDN 域名（被 patched_init 在 host 注入后自动调用）"""
         try:
             html = self._get_html(self.host)
             if not html:
                 return
             candidates = []
-            # 1) data-src="https://xxx/path/..."
             for m in re.finditer(r'data-src="(https?://([^/"]+)/[^"]+)"', html):
                 candidates.append(m.group(2))
-            # 2) loadThumb("https:\/\/xxx\/path...")
             for m in re.finditer(r'loadThumb\(\s*"(https?:[^"]+)"', html):
                 v = m.group(1).replace('\\/', '/')
                 mm = re.match(r'https?://([^/]+)/', v)
                 if mm:
                     candidates.append(mm.group(1))
-            # 3) <img src="https://xxx/..."> 且非 data:
             for m in re.finditer(r'<img[^>]+src="(https?://([^/"]+)/[^"]+)"', html):
                 candidates.append(m.group(2))
-
             if not candidates:
                 return
-            # 取出现次数最多的域名
             from collections import Counter
             host = Counter(candidates).most_common(1)[0][0]
             if host:
@@ -906,20 +914,17 @@ class Spider(BaseSpider):
             print(f"列表解析出错: {e}")
         return videos
 
-    # ==================== 图片提取：多属性兜底 ====================
+    # ==================== 图片提取 ====================
     def _extract_list_image(self, block):
-        """多属性兜底：data-xkrkllgl → data-src/data-* → src"""
         xk = re.search(r'data-xkrkllgl="([^"]+)"', block)
         if xk and xk.group(1).strip():
             return self._cover_url(xk.group(1).strip())
-
         for attr in ('data-src', 'data-original', 'data-lazy', 'data-img', 'data-url'):
             m = re.search(rf'{attr}="([^"]+)"', block)
             if m:
                 val = m.group(1).strip()
                 if val and 'zw.png' not in val and 'lazyload' not in val:
                     return self._cover_url(val)
-
         src = re.search(r'<img[^>]*src="([^"]+)"', block)
         if src:
             val = src.group(1).strip()
@@ -937,7 +942,6 @@ class Spider(BaseSpider):
         return urljoin(self.host + "/", pic_url)
 
     def _cdn_image_url(self, pic_url):
-        """把原图 URL 的 host 换成 CDN_XHOST（仅当路径命中图片目录时）。"""
         if not pic_url:
             return pic_url
         if re.search(r'/(?:new|xiao|upload|uploads)/', pic_url):
@@ -952,12 +956,10 @@ class Spider(BaseSpider):
             return self._proxy_image_url(raw_url)
         return raw_url
 
-    # ==================== 图片代理URL：urlsafe b64（不预转CDN） ====================
     def _proxy_image_url(self, raw_url):
         if not raw_url:
             return ''
         try:
-            # ★ 不再预先转 CDN，把原始 URL 交给代理做多路兜底
             proxy_base = self.getProxyUrl() if hasattr(self, 'getProxyUrl') else ''
             if not proxy_base:
                 return raw_url
@@ -1233,18 +1235,14 @@ class Spider(BaseSpider):
         except Exception as e:
             return [500, "text/plain", ("localProxy error: %s" % type(e).__name__).encode("utf-8")]
 
-    # ---------- 图片代理：原URL优先 + CDN兜底 + 多级兜底 ----------
     def _proxy_image(self, params):
         url = params.get('url', '')
         if not url:
             return [404, "text/plain", b"no url"]
-
-        # 1) 解码 URL（urlsafe / 标准 b64 / 明文）
         if not url.startswith('http'):
             decoded = self._decode_url_param(url)
             if decoded:
                 url = decoded
-        # 1b) 兜底：参数可能被 URL 编码过（如 https%3A%2F%2F...）
         if not url.startswith('http'):
             try:
                 url = unquote(url)
@@ -1254,13 +1252,11 @@ class Spider(BaseSpider):
             print(f"[img] url 无效: {str(url)[:80]}")
             return [404, "text/plain", b"invalid url"]
 
-        # 2) 构造尝试列表：原 URL 优先 → CDN 兜底
         try_urls = [('raw', url)]
         cdn = self._cdn_image_url(url)
         if cdn and cdn != url:
             try_urls.append(('cdn', cdn))
 
-        # 3) 逐个尝试
         for tag, try_url in try_urls:
             try:
                 r = requests.get(
@@ -1274,28 +1270,20 @@ class Spider(BaseSpider):
                 if r.status_code != 200:
                     print(f"[img] {tag} HTTP {r.status_code}: {try_url}")
                     continue
-
                 raw = r.content or b""
                 if not raw:
                     print(f"[img] {tag} 内容为空: {try_url}")
                     continue
-
-                # 3a) 明图直通
                 if self._image_magic_ok(raw):
                     print(f"[img] {tag} 明图直通 ({len(raw)}B): {try_url}")
                     return [200, self._detect_image_type(raw), raw]
-
-                # 3b) AES 解密
                 decrypted = self._aes_decrypt_image(raw)
                 if decrypted:
                     print(f"[img] {tag} 解密成功 ({len(decrypted)}B): {try_url}")
                     return [200, self._detect_image_type(decrypted), decrypted]
-
-                # 3c) 解密失败 → 返回原内容兜底
                 print(f"[img] {tag} 解密失败，兜底返回原内容 "
                       f"({len(raw)}B, head={raw[:8].hex()}): {try_url}")
                 return [200, "image/jpeg", raw]
-
             except Exception as e:
                 print(f"[img] {tag} 请求异常 {type(e).__name__}: {try_url}")
                 continue
@@ -1303,7 +1291,6 @@ class Spider(BaseSpider):
         print(f"[img] 全链路失败: {url}")
         return [500, "text/plain", b"image failed"]
 
-    # ---------- URL参数解码 ----------
     def _decode_url_param(self, s):
         if not s:
             return ''
@@ -1323,7 +1310,6 @@ class Spider(BaseSpider):
             pass
         return s if s.startswith('http') else ''
 
-    # ---------- 图片类型检测 ----------
     def _detect_image_type(self, data):
         if not data:
             return "image/jpeg"
@@ -1337,7 +1323,6 @@ class Spider(BaseSpider):
             return "image/jpeg"
         return "image/jpeg"
 
-    # ---------- AES 图片解密 ----------
     def _image_magic_ok(self, data):
         if not data:
             return False
@@ -1372,7 +1357,6 @@ class Spider(BaseSpider):
             pass
         return None
 
-    # ---------- m3u8 代理 ----------
     def _proxy_m3u8(self, params):
         url = params.get('url', '')
         referer = params.get('referer', self.host + '/')
@@ -1411,9 +1395,12 @@ class Spider(BaseSpider):
             return m3u8_text
 
 
-# 注册
+# ==================================================================
+# ⑤ 挂载 + 注册（顺序：先 auto_install，再 register）
+# ==================================================================
+auto_install(Spider, Config)
+
 try:
     BaseSpider.register(Spider())
 except Exception:
     pass
-auto_install(Spider, Config)
