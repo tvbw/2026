@@ -51,12 +51,8 @@ LOG = logging.getLogger(__name__)
 class SiteConfig:
     # ★ 你提供的 51爆料导航页/发布页
     NAV_URLS = [
-        "https://51blk1.com",
+        "https://www.nmonwxsra.cc/",
         "https://51blk2.com",
-        "https://51blk3.com",
-        "https://51blk4.com",
-        "https://51blk5.com",
-        "https://51blk6.com",
     ]
 
     # 发布页留空，因为导航页本身承担了这个角色；如果有单独的二级发布页可加在这里
@@ -64,7 +60,12 @@ class SiteConfig:
 
     # ★ 你提供的兜底三级域名
     SEED_HOSTS = [
-        "https://anxiety.ttiaqryf.cc",
+        "https://d36tmvlqa1tkhg.cloudfront.net/",
+        "https://d2gt333ro578y4.cloudfront.net",
+        "https://actual.ttiaqryf.cc",
+        "https://adviser.ttiaqryf.cc",
+        "https://basket.ttiaqryf.cc",
+        "https://campus.ttiaqryf.cc",
     ]
 
     FALLBACK_HOST  = None
