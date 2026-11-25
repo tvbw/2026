@@ -3,6 +3,42 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
+      "key": "🍁十区影视",
+      "name": "🍁十区影视",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/jsjhshs/16/7f1f8a93faf139f0b198932d59893b8744ec2cbb/yingshi/py/18%E3%8A%99%EF%B8%8F%E5%85%AD%E5%8C%BA%E5%BD%B1%E8%A7%86.py#L61"
+    },
+    {
+
+      "key": "🍁十区香蕉",
+      "name": "🍁十区香蕉",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/jsjhshs/16/7f1f8a93faf139f0b198932d59893b8744ec2cbb/yingshi/py/18%E3%8A%99%EF%B8%8F%E5%85%AD%E5%8C%BA%E5%BD%B1%E8%A7%86.py#L61"
+    },
+    {
+
+      "key": "🍁九合一 vbox 适配版",
+      "name": "🍁九合一 vbox 适配版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://raw.githubusercontent.com/vbox-Ai/api/b32d3441188d838851caf7ba3774de2109c3b9d2/sources/welfare-js/jiuheyi.py#L186"
+    },
+    {
+
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
@@ -183,6 +219,17 @@
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/51cg2.py"
     },
     {
+      "key": "51爆料v9",
+      "name": "❤️51爆料V9自愈版｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
+    },
+    {
       "key": "91JAV最终版",
       "name": "❤️91JAV",
       "type": 3,
@@ -276,17 +323,7 @@
     },
     {
 
-      "key": "51爆料v9",
-      "name": "❤️51爆料V9自愈版｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/51bl.py"
-    },
-    {
+
       "key": "fulleroticmovies",
       "name": "经典世界sex电影｜🔞",
       "type": 3,
