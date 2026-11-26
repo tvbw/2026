@@ -259,6 +259,7 @@ class Spider(SpiderBase):
                     if m_path: title = self.smart_decrypt(m_path.group(1))
                 if not title: title = "高清精彩正片"
                 title = title.replace("ゐ", "").replace("ゑ", "").replace("ﾌ", " ").strip()
+                title = re.sub(r'[❤♥💖💗💓💕💞💘❣]', '', title).strip()
                 pack_id = "%s@@%s@@%s" % (urllib.parse.quote(title), urllib.parse.quote(v_url), urllib.parse.quote(host))
                 vod_list.append({
                     "vod_id": pack_id,
