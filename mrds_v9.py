@@ -59,7 +59,7 @@ class Config:
     # ---------- 站点身份 [改] ----------
     SITE_NAME     = "每日大赛"
     SITE_KEYWORDS = ["每日大赛", "每日爆料", "91cg"]
-    PLAY_FROM = "91大赛"
+    PLAY_FROM = "每日大赛"
     SITE_MARKERS  = (
         "post-title", "entry-title", "<article",
         'class="post', "realtime-card", "candid-video", "video-card",
