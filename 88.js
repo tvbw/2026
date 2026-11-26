@@ -3,30 +3,6 @@
   "wallpaper": "https://imgs.catvod.com",
   "sites": [
     {
-      "key": "每日大赛v10自愈版",
-      "name": "每日大赛v10自愈版",
-      "type": 3,
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/mrds_v9.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "changeable": 1
-    },
-    {
-      "key": "每日大乱斗v10自愈版",
-      "name": "每日大乱斗v10自愈版",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
-    },
-    {
       "key": "🍁正宗聚合",
       "name": "🍁影视聚合",
       "type": 3,
@@ -58,6 +34,133 @@
         "ratio": 1.66
       },
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/51cg1.py"
+    },
+    {
+      "key": "每日大赛v10自愈版",
+      "name": "每日大赛v10自愈版",
+      "type": 3,
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/mrds_v9.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "changeable": 1
+    },
+    {
+      "key": "每日大乱斗v10自愈版",
+      "name": "每日大乱斗v10自愈版",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/mrdld_v9.py"
+    },
+    {
+      "key": "香蕉9合2",
+      "name": "❤️香蕉9合1【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
+    },
+    {
+      "key": "香蕉9合1最终优化版",
+      "name": "❤️香蕉9合1全目录【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
+    },
+    {
+      "key": "csp_xbpq_s直播【🔞】",
+      "name": "❤️StripChat直播1【🔞】",
+      "type": 3,
+      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
+      "playerType": 2,
+      "api": "csp_XBPQ",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
+      "style": {
+        "type": "rect",
+        "ratio": 1.65
+      }
+    },
+    {
+      "key": "Cam4直播",
+      "name": "5🍓Cam4直播｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/Cam4.py"
+    },
+    {
+      "key": "py_4K_fullhd-fullhd3",
+      "name": "❤️FHD老僧世界【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
+      "key": "连播18AV",
+      "name": "❤️连播18AV",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/18av.py"
+    },
+    {
+      "key": "csp_xbpq_禁片天堂",
+      "name": "❤️禁片天堂【🔞】",
+      "type": 3,
+      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
+      "playerType": 2,
+      "api": "csp_XBPQ",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/jptt.json",
+      "style": {
+        "type": "rect",
+        "ratio": 1.65
+      }
+    },
+    {
+      "key": "Missav(2)",
+      "name": "❤️Missav目录",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
     },
     {
       "key": "91大赛",
@@ -93,7 +196,6 @@
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/91cg_v9.py"
     },
     {
-
       "key": "51吃瓜导航兜底版",
       "name": "❤️51吃瓜导航兜底版51cg2｜🔞",
       "type": 3,
@@ -125,29 +227,6 @@
         "ratio": 1.66
       },
       "api": "https://raw.githubusercontent.com/tvbw/2026/main/51ds1.py"
-    },
-    {
-      "key": "香蕉9合2",
-      "name": "❤️香蕉9合1【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
-    },
-    {
-      "key": "香蕉9合1最终优化版",
-      "name": "❤️香蕉9合1全目录【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he1最终优化版全目录版本.py"
     },
     {
       "key": "香蕉1区",
@@ -252,18 +331,7 @@
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/91av.py"
     },
     {
-      "key": "连播18AV",
-      "name": "❤️连播18AV",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/18av.py"
-    },
-    {
-     "key": "fulleroticmovies",
+      "key": "fulleroticmovies",
       "name": "经典世界sex电影｜🔞",
       "type": 3,
       "playerType": 2,
@@ -302,78 +370,6 @@
       "api": "https://gh-proxy.com/https://github.com/ge6bu6/1/blob/main/py/lissav.py"
     },
     {
-      "key": "51爆料终极完美版",
-      "name": "51爆料终极完美版.py｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://github.com/ge6bu6/1/blob/main/py/51爆料终极完美版.py"
-    },
-    {
-      "key": "91吃瓜中心终极完美版",
-      "name": "91吃瓜中心终极完美版.py｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://github.com/ge6bu6/1/blob/main/py/91吃瓜中心终极完美版.py"
-    },
-    {
-      "key": "91大赛",
-      "name": "91大赛(无封面).py｜🔞",
-      "type": 3,
-      "api": "https://gh-proxy.com/https://github.com/ge6bu6/1/blob/main/py/91大赛.py"
-    },
-    {
-      "key": "91吃瓜喽(瑟+瓜)",
-      "name": "91吃瓜喽(瑟+瓜).py｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://github.com/ge6bu6/1/blob/main/py/91吃瓜喽(瑟+瓜).py"
-    },
-    {
-      "key": "91热爆",
-      "name": "91热爆.py｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://github.com/ge6bu6/1/blob/main/py/91热爆.py"
-    },
-    {
-      "key": "每日大乱斗",
-      "name": "每日大乱斗.py｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://github.com/ge6bu6/1/blob/main/py/每日大乱斗.py"
-    },
-    {
-      "key": "57吃瓜",
-      "name": "❤️57吃瓜｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/57cg.py"
-    },
-    {
       "key": "橙果短剧",
       "name": "橙果短剧.py｜🔞",
       "type": 3,
@@ -383,28 +379,6 @@
         "ratio": 1.66
       },
       "api": "https://gh-proxy.com/https://github.com/ge6bu6/1/blob/main/py/橙果短剧.py"
-    },
-    {
-      "key": "橙果短剧_2",
-      "name": "橙果短剧_2.py｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://github.com/ge6bu6/1/blob/main/py/橙果短剧_2.py"
-    },
-    {
-      "key": "黄果漫剧",
-      "name": "黄果漫剧.py｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://github.com/ge6bu6/1/blob/main/py/黄果漫剧.py"
     },
     {
       "key": "夜社短剧",
@@ -543,32 +517,6 @@
       "changeable": 1
     },
     {
-      "key": "Missav(2)",
-      "name": "❤️Missav目录",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "http://pglblb.test.upcdn.net/2026py/10hd/Missav%EF%BC%88%E5%85%8D%E7%BF%BB%EF%BC%89%20(2).py"
-    },
-    {
-      "key": "py_4K_fullhd-fullhd3",
-      "name": "❤️FHD老僧世界【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/fullhd3.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
       "key": "py_4K_fullhd-fullhd2",
       "name": "❤️FHD书生中国【🔞】",
       "type": 3,
@@ -582,22 +530,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
-    },
-    {
-      "key": "csp_xbpq_禁片天堂",
-      "name": "❤️禁片天堂【🔞】",
-      "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
-      "playerType": 2,
-      "api": "csp_XBPQ",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/jptt.json",
-      "style": {
-        "type": "rect",
-        "ratio": 1.65
-      }
     },
     {
       "key": "csp_XYQHiker_javffm",
@@ -647,33 +579,6 @@
       },
       "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py",
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/TXT-18/main/TVbox/dolphin18/ext/溏心次元🔞.py"
-    },
-    {
-      "key": "csp_xbpq_s直播【🔞】",
-      "name": "❤️StripChat直播1【🔞】",
-      "type": 3,
-      "jar": "http://pglblb.test.upcdn.net/202610xyqxbpq.jar",
-      "playerType": 2,
-      "api": "csp_XBPQ",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/stripchat.json",
-      "style": {
-        "type": "rect",
-        "ratio": 1.65
-      }
-    },
-    {
-      "key": "Cam4直播",
-      "name": "5🍓Cam4直播｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/Cam4.py"
     },
     {
       "key": "ss直播3",
