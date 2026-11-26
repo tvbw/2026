@@ -67,6 +67,17 @@
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
     },
     {
+      "key": "madou8",
+      "name": "麻豆吧｜🔞",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/madouba.py"
+    },
+    {
       "key": "51吃瓜导航直达版",
       "name": "❤️51吃瓜导航自愈版｜🔞",
       "type": 3,
@@ -372,17 +383,7 @@
       "api": "https://gh-proxy.com/https://github.com/ge6bu6/1/blob/main/py/fulleroticmovies.py"
     },
     {
-      "key": "madou8",
-      "name": "麻豆吧｜🔞",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "api": "https://gh-proxy.com/https://github.com/ge6bu6/1/blob/main/py/madou8.py"
-    },
-    {
+
       "key": "暗香阁",
       "name": "暗香阁.py｜🔞",
       "type": 3,
