@@ -25,18 +25,6 @@
       "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/20261001-18/main/yingshi/py9/xb6v修护.py"
     },
     {
-      "key": "香蕉9合2",
-      "name": "❤️香蕉9合1【🔞】",
-      "type": 3,
-      "playerType": 2,
-      "style": {
-        "type": "rect",
-        "ratio": 1.66
-      },
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
-    },
-    {
       "key": "香蕉4区test",
       "name": "🔞️香蕉4区test【🔞】",
       "type": 3,
@@ -52,23 +40,35 @@
       "filterable": 1
     },
     {
-      "key": "香蕉4区",
-      "name": "🔞️香蕉4区【🔞】",
+      "key": "香蕉5区test",
+      "name": "🔞️香蕉5区test【🔞】",
       "type": 3,
       "playerType": 2,
       "style": {
         "type": "rect",
         "ratio": 1.66
       },
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj104.py",
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj104.py",
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj05.py",
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj05.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
     },
     {
+      "key": "香蕉9合2",
+      "name": "❤️香蕉9合1【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py",
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj9he2.py"
+    },
+    {
       "key": "51吃瓜导航直达版",
-      "name": "❤️51吃瓜导航直达版51cg1｜🔞",
+      "name": "❤️51吃瓜导航自愈版｜🔞",
       "type": 3,
       "playerType": 2,
       "style": {
@@ -305,8 +305,21 @@
       "quickSearch": 1,
       "filterable": 1
     },
+    {      "key": "香蕉4区",
+      "name": "🔞️香蕉4区【🔞】",
+      "type": 3,
+      "playerType": 2,
+      "style": {
+        "type": "rect",
+        "ratio": 1.66
+      },
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj104.py",
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/tvbw/2026/main/xj104.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
     {
-
       "key": "香蕉5区",
       "name": "🔞️香蕉5区【🔞】",
       "type": 3,
