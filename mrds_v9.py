@@ -54,22 +54,30 @@ class Config:
     # ---------- 缓存键 [模板原始配置] ----------
     HOST_CACHE_KEY = "mrds_host_v1"
     PUB_CACHE_KEY  = "mrds_pub_v1"
-    # ---------- 发布页锚点 [模板原始网址全部保留] ----------
+
+    # ===================== 域名配置【按最新实际情况更新】=====================
+    # SEED_HOSTS：三级直达真实内容站，当前无，置空[]，探测流程会直接跳过该层
+    SEED_HOSTS = []
+
+    # PUBLISH_URLS：二级【真正发布/导航页，有效期约6个月，页面提取候选线路】
     PUBLISH_URLS = [
         "https://www.wcznvusf.cc/",
         "https://www.detaarez.cc/",
         "https://www.lfntptwv.cc/",
     ]
+
+    # SECONDARY_PUBLISH_URLS：一级【跳转域名，有效期最长，只执行跳转，跟随跳转链落到二级发布页】
     SECONDARY_PUBLISH_URLS = [
+        "https://mrdst8.com",
         "https://mrdsv2.com",
         "https://mrdsv3.com",
         "https://mrdsv1.com",
         "https://mrds100.com",
-    ]
-    SEED_HOSTS = [
         "https://mrdst6.com",
         "https://mrdsv5.com",
     ]
+    # =====================================================================
+
     # 注意：必须是字符串，模板需要 .rstrip
     FALLBACK_HOST = None
     # ---------- 超时与判定（模板默认） ----------
@@ -132,7 +140,6 @@ class Config:
             except Exception:
                 continue
         return False
-
     # ========= 下面保留原每日大赛业务需要的选择器配置（原业务代码依赖，模板没有，保留！） =========
     SEL_ARTICLE      = "#index article, #archive article, article"
     SEL_ARTICLE_HOME = "#index article, article"
