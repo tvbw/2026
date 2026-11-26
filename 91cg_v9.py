@@ -68,14 +68,11 @@ class Config:
         "https://brain.crkhazah.cc/",
         "https://billion.crkhazah.cc/",
     ]
-    # ---------- 发布页锚点 [改] ----------
-    PUBLISH_URLS = [
-        "https://www.ozkbkdqs.cc/",
-    ]
+   
     # ================== 网址导航页（唯一一个，仅作兜底）==================
     # 【这是"导航/发布页域名"】不是内容站，只在三级域名全部失效时抓一次，
     # 用于提取新内容站域名；绝不做内容站使用，也不做多轮回溯
-    NAV_URL = "https://91cgb24.com/"
+    NAV_URL = "https://www.ozkbkdqs.cc/"
 
     FALLBACK_HOST  = None
 
