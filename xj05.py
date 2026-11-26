@@ -481,85 +481,30 @@ class Spider(SpiderBase):
     def destroy(self): pass
 # ==================================================================
 # ==================== 关联页推荐 通用模板 v2 =======================
-#
-# 【使用步骤】一共 3 步，5 分钟搞定：
-#
-#   第1步：确认文件顶部已 import（缺一不可）
-#       import json
-#       from urllib.parse import quote, unquote
-#
-#   第2步：确认 Spider 类已完整定义（class XxxSpider(...): ... 结束）
-#
-#   第3步：把本段【整块】贴到文件最末尾（Spider 类之后）
-#          并修改下方【改这里】标记的类名
-#
 # ==================================================================
-# 【与 v1（4.txt 内嵌版）的 6 项改进】
-#
-#   1. detailContent 失败时不再伪造 nid 源，直接返回原 vod（防播放崩）
-#   2. 增加 max_items 上限，防止播放页关联项无限拉长
-#   3. 增加 only_first_src，多线路源不再重复显示 N 组相同关联
-#   4. 增加缓存淘汰（page/source 各自独立上限）
-#   5. nid_prefix 可自定义，兼容对 "nid:" 敏感的播放器
-#   6. 全参数可传入（_install_playlist_extension(Spider, max_items=30)）
-#
+# ==================== 关联页代码开始 ===============================
+# 播放页关联推荐：把同页（categoryContent 返回）的其他视频串到
+# 当前视频的「官方直链」下，点击推荐项时通过 nid: 回查真实播放地址。
+# 原理与 51 系列的 _install_playlist_extension 一致，未改动主逻辑。
 # ==================================================================
-def _install_playlist_extension(_C, **opts):
-    """
-    关联页推荐安装函数（可重复调用，自动防重复 patch）
-
-    ---------- 全部可选参数（有默认值，不传即可） ----------
-    max_items        : int   关联项上限，0 = 不限制      默认 20
-    only_first_src   : bool  只在第一条线路挂关联        默认 False
-    nid_prefix       : str   伪协议前缀                  默认 "nid:"
-    cache_page_limit : int   列表页缓存上限（最近 N 个） 默认 30
-    cache_src_limit  : int   播放源缓存上限              默认 50
-    enable           : bool  总开关，False 时完全不 patch 默认 True
-
-    ---------- 调用示例 ----------
-    # 最简（全部用默认）：
-    _install_playlist_extension(Spider)
-
-    # 定制：
-    _install_playlist_extension(Spider, max_items=30, only_first_src=True)
-    """
-    if not opts.get("enable", True):
-        return _C
+def _install_playlist_extension(_C):
     if getattr(_C, "_pl_patched", False):
         return _C
     _C._pl_patched = True
+    _orig_init   = getattr(_C, "init", None)
+    _orig_home   = getattr(_C, "homeContent", None)
+    _orig_homev  = getattr(_C, "homeVideoContent", None)
+    _orig_cate   = getattr(_C, "categoryContent", None)
+    _orig_detail = getattr(_C, "detailContent", None)
+    _orig_search = getattr(_C, "searchContent", None)
+    _orig_searchp= getattr(_C, "searchContentPage", None)
+    _orig_player = getattr(_C, "playerContent", None)
 
-    # ---------- 解析配置 ----------
-    MAX_ITEMS       = int(opts.get("max_items", 20))
-    ONLY_FIRST_SRC  = bool(opts.get("only_first_src", False))
-    NID_PREFIX      = opts.get("nid_prefix", "nid:")
-    PAGE_LIMIT      = max(1, int(opts.get("cache_page_limit", 30)))
-    SRC_LIMIT       = max(1, int(opts.get("cache_src_limit", 50)))
-
-    # ---------- 保存原始方法（后续包装会调用它们） ----------
-    _orig_init    = getattr(_C, "init", None)
-    _orig_home    = getattr(_C, "homeContent", None)
-    _orig_homev   = getattr(_C, "homeVideoContent", None)
-    _orig_cate    = getattr(_C, "categoryContent", None)
-    _orig_detail  = getattr(_C, "detailContent", None)
-    _orig_search  = getattr(_C, "searchContent", None)
-    _orig_searchp = getattr(_C, "searchContentPage", None)
-    _orig_player  = getattr(_C, "playerContent", None)
-
-    # ==============================================================
-    # 内部工具函数
-    # ==============================================================
     def _ensure(self):
-        """懒初始化缓存属性（不污染 __init__）"""
         if not hasattr(self, "page_cache"):
-            self.page_cache = {}      # key -> [item, ...]
-            self.page_index = {}      # vod_id -> key
-            self.page_keys  = []      # 有序 key 列表（用于淘汰）
-            self._src_cache = {}      # vod_id -> [(线路名, [(集名, url), ...]), ...]
+            self.page_cache, self.page_index, self.page_keys, self._src_cache = {}, {}, [], {}
 
-    def _clean(s):
-        """清洗名字里的分隔符，防止破坏 $$$ / # / $ 结构"""
-        return str(s or "").replace("$", " ").replace("#", " ").strip()
+    def _clean(s): return str(s or "").replace("$", " ").replace("#", " ").strip()
 
     def _enc(s):
         try: return quote(str(s or ""), safe="")
@@ -570,7 +515,6 @@ def _install_playlist_extension(_C, **opts):
         except Exception: return str(s or "")
 
     def _cache_page(self, key, items):
-        """登记一个列表页的 items，供关联查询"""
         _ensure(self)
         out = [x for x in (items or []) if isinstance(x, dict) and x.get("vod_id")]
         if not out:
@@ -581,19 +525,15 @@ def _install_playlist_extension(_C, **opts):
         self.page_keys.append(key)
         for it in out:
             self.page_index[str(it["vod_id"])] = key
-        # 淘汰最老的
-        while len(self.page_keys) > PAGE_LIMIT:
-            old = self.page_keys.pop(0)
-            self.page_cache.pop(old, None)
+        while len(self.page_keys) > 30:
+            self.page_cache.pop(self.page_keys.pop(0), None)
 
     def _page_of(self, vid):
-        """根据 vod_id 找到它所在的列表页 items"""
         _ensure(self)
         key = self.page_index.get(str(vid))
         return list(self.page_cache.get(key, [])) if key in self.page_cache else []
 
     def _as_result(r):
-        """原方法返回 dict / json str / None，统一转 dict"""
         if r is None:
             return {}
         if isinstance(r, dict):
@@ -610,13 +550,6 @@ def _install_playlist_extension(_C, **opts):
         return {}
 
     def _split_sources(vod):
-        """
-        解析 vod_play_from / vod_play_url（标准 CPS 格式）
-          线路之间用 $$$  分隔
-          集数之间用 #    分隔
-          名称和地址用 $  分隔
-        返回 [(线路名, [(集名, url), ...]), ...]
-        """
         fr = str((vod or {}).get("vod_play_from") or "").split("$$$")
         ur = str((vod or {}).get("vod_play_url") or "").split("$$$")
         while len(ur) < len(fr):
@@ -633,7 +566,6 @@ def _install_playlist_extension(_C, **opts):
         return [x for x in src if x[1]]
 
     def _call_detail(self, vid):
-        """安全调用原 detailContent（兼容 list / str 两种签名）"""
         if not _orig_detail:
             return {}
         try:
@@ -647,7 +579,6 @@ def _install_playlist_extension(_C, **opts):
             return {}
 
     def _load_src(self, vid):
-        """获取并缓存某个 vid 的播放源"""
         _ensure(self)
         vid = str(vid)
         if vid in self._src_cache:
@@ -655,28 +586,15 @@ def _install_playlist_extension(_C, **opts):
         r = self._pl_call_detail(vid)
         vod = ((r.get("list") or [None])[0]) or {}
         src = _split_sources(vod)
-        # 淘汰
-        if len(self._src_cache) >= SRC_LIMIT:
-            try:
-                self._src_cache.pop(next(iter(self._src_cache)))
-            except Exception:
-                pass
         self._src_cache[vid] = src
         return src
 
     def _item_parts(self, it, src_idx, current_sources, current_vid):
-        """
-        为单个关联 item 生成播放项（name$url 格式）
-
-        - 如果 it 就是当前视频本身 → 展开它的所有集数
-        - 否则 → 挂 nid 伪协议，点击时再回查真实地址
-        """
         iid = str(it.get("vod_id") or "")
         if not iid:
             return []
         name = _clean(it.get("vod_name") or iid) or iid
         if iid == str(current_vid):
-            # 当前视频：展开它自己的多集
             eps = []
             if current_sources:
                 eps = (current_sources[src_idx][1]
@@ -685,33 +603,21 @@ def _install_playlist_extension(_C, **opts):
             if len(eps) > 1:
                 out = []
                 for i, (en, u) in enumerate(eps):
-                    out.append("%s$%s" % (
-                        _clean("%s %s" % (name, en or "%02d" % (i + 1))), u
-                    ))
+                    out.append("%s$%s" % (_clean("%s %s" % (name, en or "%02d" % (i + 1))), u))
                 return out
             if eps:
                 return ["%s$%s" % (name, eps[0][1])]
-            # 当前视频本身没解析出地址（极少见）→ 也挂 nid 回查
-            return ["%s$%s%s" % (name, NID_PREFIX, _enc(iid))]
-        # 关联视频：挂伪协议
-        return ["%s$%s%s" % (name, NID_PREFIX, _enc(iid))]
+            return ["%s$nid:%s" % (name, _enc(iid))]
+        return ["%s$nid:%s" % (name, _enc(iid))]
 
     def _apply_playlist(self, vid, vod, items):
-        """
-        核心：把同页 items 拼进当前 vod 的播放源里
-
-        v2 改进：sources 为空（detailContent 本身失败）时直接返回原 vod，
-                  不再伪造假的 nid 源 → 避免播放页显示无用关联项
-        """
         sources = _split_sources(vod)
         _ensure(self)
         self._src_cache[str(vid)] = sources
-        if not items or not sources:
+        if not items:
             return vod
-        # 排序：当前视频优先
         ordered = [x for x in items if str(x.get("vod_id")) == str(vid)]
         ordered += [x for x in items if str(x.get("vod_id")) != str(vid)]
-        # 去重
         plist, seen = [], set()
         for it in ordered:
             iid = str(it.get("vod_id") or "")
@@ -721,20 +627,12 @@ def _install_playlist_extension(_C, **opts):
             plist.append(it)
         if not plist:
             return vod
-        # 决定挂哪几条线路
-        if ONLY_FIRST_SRC:
-            indices = [0]
-        else:
-            indices = list(range(len(sources)))
+        if not sources:
+            sources = [("线路1", [("播放", "nid:%s" % _enc(vid))])]
         pf, pu = [], []
-        for i in indices:
-            if i >= len(sources):
-                break
-            sname, _e = sources[i]
+        for i, (sname, _e) in enumerate(sources):
             parts = []
             for it in plist:
-                if MAX_ITEMS > 0 and len(parts) >= MAX_ITEMS:
-                    break
                 parts.extend(self._pl_item_parts(it, i, sources, vid))
             if not parts:
                 continue
@@ -747,9 +645,6 @@ def _install_playlist_extension(_C, **opts):
         vod["vod_play_url"]  = "$$$".join(pu)
         return vod
 
-    # ==============================================================
-    # 包装后的对外方法
-    # ==============================================================
     def init(self, *a, **kw):
         _ensure(self)
         if _orig_init:
@@ -807,19 +702,16 @@ def _install_playlist_extension(_C, **opts):
 
     def detailContent(self, ids, *a, **kw):
         _ensure(self)
-        # 解包 ids（兼容 list / str 两种调用方式）
         if isinstance(ids, (list, tuple)):
             vid = str(ids[0]) if ids else ""
             call_ids = list(ids)
         else:
             vid = str(ids)
             call_ids = [vid]
-        # nid: 伪协议解码
-        if vid.startswith(NID_PREFIX):
-            vid = _dec(vid[len(NID_PREFIX):])
+        if vid.startswith("nid:"):
+            vid = _dec(vid[4:])
             call_ids[0] = vid
         cached = _page_of(self, vid)
-        # 调原 detailContent
         if _orig_detail:
             try:
                 r = _orig_detail(self, call_ids, *a, **kw)
@@ -827,7 +719,6 @@ def _install_playlist_extension(_C, **opts):
                 r = _orig_detail(self, call_ids)
         else:
             r = {"list": []}
-        # 挂关联推荐
         try:
             rr = _as_result(r)
             lst = rr.get("list") or []
@@ -855,13 +746,11 @@ def _install_playlist_extension(_C, **opts):
     def playerContent(self, flag, id, vipFlags=None, *a, **kw):
         _ensure(self)
         s = str(id)
-        # nid: 伪协议 → 解码 + 回查真实地址
-        if s.startswith(NID_PREFIX):
-            vid = _dec(s[len(NID_PREFIX):])
+        if s.startswith("nid:"):
+            vid = _dec(s[4:])
             sources = self._pl_load_src(vid)
             real = ""
             if sources:
-                # 优先匹配同名线路
                 picked = None
                 for name, eps in sources:
                     if str(name) == str(flag) and eps:
@@ -871,12 +760,7 @@ def _install_playlist_extension(_C, **opts):
                     picked = sources[0][1]
                 if picked:
                     real = picked[0][1]
-            # v2 改进：回查失败时不再用原始 vid 硬塞（会污染原播放器）
-            #          改为返回明确的空 url，让播放器提示错误
-            if not real:
-                return {"parse": 0, "jx": 0, "url": "", "err": "关联播放失败"}
-            id = real
-        # 交给原 playerContent
+            id = real if real and not str(real).startswith("nid:") else vid
         if not _orig_player:
             return {"parse": 0, "url": id}
         try:
@@ -887,9 +771,6 @@ def _install_playlist_extension(_C, **opts):
             except TypeError:
                 return _orig_player(self, flag, id)
 
-    # ==============================================================
-    # 绑定到目标类
-    # ==============================================================
     _C._pl_call_detail    = _call_detail
     _C._pl_load_src       = _load_src
     _C._pl_item_parts     = _item_parts
@@ -904,23 +785,9 @@ def _install_playlist_extension(_C, **opts):
     if _orig_player:  _C.playerContent     = playerContent
     return _C
 
-
-# ==================================================================
-# 【改这里】调用入口：把 Spider 换成你文件里的实际类名
-#   若文件里是   class Spider(...):          → 不改
-#   若文件里是   class Z4Spider(...):        → 改成 Z4Spider
-#   若文件里是   class ButterflySpider(...): → 改成 ButterflySpider
-#
-#   常用参数（不传就用默认值）：
-#     max_items=20          关联项上限，0=不限
-#     only_first_src=False  多线路时只在第一条挂关联，避免重复
-#     nid_prefix="nid:"     伪协议前缀，某些播放器不认可改成 "pl:"
-#     enable=True           总开关
-# ==================================================================
 try:
     _install_playlist_extension(Spider)
 except Exception:
     pass
-# ==================================================================
-# ==================== 关联页推荐 模板结束 ==========================
-# ==================================================================
+# ==================== 关联页代码结束 ===============================
+
