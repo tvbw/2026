@@ -94,6 +94,218 @@ class Config:
     PROBE_PATHS       = ("/",)
     MAX_JUMP          = 3
 
+    NAV_PAGE_KEYWORDS = (
+        "线路一", "线路二", "线路三", "线路四", "线路五",
+        "线路1", "线路2", "线路3",
+        "推荐访问", "线路正常", "官方导航", "发布页", "备用线路",
+        "地址发布页", "永久地址", "最新地址",
+    )
+
+    VALID_TLDS = {
+        'com', 'net', 'org', 'cc', 'xyz', 'lol', 'vip', 'app', 'top', 'cn', 'co', 'io', 'me',
+        'tv', 'club', 'site', 'online', 'info', 'biz', 'pro', 'link', 'live', 'shop', 'fun',
+        'work', 'icu', 'life', 'world', 'store', 'tech', 'space', 'website', 'host',
+        'pw', 'tk', 'ml', 'ga', 'cf', 'gq', 'su', 'ws', 'ly', 'to', 'st', 'in', 'tw',
+        'hk', 'jp', 'kr', 'ru', 'us', 'uk', 'de', 'fr', 'nl', 'eu', 'au', 'ca', 'sg', 'my',
+        'sbs', 'bet', 'cam', 'one', 'plus', 'now', 'today', 'pub', 'dev', 'cool', 'cloud',
+    }
+
+    DOMAIN_BLACKLIST = (
+        'google', 'gstatic', 'googleusercontent', 'bing.com', 'baidu.com',
+        'so.com', 'sogou.com', 'yandex', 'facebook', 'fbcdn', 'instagram',
+        'twitter', 'twimg', 'youtube', 'ytimg', 't.me', 'telegram', 'whatsapp',
+        'discord', 'reddit', 'tiktok', 'pinterest', 'apple.com', 'icloud',
+        'microsoft', 'windows', 'amazonaws', 'cloudflare', 'cloudfront',
+        'azureedge', 'github', 'gitlab', 'gitee', 'bitbucket', 'w3.org',
+        'wikipedia', 'mozilla.org', 'stackoverflow', 'jsdelivr', 'unpkg',
+        'bootstrapcdn', 'jquery', 'fontawesome', 'gmail', 'outlook', 'hotmail',
+        'yahoo', 'protonmail', 'qq.com', '163.com', '126.com', 'sina.com',
+        'weibo.com', 'statcounter', 'google-analytics', 'umeng', 'cnzz',
+        'beian.miit.gov.cn', 'wordpress.org', 'wix.com', 'weebly', 'shopify',
+        '51.la', 'cnzz.com', '51yes', 'addthis', 'sharethis',
+    )
+
+    EXTRA_BLACKLIST = ('beian.miit.gov.cn', 'w3.org', 'example.com')
+
+    SEL_ARTICLE      = "#index article, #archive article, article"
+    SEL_ARTICLE_HOME = "#index article, article"
+    SEL_PLAYER       = ".dplayer"
+    SEL_CONTENT      = ".post-content, article"
+    SEL_TAGS         = ".post-tags a, .tags a, .keywords a"
+    SEL_SUMMARY      = ".post-content"
+    SEL_TITLE        = ".post-title, h1"
+
+    SEL_NAV = [
+        "ul.navbar-nav.mr-auto > li.nav-item > a.nav-link",
+        "ul.navbar-nav > li.nav-item > a.nav-link",
+        "ul.navbar-nav li a.nav-link",
+        "#navbarCollapse a.nav-link",
+        ".navbar-nav a.nav-link",
+        ".category-list ul li",
+        ".nav-menu li",
+        ".menu li",
+        "nav ul li",
+        "header nav a",
+        "nav a",
+    ]
+
+    SEL_SUB_NAV = [
+        "ul.navbar-nav.mr-auto li.nav-item.dropdown > ul.dropdown-menu > li.dropdown-item > a",
+        "ul.dropdown-menu > li.dropdown-item > a",
+        ".dropdown-menu a",
+    ]
+
+    DEFAULT_CATEGORY = {"type_name": "首页", "type_id": "/"}
+
+    LINK_KEYWORDS = (
+        "点击观看", "点击播放", "点击进入", "进入观看", "前往观看",
+        "观看", "播放", "视频", "立即观看", "在线观看", "在线播放",
+        "完整版", "高清",
+        "第一弹", "第二弹", "第三弹", "第四弹", "第五弹",
+        "第六弹", "第七弹", "第八弹", "第九弹", "第十弹",
+        "第1集", "第2集", "第3集", "第4集", "第5集",
+        "第6集", "第7集", "第8集", "第9集", "第10集",
+        "第1话", "第2话", "第3话", "第4话", "第5话",
+        "episode", "watch", "play", "full",
+    )
+
+    LINK_URL_PATTERNS = (
+        r"/vodplay/", r"/vodplay\b", r"/v/\d+", r"/play/",
+        r"/video/", r"/watch/", r"/player/", r"\.m3u8",
+    )
+
+    IMG_AES_KEYS = [
+        (b"f5d965df75336270", b"97b60394abc2fbe1"),
+        (b"75336270f5d965df", b"abc2fbe197b60394"),
+    ]
+
+    HEADERS = {
+        "User-Agent": ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                       "AppleWebKit/537.36 (KHTML, like Gecko) "
+                       "Chrome/120.0.0.0 Safari/537.36"),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "Connection": "keep-alive",
+        "Cache-Control": "no-cache",
+    }
+
+
+# ==================================================================
+# ② 慢路径域名解析器（入口页并发 + 结果缓存）
+# ==================================================================
+class DomainResolver:
+    SKIP_HREF = (
+        '.js', '.css', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.ico',
+        '.woff', '.woff2', '.ttf', '.eot', '.map', 'mailto:', 'javascript:', 'tel:',
+        '/sese.html', '/ybml.html', '/qun.html', '/github.html', '/telegram.html',
+        '/about.html', '/contact.html', 'mrds1.app',
+    )
+
+    RES_SUFFIX_RE = re.compile(
+        r'\.(?:jpg|jpeg|png|gif|webp|svg|ico|bmp|tif|tiff|'
+        r'mp4|mp3|m4a|aac|wav|flac|ogg|m3u8|ts|flv|avi|mkv|wmv|mov|webm|'
+        r'pdf|zip|rar|7z|tar|gz|bz2|xz|'
+        r'txt|log|csv|xml|json|doc|docx|xls|xlsx|ppt|pptx|'
+        r'css|js|jsx|ts|tsx|vue|php|asp|jsp|aspx|cgi|pl|rb|py|go|rs|java|'
+        r'html|htm|shtml|xhtml|'
+        r'woff|woff2|ttf|eot|otf|map|wasm|'
+        r'conf|config|ini|yaml|yml|toml|lock|env)$',
+        re.I
+    )
+
+    DOMAIN_RE = re.compile(
+        r'(?<![\w.\-])'
+        r'((?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,10})'
+        r'(?![\w.\-])'
+    )
+
+    JS_REDIRECT_PATS = [
+        r'''(?:window\.|document\.|top\.|self\.|parent\.)?location(?:\.href)?\s*=\s*["'](https?://[^"']+)["']''',
+        r'''(?:window\.|document\.|top\.|self\.|parent\.)?location\.assign\(\s*["'](https?://[^"']+)["']''',
+        r'''(?:window\.|document\.|top\.|self\.|parent\.)?location\.replace\(\s*["'](https?://[^"']+)["']''',
+        r'''window\.open\(\s*["'](https?://[^"']+)["']''',
+        r'''<meta[^>]+http-equiv=["']refresh["'][^>]+content=["'][^"']*url=([^"'\s>]+)''',
+        r'''<meta[^>]+http-equiv=["']refresh["'][^>]+url=([^"'\s>]+)''',
+    ]
+
+    # ---- 类级缓存：跨实例保留，多次 init / 重连时复用 ----
+    _ENTRY_CACHE = {}          # src → (ts, final_host, ext_list, bare_list)
+    _ENTRY_LOCK  = None        # 惰性初始化（避免 import threading 开销）
+
+    def __init__(self, cfg, fetcher):
+        self.cfg, self.fetch = cfg, fetcher
+        if DomainResolver._ENTRY_LOCK is None:
+            import threading
+            DomainResolver._ENTRY_LOCK = threading.Lock()
+
+    # ---------- 抓取与提取 ----------
+    def _safe_fetch(self, url, timeout):
+        try:
+            return self.fetch(url, timeout=timeout)
+        except Exception as e:
+            LOG.debug("fetch 异常 %s: %s", url, e)
+            return None
+
+    @staticmethod
+    def _final_host(url):
+        if not url:
+            return ""
+        try:
+            p = urlparse(url)
+            if p.scheme in ("http", "https") and p.netloc:
+                return "%s://%s" % (p.scheme, p.netloc.lower())
+        except Exception:
+            pass
+        return ""
+
+    def _is_blocked_page(self, html):
+        if not html:
+            return False
+        low = html.lower()
+        markers = (
+            'just a moment', 'cf-browser-verification', 'cf-challenge',
+            'checking your browser', '__cf_chl_', 'ddos-guard',
+            'cf-ray', 'cloudflare-nginx', 'enable javascript and cookies',
+            '请开启 javascript', '请启用 javascript', '请稍候',
+        )
+        if any(m in low for m in markers):
+            return True
+        if len(html) < 1500 and '<script' in low and 'body' in low:
+            return True
+        return False
+
+    def _is_nav_page(self, html):
+        if not html:
+            return False
+        if 'data-base=' in html and 'id="list-wrap"' in html:
+            return True
+        low = html.lower()
+        has_content = low.count("<article") >= 1 or low.count('class="post') >= 3
+        if has_content:
+            return False
+        hits = sum(1 for kw in getattr(self.cfg, "NAV_PAGE_KEYWORDS", ()) if kw in html)
+        return hits >= 3
+
+    def _site_check(self, html):
+        if not html:
+            return False, "空响应"
+        if len(html) < self.cfg.PROBE_MIN_HTML:
+            return False, "HTML过短(%d<%d)" % (len(html), self.cfg.PROBE_MIN_HTML)
+        if self._is_blocked_page(html):
+            return False, "CloudFlare/验证页"
+        if self._is_nav_page(html):
+            return False, "导航页特征"
+        low = html.lower()
+        has_article = low.count("<article") >= self.cfg.PROBE_MIN_ARTICLE
+        has_marker = any(m in low for m in self.cfg.SITE_MARKERS)
+        has_keyword = any(kw in html for kw in self.cfg.SITE_KEYWORDS)
+        if not (has_article or has_marker or has_keyword):
+            return False, "无内容结构(article=%d,marker=%s,kw=%s)" % (
+                low.count("<article"),
+                "Y" if has_marker else "N",
+                "Y" if has_keyword else "N")
+        return True, "OK"
+        
     # ---------- TLD / 黑名单（一般不用改） ----------
     VALID_TLDS = {
         'com', 'net', 'org', 'cc', 'xyz', 'lol', 'vip', 'app', 'top', 'cn',
