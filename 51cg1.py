@@ -44,41 +44,108 @@ try:
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 except Exception:
     pass
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger("publish_resolver")
+if not LOG.handlers:
+    _h = logging.StreamHandler()
+    _h.setFormatter(logging.Formatter("[%(name)s] %(message)s"))
+    LOG.addHandler(_h)
+    LOG.setLevel(logging.INFO)
 
 
+# ==================================================================
+# ① 站点配置（换站只改这里）
+# ==================================================================
 class Config:
-    # ================== 站点身份 ==================
-    SITE_NAME            = "51吃瓜1"
-    SITE_KEYWORDS        = ["51吃瓜1", "51cg"]
-    PLAY_FROM            = "51吃瓜1"
-    PLAY_FALLBACK_TITLE  = "51吃瓜1"
-    HOST_CACHE_KEY       = "51cg_host_v12"
-    HOST_CACHE_TTL       = 6 * 3600
+    # ---------- 站点身份 [改] ----------
+    SITE_NAME     = "51吃瓜1"
+    SITE_KEYWORDS = ["51吃瓜1", "91爆料", "91cg"]
+    PLAY_FROM = "51吃瓜1"
+    SITE_MARKERS  = (
+        "post-title", "entry-title", "<article",
+        'class="post', "realtime-card", "candid-video", "video-card",
+        "Xc_home_article", "Xc_archive", "/archives/",   # ← 91大赛原特征
+    )
 
-    # ================== 发布页（唯一可靠锚点，可只配 1 个）==================
+    # ---------- 缓存键 [改] ----------
+    HOST_CACHE_KEY = "sp51cg_host_v1"
+    PUB_CACHE_KEY  = "sp51cg_pub_v1"
+
+    # ---------- 发布页锚点 [改] ----------
     PUBLISH_URLS = [
+        "https://51cgf24.com/",
+    ]
+    SECONDARY_PUBLISH_URLS = [
         "https://www.sunkdjlla.cc/",
         "https://www.nqvudlbn.cc/",
     ]
+    SEED_HOSTS = [
+        "https://brush.ycbplsny.cc/",
+    # 注意：必须是字符串，模板需要 .rstrip
+    FALLBACK_HOST = "https://brush.ycbplsny.cc/"
 
-    # 三级域名（可选，通常失效快，留空则完全依赖发布页）
-    SEED_HOSTS = []
+    # ---------- 超时与判定（一般不用改） ----------
+    PUBLISH_TIMEOUT   = 12
+    PROBE_TIMEOUT     = 12
+    FAST_TIMEOUT      = 8
+    PROBE_MIN_HTML    = 1500
+    PROBE_MIN_ARTICLE = 1
+    PROBE_PATHS       = ("/",)
+    MAX_JUMP          = 3
 
-    FALLBACK_HOST = None
+    # ---------- TLD / 黑名单（一般不用改） ----------
+    VALID_TLDS = {
+        'com', 'net', 'org', 'cc', 'xyz', 'lol', 'vip', 'app', 'top', 'cn',
+        'co', 'io', 'me', 'tv', 'club', 'site', 'online', 'info', 'biz',
+        'pro', 'link', 'live', 'shop', 'fun', 'work', 'icu', 'life',
+        'world', 'store', 'tech', 'space', 'website', 'host', 'pw', 'tk',
+        'ml', 'ga', 'cf', 'gq', 'su', 'ws', 'ly', 'to', 'st', 'in', 'tw',
+        'hk', 'jp', 'kr', 'ru', 'us', 'uk', 'de', 'fr', 'nl', 'eu', 'au',
+        'ca', 'sg', 'my', 'sbs', 'bet', 'cam', 'one', 'plus', 'now',
+        'today', 'pub', 'dev', 'cool', 'cloud',
+    }
+    DOMAIN_BLACKLIST = (
+        'google', 'gstatic', 'bing.com', 'baidu.com', 'so.com', 'sogou.com',
+        'yandex', 'facebook', 'fbcdn', 'instagram', 'twitter', 'twimg',
+        'youtube', 'ytimg', 't.me', 'telegram', 'whatsapp', 'discord',
+        'reddit', 'tiktok', 'pinterest', 'apple.com', 'icloud', 'microsoft',
+        'windows', 'amazonaws', 'cloudflare', 'cloudfront', 'azureedge',
+        'github', 'gitlab', 'gitee', 'bitbucket', 'w3.org', 'wikipedia',
+        'mozilla.org', 'stackoverflow', 'jsdelivr', 'unpkg', 'bootstrapcdn',
+        'jquery', 'fontawesome', 'gmail', 'outlook', 'hotmail', 'yahoo',
+        'protonmail', 'qq.com', '163.com', '126.com', 'sina.com',
+        'weibo.com', 'statcounter', 'google-analytics', 'umeng', 'cnzz',
+        'beian.miit.gov.cn', 'wordpress.org', 'wix.com', 'weebly',
+        'shopify', '51.la', 'cnzz.com', '51yes', 'navone.cloud',
+    )
+    EXTRA_BLACKLIST = ()
 
-    # ================== 探测参数（针对发布页直达优化）==================
-    PUBLISH_TIMEOUT    = 10    # 发布页抓取超时
-    PROBE_TIMEOUT      = 8     # 候选域名探测超时
-    FAST_TIMEOUT       = 5     # 缓存校验超时
-    PROBE_MIN_HTML     = 2000
-    PROBE_MIN_ARTICLE  = 1
+    # ---------- HTTP ----------
+    HEADERS = {
+        "User-Agent": ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                       "AppleWebKit/537.36 (KHTML, like Gecko) "
+                       "Chrome/120.0.0.0 Safari/537.36"),
+        "Accept": ("text/html,application/xhtml+xml,application/xml;q=0.9,"
+                   "image/avif,image/webp,image/apng,*/*;q=0.8"),
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "Connection": "keep-alive",
+        "Cache-Control": "no-cache",
+    }
+    VERIFY_SSL = False
 
-    # ================== 站点结构特征 ==================
-    SITE_MARKERS = [
-        "post-title", "entry-title", "<article", 'class="post',
-        "realtime-card", "candid-video", "video-card",
-    ]
+    @classmethod
+    def match_keyword(cls, text):
+        if not text:
+            return False
+        for kw in cls.SITE_KEYWORDS:
+            try:
+                if hasattr(kw, "search"):
+                    if kw.search(text):
+                        return True
+                elif kw and kw in text:
+                    return True
+            except Exception:
+                continue
+        return False
 
     NAV_PAGE_KEYWORDS = (
         "线路一", "线路二", "线路三", "推荐访问", "线路正常",
