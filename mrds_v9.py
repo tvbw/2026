@@ -56,6 +56,7 @@ class Config:
     PUB_CACHE_KEY  = "mrds_pub_v1"
     # ---------- 发布页锚点 [模板原始网址全部保留] ----------
     PUBLISH_URLS = [
+        "https://www.wcznvusf.cc/",
         "https://www.detaarez.cc/",
         "https://www.lfntptwv.cc/",
     ]
@@ -65,6 +66,7 @@ class Config:
         "https://mrdsv1.com",
     ]
     SEED_HOSTS = [
+        "https://mrdst6.com",
         "https://mrdsv5.com",
     ]
     # 注意：必须是字符串，模板需要 .rstrip
