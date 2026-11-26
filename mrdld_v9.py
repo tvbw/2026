@@ -53,25 +53,32 @@ class Config:
         "Xc_home_article", "Xc_archive", "/archives/",
     )
     # 缓存键（模板）
-    HOST_CACHE_KEY = "mrdld_host_v1"
-    PUB_CACHE_KEY  = "mrdld_pub_v1"
+    HOST_CACHE_KEY = "mrdld_host_v10"
+    PUB_CACHE_KEY  = "mrdld_pub_v10"
 
-    # ========== 保留【每日大乱斗原始网址，不改动】==========
-    PUBLISH_URLS = [
-        "https://www.detaarez.cc/",
-        "https://mrdld7.com",
-        "https://www.lfntptwv.cc/",
-    ]
-    SECONDARY_PUBLISH_URLS = [
-        "https://mrdld5.com",
-        "https://mrdld1.com",
-    ]
+    # ===================== 域名配置【按最新实际情况更新】=====================
+    # SEED_HOSTS：三级直达真实内容站，最先优先探测
     SEED_HOSTS = [
+        "https://dsr6ga680tynt.cloudfront.net/",
         "https://d3csgpu2mb1pet.cloudfront.net/",
     ]
-    FALLBACK_HOST = None
 
-    # 探测超时参数（模板标准）
+    # PUBLISH_URLS：二级【真正发布/导航页，页面提取候选线路】
+    PUBLISH_URLS = [
+        "https://mrdld5.com",
+        "https://mrdld10.com",
+        "https://mrdld9.com",
+        "https://mrdld8.com",
+        "https://mrdld7.com",
+        "https://mrdld1.com",
+    ]
+
+    # SECONDARY_PUBLISH_URLS：一级跳转域名，当前无，置空[]，探测直接跳过该层
+    SECONDARY_PUBLISH_URLS = []
+    FALLBACK_HOST = None
+    # =====================================================================
+
+# 探测超时参数（模板标准）
     PUBLISH_TIMEOUT   = 12
     PROBE_TIMEOUT     = 12
     FAST_TIMEOUT      = 8
