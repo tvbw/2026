@@ -61,6 +61,7 @@ class Config:
         "https://www.lfntptwv.cc/",
     ]
     SECONDARY_PUBLISH_URLS = [
+        "https://mrds100.com",
         "https://mrdsv2.com",
         "https://mrdsv3.com",
         "https://mrdsv1.com",
