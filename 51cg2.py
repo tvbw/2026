@@ -59,14 +59,14 @@ class Config:
     HOST_CACHE_KEY = "sp51cg_host_v1"      # 最终三级内容站
     PUB_CACHE_KEY  = "sp51cg_pub_v1"       # 上次成功跳转到的二级发布页
 
+      # ---- 二级发布页（硬编码保底，域名变了再改这里）----
+    PUBLISH_FALLBACK_AFTER_JUMP = [
+        "https://www.sunkdjlla.cc/",
+        "https://www.gvhafcbw.cc/",
+    ]
     # ---- 一级跳板页（只填这一个）----
     PUBLISH_URLS = [
         "https://51cgf24.com/",
-    ]
-    # ---- 二级发布页（硬编码保底，域名变了再改这里）----
-    PUBLISH_FALLBACK_AFTER_JUMP = [
-        "https://www.sunkdjlla.cc/",
-        "https://www.nqvudlbn.cc/",
     ]
 
     # ---- 超时 ----
